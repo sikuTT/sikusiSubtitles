@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>sikusiSubtitles - Browser Recognition</title>
+        <script type="text/javascript" src="./browser-recognition.js"></script>
+        <link rel="stylesheet" href="./browser-recognition.css">
+        <script type="text/javascript">
+            let recognizer = new Recognizer(true);
+            function startRecognition() {
+                console.log('Start Button clicked');
+                recognizer.start();
+            }
+
+            function stopRecognition() {
+                recognizer.stop();
+            }
+        </script>
+    </head>
+    <body onload="startRecognition()">
+        <div class="content">
+            <div class="info">
+                <div>このウィンドウは音声認識終了時に自動で閉じられます。</div>
+                <div>手動で閉じないでください。</div>
+            </div>
+            <div class="command-buttons">
+                <button onclick="startRecognition()">Start</button>
+                <button onclick="stopRecognition()">Stop</button>
+            </div>
+            <div id="result"></div>
+        </div>
+    </body>
+</html>

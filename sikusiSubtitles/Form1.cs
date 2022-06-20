@@ -207,7 +207,7 @@ namespace sikusiSubtitles {
 
             // –|–óŒ‹‰Ê‚ðŽæ“¾
             string?[] texts = { null, null };
-            int i = this.azureTranslationPage.IsTo1 ? 0 : 1;
+            int i = 0;
             if (this.translationPage.Service == TranslationPage.ServiceType.Azure)
                 i = this.azureTranslationPage.IsTo1 ? 0 : 1;
             else if (this.translationPage.Service == TranslationPage.ServiceType.GoogleBasic)

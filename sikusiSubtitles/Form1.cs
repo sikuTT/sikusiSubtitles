@@ -19,6 +19,7 @@ namespace sikusiSubtitles {
                 this.translationPage,
                 this.azureTranslationPage,
                 this.googleBasicTranslationPage,
+                this.googleAppsScriptTranslationPage,
             };
         }
 
@@ -182,40 +183,15 @@ namespace sikusiSubtitles {
             }
         }
 
-        private string? GetTranslationFrom() {
-            switch (this.translationPage.Service) {
-                case TranslationPage.ServiceType.Azure:
-                    return this.azureTranslationPage.From;
-                case TranslationPage.ServiceType.GoogleBasic:
-                    return this.googleBasicTranslationPage.From;
-                default:
-                    return null;
-            }
-        }
-
-        private List<string> GetTranslationTo() {
-            switch (this.translationPage.Service) {
-                case TranslationPage.ServiceType.Azure:
-                    return this.azureTranslationPage.To;
-                case TranslationPage.ServiceType.GoogleBasic:
-                    return this.googleBasicTranslationPage.To;
-                default:
-                    return new List<string>();
-            }
-        }
-
         private async void Translate(string text) {
-            // ñ|ñÛêÊÇ™Ç»ÇØÇÍÇŒÅAÇªÇÃÇ‹Ç‹èIóπ
-            var toList = this.GetTranslationTo().ToArray();
-            if (toList.Length == 0)
-                return;
-
             // ñ|ñÛÇ∑ÇÈ
             TranslationResult? result = null;
             if (this.translationPage.Service == TranslationPage.ServiceType.Azure)
-                result = await this.azureTranslationPage.TranslateAsync(text, this.GetTranslationFrom(), toList);
+                result = await this.azureTranslationPage.TranslateAsync(text, this.azureTranslationPage.From, this.azureTranslationPage.To.ToArray());
             else if (this.translationPage.Service == TranslationPage.ServiceType.GoogleBasic)
-                result = await this.googleBasicTranslationPage.TranslateAsync(text, this.GetTranslationFrom(), toList);
+                result = await this.googleBasicTranslationPage.TranslateAsync(text, this.googleBasicTranslationPage.From, googleBasicTranslationPage.To.ToArray());
+            else if (this.translationPage.Service == TranslationPage.ServiceType.GoogleAppsScript)
+                result = await this.googleAppsScriptTranslationPage.TranslateAsync(text, this.googleAppsScriptTranslationPage.From, googleAppsScriptTranslationPage.To.ToArray());
 
             // ñ|ñÛÇ≈Ç´Ç»ÇØÇÍÇŒèàóùÇèIÇÌÇÈÅB
             if (result == null)
@@ -232,6 +208,13 @@ namespace sikusiSubtitles {
             // ñ|ñÛåãâ ÇéÊìæ
             string?[] texts = { null, null };
             int i = this.azureTranslationPage.IsTo1 ? 0 : 1;
+            if (this.translationPage.Service == TranslationPage.ServiceType.Azure)
+                i = this.azureTranslationPage.IsTo1 ? 0 : 1;
+            else if (this.translationPage.Service == TranslationPage.ServiceType.GoogleBasic)
+                i = this.googleBasicTranslationPage.IsTo1 ? 0 : 1;
+            else if (this.translationPage.Service == TranslationPage.ServiceType.GoogleAppsScript)
+                i = this.googleAppsScriptTranslationPage.IsTo1 ? 0 : 1;
+
             for (var j = 0; j < result.Translations.Count && i < texts.Length; ++i, ++j) {
                 texts[i] = result.Translations[j].Text;
             }

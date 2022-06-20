@@ -442,5 +442,77 @@ namespace sikusiSubtitles.Properties {
                 this["ChromeLanguage"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GoogleAppsScriptTranslationKey {
+            get {
+                return ((string)(this["GoogleAppsScriptTranslationKey"]));
+            }
+            set {
+                this["GoogleAppsScriptTranslationKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GoogleAppsScriptTranslationFrom {
+            get {
+                return ((string)(this["GoogleAppsScriptTranslationFrom"]));
+            }
+            set {
+                this["GoogleAppsScriptTranslationFrom"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GoogleAppsScriptTranslationTo1 {
+            get {
+                return ((string)(this["GoogleAppsScriptTranslationTo1"]));
+            }
+            set {
+                this["GoogleAppsScriptTranslationTo1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GoogleAppsScriptTranslationTo2 {
+            get {
+                return ((string)(this["GoogleAppsScriptTranslationTo2"]));
+            }
+            set {
+                this["GoogleAppsScriptTranslationTo2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool GoogleAppsScriptTranslationTo1Run {
+            get {
+                return ((bool)(this["GoogleAppsScriptTranslationTo1Run"]));
+            }
+            set {
+                this["GoogleAppsScriptTranslationTo1Run"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool GoogleAppsScriptTranslationTo2Run {
+            get {
+                return ((bool)(this["GoogleAppsScriptTranslationTo2Run"]));
+            }
+            set {
+                this["GoogleAppsScriptTranslationTo2Run"] = value;
+            }
+        }
     }
 }

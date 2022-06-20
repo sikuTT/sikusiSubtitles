@@ -14,6 +14,7 @@ namespace sikusiSubtitles.Translation {
             None,
             Azure,
             GoogleBasic,
+            GoogleAppsScript,
             DeepL,
         }
 
@@ -26,6 +27,8 @@ namespace sikusiSubtitles.Translation {
                     return ServiceType.Azure;
                 else if (this.googleBasicTranslationRadioButton.Checked)
                     return ServiceType.GoogleBasic;
+                else if (this.googleAppsScriptTranslationRadioButton.Checked)
+                    return ServiceType.GoogleAppsScript;
                 else
                     return ServiceType.None;
             }
@@ -38,6 +41,7 @@ namespace sikusiSubtitles.Translation {
         public override void LoadSettings() {
             this.noTranslationRadioButton.Checked = Properties.Settings.Default.TtranslationService == ServiceType.None.ToString();
             this.googleBasicTranslationRadioButton.Checked = Properties.Settings.Default.TtranslationService == ServiceType.GoogleBasic.ToString();
+            this.googleAppsScriptTranslationRadioButton.Checked = Properties.Settings.Default.TtranslationService == ServiceType.GoogleAppsScript.ToString();
             this.azureTranslationRadioButton.Checked = Properties.Settings.Default.TtranslationService == ServiceType.Azure.ToString();
         }
 

@@ -17,6 +17,7 @@ namespace sikusiSubtitles.SpeechRecognition {
     public partial class AmiVoiceSpeechRecognitionPage : SettingPage {
         WasapiCapture? MicCapture;
         com.amivoice.wrp.Wrp? Wrp;
+        WrpListener? Listener;
 
         public event EventHandler<SpeechRecognitionEventArgs>? Recognizing;
         public event EventHandler<SpeechRecognitionEventArgs>? Recognized;
@@ -85,12 +86,19 @@ namespace sikusiSubtitles.SpeechRecognition {
 
         private void StopRecording() {
             try {
-                if (Wrp != null && !Wrp.feedDataPause()) {
-                    Console.WriteLine(Wrp.getLastMessage());
-                    Console.WriteLine("WebSocket 音声認識サーバへの音声データの送信の完了に失敗しました。");
+                if (Wrp != null) {
+                    if (!Wrp.feedDataPause()) {
+                        Console.WriteLine(Wrp.getLastMessage());
+                        Console.WriteLine("WebSocket 音声認識サーバへの音声データの送信の完了に失敗しました。");
+                    }
+                    Wrp.disconnect();
+                    Wrp = null;
                 }
-                Wrp?.disconnect();
-                Wrp = null;
+                if (Listener != null) {
+                    Listener.Recognizing -= RecognizingHandler;
+                    Listener.Recognized -= RecognizedHandler;
+                    Listener = null;
+                }
             } catch (Exception ex) {
                 Debug.WriteLine(ex.Message);
             }
@@ -100,6 +108,7 @@ namespace sikusiSubtitles.SpeechRecognition {
                     if (MicCapture.CaptureState == CaptureState.Starting || MicCapture.CaptureState == CaptureState.Capturing) {
                         MicCapture.StopRecording();
                     }
+                    MicCapture.DataAvailable -= MicDataAvailable;
                 }
             } catch (Exception ex) {
                 Debug.WriteLine(ex.Message);
@@ -117,9 +126,9 @@ namespace sikusiSubtitles.SpeechRecognition {
                 MessageBox.Show("ログの有無が設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
-            var listener = new WrpListener();
-            listener.Recognizing += RecognizingHandler;
-            listener.Recognized += RecognizedHandler;
+            Listener = new WrpListener();
+            Listener.Recognizing += RecognizingHandler;
+            Listener.Recognized += RecognizedHandler;
 
             // WebSocket 音声認識サーバの初期化
             var serverURL = "wss://acp-api.amivoice.com/v1/";
@@ -127,7 +136,7 @@ namespace sikusiSubtitles.SpeechRecognition {
                 serverURL += "nolog/";
             var codec = this.engines[this.engineComboBox.SelectedIndex].Item1;
             this.Wrp = com.amivoice.wrp.Wrp.construct();
-            this.Wrp.setListener(listener);
+            this.Wrp.setListener(Listener);
             this.Wrp.setServerURL(serverURL);
             this.Wrp.setCodec("lsb22k");
             this.Wrp.setGrammarFileNames(codec);

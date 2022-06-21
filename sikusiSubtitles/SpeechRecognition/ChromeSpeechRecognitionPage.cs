@@ -89,6 +89,7 @@ namespace sikusiSubtitles.SpeechRecognition {
 
                     if (ChromeTimer != null) {
                         ChromeTimer.Close();
+                        ChromeTimer.Elapsed -= ChromeObserver;
                         ChromeTimer = null;
                     }
 
@@ -244,7 +245,6 @@ namespace sikusiSubtitles.SpeechRecognition {
                 }
                 this.ChromeTimer?.Start();
             } catch (Exception ex) {
-                Debug.WriteLine("5");
                 Debug.WriteLine(ex.Message);
             }
         }

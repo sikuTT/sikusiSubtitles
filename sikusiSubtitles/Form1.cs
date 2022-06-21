@@ -113,12 +113,18 @@ namespace sikusiSubtitles {
             this.IsRecognitionWorking = false;
             switch (this.speechRecognitionPage.Service) {
                 case SpeechRecognitionPage.ServiceType.Chrome:
+                    this.chromeSpeechRecognitionPage.Recognizing -= Recognizing;
+                    this.chromeSpeechRecognitionPage.Recognized -= Recognized;
                     this.chromeSpeechRecognitionPage.SpeechRecognitionStop();
                     break;
                 case SpeechRecognitionPage.ServiceType.Azure:
+                    this.azureSpeechRecognitionPage.Recognizing -= Recognizing;
+                    this.azureSpeechRecognitionPage.Recognized -= Recognized;
                     this.azureSpeechRecognitionPage.SpeechRecognitionStop();
                     break;
                 case SpeechRecognitionPage.ServiceType.AmiVoice:
+                    this.amiVoiceSpeechRecognitionPage.Recognizing -= Recognizing;
+                    this.amiVoiceSpeechRecognitionPage.Recognized -= Recognized;
                     this.amiVoiceSpeechRecognitionPage.SpeechRecognitionStop();
                     break;
             }

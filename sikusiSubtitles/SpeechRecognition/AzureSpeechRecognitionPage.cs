@@ -61,6 +61,9 @@ namespace sikusiSubtitles.SpeechRecognition {
         public async void SpeechRecognitionStop() {
             if (this.Recognizer != null) {
                 await this.Recognizer.StopContinuousRecognitionAsync();
+                this.Recognizer.Recognizing -= RecognizingHandler;
+                this.Recognizer.Recognized -= RecognizedHandler;
+                this.Recognizer.Canceled -= CanceledHandler;
                 this.Recognizer = null;
             }
         }

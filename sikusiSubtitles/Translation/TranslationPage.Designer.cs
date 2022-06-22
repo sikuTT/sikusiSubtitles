@@ -24,11 +24,12 @@
         /// </summary>
         private void InitializeComponent() {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.googleAppsScriptTranslationRadioButton = new System.Windows.Forms.RadioButton();
             this.googleBasicTranslationRadioButton = new System.Windows.Forms.RadioButton();
+            this.deepLRadioButton = new System.Windows.Forms.RadioButton();
             this.azureTranslationRadioButton = new System.Windows.Forms.RadioButton();
             this.noTranslationRadioButton = new System.Windows.Forms.RadioButton();
             this.label1 = new System.Windows.Forms.Label();
-            this.googleAppsScriptTranslationRadioButton = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -38,14 +39,25 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.googleAppsScriptTranslationRadioButton);
             this.groupBox1.Controls.Add(this.googleBasicTranslationRadioButton);
+            this.groupBox1.Controls.Add(this.deepLRadioButton);
             this.groupBox1.Controls.Add(this.azureTranslationRadioButton);
             this.groupBox1.Controls.Add(this.noTranslationRadioButton);
             this.groupBox1.Location = new System.Drawing.Point(26, 80);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(574, 139);
+            this.groupBox1.Size = new System.Drawing.Size(574, 165);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "使用するサービス";
+            // 
+            // googleAppsScriptTranslationRadioButton
+            // 
+            this.googleAppsScriptTranslationRadioButton.AutoSize = true;
+            this.googleAppsScriptTranslationRadioButton.Location = new System.Drawing.Point(26, 81);
+            this.googleAppsScriptTranslationRadioButton.Name = "googleAppsScriptTranslationRadioButton";
+            this.googleAppsScriptTranslationRadioButton.Size = new System.Drawing.Size(126, 19);
+            this.googleAppsScriptTranslationRadioButton.TabIndex = 4;
+            this.googleAppsScriptTranslationRadioButton.Text = "Google Apps Script";
+            this.googleAppsScriptTranslationRadioButton.UseVisualStyleBackColor = true;
             // 
             // googleBasicTranslationRadioButton
             // 
@@ -56,6 +68,16 @@
             this.googleBasicTranslationRadioButton.TabIndex = 4;
             this.googleBasicTranslationRadioButton.Text = "Google Cloud Translation - Basic";
             this.googleBasicTranslationRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // deepLRadioButton
+            // 
+            this.deepLRadioButton.AutoSize = true;
+            this.deepLRadioButton.Location = new System.Drawing.Point(26, 131);
+            this.deepLRadioButton.Name = "deepLRadioButton";
+            this.deepLRadioButton.Size = new System.Drawing.Size(58, 19);
+            this.deepLRadioButton.TabIndex = 5;
+            this.deepLRadioButton.Text = "DeepL";
+            this.deepLRadioButton.UseVisualStyleBackColor = true;
             // 
             // azureTranslationRadioButton
             // 
@@ -89,16 +111,6 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "翻訳";
             // 
-            // googleAppsScriptTranslationRadioButton
-            // 
-            this.googleAppsScriptTranslationRadioButton.AutoSize = true;
-            this.googleAppsScriptTranslationRadioButton.Location = new System.Drawing.Point(26, 81);
-            this.googleAppsScriptTranslationRadioButton.Name = "googleAppsScriptTranslationRadioButton";
-            this.googleAppsScriptTranslationRadioButton.Size = new System.Drawing.Size(126, 19);
-            this.googleAppsScriptTranslationRadioButton.TabIndex = 4;
-            this.googleAppsScriptTranslationRadioButton.Text = "Google Apps Script";
-            this.googleAppsScriptTranslationRadioButton.UseVisualStyleBackColor = true;
-            // 
             // TranslationPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -123,5 +135,6 @@
         private RadioButton azureTranslationRadioButton;
         private RadioButton googleBasicTranslationRadioButton;
         private RadioButton googleAppsScriptTranslationRadioButton;
+        private RadioButton deepLRadioButton;
     }
 }

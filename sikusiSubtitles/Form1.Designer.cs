@@ -23,26 +23,30 @@
         ///  the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Chrome");
-            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Azure Cognitive Services");
-            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("AmiVoice");
-            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("音声認識", new System.Windows.Forms.TreeNode[] {
-            treeNode11,
-            treeNode12,
-            treeNode13});
-            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("字幕");
-            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("OBS", new System.Windows.Forms.TreeNode[] {
-            treeNode15});
-            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Google Cloud Translation - Basic");
-            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Google Apps Script");
-            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Azure Cognitive Services");
-            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("翻訳", new System.Windows.Forms.TreeNode[] {
-            treeNode17,
-            treeNode18,
-            treeNode19});
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Chrome");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Azure Cognitive Services");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("AmiVoice");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("音声認識", new System.Windows.Forms.TreeNode[] {
+            treeNode1,
+            treeNode2,
+            treeNode3});
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("字幕");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("OBS", new System.Windows.Forms.TreeNode[] {
+            treeNode5});
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Google Cloud Translation - Basic");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Google Apps Script");
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Azure Cognitive Services");
+            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("DeepL");
+            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("翻訳", new System.Windows.Forms.TreeNode[] {
+            treeNode7,
+            treeNode8,
+            treeNode9,
+            treeNode10});
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.menuView = new System.Windows.Forms.TreeView();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.deeplTranslationPage = new sikusiSubtitles.Translation.DeepLTranslationPage();
+            this.googleAppsScriptTranslationPage = new sikusiSubtitles.Translation.GoogleAppsScriptTranslationPage();
             this.amiVoiceSpeechRecognitionPage = new sikusiSubtitles.SpeechRecognition.AmiVoiceSpeechRecognitionPage();
             this.googleBasicTranslationPage = new sikusiSubtitles.Translation.GoogleBasicTranslationPage();
             this.azureTranslationPage = new sikusiSubtitles.Translation.AzureTranslationPage();
@@ -55,7 +59,6 @@
             this.speechRecognitionCheckBox = new System.Windows.Forms.CheckBox();
             this.obsCheckBox = new System.Windows.Forms.CheckBox();
             this.recognitionResultTextBox = new System.Windows.Forms.TextBox();
-            this.googleAppsScriptTranslationPage = new sikusiSubtitles.Translation.GoogleAppsScriptTranslationPage();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -88,36 +91,39 @@
             this.menuView.Font = new System.Drawing.Font("Yu Gothic UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.menuView.Location = new System.Drawing.Point(0, 0);
             this.menuView.Name = "menuView";
-            treeNode11.Name = "chromeSpeechRecognitionPage";
-            treeNode11.Text = "Chrome";
-            treeNode12.Name = "azureSpeechRecognitionPage";
-            treeNode12.Text = "Azure Cognitive Services";
-            treeNode13.Name = "amiVoiceSpeechRecognitionPage";
-            treeNode13.Text = "AmiVoice";
-            treeNode14.Name = "speechRecognitionPage";
-            treeNode14.Text = "音声認識";
-            treeNode15.Name = "subtitlesPage";
-            treeNode15.Text = "字幕";
-            treeNode16.Name = "obsPage";
-            treeNode16.Text = "OBS";
-            treeNode17.Name = "googleBasicTranslationPage";
-            treeNode17.Text = "Google Cloud Translation - Basic";
-            treeNode18.Name = "googleAppsScriptTranslationPage";
-            treeNode18.Text = "Google Apps Script";
-            treeNode19.Name = "azureTranslationPage";
-            treeNode19.Text = "Azure Cognitive Services";
-            treeNode20.Name = "translationPage";
-            treeNode20.Text = "翻訳";
+            treeNode1.Name = "chromeSpeechRecognitionPage";
+            treeNode1.Text = "Chrome";
+            treeNode2.Name = "azureSpeechRecognitionPage";
+            treeNode2.Text = "Azure Cognitive Services";
+            treeNode3.Name = "amiVoiceSpeechRecognitionPage";
+            treeNode3.Text = "AmiVoice";
+            treeNode4.Name = "speechRecognitionPage";
+            treeNode4.Text = "音声認識";
+            treeNode5.Name = "subtitlesPage";
+            treeNode5.Text = "字幕";
+            treeNode6.Name = "obsPage";
+            treeNode6.Text = "OBS";
+            treeNode7.Name = "googleBasicTranslationPage";
+            treeNode7.Text = "Google Cloud Translation - Basic";
+            treeNode8.Name = "googleAppsScriptTranslationPage";
+            treeNode8.Text = "Google Apps Script";
+            treeNode9.Name = "azureTranslationPage";
+            treeNode9.Text = "Azure Cognitive Services";
+            treeNode10.Name = "deeplTranslationPage";
+            treeNode10.Text = "DeepL";
+            treeNode11.Name = "translationPage";
+            treeNode11.Text = "翻訳";
             this.menuView.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode14,
-            treeNode16,
-            treeNode20});
+            treeNode4,
+            treeNode6,
+            treeNode11});
             this.menuView.Size = new System.Drawing.Size(331, 471);
             this.menuView.TabIndex = 1;
             this.menuView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.menuView_AfterSelect);
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.deeplTranslationPage);
             this.panel1.Controls.Add(this.googleAppsScriptTranslationPage);
             this.panel1.Controls.Add(this.amiVoiceSpeechRecognitionPage);
             this.panel1.Controls.Add(this.googleBasicTranslationPage);
@@ -134,10 +140,26 @@
             this.panel1.Size = new System.Drawing.Size(660, 471);
             this.panel1.TabIndex = 2;
             // 
+            // deeplTranslationPage
+            // 
+            this.deeplTranslationPage.AutoScroll = true;
+            this.deeplTranslationPage.Location = new System.Drawing.Point(250, 371);
+            this.deeplTranslationPage.Name = "deeplTranslationPage";
+            this.deeplTranslationPage.Size = new System.Drawing.Size(243, 53);
+            this.deeplTranslationPage.TabIndex = 13;
+            // 
+            // googleAppsScriptTranslationPage
+            // 
+            this.googleAppsScriptTranslationPage.AutoScroll = true;
+            this.googleAppsScriptTranslationPage.Location = new System.Drawing.Point(176, 339);
+            this.googleAppsScriptTranslationPage.Name = "googleAppsScriptTranslationPage";
+            this.googleAppsScriptTranslationPage.Size = new System.Drawing.Size(364, 66);
+            this.googleAppsScriptTranslationPage.TabIndex = 12;
+            // 
             // amiVoiceSpeechRecognitionPage
             // 
             this.amiVoiceSpeechRecognitionPage.AutoScroll = true;
-            this.amiVoiceSpeechRecognitionPage.Location = new System.Drawing.Point(146, 99);
+            this.amiVoiceSpeechRecognitionPage.Location = new System.Drawing.Point(146, 108);
             this.amiVoiceSpeechRecognitionPage.Name = "amiVoiceSpeechRecognitionPage";
             this.amiVoiceSpeechRecognitionPage.Size = new System.Drawing.Size(379, 72);
             this.amiVoiceSpeechRecognitionPage.TabIndex = 11;
@@ -242,14 +264,6 @@
             this.recognitionResultTextBox.Size = new System.Drawing.Size(995, 52);
             this.recognitionResultTextBox.TabIndex = 5;
             // 
-            // googleAppsScriptTranslationPage
-            // 
-            this.googleAppsScriptTranslationPage.AutoScroll = true;
-            this.googleAppsScriptTranslationPage.Location = new System.Drawing.Point(176, 339);
-            this.googleAppsScriptTranslationPage.Name = "googleAppsScriptTranslationPage";
-            this.googleAppsScriptTranslationPage.Size = new System.Drawing.Size(364, 66);
-            this.googleAppsScriptTranslationPage.TabIndex = 12;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -290,5 +304,6 @@
         private Translation.GoogleBasicTranslationPage googleBasicTranslationPage;
         private SpeechRecognition.AmiVoiceSpeechRecognitionPage amiVoiceSpeechRecognitionPage;
         private Translation.GoogleAppsScriptTranslationPage googleAppsScriptTranslationPage;
+        private Translation.DeepLTranslationPage deeplTranslationPage;
     }
 }

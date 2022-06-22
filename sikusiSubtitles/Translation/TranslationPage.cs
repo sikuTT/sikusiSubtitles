@@ -29,6 +29,8 @@ namespace sikusiSubtitles.Translation {
                     return ServiceType.GoogleBasic;
                 else if (this.googleAppsScriptTranslationRadioButton.Checked)
                     return ServiceType.GoogleAppsScript;
+                else if (this.deepLRadioButton.Checked)
+                    return ServiceType.DeepL;
                 else
                     return ServiceType.None;
             }
@@ -43,6 +45,7 @@ namespace sikusiSubtitles.Translation {
             this.googleBasicTranslationRadioButton.Checked = Properties.Settings.Default.TtranslationService == ServiceType.GoogleBasic.ToString();
             this.googleAppsScriptTranslationRadioButton.Checked = Properties.Settings.Default.TtranslationService == ServiceType.GoogleAppsScript.ToString();
             this.azureTranslationRadioButton.Checked = Properties.Settings.Default.TtranslationService == ServiceType.Azure.ToString();
+            this.deepLRadioButton.Checked = Properties.Settings.Default.TtranslationService == ServiceType.DeepL.ToString();
         }
 
         public override void SaveSettings() {

@@ -514,5 +514,77 @@ namespace sikusiSubtitles.Properties {
                 this["GoogleAppsScriptTranslationTo2Run"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DeepLTranslationKey {
+            get {
+                return ((string)(this["DeepLTranslationKey"]));
+            }
+            set {
+                this["DeepLTranslationKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DeepLTranslationFrom {
+            get {
+                return ((string)(this["DeepLTranslationFrom"]));
+            }
+            set {
+                this["DeepLTranslationFrom"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DeepLTranslationTo1 {
+            get {
+                return ((string)(this["DeepLTranslationTo1"]));
+            }
+            set {
+                this["DeepLTranslationTo1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DeepLTranslationTo2 {
+            get {
+                return ((string)(this["DeepLTranslationTo2"]));
+            }
+            set {
+                this["DeepLTranslationTo2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DeepLTranslationTo1Run {
+            get {
+                return ((bool)(this["DeepLTranslationTo1Run"]));
+            }
+            set {
+                this["DeepLTranslationTo1Run"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DeepLTranslationTo2Run {
+            get {
+                return ((bool)(this["DeepLTranslationTo2Run"]));
+            }
+            set {
+                this["DeepLTranslationTo2Run"] = value;
+            }
+        }
     }
 }

@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DeepL.net" Version="1.2.0" />
     <PackageReference Include="Google.Apis.Translate.v2" Version="1.57.0.875" />
     <PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.22.0" />
     <PackageReference Include="NAudio" Version="2.1.0" />

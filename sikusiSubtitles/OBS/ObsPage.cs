@@ -145,6 +145,7 @@ namespace sikusiSubtitles {
 
         private string CreateSubtitlesText(string key) {
             var subtitlesList = this.SubtitlesList[key];
+            Debug.WriteLine("subtitlesList.Count = " + subtitlesList.Count);
             string text = "";
             foreach (var subtitle in subtitlesList) {
                 text += subtitle.Text;

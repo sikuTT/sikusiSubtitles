@@ -59,6 +59,7 @@
             this.speechRecognitionCheckBox = new System.Windows.Forms.CheckBox();
             this.obsCheckBox = new System.Windows.Forms.CheckBox();
             this.recognitionResultTextBox = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -81,8 +82,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.panel1);
-            this.splitContainer1.Size = new System.Drawing.Size(995, 471);
-            this.splitContainer1.SplitterDistance = 331;
+            this.splitContainer1.Size = new System.Drawing.Size(950, 481);
+            this.splitContainer1.SplitterDistance = 316;
             this.splitContainer1.TabIndex = 2;
             // 
             // menuView
@@ -117,7 +118,7 @@
             treeNode4,
             treeNode6,
             treeNode11});
-            this.menuView.Size = new System.Drawing.Size(331, 471);
+            this.menuView.Size = new System.Drawing.Size(316, 481);
             this.menuView.TabIndex = 1;
             this.menuView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.menuView_AfterSelect);
             // 
@@ -137,7 +138,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(660, 471);
+            this.panel1.Size = new System.Drawing.Size(630, 481);
             this.panel1.TabIndex = 2;
             // 
             // deeplTranslationPage
@@ -257,18 +258,29 @@
             this.recognitionResultTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.recognitionResultTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.recognitionResultTextBox.Location = new System.Drawing.Point(12, 524);
+            this.recognitionResultTextBox.Location = new System.Drawing.Point(12, 534);
             this.recognitionResultTextBox.Multiline = true;
             this.recognitionResultTextBox.Name = "recognitionResultTextBox";
             this.recognitionResultTextBox.ReadOnly = true;
-            this.recognitionResultTextBox.Size = new System.Drawing.Size(995, 52);
+            this.recognitionResultTextBox.Size = new System.Drawing.Size(950, 52);
             this.recognitionResultTextBox.TabIndex = 5;
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(912, 17);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(50, 15);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Ver 0.1.0";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1019, 588);
+            this.ClientSize = new System.Drawing.Size(974, 598);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.recognitionResultTextBox);
             this.Controls.Add(this.obsCheckBox);
             this.Controls.Add(this.speechRecognitionCheckBox);
@@ -305,5 +317,6 @@
         private SpeechRecognition.AmiVoiceSpeechRecognitionPage amiVoiceSpeechRecognitionPage;
         private Translation.GoogleAppsScriptTranslationPage googleAppsScriptTranslationPage;
         private Translation.DeepLTranslationPage deeplTranslationPage;
+        private Label label1;
     }
 }

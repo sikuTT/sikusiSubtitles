@@ -203,15 +203,15 @@ namespace sikusiSubtitles {
                 result = await this.deeplTranslationPage.TranslateAsync(text, this.deeplTranslationPage.From, this.deeplTranslationPage.To.ToArray());
 
             // –|–ó‚Å‚«‚È‚¯‚ê‚Îˆ—‚ğI‚í‚éB
+            // ‚»‚¤‚Å‚È‚¯‚ê‚Î–|–óŒ‹‰Ê‚ğ‰æ–Ê‚É•\¦
             if (result == null)
                 return;
-            else if (result.Error) {
+            else if (result.Error == false) {
                 foreach (var translation in result.Translations) {
                     if (translation.Text != null) {
                         this.AddRecognitionResultText(translation.Text);
                     }
                 }
-                return;
             }
 
             // –|–óŒ‹‰Ê‚ğæ“¾
@@ -262,10 +262,10 @@ namespace sikusiSubtitles {
 
         private void AddRecognitionResultText(string text) {
             if (this.recognitionResultTextBox.InvokeRequired) {
-                Action act = delegate { this.recognitionResultTextBox.Text += "\n" + text; };
+                Action act = delegate { this.recognitionResultTextBox.Text += "\r\n" + text; };
                 this.recognitionResultTextBox.Invoke(act);
             } else {
-                this.recognitionResultTextBox.Text += "\n" + text;
+                this.recognitionResultTextBox.Text += "\r\n" + text;
             }
         }
     }

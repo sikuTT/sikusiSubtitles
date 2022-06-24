@@ -271,9 +271,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(912, 17);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(50, 15);
+            this.label1.Size = new System.Drawing.Size(52, 15);
             this.label1.TabIndex = 6;
-            this.label1.Text = "Ver 0.1.0";
+            this.label1.Text = "Ver. 0.1.1";
             // 
             // Form1
             // 

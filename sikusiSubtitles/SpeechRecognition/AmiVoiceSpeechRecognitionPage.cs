@@ -131,10 +131,14 @@ namespace sikusiSubtitles.SpeechRecognition {
             Listener.Recognized += RecognizedHandler;
 
             // WebSocket 音声認識サーバの初期化
+            var log = this.logs[this.logComboBox.SelectedIndex];
+            var engine = this.engines[this.engineComboBox.SelectedIndex];
+            var codec = engine.Item1;
+            Debug.WriteLine(String.Format("AmiVoice 使用エンジン={0}（{1}）", engine.Item1, engine.Item2));
+            Debug.WriteLine(String.Format("AmiVoice ログ={0}（{1}）", log.Item1, log.Item2));
             var serverURL = "wss://acp-api.amivoice.com/v1/";
-            if (this.logs[this.logComboBox.SelectedIndex].Item1 == "nolog")
+            if (log.Item1 == "nolog")
                 serverURL += "nolog/";
-            var codec = this.engines[this.engineComboBox.SelectedIndex].Item1;
             this.Wrp = com.amivoice.wrp.Wrp.construct();
             this.Wrp.setListener(Listener);
             this.Wrp.setServerURL(serverURL);
@@ -233,16 +237,16 @@ namespace sikusiSubtitles.SpeechRecognition {
         };
         Tuple<string, string>[] engines = {
             new Tuple<string, string>("-a-general-input", "音声入力_汎用"),
-            // new Tuple<string, string>("-a-medgeneral-input, "音声入力_医療"),
-            // new Tuple<string, string>("-a-bizmrreport-input, "音声入力_製薬"),
-            // new Tuple<string, string>("-a-medkarte-input, "音声入力_電子カルテ"),
-            // new Tuple<string, string>("-a-bizinsurance-input, "音声入力_保険"),
-            // new Tuple<string, string>("-a-bizfinance-input, "音声入力_金融"),
-            // new Tuple<string, string>("-a-general, "会話_汎用"),
-            // new Tuple<string, string>("-a-medgeneral, "会話_医療"),
-            // new Tuple<string, string>("-a-bizmrreport, "会話_製薬"),
-            // new Tuple<string, string>("-a-bizfinance, "会話_金融"),
-            // new Tuple<string, string>("-a-bizinsurance, "会話_保険"),
+            // new Tuple<string, string>("-a-medgeneral-input", "音声入力_医療"),
+            // new Tuple<string, string>("-a-bizmrreport-input", "音声入力_製薬"),
+            // new Tuple<string, string>("-a-medkarte-input", "音声入力_電子カルテ"),
+            // new Tuple<string, string>("-a-bizinsurance-input", "音声入力_保険"),
+            // new Tuple<string, string>("-a-bizfinance-input", "音声入力_金融"),
+            new Tuple<string, string>("-a-general", "会話_汎用"),
+            // new Tuple<string, string>("-a-medgeneral", "会話_医療"),
+            // new Tuple<string, string>("-a-bizmrreport", "会話_製薬"),
+            // new Tuple<string, string>("-a-bizfinance", "会話_金融"),
+            // new Tuple<string, string>("-a-bizinsurance", "会話_保険"),
             new Tuple<string, string>("-a-general-en", "英語_汎用"),
             new Tuple<string, string>("-a-general-zh", "中国語_汎用"),
         };

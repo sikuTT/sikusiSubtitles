@@ -70,8 +70,10 @@ namespace sikusiSubtitles.SpeechRecognition {
             if (this.HttpListenerStart(prefix) == false)
                 return false;
 
-            if (this.LunchChrome(prefix) == false)
+            if (this.LunchChrome(prefix) == false) {
+                this.HttpListenerStop();
                 return false;
+            }
 
             return true;
         }
@@ -81,11 +83,7 @@ namespace sikusiSubtitles.SpeechRecognition {
             // UIがフリーズしないように別スレッドでクローズ処理をする。
             Task.Run(() => {
                 try {
-                    if (Listener != null) {
-                        Listener.Stop();
-                        Listener.Close();
-                        Listener = null;
-                    }
+                    this.HttpListenerStop();
 
                     if (ChromeTimer != null) {
                         ChromeTimer.Close();
@@ -124,6 +122,14 @@ namespace sikusiSubtitles.SpeechRecognition {
                 return false;
             }
             return true;
+        }
+
+        private void HttpListenerStop() {
+            if (Listener != null) {
+                Listener.Stop();
+                Listener.Close();
+                Listener = null;
+            }
         }
 
         private void ListenerCallback(IAsyncResult result) {

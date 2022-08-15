@@ -1,3 +1,5 @@
+using sikusiSubtitles.OBS;
+using sikusiSubtitles.OCR;
 using sikusiSubtitles.SpeechRecognition;
 using sikusiSubtitles.Translation;
 using System.Diagnostics;
@@ -6,6 +8,21 @@ namespace sikusiSubtitles {
     public partial class Form1 : Form {
         SettingPage[] pages;
         bool IsRecognitionWorking = false;
+
+        SpeechRecognitionPage speechRecognitionPage = new SpeechRecognitionPage() { Name = "speechRecognitionPage" };
+        ChromeSpeechRecognitionPage chromeSpeechRecognitionPage = new ChromeSpeechRecognitionPage() { Name = "chromeSpeechRecognitionPage" };
+        AzureSpeechRecognitionPage azureSpeechRecognitionPage = new AzureSpeechRecognitionPage() { Name = "azureSpeechRecognitionPage" };
+        AmiVoiceSpeechRecognitionPage amiVoiceSpeechRecognitionPage = new AmiVoiceSpeechRecognitionPage() { Name = "amiVoiceSpeechRecognitionPage" };
+        ObsPage obsPage = new ObsPage() { Name = "obsPage" };
+        SubtitlesPage subtitlesPage = new SubtitlesPage() { Name = "subtitlesPage" };
+        TranslationPage translationPage = new TranslationPage() { Name = "translationPage" };
+        AzureTranslationPage azureTranslationPage = new AzureTranslationPage() { Name = "azureTranslationPage" };
+        GoogleBasicTranslationPage googleBasicTranslationPage = new GoogleBasicTranslationPage() { Name = "googleBasicTranslationPage" };
+        GoogleAppsScriptTranslationPage googleAppsScriptTranslationPage = new GoogleAppsScriptTranslationPage() { Name = "googleAppsScriptTranslationPage" };
+        DeepLTranslationPage deeplTranslationPage = new DeepLTranslationPage() { Name = "deeplTranslationPage" };
+        OcrPage ocrPage = new OcrPage() { Name = "ocrPage" };
+        AzureOcrPage azureOcrPage = new AzureOcrPage() { Name = "azureOcrPage" };
+        GoogleVisionOcrPage googleVisionOcrPage = new GoogleVisionOcrPage() { Name = "googleVisionOcrPage" };
 
         public Form1() {
             InitializeComponent();
@@ -21,7 +38,14 @@ namespace sikusiSubtitles {
                 this.googleBasicTranslationPage,
                 this.googleAppsScriptTranslationPage,
                 this.deeplTranslationPage,
+                this.ocrPage,
+                this.azureOcrPage,
+                this.googleVisionOcrPage,
             };
+
+            foreach (var page in this.pages) {
+                this.panel1.Controls.Add(page);
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e) {
@@ -46,7 +70,6 @@ namespace sikusiSubtitles {
                 return;
 
             foreach (var page in this.pages) {
-                Debug.WriteLine(page.Name);
                 if (e.Node.Name == page.Name) {
                     this.ShowChildPage(page);
                 }

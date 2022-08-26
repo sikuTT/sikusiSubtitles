@@ -42,11 +42,13 @@
             treeNode8,
             treeNode9,
             treeNode10});
-            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Google Cloud Vision AI");
-            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Azure Cognitive Search");
-            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("OCR", new System.Windows.Forms.TreeNode[] {
+            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Tesseract");
+            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Google Cloud Vision AI");
+            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Azure Cognitive Search");
+            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("OCR", new System.Windows.Forms.TreeNode[] {
             treeNode12,
-            treeNode13});
+            treeNode13,
+            treeNode14});
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.menuView = new System.Windows.Forms.TreeView();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -107,17 +109,19 @@
             treeNode10.Text = "DeepL";
             treeNode11.Name = "translationPage";
             treeNode11.Text = "翻訳";
-            treeNode12.Name = "googleVisionOcrPage";
-            treeNode12.Text = "Google Cloud Vision AI";
-            treeNode13.Name = "azureOcrPage";
-            treeNode13.Text = "Azure Cognitive Search";
-            treeNode14.Name = "ocrPage";
-            treeNode14.Text = "OCR";
+            treeNode12.Name = "tesseractOcrPage";
+            treeNode12.Text = "Tesseract";
+            treeNode13.Name = "googleVisionOcrPage";
+            treeNode13.Text = "Google Cloud Vision AI";
+            treeNode14.Name = "azureOcrPage";
+            treeNode14.Text = "Azure Cognitive Search";
+            treeNode15.Name = "ocrPage";
+            treeNode15.Text = "OCR";
             this.menuView.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode4,
             treeNode6,
             treeNode11,
-            treeNode14});
+            treeNode15});
             this.menuView.Size = new System.Drawing.Size(316, 481);
             this.menuView.TabIndex = 1;
             this.menuView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.menuView_AfterSelect);

@@ -21,6 +21,7 @@ namespace sikusiSubtitles {
         GoogleAppsScriptTranslationPage googleAppsScriptTranslationPage = new GoogleAppsScriptTranslationPage() { Name = "googleAppsScriptTranslationPage" };
         DeepLTranslationPage deeplTranslationPage = new DeepLTranslationPage() { Name = "deeplTranslationPage" };
         OcrPage ocrPage = new OcrPage() { Name = "ocrPage" };
+        TesseractOcrPage tesseractOcrPage = new TesseractOcrPage() { Name = "tesseractOcrPage" };
         AzureOcrPage azureOcrPage = new AzureOcrPage() { Name = "azureOcrPage" };
         GoogleVisionOcrPage googleVisionOcrPage = new GoogleVisionOcrPage() { Name = "googleVisionOcrPage" };
 
@@ -39,6 +40,7 @@ namespace sikusiSubtitles {
                 this.googleAppsScriptTranslationPage,
                 this.deeplTranslationPage,
                 this.ocrPage,
+                this.tesseractOcrPage,
                 this.azureOcrPage,
                 this.googleVisionOcrPage,
             };
@@ -46,6 +48,8 @@ namespace sikusiSubtitles {
             foreach (var page in this.pages) {
                 this.panel1.Controls.Add(page);
             }
+
+            this.ocrPage.SetOcrs(new Ocr[] { tesseractOcrPage.Ocr, googleVisionOcrPage.Ocr, azureOcrPage.Ocr });
         }
 
         private void Form1_Load(object sender, EventArgs e) {

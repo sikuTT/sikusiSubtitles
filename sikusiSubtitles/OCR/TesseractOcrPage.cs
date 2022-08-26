@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace sikusiSubtitles.OCR {
-    public partial class AzureOcrPage : SettingPage {
+    public partial class TesseractOcrPage : SettingPage {
         public Ocr Ocr { get { return ocr; } }
 
-        public AzureOcrPage() {
+        public TesseractOcrPage() {
             InitializeComponent();
         }
 
-        readonly AzureOcr ocr = new AzureOcr();
+        readonly TesseractOcr ocr = new TesseractOcr();
     }
 }

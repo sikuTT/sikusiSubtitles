@@ -84,6 +84,9 @@ namespace sikusiSubtitles {
                 var subtitlesText = this.SubtitlesList[target];
                 if (subtitlesText.Count == 0 || (timeout != null && subtitlesText.Last().Recognized == true)) {
                     subtitlesText.Add(new SubtitlesText(text, recognized));
+                    if (subtitlesText.Count > 1) {
+                        Debug.WriteLine("" + subtitlesText.Count);
+                    }
                 } else {
                     subtitlesText.Last().Text = text;
                     subtitlesText.Last().Recognized = recognized;

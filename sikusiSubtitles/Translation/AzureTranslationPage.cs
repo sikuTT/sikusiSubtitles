@@ -12,25 +12,7 @@ using System.Windows.Forms;
 
 namespace sikusiSubtitles.Translation {
     public partial class AzureTranslationPage : SettingPage {
-        public class AzureTranslationResult {
-            public Language? detectedLanguage { get; set; }
-            public List<Translation>? translations { get; set; }
-
-            public class Translation {
-                public string? text { get; set; }
-                public string? to { get; set; }
-            }
-
-            public class Language {
-                public string? language { get; set; }
-                public double? score { get; set; }
-            }
-        }
-
-        private static readonly string endpoint = "https://api.cognitive.microsofttranslator.com/";
-
-
-        HttpClient HttpClient = new HttpClient();
+        public AzureTranslationService service = new AzureTranslationService();
 
         public bool IsTo1 { get { return this.to1CheckBox.Checked; } }
         public bool IsTo2 { get { return this.to2CheckBox.Checked; } }
@@ -40,16 +22,16 @@ namespace sikusiSubtitles.Translation {
         /**
          * 翻訳先の言語一覧
          */
-        public List<string> To {
+        public List<string> ToList {
             get {
-                var to = new List<String>();
+                var toList = new List<String>();
                 if (this.to1CheckBox.Checked && this.to1ComboBox.SelectedIndex != -1) {
-                    to.Add(this.Languages[this.to1ComboBox.SelectedIndex].Item1);
+                    toList.Add(this.Languages[this.to1ComboBox.SelectedIndex].Item1);
                 }
                 if (this.to2CheckBox.Checked && this.to2ComboBox.SelectedIndex != -1) {
-                    to.Add(this.Languages[this.to2ComboBox.SelectedIndex].Item1);
+                    toList.Add(this.Languages[this.to2ComboBox.SelectedIndex].Item1);
                 }
-                return to;
+                return toList;
             }
         }
 
@@ -101,70 +83,10 @@ namespace sikusiSubtitles.Translation {
             Properties.Settings.Default.AzureTranslationTo2Run = this.to2CheckBox.Checked;
         }
 
-        public AzureTranslationPage() {
+        public AzureTranslationPage(Service.ServiceManager serviceManager) {
             InitializeComponent();
+            serviceManager.AddService(this.service);
             Array.Sort(this.Languages, (a, b) => a.Item2.CompareTo(b.Item2));
-        }
-
-        public async Task<TranslationResult> TranslateAsync(string text, string? from, string[] toList) {
-            var result = new TranslationResult();
-            if (toList.Length == 0)
-                return result;
-
-            string route = String.Format("translate?api-version=3.0");
-            if (from != null) {
-                route = route + "&from=" + from;
-            }
-            foreach (var to in toList) {
-                route = route + "&to=" + to;
-            }
-
-            object[] body = new object[] { new { Text = text } };
-            var requestBody = JsonConvert.SerializeObject(body);
-
-            using (var request = new HttpRequestMessage()) {
-                try {
-                    // Build the request.
-                    request.Method = HttpMethod.Post;
-                    request.RequestUri = new Uri(endpoint + route);
-                    request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
-                    request.Headers.Add("Ocp-Apim-Subscription-Key", this.keyTextBox.Text);
-                    request.Headers.Add("Ocp-Apim-Subscription-Region", this.regionTextBox.Text);
-
-                    // Send the request and get response.
-                    HttpResponseMessage response = await this.HttpClient.SendAsync(request).ConfigureAwait(false);
-                    /*
-                                    if (response.StatusCode < 200 || response.StatusCode >= 300) {
-                                        return result;
-                                    }
-                    */
-                    // Read response.
-                    string responseText = await response.Content.ReadAsStringAsync();
-                    AzureTranslationResult[]? azureResults = JsonConvert.DeserializeObject<AzureTranslationResult[]>(responseText);
-
-                    if (azureResults == null)
-                        return result;
-                    foreach (var azureResult in azureResults) {
-                        result.DetectLanguage = azureResult.detectedLanguage?.language;
-
-                        if (azureResult.translations == null)
-                            continue;
-
-                        foreach (var translation in azureResult.translations) {
-                            var t = new TranslationResult.Translation();
-                            t.Text = translation.text != null ? translation.text : "";
-                            t.Language = translation.to;
-                            result.Translations.Add(t);
-                        }
-                    }
-                } catch (Exception ex) {
-                    Debug.WriteLine(ex.Message);
-                    result.Error = true;
-                    result.Translations.Add(new TranslationResult.Translation() { Text = ex.Message });
-                }
-
-                return result;
-            }
         }
 
         private void AzureTranslationPage_Load(object sender, EventArgs e) {

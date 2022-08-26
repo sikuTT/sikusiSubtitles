@@ -6,27 +6,54 @@ using System.Diagnostics;
 
 namespace sikusiSubtitles {
     public partial class Form1 : Form {
+        Service.ServiceManager serviceManager = new Service.ServiceManager();
         SettingPage[] pages;
-        bool IsRecognitionWorking = false;
 
-        SpeechRecognitionPage speechRecognitionPage = new SpeechRecognitionPage() { Name = "speechRecognitionPage" };
-        ChromeSpeechRecognitionPage chromeSpeechRecognitionPage = new ChromeSpeechRecognitionPage() { Name = "chromeSpeechRecognitionPage" };
-        AzureSpeechRecognitionPage azureSpeechRecognitionPage = new AzureSpeechRecognitionPage() { Name = "azureSpeechRecognitionPage" };
-        AmiVoiceSpeechRecognitionPage amiVoiceSpeechRecognitionPage = new AmiVoiceSpeechRecognitionPage() { Name = "amiVoiceSpeechRecognitionPage" };
-        ObsPage obsPage = new ObsPage() { Name = "obsPage" };
-        SubtitlesPage subtitlesPage = new SubtitlesPage() { Name = "subtitlesPage" };
-        TranslationPage translationPage = new TranslationPage() { Name = "translationPage" };
-        AzureTranslationPage azureTranslationPage = new AzureTranslationPage() { Name = "azureTranslationPage" };
-        GoogleBasicTranslationPage googleBasicTranslationPage = new GoogleBasicTranslationPage() { Name = "googleBasicTranslationPage" };
-        GoogleAppsScriptTranslationPage googleAppsScriptTranslationPage = new GoogleAppsScriptTranslationPage() { Name = "googleAppsScriptTranslationPage" };
-        DeepLTranslationPage deeplTranslationPage = new DeepLTranslationPage() { Name = "deeplTranslationPage" };
-        OcrPage ocrPage = new OcrPage() { Name = "ocrPage" };
-        TesseractOcrPage tesseractOcrPage = new TesseractOcrPage() { Name = "tesseractOcrPage" };
-        AzureOcrPage azureOcrPage = new AzureOcrPage() { Name = "azureOcrPage" };
-        GoogleVisionOcrPage googleVisionOcrPage = new GoogleVisionOcrPage() { Name = "googleVisionOcrPage" };
+        // Speech Recognition
+        SpeechRecognitionPage speechRecognitionPage;
+        ChromeSpeechRecognitionPage chromeSpeechRecognitionPage;
+        AzureSpeechRecognitionPage azureSpeechRecognitionPage;
+        AmiVoiceSpeechRecognitionPage amiVoiceSpeechRecognitionPage;
+        ObsPage obsPage;
+        SubtitlesPage subtitlesPage;
+
+        // translation
+        TranslationPage translationPage;
+        AzureTranslationPage azureTranslationPage;
+        GoogleBasicTranslationPage googleBasicTranslationPage;
+        GoogleAppsScriptTranslationPage googleAppsScriptTranslationPage;
+        DeepLTranslationPage deeplTranslationPage;
+
+        // OCR
+        OcrPage ocrPage;
+        TesseractOcrPage tesseractOcrPage;
+        AzureOcrPage azureOcrPage;
+        GoogleVisionOcrPage googleVisionOcrPage;
 
         public Form1() {
             InitializeComponent();
+
+            // Speech Recognition
+            speechRecognitionPage = new SpeechRecognitionPage(serviceManager) { Name = "speechRecognitionPage" };
+            chromeSpeechRecognitionPage = new ChromeSpeechRecognitionPage(serviceManager) { Name = "chromeSpeechRecognitionPage" };
+            azureSpeechRecognitionPage = new AzureSpeechRecognitionPage() { Name = "azureSpeechRecognitionPage" };
+            amiVoiceSpeechRecognitionPage = new AmiVoiceSpeechRecognitionPage() { Name = "amiVoiceSpeechRecognitionPage" };
+            obsPage = new ObsPage() { Name = "obsPage" };
+            subtitlesPage = new SubtitlesPage() { Name = "subtitlesPage" };
+
+            // translation
+            translationPage = new TranslationPage() { Name = "translationPage" };
+            azureTranslationPage = new AzureTranslationPage(serviceManager) { Name = "azureTranslationPage" };
+            googleBasicTranslationPage = new GoogleBasicTranslationPage() { Name = "googleBasicTranslationPage" };
+            googleAppsScriptTranslationPage = new GoogleAppsScriptTranslationPage() { Name = "googleAppsScriptTranslationPage" };
+            deeplTranslationPage = new DeepLTranslationPage() { Name = "deeplTranslationPage" };
+
+            // OCR
+            ocrPage = new OcrPage() { Name = "ocrPage" };
+            tesseractOcrPage = new TesseractOcrPage() { Name = "tesseractOcrPage" };
+            azureOcrPage = new AzureOcrPage() { Name = "azureOcrPage" };
+            googleVisionOcrPage = new GoogleVisionOcrPage() { Name = "googleVisionOcrPage" };
+
             this.pages = new SettingPage[] {
                 this.speechRecognitionPage,
                 this.chromeSpeechRecognitionPage,
@@ -49,7 +76,7 @@ namespace sikusiSubtitles {
                 this.panel1.Controls.Add(page);
             }
 
-            this.ocrPage.SetOcrs(new Ocr[] { tesseractOcrPage.Ocr, googleVisionOcrPage.Ocr, azureOcrPage.Ocr });
+            this.serviceManager.UpdateChildServiceManagers();
         }
 
         private void Form1_Load(object sender, EventArgs e) {
@@ -69,7 +96,6 @@ namespace sikusiSubtitles {
         }
 
         private void menuView_AfterSelect(object sender, TreeViewEventArgs e) {
-            Debug.WriteLine("menuView_AfterSelect: " + (e.Node != null ? e.Node.Name : "null"));
             if (e.Node == null)
                 return;
 
@@ -95,7 +121,7 @@ namespace sikusiSubtitles {
 
             if (this.speechRecognitionCheckBox.Checked) {
                 this.SpeechRecognitionStart();
-            } else if (this.IsRecognitionWorking) {
+            } else {
                 this.SpeechRecognitionStop();
             }
         }
@@ -104,32 +130,25 @@ namespace sikusiSubtitles {
          * 音声認識を開始する
          */
         private void SpeechRecognitionStart() {
+            var recognitionStarted = false;
             if (this.speechRecognitionPage.Mic == null) {
                 MessageBox.Show("マイクを設定してください。");
-                return;
+            } else {
+                var serviceManager = this.serviceManager.GetServiceManager(SpeechRecognitionServiceManager.ServiceName);
+                if (serviceManager != null) {
+                    var service = serviceManager.ActiveService as SpeechRecognitionService;
+                    if (service != null) {
+                        if (service.Start()) {
+                            service.Recognizing += Recognizing;
+                            service.Recognized += Recognized;
+                            recognitionStarted = true;
+                        }
+                    }
+                }
             }
 
-            // 音声認識を開始する
-            switch (this.speechRecognitionPage.Service) {
-                case SpeechRecognitionPage.ServiceType.Chrome:
-                    this.chromeSpeechRecognitionPage.Recognizing += Recognizing;
-                    this.chromeSpeechRecognitionPage.Recognized += Recognized;
-                    this.IsRecognitionWorking = this.chromeSpeechRecognitionPage.SpeechRecognitionStart();
-                    break;
-                case SpeechRecognitionPage.ServiceType.Azure:
-                    this.azureSpeechRecognitionPage.Recognizing += Recognizing;
-                    this.azureSpeechRecognitionPage.Recognized += Recognized;
-                    this.IsRecognitionWorking = this.azureSpeechRecognitionPage.SpeechRecognitionStart(this.speechRecognitionPage.Mic);
-                    break;
-                case SpeechRecognitionPage.ServiceType.AmiVoice:
-                    this.amiVoiceSpeechRecognitionPage.Recognizing += Recognizing;
-                    this.amiVoiceSpeechRecognitionPage.Recognized += Recognized;
-                    this.IsRecognitionWorking = this.amiVoiceSpeechRecognitionPage.SpeechRecognitionStart(this.speechRecognitionPage.Mic);
-                    break;
-            }
-
-            // 音声認識を開始できなかった場合、音声認識ボタンのチェックを外す
-            if (this.IsRecognitionWorking == false) {
+            // 音声認識を開始できなかった場合、音声認識ボタンのチェックを外す。
+            if (recognitionStarted == false) {
                 this.speechRecognitionCheckBox.Checked = false;
             }
         }
@@ -138,71 +157,23 @@ namespace sikusiSubtitles {
          * 音声認識を終了する
          */
         private void SpeechRecognitionStop() {
-            this.IsRecognitionWorking = false;
-            switch (this.speechRecognitionPage.Service) {
-                case SpeechRecognitionPage.ServiceType.Chrome:
-                    this.chromeSpeechRecognitionPage.Recognizing -= Recognizing;
-                    this.chromeSpeechRecognitionPage.Recognized -= Recognized;
-                    this.chromeSpeechRecognitionPage.SpeechRecognitionStop();
-                    break;
-                case SpeechRecognitionPage.ServiceType.Azure:
-                    this.azureSpeechRecognitionPage.Recognizing -= Recognizing;
-                    this.azureSpeechRecognitionPage.Recognized -= Recognized;
-                    this.azureSpeechRecognitionPage.SpeechRecognitionStop();
-                    break;
-                case SpeechRecognitionPage.ServiceType.AmiVoice:
-                    this.amiVoiceSpeechRecognitionPage.Recognizing -= Recognizing;
-                    this.amiVoiceSpeechRecognitionPage.Recognized -= Recognized;
-                    this.amiVoiceSpeechRecognitionPage.SpeechRecognitionStop();
-                    break;
+            var serviceManager = this.serviceManager.GetServiceManager(SpeechRecognitionServiceManager.ServiceName);
+            if (serviceManager != null) {
+                var service = serviceManager.ActiveService as SpeechRecognitionService;
+                if (service != null) {
+                    service.Recognizing -= Recognizing;
+                    service.Recognized -= Recognized;
+                    service.Stop();
+                }
             }
         }
 
         private void Recognizing(Object? sender, SpeechRecognitionEventArgs args) {
             this.SetRecognitionResultText(args.Text);
-
-            if (System.Threading.Thread.CurrentThread.ManagedThreadId == 1)
-                Recognized(args.Text, false);
-            else
-                Invoke(delegate { Recognized(args.Text, false); });
-
-            /*
-            if (this.obsPage.IsConnected) {
-                if (args.Text != "") {
-                    this.obsPage.SetSubtitles(args.Text, this.subtitlesPage.Voice, false);
-                }
-            }
-            */
         }
 
         private void Recognized(Object? sender, SpeechRecognitionEventArgs args) {
             this.SetRecognitionResultText(args.Text);
-
-            if (System.Threading.Thread.CurrentThread.ManagedThreadId == 1)
-                Recognized(args.Text, true);
-            else
-                Invoke(delegate { Recognized(args.Text, true); });
-
-            /*
-            if (this.obsCheckBox.Checked) {
-                if (args.Text != "") {
-                    this.obsPage.SetSubtitles(args.Text, this.subtitlesPage.Voice, true, this.SubtitlesClearInterval, this.SubtitlesAdditionalTime);
-                    if (System.Threading.Thread.CurrentThread.ManagedThreadId == 1)
-                        this.Translate(args.Text);
-                    else
-                        Invoke(delegate { this.Translate(args.Text); });
-                }
-            }
-            */
-        }
-
-        private void Recognized(string text, bool recognized) {
-            if (this.obsCheckBox.Checked && text != "") {
-                this.obsPage.SetSubtitles(text, this.subtitlesPage.Voice, recognized, this.subtitlesPage.ClearInterval, this.subtitlesPage.AdditionalTime);
-                if (recognized) {
-                    this.Translate(text);
-                }
-            }
         }
 
         private void obsCheckBox_CheckedChanged(object sender, EventArgs e) {
@@ -217,7 +188,8 @@ namespace sikusiSubtitles {
             }
         }
 
-        private async void Translate(string text) {
+        private void Translate(string text) {
+/*
             // 翻訳する
             TranslationResult? result = null;
             if (this.translationPage.Service == TranslationPage.ServiceType.Azure)
@@ -266,8 +238,13 @@ namespace sikusiSubtitles {
                     this.obsPage.SetSubtitles(str, target[j], true, this.subtitlesPage.ClearInterval, this.subtitlesPage.AdditionalTime);
                 }
             }
+*/
         }
 
+        /**
+         * チェックボックスボタンの状態に合わせて色を変更する
+         * （デフォルトの色は分かりにくいので）
+         */
         private void SetCheckBoxButtonColor(CheckBox checkbox) {
             if (checkbox.Checked) {
                 checkbox.BackColor = SystemColors.Highlight;

@@ -90,6 +90,7 @@
             0,
             0,
             0});
+            this.portNumericUpDown.ValueChanged += new System.EventHandler(this.portNumericUpDown_ValueChanged);
             // 
             // label2
             // 
@@ -121,6 +122,7 @@
             this.languageComboBox.Name = "languageComboBox";
             this.languageComboBox.Size = new System.Drawing.Size(373, 23);
             this.languageComboBox.TabIndex = 1;
+            this.languageComboBox.SelectedIndexChanged += new System.EventHandler(this.languageComboBox_SelectedIndexChanged);
             // 
             // label5
             // 

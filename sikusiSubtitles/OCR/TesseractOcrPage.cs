@@ -12,7 +12,7 @@ namespace sikusiSubtitles.OCR {
     public partial class TesseractOcrPage : SettingPage {
         public Ocr Ocr { get { return ocr; } }
 
-        public TesseractOcrPage() {
+        public TesseractOcrPage(Service.ServiceManager serviceManager) : base(serviceManager) {
             InitializeComponent();
         }
 

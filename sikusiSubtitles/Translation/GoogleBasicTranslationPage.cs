@@ -37,7 +37,7 @@ namespace sikusiSubtitles.Translation {
             }
         }
 
-        public GoogleBasicTranslationPage() {
+        public GoogleBasicTranslationPage(Service.ServiceManager serviceManager) : base(serviceManager) {
             InitializeComponent();
             Array.Sort(Languages, (a, b) => a.Item2.CompareTo(b.Item2));
         }

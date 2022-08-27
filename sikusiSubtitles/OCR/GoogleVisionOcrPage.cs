@@ -12,7 +12,7 @@ namespace sikusiSubtitles.OCR {
     public partial class GoogleVisionOcrPage : SettingPage {
         public Ocr Ocr { get { return ocr; } }
 
-        public GoogleVisionOcrPage() {
+        public GoogleVisionOcrPage(Service.ServiceManager serviceManager) : base(serviceManager) {
             InitializeComponent();
         }
  

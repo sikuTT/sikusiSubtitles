@@ -19,7 +19,7 @@ namespace sikusiSubtitles.SpeechRecognition {
         public event EventHandler<SpeechRecognitionEventArgs>? Recognizing;
         public event EventHandler<SpeechRecognitionEventArgs>? Recognized;
 
-        public AzureSpeechRecognitionPage() {
+        public AzureSpeechRecognitionPage(Service.ServiceManager serviceManager) : base(serviceManager) {
             InitializeComponent();
         }
 

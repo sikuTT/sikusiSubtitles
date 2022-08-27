@@ -72,7 +72,7 @@ namespace sikusiSubtitles.Translation {
             }
         }
 
-        public DeepLTranslationPage() {
+        public DeepLTranslationPage(Service.ServiceManager serviceManager) : base (serviceManager) {
             InitializeComponent();
         }
 

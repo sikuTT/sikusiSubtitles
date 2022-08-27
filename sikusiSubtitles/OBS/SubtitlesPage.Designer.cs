@@ -55,7 +55,7 @@
             this.groupBox1.Controls.Add(this.voiceTextBox);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(26, 80);
+            this.groupBox1.Location = new System.Drawing.Point(10, 64);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(699, 152);
             this.groupBox1.TabIndex = 7;
@@ -64,22 +64,24 @@
             // 
             // translation2TextBox
             // 
-            this.translation2TextBox.Location = new System.Drawing.Point(119, 111);
+            this.translation2TextBox.Location = new System.Drawing.Point(116, 111);
             this.translation2TextBox.Name = "translation2TextBox";
             this.translation2TextBox.Size = new System.Drawing.Size(353, 23);
             this.translation2TextBox.TabIndex = 8;
+            this.translation2TextBox.TextChanged += new System.EventHandler(this.translation2TextBox_TextChanged);
             // 
             // translation1TextBox
             // 
-            this.translation1TextBox.Location = new System.Drawing.Point(119, 69);
+            this.translation1TextBox.Location = new System.Drawing.Point(116, 69);
             this.translation1TextBox.Name = "translation1TextBox";
             this.translation1TextBox.Size = new System.Drawing.Size(353, 23);
             this.translation1TextBox.TabIndex = 7;
+            this.translation1TextBox.TextChanged += new System.EventHandler(this.translation1TextBox_TextChanged);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(26, 114);
+            this.label4.Location = new System.Drawing.Point(23, 114);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(43, 15);
             this.label4.TabIndex = 5;
@@ -87,15 +89,16 @@
             // 
             // voiceTextBox
             // 
-            this.voiceTextBox.Location = new System.Drawing.Point(119, 27);
+            this.voiceTextBox.Location = new System.Drawing.Point(116, 27);
             this.voiceTextBox.Name = "voiceTextBox";
             this.voiceTextBox.Size = new System.Drawing.Size(353, 23);
             this.voiceTextBox.TabIndex = 2;
+            this.voiceTextBox.TextChanged += new System.EventHandler(this.voiceTextBox_TextChanged);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(26, 72);
+            this.label3.Location = new System.Drawing.Point(23, 72);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(43, 15);
             this.label3.TabIndex = 1;
@@ -104,7 +107,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(26, 30);
+            this.label2.Location = new System.Drawing.Point(23, 30);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(31, 15);
             this.label2.TabIndex = 0;
@@ -114,7 +117,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Yu Gothic UI", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(16, 16);
+            this.label1.Location = new System.Drawing.Point(0, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(147, 37);
             this.label1.TabIndex = 6;
@@ -131,7 +134,7 @@
             this.groupBox2.Controls.Add(this.additionalCheckBox);
             this.groupBox2.Controls.Add(this.clearCheckBox);
             this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Location = new System.Drawing.Point(26, 263);
+            this.groupBox2.Location = new System.Drawing.Point(10, 247);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(699, 191);
             this.groupBox2.TabIndex = 7;
@@ -141,7 +144,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(44, 124);
+            this.label5.Location = new System.Drawing.Point(41, 124);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(239, 15);
             this.label5.TabIndex = 12;
@@ -149,17 +152,18 @@
             // 
             // additionalTrackBar
             // 
-            this.additionalTrackBar.Location = new System.Drawing.Point(26, 143);
+            this.additionalTrackBar.Location = new System.Drawing.Point(23, 143);
             this.additionalTrackBar.Minimum = 1;
             this.additionalTrackBar.Name = "additionalTrackBar";
             this.additionalTrackBar.Size = new System.Drawing.Size(355, 45);
             this.additionalTrackBar.TabIndex = 11;
             this.additionalTrackBar.Value = 1;
+            this.additionalTrackBar.Scroll += new System.EventHandler(this.additionalTrackBar_Scroll);
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(209, 61);
+            this.label7.Location = new System.Drawing.Point(206, 61);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(19, 15);
             this.label7.TabIndex = 10;
@@ -167,7 +171,7 @@
             // 
             // clearIntervalNumericUpDown
             // 
-            this.clearIntervalNumericUpDown.Location = new System.Drawing.Point(119, 59);
+            this.clearIntervalNumericUpDown.Location = new System.Drawing.Point(116, 59);
             this.clearIntervalNumericUpDown.Maximum = new decimal(new int[] {
             10,
             0,
@@ -186,31 +190,34 @@
             0,
             0,
             0});
+            this.clearIntervalNumericUpDown.ValueChanged += new System.EventHandler(this.clearIntervalNumericUpDown_ValueChanged);
             // 
             // additionalCheckBox
             // 
             this.additionalCheckBox.AutoSize = true;
-            this.additionalCheckBox.Location = new System.Drawing.Point(26, 102);
+            this.additionalCheckBox.Location = new System.Drawing.Point(23, 102);
             this.additionalCheckBox.Name = "additionalCheckBox";
             this.additionalCheckBox.Size = new System.Drawing.Size(244, 19);
             this.additionalCheckBox.TabIndex = 8;
             this.additionalCheckBox.Text = "文字が長い場合、消すまでの時間を長くする。";
             this.additionalCheckBox.UseVisualStyleBackColor = true;
+            this.additionalCheckBox.CheckedChanged += new System.EventHandler(this.additionalCheckBox_CheckedChanged);
             // 
             // clearCheckBox
             // 
             this.clearCheckBox.AutoSize = true;
-            this.clearCheckBox.Location = new System.Drawing.Point(26, 32);
+            this.clearCheckBox.Location = new System.Drawing.Point(23, 32);
             this.clearCheckBox.Name = "clearCheckBox";
             this.clearCheckBox.Size = new System.Drawing.Size(139, 19);
             this.clearCheckBox.TabIndex = 8;
             this.clearCheckBox.Text = "一定時間で字幕を消す";
             this.clearCheckBox.UseVisualStyleBackColor = true;
+            this.clearCheckBox.CheckedChanged += new System.EventHandler(this.clearCheckBox_CheckedChanged);
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(26, 61);
+            this.label6.Location = new System.Drawing.Point(23, 61);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(82, 15);
             this.label6.TabIndex = 1;

@@ -8,9 +8,8 @@ namespace sikusiSubtitles.Service {
     public abstract class Service {
         public string ServiceName { get; set; }
         public string Name { get; set; }
-        public int Index { get; set; }
-
         public string DisplayName { get; set; }
+        public int Index { get; set; }
 
         public Service(string serviceName, string name, string displayName, int index) {
             ServiceName = serviceName;

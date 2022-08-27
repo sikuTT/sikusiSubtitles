@@ -18,7 +18,7 @@ namespace sikusiSubtitles.SpeechRecognition {
     public partial class ChromeSpeechRecognitionPage : SettingPage {
         private ChromeSpeechRecognitionService service = new ChromeSpeechRecognitionService();
 
-        public ChromeSpeechRecognitionPage(ServiceManager serviceManager) {
+        public ChromeSpeechRecognitionPage(ServiceManager serviceManager) : base(serviceManager) {
             InitializeComponent();
             serviceManager.AddService(service);
         }

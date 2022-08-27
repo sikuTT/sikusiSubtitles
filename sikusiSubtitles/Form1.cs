@@ -36,23 +36,25 @@ namespace sikusiSubtitles {
             // Speech Recognition
             speechRecognitionPage = new SpeechRecognitionPage(serviceManager) { Name = "speechRecognitionPage" };
             chromeSpeechRecognitionPage = new ChromeSpeechRecognitionPage(serviceManager) { Name = "chromeSpeechRecognitionPage" };
-            azureSpeechRecognitionPage = new AzureSpeechRecognitionPage() { Name = "azureSpeechRecognitionPage" };
-            amiVoiceSpeechRecognitionPage = new AmiVoiceSpeechRecognitionPage() { Name = "amiVoiceSpeechRecognitionPage" };
-            obsPage = new ObsPage() { Name = "obsPage" };
-            subtitlesPage = new SubtitlesPage() { Name = "subtitlesPage" };
+            azureSpeechRecognitionPage = new AzureSpeechRecognitionPage(serviceManager) { Name = "azureSpeechRecognitionPage" };
+            amiVoiceSpeechRecognitionPage = new AmiVoiceSpeechRecognitionPage(serviceManager) { Name = "amiVoiceSpeechRecognitionPage" };
+
+            // OBS
+            obsPage = new ObsPage(serviceManager) { Name = "obsPage" };
+            subtitlesPage = new SubtitlesPage(serviceManager) { Name = "subtitlesPage" };
 
             // translation
-            translationPage = new TranslationPage() { Name = "translationPage" };
+            translationPage = new TranslationPage(serviceManager) { Name = "translationPage" };
             azureTranslationPage = new AzureTranslationPage(serviceManager) { Name = "azureTranslationPage" };
-            googleBasicTranslationPage = new GoogleBasicTranslationPage() { Name = "googleBasicTranslationPage" };
-            googleAppsScriptTranslationPage = new GoogleAppsScriptTranslationPage() { Name = "googleAppsScriptTranslationPage" };
-            deeplTranslationPage = new DeepLTranslationPage() { Name = "deeplTranslationPage" };
+            googleBasicTranslationPage = new GoogleBasicTranslationPage(serviceManager) { Name = "googleBasicTranslationPage" };
+            googleAppsScriptTranslationPage = new GoogleAppsScriptTranslationPage(serviceManager) { Name = "googleAppsScriptTranslationPage" };
+            deeplTranslationPage = new DeepLTranslationPage(serviceManager) { Name = "deeplTranslationPage" };
 
             // OCR
-            ocrPage = new OcrPage() { Name = "ocrPage" };
-            tesseractOcrPage = new TesseractOcrPage() { Name = "tesseractOcrPage" };
-            azureOcrPage = new AzureOcrPage() { Name = "azureOcrPage" };
-            googleVisionOcrPage = new GoogleVisionOcrPage() { Name = "googleVisionOcrPage" };
+            ocrPage = new OcrPage(serviceManager) { Name = "ocrPage" };
+            tesseractOcrPage = new TesseractOcrPage(serviceManager) { Name = "tesseractOcrPage" };
+            azureOcrPage = new AzureOcrPage(serviceManager) { Name = "azureOcrPage" };
+            googleVisionOcrPage = new GoogleVisionOcrPage(serviceManager) { Name = "googleVisionOcrPage" };
 
             this.pages = new SettingPage[] {
                 this.speechRecognitionPage,
@@ -75,8 +77,6 @@ namespace sikusiSubtitles {
             foreach (var page in this.pages) {
                 this.panel1.Controls.Add(page);
             }
-
-            this.serviceManager.UpdateChildServiceManagers();
         }
 
         private void Form1_Load(object sender, EventArgs e) {
@@ -134,15 +134,12 @@ namespace sikusiSubtitles {
             if (this.speechRecognitionPage.Mic == null) {
                 MessageBox.Show("マイクを設定してください。");
             } else {
-                var serviceManager = this.serviceManager.GetServiceManager(SpeechRecognitionServiceManager.ServiceName);
-                if (serviceManager != null) {
-                    var service = serviceManager.ActiveService as SpeechRecognitionService;
-                    if (service != null) {
-                        if (service.Start()) {
-                            service.Recognizing += Recognizing;
-                            service.Recognized += Recognized;
-                            recognitionStarted = true;
-                        }
+                var service = this.serviceManager.GetActiveService<SpeechRecognitionService>();
+                if (service != null) {
+                    if (service.Start()) {
+                        service.Recognizing += Recognizing;
+                        service.Recognized += Recognized;
+                        recognitionStarted = true;
                     }
                 }
             }
@@ -157,14 +154,11 @@ namespace sikusiSubtitles {
          * 音声認識を終了する
          */
         private void SpeechRecognitionStop() {
-            var serviceManager = this.serviceManager.GetServiceManager(SpeechRecognitionServiceManager.ServiceName);
-            if (serviceManager != null) {
-                var service = serviceManager.ActiveService as SpeechRecognitionService;
-                if (service != null) {
-                    service.Recognizing -= Recognizing;
-                    service.Recognized -= Recognized;
-                    service.Stop();
-                }
+            var service = this.serviceManager.GetActiveService<SpeechRecognitionService>();
+            if (service != null) {
+                service.Recognizing -= Recognizing;
+                service.Recognized -= Recognized;
+                service.Stop();
             }
         }
 
@@ -179,12 +173,15 @@ namespace sikusiSubtitles {
         private void obsCheckBox_CheckedChanged(object sender, EventArgs e) {
             this.SetCheckBoxButtonColor(this.obsCheckBox);
 
-            if (this.obsCheckBox.Checked) {
-                if (this.obsPage.Connect() == false) {
-                    this.obsCheckBox.Checked = false;
+            var service = serviceManager.GetService(ObsService.SERVICE_NAME, "OBS") as ObsService;
+            if (service != null) {
+                if (this.obsCheckBox.Checked) {
+                    if (service.Start() == false) {
+                        this.obsCheckBox.Checked = false;
+                    }
+                } else if (service.IsConnected) {
+                    service.Stop();
                 }
-            } else if (this.obsPage.IsConnected) {
-                this.obsPage.Disconnect();
             }
         }
 

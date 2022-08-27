@@ -12,8 +12,8 @@ using System.Windows.Forms;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public partial class SpeechRecognitionPage : SettingPage {
-        /** Service Manager */
-        private SpeechRecognitionServiceManager serviceManager = new SpeechRecognitionServiceManager();
+        /** 音声認識サービス一覧 */
+        private List<SpeechRecognitionService> services = new List<SpeechRecognitionService>();
 
         /** マイク一覧 */
         private MMDeviceCollection micList;
@@ -31,9 +31,7 @@ namespace sikusiSubtitles.SpeechRecognition {
             }
         }
 
-        public SpeechRecognitionPage(Service.ServiceManager serviceManager) {
-            serviceManager.AddServiceManager(this.serviceManager);
-
+        public SpeechRecognitionPage(Service.ServiceManager serviceManager) : base(serviceManager) {
             var enumerator = new MMDeviceEnumerator();
             this.micList = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
 
@@ -44,8 +42,9 @@ namespace sikusiSubtitles.SpeechRecognition {
          * 設定を保存する
          */
         public override void SaveSettings() {
+            var service = this.serviceManager.GetActiveService<SpeechRecognitionService>();
             Properties.Settings.Default.MicID = Mic != null ? Mic.ID : "";
-            Properties.Settings.Default.RecognitionEngine = this.serviceManager.ActiveService != null ? this.serviceManager.ActiveService.DisplayName : "";
+            Properties.Settings.Default.RecognitionEngine = service != null ? service.DisplayName : "";
         }
 
         /**
@@ -67,15 +66,12 @@ namespace sikusiSubtitles.SpeechRecognition {
 
             // 音声認識エンジン
             this.serviceComboBox.SelectedIndex = 0;
-            for (int i = 0; i < this.serviceManager.Services.Count; ++i) {
-                var service = this.serviceManager.Services[i];
-                if (Properties.Settings.Default.RecognitionEngine == service.Name) {
+            for (int i = 0; i < this.services.Count; ++i) {
+                if (Properties.Settings.Default.RecognitionEngine == this.services[i].Name) {
                     this.serviceComboBox.SelectedIndex = i;
                     break;
                 }
             }
-            var currentService = this.serviceManager.Services[this.serviceComboBox.SelectedIndex];
-            this.serviceManager.ActiveService = currentService;
         }
 
         /**
@@ -86,7 +82,8 @@ namespace sikusiSubtitles.SpeechRecognition {
                 this.micComboBox.Items.Add(mic.FriendlyName);
             }
 
-            foreach (var service in this.serviceManager.Services) {
+            this.services = this.serviceManager.GetServices<SpeechRecognitionService>();
+            foreach (var service in this.services) {
                 this.serviceComboBox.Items.Add(service.DisplayName);
             }
         }
@@ -95,8 +92,8 @@ namespace sikusiSubtitles.SpeechRecognition {
          * 使用する音声認識サービスが変更された
          */
         private void serviceComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-            var service = this.serviceManager.Services[this.serviceComboBox.SelectedIndex];
-            this.serviceManager.ActiveService = service;
+            var service = this.services[this.serviceComboBox.SelectedIndex];
+            this.serviceManager.SetActiveService(service);
         }
     }
 }

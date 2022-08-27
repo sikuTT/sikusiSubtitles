@@ -22,7 +22,7 @@ namespace sikusiSubtitles.SpeechRecognition {
         public event EventHandler<SpeechRecognitionEventArgs>? Recognizing;
         public event EventHandler<SpeechRecognitionEventArgs>? Recognized;
 
-        public AmiVoiceSpeechRecognitionPage() {
+        public AmiVoiceSpeechRecognitionPage(Service.ServiceManager serviceManager) : base(serviceManager) {
             InitializeComponent();
         }
 

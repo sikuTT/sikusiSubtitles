@@ -12,7 +12,7 @@ namespace sikusiSubtitles.OCR {
     public partial class AzureOcrPage : SettingPage {
         public Ocr Ocr { get { return ocr; } }
 
-        public AzureOcrPage() {
+        public AzureOcrPage(Service.ServiceManager serviceManager) : base(serviceManager) {
             InitializeComponent();
         }
 

@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.Translation {
     public abstract class TranslationService : Service.Service {
-        public TranslationService(string name, string displayName, int index) : base("translation", name, displayName, index) {
+        public static string SERVICE_NAME = "Translation";
+
+        public event EventHandler<TranslationResult>? Translated;
+
+        public TranslationService(string name, string displayName, int index) : base(SERVICE_NAME, name, displayName, index) {
         }
 
         public override bool Start() {
@@ -16,6 +20,10 @@ namespace sikusiSubtitles.Translation {
         public override void Stop() {
         }
 
-        public abstract Task<TranslationResult> Translate(string text, string? from, string[] toList);
+        public abstract void Translate(string text);
+
+        protected void InvokeTranslated(TranslationResult result) {
+            this.Translated?.Invoke(this, result);
+        }
     }
 }

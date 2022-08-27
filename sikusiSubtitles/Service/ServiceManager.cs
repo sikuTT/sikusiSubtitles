@@ -6,15 +6,11 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.Service {
     public class ServiceManager {
-        public static readonly string ServiceName = "Root";
-        public virtual string Name { get { return ServiceName; } }
         public List<Service> Services { get; set; }
-        public Service? ActiveService { get; set; }
 
-        private Dictionary<string, ServiceManager> ChildServiceManagers = new Dictionary<string, ServiceManager>();
+        private Dictionary<string, Service> activeServices = new Dictionary<string, Service>();
 
         public ServiceManager() {
-            this.ChildServiceManagers = new Dictionary<string, ServiceManager>();
             this.Services = new List<Service>();
         }
 
@@ -22,23 +18,73 @@ namespace sikusiSubtitles.Service {
             this.Services.Add(service);
         }
 
-        public void AddServiceManager(ServiceManager serviceManager) {
-            this.ChildServiceManagers[serviceManager.Name] = serviceManager;
+        public List<Type> GetServices<Type>() where Type : Service {
+            var services = new List<Type>();
+            foreach (var service in this.Services) {
+                var type = service as Type;
+                if (type != null) {
+                    services.Add(type);
+                }
+            }
+            return services;
         }
 
-        public ServiceManager? GetServiceManager(string serviceName) {
-            if (this.ChildServiceManagers.ContainsKey(serviceName)) {
-                return this.ChildServiceManagers[serviceName];
+        public List<Type> GetServices<Type>(string serviceName) where Type : Service {
+            var services = new List<Type>();
+            foreach (var service in this.Services) {
+                if (service.ServiceName == serviceName) {
+                    var type = service as Type;
+                    if (type != null) {
+                        services.Add(type);
+                    }
+                }
+            }
+            return services;
+        }
+
+        public List<Service> GetServices(string serviceName) {
+            return GetServices<Service>(serviceName);
+        }
+
+        public Type? GetService<Type>(string serviceName, string name) where Type : Service {
+            foreach (var service in this.Services) {
+                if (service.ServiceName == serviceName && service.Name == name) {
+                    var type = service as Type;
+                    if (type != null) {
+                        return type;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public Service? GetService(string serviceName, string name) {
+            return GetService<Service>(serviceName, name);
+        }
+
+        public void SetActiveService(Service service) {
+            this.activeServices[service.ServiceName] = service;
+        }
+
+        public void ResetActiveService(string serviceName) {
+            this.activeServices.Remove(serviceName);
+        }
+
+        public Type? GetActiveService<Type>() where Type : Service {
+            foreach(var service in this.activeServices.Values) {
+                var type = service as Type;
+                if (type != null) {
+                    return type;
+                }
+            }
+            return null;
+        }
+
+        public Service? GetActiveService(string serviceName) {
+            if (this.activeServices.ContainsKey(serviceName)) {
+                return this.activeServices[serviceName];
             } else {
                 return null;
-            }
-        }
-
-        public void UpdateChildServiceManagers() {
-            foreach (var service in this.Services) {
-                if (this.ChildServiceManagers.ContainsKey(service.ServiceName)) {
-                    this.ChildServiceManagers[service.ServiceName].AddService(service);
-                }
             }
         }
     }

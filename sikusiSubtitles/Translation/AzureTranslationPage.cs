@@ -14,27 +14,6 @@ namespace sikusiSubtitles.Translation {
     public partial class AzureTranslationPage : SettingPage {
         public AzureTranslationService service = new AzureTranslationService();
 
-        public bool IsTo1 { get { return this.to1CheckBox.Checked; } }
-        public bool IsTo2 { get { return this.to2CheckBox.Checked; } }
-
-        public string? From { get { return this.fromComboBox.SelectedIndex >= 0 ? this.Languages[this.fromComboBox.SelectedIndex].Item1 : null; } }
-
-        /**
-         * 翻訳先の言語一覧
-         */
-        public List<string> ToList {
-            get {
-                var toList = new List<String>();
-                if (this.to1CheckBox.Checked && this.to1ComboBox.SelectedIndex != -1) {
-                    toList.Add(this.Languages[this.to1ComboBox.SelectedIndex].Item1);
-                }
-                if (this.to2CheckBox.Checked && this.to2ComboBox.SelectedIndex != -1) {
-                    toList.Add(this.Languages[this.to2ComboBox.SelectedIndex].Item1);
-                }
-                return toList;
-            }
-        }
-
         /**
          * 設定の読み込み
          */
@@ -83,9 +62,11 @@ namespace sikusiSubtitles.Translation {
             Properties.Settings.Default.AzureTranslationTo2Run = this.to2CheckBox.Checked;
         }
 
-        public AzureTranslationPage(Service.ServiceManager serviceManager) {
-            InitializeComponent();
+        public AzureTranslationPage(Service.ServiceManager serviceManager) : base(serviceManager) {
             serviceManager.AddService(this.service);
+
+            InitializeComponent();
+
             Array.Sort(this.Languages, (a, b) => a.Item2.CompareTo(b.Item2));
         }
 
@@ -95,6 +76,43 @@ namespace sikusiSubtitles.Translation {
                 this.to1ComboBox.Items.Add(lang.Item2);
                 this.to2ComboBox.Items.Add(lang.Item2);
             }
+        }
+
+
+        private void keyTextBox_TextChanged(object sender, EventArgs e) {
+            this.service.Key = this.keyTextBox.Text;
+        }
+
+        private void regionTextBox_TextChanged(object sender, EventArgs e) {
+            this.service.Region = this.regionTextBox.Text;
+        }
+
+        private void fromComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            this.service.From = this.Languages[this.fromComboBox.SelectedIndex].Item1;
+        }
+
+        private void to1CheckBox_CheckedChanged(object sender, EventArgs e) {
+            if (this.to1CheckBox.Checked && this.to1ComboBox.SelectedIndex != -1) {
+                this.service.To1 = this.Languages[this.to1ComboBox.SelectedIndex].Item1;
+            } else {
+                this.service.To1 = null;
+            }
+        }
+
+        private void to1ComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            this.service.To1 = this.Languages[this.to1ComboBox.SelectedIndex].Item1;
+        }
+
+        private void to2CheckBox_CheckedChanged(object sender, EventArgs e) {
+            if (this.to2CheckBox.Checked && this.to2ComboBox.SelectedIndex != -1) {
+                this.service.To2 = this.Languages[this.to2ComboBox.SelectedIndex].Item1;
+            } else {
+                this.service.To2 = null;
+            }
+        }
+
+        private void to2ComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            this.service.To2 = this.Languages[this.to2ComboBox.SelectedIndex].Item1;
         }
 
         // 対応している言語のリスト

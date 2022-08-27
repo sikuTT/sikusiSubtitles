@@ -11,7 +11,15 @@ using System.Windows.Forms;
 
 namespace sikusiSubtitles {
     public partial class SettingPage : UserControl {
-        public SettingPage() {
+        protected Service.ServiceManager serviceManager;
+
+        private SettingPage() {
+            this.serviceManager = new Service.ServiceManager();
+        }
+
+        public SettingPage(Service.ServiceManager serviceManager) {
+            this.serviceManager = serviceManager;
+
             InitializeComponent();
         }
 

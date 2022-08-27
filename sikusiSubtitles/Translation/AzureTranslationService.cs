@@ -23,18 +23,34 @@ namespace sikusiSubtitles.Translation {
     }
 
     public class AzureTranslationService : TranslationService {
-        public string Region { get; set; }
         public string Key { get; set; }
+        public string Region { get; set; }
+        public string? From { get; set; }
+        public string? To1 { get; set; }
+        public string? To2 { get; set; }
 
         private static readonly string endpoint = "https://api.cognitive.microsofttranslator.com/";
         private HttpClient HttpClient = new HttpClient();
 
         public AzureTranslationService() : base("azure", "Azure Cognitive Services", 400) {
-            Region = "";
-            Key = "";
+            this.Key = "";
+            this.Region = "";
         }
 
-        public override async Task<TranslationResult> Translate(string text, string? from, string[] toList) {
+        public override async void Translate(string text) {
+            var from = this.From;
+            var toList = new List<string>();
+            if (this.To1 != null) {
+                toList.Add(this.To1);
+            }
+            if (this.To2 != null) {
+                toList.Add(this.To2);
+            }
+            var result = await Translate(text, from, toList.ToArray());
+            this.InvokeTranslated(result);
+        }
+
+        private async Task<TranslationResult> Translate(string text, string? from, string[] toList) {
             var result = new TranslationResult();
             if (toList.Length == 0)
                 return result;

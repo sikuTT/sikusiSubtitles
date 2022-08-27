@@ -1,0 +1,84 @@
+﻿using OBSWebsocketDotNet;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace sikusiSubtitles.OBS {
+    public class ObsService : Service.Service {
+        public static string SERVICE_NAME = "OBS";
+        public OBSWebsocket ObsSocket { get; }
+        public string IP { get; set; }
+        public int Port { get; set; }
+        public string Password { get; set; }
+
+        public bool IsConnected {
+            get { return ObsSocket.IsConnected; }
+        }
+
+        private Service.ServiceManager serviceManager;
+
+        public ObsService(Service.ServiceManager serviceManager, string name, string displayName, int index) : base(SERVICE_NAME, name, displayName, index) {
+            this.serviceManager = serviceManager;
+            this.ObsSocket = new OBSWebsocket();
+            this.IP = "";
+            this.Port = 0;
+            this.Password = "";
+        }
+
+        public override bool Start() {
+            return Connect();
+        }
+
+        public override void Stop() {
+            Disconnect();
+        }
+
+        private bool Connect() {
+            if (this.IP == "") {
+                MessageBox.Show("接続先を設定してください。");
+                return false;
+            }
+
+            var url = "ws://" + this.IP + ":" + this.Port + "/";
+            try {
+                ObsSocket.Connect(url, this.Password);
+            } catch (AuthFailureException) {
+                // MessageBox.Show("Authentication failed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("認証に失敗しました。");
+                return false;
+            } catch (ErrorResponseException) {
+                // MessageBox.Show("Connect failed : " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("接続できませんでした。接続先を確認してください。");
+                return false;
+            }
+
+            // 字幕開始
+            SubtitlesStart();
+
+            return ObsSocket.IsConnected;
+        }
+
+        private void Disconnect() {
+            // 字幕終了
+            SubtitlesStop();
+
+            ObsSocket.Disconnect();
+        }
+
+        private void SubtitlesStart() {
+            var service = serviceManager.GetService(SERVICE_NAME, "Subtitles");
+            if (service != null) {
+                service.Start();
+            }
+        }
+
+        private void SubtitlesStop() {
+            var service = serviceManager.GetService(SERVICE_NAME, "Subtitles");
+            if (service != null) {
+                service.Stop();
+            }
+        }
+    }
+}

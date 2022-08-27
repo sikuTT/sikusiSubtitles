@@ -24,11 +24,7 @@
         /// </summary>
         private void InitializeComponent() {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.googleAppsScriptTranslationRadioButton = new System.Windows.Forms.RadioButton();
-            this.googleBasicTranslationRadioButton = new System.Windows.Forms.RadioButton();
-            this.deepLRadioButton = new System.Windows.Forms.RadioButton();
-            this.azureTranslationRadioButton = new System.Windows.Forms.RadioButton();
-            this.noTranslationRadioButton = new System.Windows.Forms.RadioButton();
+            this.translationComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -37,75 +33,33 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.googleAppsScriptTranslationRadioButton);
-            this.groupBox1.Controls.Add(this.googleBasicTranslationRadioButton);
-            this.groupBox1.Controls.Add(this.deepLRadioButton);
-            this.groupBox1.Controls.Add(this.azureTranslationRadioButton);
-            this.groupBox1.Controls.Add(this.noTranslationRadioButton);
-            this.groupBox1.Location = new System.Drawing.Point(26, 80);
+            this.groupBox1.Controls.Add(this.translationComboBox);
+            this.groupBox1.Location = new System.Drawing.Point(10, 64);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(574, 165);
+            this.groupBox1.Size = new System.Drawing.Size(595, 78);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "使用するサービス";
             // 
-            // googleAppsScriptTranslationRadioButton
+            // translationComboBox
             // 
-            this.googleAppsScriptTranslationRadioButton.AutoSize = true;
-            this.googleAppsScriptTranslationRadioButton.Location = new System.Drawing.Point(26, 81);
-            this.googleAppsScriptTranslationRadioButton.Name = "googleAppsScriptTranslationRadioButton";
-            this.googleAppsScriptTranslationRadioButton.Size = new System.Drawing.Size(126, 19);
-            this.googleAppsScriptTranslationRadioButton.TabIndex = 4;
-            this.googleAppsScriptTranslationRadioButton.Text = "Google Apps Script";
-            this.googleAppsScriptTranslationRadioButton.UseVisualStyleBackColor = true;
-            // 
-            // googleBasicTranslationRadioButton
-            // 
-            this.googleBasicTranslationRadioButton.AutoSize = true;
-            this.googleBasicTranslationRadioButton.Location = new System.Drawing.Point(26, 56);
-            this.googleBasicTranslationRadioButton.Name = "googleBasicTranslationRadioButton";
-            this.googleBasicTranslationRadioButton.Size = new System.Drawing.Size(195, 19);
-            this.googleBasicTranslationRadioButton.TabIndex = 4;
-            this.googleBasicTranslationRadioButton.Text = "Google Cloud Translation - Basic";
-            this.googleBasicTranslationRadioButton.UseVisualStyleBackColor = true;
-            // 
-            // deepLRadioButton
-            // 
-            this.deepLRadioButton.AutoSize = true;
-            this.deepLRadioButton.Location = new System.Drawing.Point(26, 131);
-            this.deepLRadioButton.Name = "deepLRadioButton";
-            this.deepLRadioButton.Size = new System.Drawing.Size(58, 19);
-            this.deepLRadioButton.TabIndex = 5;
-            this.deepLRadioButton.Text = "DeepL";
-            this.deepLRadioButton.UseVisualStyleBackColor = true;
-            // 
-            // azureTranslationRadioButton
-            // 
-            this.azureTranslationRadioButton.AutoSize = true;
-            this.azureTranslationRadioButton.Location = new System.Drawing.Point(26, 106);
-            this.azureTranslationRadioButton.Name = "azureTranslationRadioButton";
-            this.azureTranslationRadioButton.Size = new System.Drawing.Size(207, 19);
-            this.azureTranslationRadioButton.TabIndex = 5;
-            this.azureTranslationRadioButton.Text = "Azure Cognitive Services Translator";
-            this.azureTranslationRadioButton.UseVisualStyleBackColor = true;
-            // 
-            // noTranslationRadioButton
-            // 
-            this.noTranslationRadioButton.AutoSize = true;
-            this.noTranslationRadioButton.Checked = true;
-            this.noTranslationRadioButton.Location = new System.Drawing.Point(26, 31);
-            this.noTranslationRadioButton.Name = "noTranslationRadioButton";
-            this.noTranslationRadioButton.Size = new System.Drawing.Size(77, 19);
-            this.noTranslationRadioButton.TabIndex = 3;
-            this.noTranslationRadioButton.TabStop = true;
-            this.noTranslationRadioButton.Text = "翻訳しない";
-            this.noTranslationRadioButton.UseVisualStyleBackColor = true;
+            this.translationComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.translationComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.translationComboBox.FormattingEnabled = true;
+            this.translationComboBox.Items.AddRange(new object[] {
+            "翻訳しない"});
+            this.translationComboBox.Location = new System.Drawing.Point(21, 30);
+            this.translationComboBox.Name = "translationComboBox";
+            this.translationComboBox.Size = new System.Drawing.Size(553, 23);
+            this.translationComboBox.TabIndex = 6;
+            this.translationComboBox.SelectedIndexChanged += new System.EventHandler(this.translationComboBox_SelectedIndexChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Yu Gothic UI", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(16, 16);
+            this.label1.Location = new System.Drawing.Point(0, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(71, 37);
             this.label1.TabIndex = 1;
@@ -120,8 +74,8 @@
             this.Controls.Add(this.label1);
             this.Name = "TranslationPage";
             this.Size = new System.Drawing.Size(618, 464);
+            this.Load += new System.EventHandler(this.TranslationPage_Load);
             this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -131,10 +85,6 @@
 
         private GroupBox groupBox1;
         private Label label1;
-        private RadioButton noTranslationRadioButton;
-        private RadioButton azureTranslationRadioButton;
-        private RadioButton googleBasicTranslationRadioButton;
-        private RadioButton googleAppsScriptTranslationRadioButton;
-        private RadioButton deepLRadioButton;
+        private ComboBox translationComboBox;
     }
 }

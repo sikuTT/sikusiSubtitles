@@ -63,6 +63,7 @@
             this.regionTextBox.Name = "regionTextBox";
             this.regionTextBox.Size = new System.Drawing.Size(353, 23);
             this.regionTextBox.TabIndex = 5;
+            this.regionTextBox.TextChanged += new System.EventHandler(this.regionTextBox_TextChanged);
             // 
             // keyTextBox
             // 
@@ -71,6 +72,7 @@
             this.keyTextBox.PasswordChar = '*';
             this.keyTextBox.Size = new System.Drawing.Size(353, 23);
             this.keyTextBox.TabIndex = 3;
+            this.keyTextBox.TextChanged += new System.EventHandler(this.keyTextBox_TextChanged);
             // 
             // label3
             // 
@@ -128,6 +130,7 @@
             this.to2CheckBox.TabIndex = 12;
             this.to2CheckBox.Text = "翻訳する";
             this.to2CheckBox.UseVisualStyleBackColor = true;
+            this.to2CheckBox.CheckedChanged += new System.EventHandler(this.to2CheckBox_CheckedChanged);
             // 
             // to1CheckBox
             // 
@@ -138,6 +141,7 @@
             this.to1CheckBox.TabIndex = 9;
             this.to1CheckBox.Text = "翻訳する";
             this.to1CheckBox.UseVisualStyleBackColor = true;
+            this.to1CheckBox.CheckedChanged += new System.EventHandler(this.to1CheckBox_CheckedChanged);
             // 
             // to2ComboBox
             // 
@@ -147,6 +151,7 @@
             this.to2ComboBox.Name = "to2ComboBox";
             this.to2ComboBox.Size = new System.Drawing.Size(353, 23);
             this.to2ComboBox.TabIndex = 14;
+            this.to2ComboBox.SelectedIndexChanged += new System.EventHandler(this.to2ComboBox_SelectedIndexChanged);
             // 
             // to1ComboBox
             // 
@@ -156,6 +161,7 @@
             this.to1ComboBox.Name = "to1ComboBox";
             this.to1ComboBox.Size = new System.Drawing.Size(353, 23);
             this.to1ComboBox.TabIndex = 11;
+            this.to1ComboBox.SelectedIndexChanged += new System.EventHandler(this.to1ComboBox_SelectedIndexChanged);
             // 
             // fromComboBox
             // 
@@ -165,6 +171,7 @@
             this.fromComboBox.Name = "fromComboBox";
             this.fromComboBox.Size = new System.Drawing.Size(353, 23);
             this.fromComboBox.TabIndex = 8;
+            this.fromComboBox.SelectedIndexChanged += new System.EventHandler(this.fromComboBox_SelectedIndexChanged);
             // 
             // label6
             // 

@@ -2,7 +2,7 @@
 
 namespace sikusiSubtitles.OCR {
     public partial class OcrPage : SettingPage {
-        public OcrPage() {
+        public OcrPage(Service.ServiceManager serviceManager) : base(serviceManager) {
             InitializeComponent();
         }
 

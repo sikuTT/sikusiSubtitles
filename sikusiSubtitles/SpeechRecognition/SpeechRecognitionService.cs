@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public abstract class SpeechRecognitionService : Service.Service {
+        public static string SERVICE_NAME = "SpeechRecognition";
+
         public event EventHandler<SpeechRecognitionEventArgs>? Recognizing;
         public event EventHandler<SpeechRecognitionEventArgs>? Recognized;
 
-        public SpeechRecognitionService(string name, string displayName, int index) : base(SpeechRecognitionServiceManager.ServiceName, name, displayName, index) {
+        public SpeechRecognitionService(string name, string displayName, int index) : base(SERVICE_NAME, name, displayName, index) {
         }
 
         protected void InvokeRecognizing(string text) {

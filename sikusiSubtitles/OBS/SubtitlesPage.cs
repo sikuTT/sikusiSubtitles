@@ -51,6 +51,22 @@ namespace sikusiSubtitles.OBS {
         }
 
         private void clearCheckBox_CheckedChanged(object sender, EventArgs e) {
+            SetClearInterval();
+        }
+
+        private void clearIntervalNumericUpDown_ValueChanged(object sender, EventArgs e) {
+            SetClearInterval();
+        }
+
+        private void additionalCheckBox_CheckedChanged(object sender, EventArgs e) {
+            SetAdditionalTime();
+        }
+
+        private void additionalTrackBar_Scroll(object sender, EventArgs e) {
+            SetAdditionalTime();
+        }
+
+        private void SetClearInterval() {
             if (this.clearCheckBox.Checked) {
                 this.service.ClearInterval = (int)this.clearIntervalNumericUpDown.Value;
             } else {
@@ -58,20 +74,12 @@ namespace sikusiSubtitles.OBS {
             }
         }
 
-        private void clearIntervalNumericUpDown_ValueChanged(object sender, EventArgs e) {
-            this.service.ClearInterval = (int)this.clearIntervalNumericUpDown.Value;
-        }
-
-        private void additionalCheckBox_CheckedChanged(object sender, EventArgs e) {
+        private void SetAdditionalTime() {
             if (this.additionalCheckBox.Checked) {
                 this.service.AdditionalTime = this.additionalTrackBar.Value;
             } else {
                 this.service.AdditionalTime = null;
             }
-        }
-
-        private void additionalTrackBar_Scroll(object sender, EventArgs e) {
-            this.service.AdditionalTime = this.additionalTrackBar.Value;
         }
     }
 }

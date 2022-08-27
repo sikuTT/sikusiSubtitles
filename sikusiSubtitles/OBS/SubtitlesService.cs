@@ -131,7 +131,7 @@ namespace sikusiSubtitles.OBS {
                 if (timeout != null) {
                     double timeoutms = (double)timeout * 1000;
                     if (additionalTimeout != null) {
-                        timeoutms += ((double)additionalTimeout / 100 * 1000) * text.Length;
+                        timeoutms += ((double)additionalTimeout / 80) * text.Length * 1000;
                     }
 
                     // 既存のタイマーがある場合はタイマーを削除

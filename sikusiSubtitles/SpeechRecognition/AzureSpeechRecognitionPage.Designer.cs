@@ -69,6 +69,7 @@
             this.regionTextBox.Name = "regionTextBox";
             this.regionTextBox.Size = new System.Drawing.Size(482, 23);
             this.regionTextBox.TabIndex = 2;
+            this.regionTextBox.TextChanged += new System.EventHandler(this.regionTextBox_TextChanged);
             // 
             // keyTextBox
             // 
@@ -79,6 +80,7 @@
             this.keyTextBox.PasswordChar = '*';
             this.keyTextBox.Size = new System.Drawing.Size(482, 23);
             this.keyTextBox.TabIndex = 1;
+            this.keyTextBox.TextChanged += new System.EventHandler(this.keyTextBox_TextChanged);
             // 
             // label3
             // 
@@ -121,6 +123,7 @@
             this.languageComboBox.Name = "languageComboBox";
             this.languageComboBox.Size = new System.Drawing.Size(482, 23);
             this.languageComboBox.TabIndex = 3;
+            this.languageComboBox.SelectedIndexChanged += new System.EventHandler(this.languageComboBox_SelectedIndexChanged);
             // 
             // label5
             // 

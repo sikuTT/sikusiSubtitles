@@ -97,5 +97,11 @@ namespace sikusiSubtitles.Service {
                 return null;
             }
         }
+
+        public void Update() {
+            this.Services.Sort((a, b) => {
+                return a.Index - b.Index;
+            });
+        }
     }
 }

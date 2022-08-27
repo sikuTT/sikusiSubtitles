@@ -5,7 +5,7 @@ using sikusiSubtitles.Translation;
 using System.Diagnostics;
 
 namespace sikusiSubtitles {
-    public partial class Form1 : Form {
+    public partial class MainForm : Form {
         Service.ServiceManager serviceManager = new Service.ServiceManager();
         SettingPage[] pages;
 
@@ -30,7 +30,7 @@ namespace sikusiSubtitles {
         AzureOcrPage azureOcrPage;
         GoogleVisionOcrPage googleVisionOcrPage;
 
-        public Form1() {
+        public MainForm() {
             InitializeComponent();
 
             // Speech Recognition
@@ -77,6 +77,8 @@ namespace sikusiSubtitles {
             foreach (var page in this.pages) {
                 this.panel1.Controls.Add(page);
             }
+
+            this.serviceManager.Update();
         }
 
         private void Form1_Load(object sender, EventArgs e) {

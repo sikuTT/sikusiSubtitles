@@ -108,7 +108,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.serviceComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.serviceComboBox.FormattingEnabled = true;
-            this.serviceComboBox.Location = new System.Drawing.Point(74, 22);
+            this.serviceComboBox.Location = new System.Drawing.Point(74, 25);
             this.serviceComboBox.Name = "serviceComboBox";
             this.serviceComboBox.Size = new System.Drawing.Size(607, 23);
             this.serviceComboBox.TabIndex = 2;
@@ -117,7 +117,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(26, 25);
+            this.label3.Location = new System.Drawing.Point(26, 28);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(42, 15);
             this.label3.TabIndex = 5;

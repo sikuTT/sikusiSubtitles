@@ -20,7 +20,7 @@ namespace sikusiSubtitles.SpeechRecognition {
         public string? Engine { get; set; }
         public bool? SaveLog { get; set; }
 
-        public AmiVoiceSpeechRecognitionServie(ServiceManager serviceManager) : base(serviceManager, "AmiVoice", "AmiVoice", 200) {
+        public AmiVoiceSpeechRecognitionServie(ServiceManager serviceManager) : base(serviceManager, "AmiVoice", "AmiVoice", 300) {
         }
 
         public override bool Start() {

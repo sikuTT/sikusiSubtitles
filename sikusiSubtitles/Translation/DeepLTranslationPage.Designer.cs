@@ -87,7 +87,7 @@
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Location = new System.Drawing.Point(10, 159);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(572, 232);
+            this.groupBox2.Size = new System.Drawing.Size(572, 167);
             this.groupBox2.TabIndex = 21;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "翻訳";
@@ -95,7 +95,7 @@
             // to2CheckBox
             // 
             this.to2CheckBox.AutoSize = true;
-            this.to2CheckBox.Location = new System.Drawing.Point(17, 147);
+            this.to2CheckBox.Location = new System.Drawing.Point(17, 102);
             this.to2CheckBox.Name = "to2CheckBox";
             this.to2CheckBox.Size = new System.Drawing.Size(69, 19);
             this.to2CheckBox.TabIndex = 5;
@@ -106,7 +106,7 @@
             // to1CheckBox
             // 
             this.to1CheckBox.AutoSize = true;
-            this.to1CheckBox.Location = new System.Drawing.Point(17, 78);
+            this.to1CheckBox.Location = new System.Drawing.Point(17, 33);
             this.to1CheckBox.Name = "to1CheckBox";
             this.to1CheckBox.Size = new System.Drawing.Size(69, 19);
             this.to1CheckBox.TabIndex = 3;
@@ -120,7 +120,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.to2ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.to2ComboBox.FormattingEnabled = true;
-            this.to2ComboBox.Location = new System.Drawing.Point(97, 170);
+            this.to2ComboBox.Location = new System.Drawing.Point(97, 125);
             this.to2ComboBox.Name = "to2ComboBox";
             this.to2ComboBox.Size = new System.Drawing.Size(458, 23);
             this.to2ComboBox.TabIndex = 6;
@@ -132,7 +132,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.to1ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.to1ComboBox.FormattingEnabled = true;
-            this.to1ComboBox.Location = new System.Drawing.Point(97, 104);
+            this.to1ComboBox.Location = new System.Drawing.Point(97, 59);
             this.to1ComboBox.Name = "to1ComboBox";
             this.to1ComboBox.Size = new System.Drawing.Size(458, 23);
             this.to1ComboBox.TabIndex = 4;
@@ -141,7 +141,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(17, 173);
+            this.label6.Location = new System.Drawing.Point(17, 128);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(55, 15);
             this.label6.TabIndex = 13;
@@ -153,9 +153,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.fromComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.fromComboBox.FormattingEnabled = true;
-            this.fromComboBox.Location = new System.Drawing.Point(97, 32);
+            this.fromComboBox.Location = new System.Drawing.Point(497, 16);
             this.fromComboBox.Name = "fromComboBox";
-            this.fromComboBox.Size = new System.Drawing.Size(458, 23);
+            this.fromComboBox.Size = new System.Drawing.Size(72, 23);
             this.fromComboBox.TabIndex = 2;
             this.fromComboBox.Visible = false;
             this.fromComboBox.SelectedIndexChanged += new System.EventHandler(this.fromComboBox_SelectedIndexChanged);
@@ -163,7 +163,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(17, 35);
+            this.label5.Location = new System.Drawing.Point(437, 19);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(43, 15);
             this.label5.TabIndex = 12;
@@ -173,7 +173,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(17, 107);
+            this.label4.Location = new System.Drawing.Point(17, 62);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(55, 15);
             this.label4.TabIndex = 10;
@@ -198,7 +198,7 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.label1);
             this.Name = "DeepLTranslationPage";
-            this.Size = new System.Drawing.Size(585, 413);
+            this.Size = new System.Drawing.Size(585, 347);
             this.Load += new System.EventHandler(this.DeepLTranslationPage_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

@@ -22,8 +22,9 @@ namespace sikusiSubtitles.OBS {
         private ObsService? obsService;
         private SpeechRecognitionService? speechRecognitionService;
         private TranslationService? translationService;
-        private Dictionary<string, List<System.Timers.Timer>> TimerDic = new Dictionary<string, List<System.Timers.Timer>>();
-        private Dictionary<string, List<SubtitlesText>> SubtitlesList = new Dictionary<string, List<SubtitlesText>>();
+        private Dictionary<string, string> recognizedText = new Dictionary<string, string>();
+        private Dictionary<string, string> recognizingText = new Dictionary<string, string>();
+        private Dictionary<string, System.Timers.Timer> clearTimer = new Dictionary<string, System.Timers.Timer>();
 
         public string VoiceTarget { get; set; }
         public string Translation1Target { get; set; }
@@ -66,7 +67,7 @@ namespace sikusiSubtitles.OBS {
 
             this.translationService = this.serviceManager.GetActiveService<TranslationService>();
             if (this.translationService != null) {
-                this.translationService.Translated += Translated;
+                this.translationService.Translated -= Translated;
             }
         }
 
@@ -111,35 +112,45 @@ namespace sikusiSubtitles.OBS {
             }
 
             try {
-                // 字幕を追加もしくは既存字幕を更新
-                if (this.SubtitlesList.ContainsKey(target) == false) {
-                    this.SubtitlesList.Add(target, new List<SubtitlesText>());
+                if (this.recognizedText.ContainsKey(target) == false) {
+                    this.recognizedText.Add(target, "");
                 }
-                var subtitlesText = this.SubtitlesList[target];
-                if (subtitlesText.Count == 0 || (timeout != null && subtitlesText.Last().Recognized == true)) {
-                    subtitlesText.Add(new SubtitlesText(text, recognized));
+                if (this.recognizingText.ContainsKey(target) == false) {
+                    this.recognizingText.Add(target, "");
+                }
+
+                // 字幕を追加もしくは既存字幕を更新
+                if (recognized) {
+                    this.recognizedText[target] = text;
+                    this.recognizingText[target] = "";
                 } else {
-                    subtitlesText.Last().Text = text;
-                    subtitlesText.Last().Recognized = recognized;
+                    this.recognizingText[target] = text;
                 }
 
                 // 字幕を表示
-                this.UpdateGDIPlusText(target);
+                this.UpdateGDIPlusText(target, CreateSubtitlesText(target));
 
                 // 字幕削除のタイマーを作成する。
-                if (timeout != null && recognized) {
+                if (timeout != null) {
                     double timeoutms = (double)timeout * 1000;
                     if (additionalTimeout != null) {
                         timeoutms += ((double)additionalTimeout / 100 * 1000) * text.Length;
                     }
+
+                    // 既存のタイマーがある場合はタイマーを削除
+                    // （タイマーで字幕が消える前に次の字幕が設定された場合、前の字幕は置き換えられたのでタイマーも不要になる）
+                    if (clearTimer.ContainsKey(target)) {
+                        var oldTimer = clearTimer[target];
+                        oldTimer.Close();
+                        clearTimer.Remove(target);
+                    }
+
+                    // 字幕自動クリア用のタイマーを作成する
                     var timer = new System.Timers.Timer(timeoutms);
                     timer.AutoReset = false;
-                    timer.Elapsed += UpdateSubtitlesTimer;
+                    timer.Elapsed += ClearSubtitles;
                     timer.Start();
-                    if (this.TimerDic.ContainsKey(target) == false) {
-                        this.TimerDic.Add(target, new List<System.Timers.Timer>());
-                    }
-                    TimerDic[target].Add(timer);
+                    this.clearTimer.Add(target, timer);
                 }
             } catch (Exception ex) {
                 Debug.WriteLine(ex.Message);
@@ -153,14 +164,13 @@ namespace sikusiSubtitles.OBS {
             }
         }
 
-        private void UpdateGDIPlusText(string target) {
+        private void UpdateGDIPlusText(string target, string text) {
             if (this.obsService == null) {
                 return;
             }
             try {
                 var obsSocket = this.obsService.ObsSocket;
                 if (obsService.IsConnected) {
-                    string text = this.CreateSubtitlesText(target);
                     var prop = obsSocket.GetTextGDIPlusProperties(target);
                     prop.Text = text;
                     obsSocket.SetTextGDIPlusProperties(prop);
@@ -170,24 +180,21 @@ namespace sikusiSubtitles.OBS {
             }
         }
 
-        private string CreateSubtitlesText(string key) {
-            string text = "";
-            foreach (var subtitle in this.SubtitlesList[key]) {
-                text += subtitle.Text;
+        private string CreateSubtitlesText(string target) {
+            string displayText = this.recognizedText[target];
+            if (this.recognizingText[target].Length > 0) {
+                displayText += "  ( " + this.recognizingText[target] + " )";
             }
-            return text;
+            return displayText;
         }
 
-        private void UpdateSubtitlesTimer(Object? sender, System.Timers.ElapsedEventArgs args) {
+        private void ClearSubtitles(Object? sender, System.Timers.ElapsedEventArgs args) {
             try {
-                var keys = this.TimerDic.Keys;
-                foreach (var key in keys) {
-                    var timer = this.TimerDic[key].Find(timer => timer == sender);
-                    if (timer != null) {
-                        this.SubtitlesList[key].Remove(this.SubtitlesList[key][0]);
-                        this.TimerDic[key].Remove(timer);
-                        this.UpdateGDIPlusText(key);
-                        return;
+                foreach (var dic in clearTimer) {
+                    if (dic.Value == sender) {
+                        this.recognizedText[dic.Key] = "";
+                        this.UpdateGDIPlusText(dic.Key, CreateSubtitlesText(dic.Key));
+                        break;
                     }
                 }
             } catch (Exception ex) {

@@ -11,26 +11,7 @@ using System.Windows.Forms;
 
 namespace sikusiSubtitles.Translation {
     public partial class DeepLTranslationPage : SettingPage {
-        public bool IsTo1 { get { return this.to1CheckBox.Checked; } }
-        public bool IsTo2 { get { return this.to2CheckBox.Checked; } }
-
-        public string? From { get { return this.fromComboBox.SelectedIndex >= 0 ? this.Languages[this.fromComboBox.SelectedIndex].Item1 : null; } }
-
-        /**
-         * 翻訳先の言語一覧
-         */
-        public List<string> To {
-            get {
-                var to = new List<String>();
-                if (this.to1CheckBox.Checked && this.to1ComboBox.SelectedIndex != -1) {
-                    to.Add(this.Languages[this.to1ComboBox.SelectedIndex].Item1);
-                }
-                if (this.to2CheckBox.Checked && this.to2ComboBox.SelectedIndex != -1) {
-                    to.Add(this.Languages[this.to2ComboBox.SelectedIndex].Item1);
-                }
-                return to;
-            }
-        }
+        private DeepLTranslationService service;
 
         public override void LoadSettings() {
             this.keyTextBox.Text = this.Decrypt(Properties.Settings.Default.DeepLTranslationKey);
@@ -73,29 +54,57 @@ namespace sikusiSubtitles.Translation {
         }
 
         public DeepLTranslationPage(Service.ServiceManager serviceManager) : base (serviceManager) {
+            this.service = new DeepLTranslationService(serviceManager);
+
             InitializeComponent();
         }
 
-        public async Task<TranslationResult> TranslateAsync(string text, string? from, string[] toList) {
-            var authKey = this.keyTextBox.Text;
-            var translator = new Translator(authKey);
-
-            var result = new TranslationResult();
-
-            foreach (var to in toList) {
-                var translatedText = await translator.TranslateTextAsync(text, from, to);
-                Console.WriteLine(translatedText);
-                result.Translations.Add(new TranslationResult.Translation() { Text = translatedText.Text });
-            }
-
-            return result;
-        }
 
         private void DeepLTranslationPage_Load(object sender, EventArgs e) {
             foreach (var lang in Languages) {
                 this.fromComboBox.Items.Add(lang.Item2);
                 this.to1ComboBox.Items.Add(lang.Item2);
                 this.to2ComboBox.Items.Add(lang.Item2);
+            }
+        }
+
+        private void keyTextBox_TextChanged(object sender, EventArgs e) {
+            this.service.Key = keyTextBox.Text;
+        }
+
+        private void fromComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            this.service.From = this.Languages[fromComboBox.SelectedIndex].Item1;
+        }
+
+        private void to1CheckBox_CheckedChanged(object sender, EventArgs e) {
+            SetTo1();
+        }
+
+        private void to1ComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            SetTo1();
+        }
+
+        private void to2CheckBox_CheckedChanged(object sender, EventArgs e) {
+            SetTo2();
+        }
+
+        private void to2ComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            SetTo2();
+        }
+
+        private void SetTo1() {
+            if (to1CheckBox.Checked && to1ComboBox.SelectedIndex != -1) {
+                this.service.To1 = this.Languages[to1ComboBox.SelectedIndex].Item1;
+            } else {
+                this.service.To1 = null;
+            }
+        }
+
+        private void SetTo2() {
+            if (to2CheckBox.Checked && to2ComboBox.SelectedIndex != -1) {
+                this.service.To2 = this.Languages[to2ComboBox.SelectedIndex].Item1;
+            } else {
+                this.service.To2 = null;
             }
         }
 

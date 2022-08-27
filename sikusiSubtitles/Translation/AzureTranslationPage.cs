@@ -92,6 +92,21 @@ namespace sikusiSubtitles.Translation {
         }
 
         private void to1CheckBox_CheckedChanged(object sender, EventArgs e) {
+            SetTo1();
+        }
+
+        private void to1ComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            SetTo1();
+        }
+
+        private void to2CheckBox_CheckedChanged(object sender, EventArgs e) {
+            SetTo2();
+        }
+
+        private void to2ComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            SetTo2();
+        }
+        private void SetTo1() {
             if (this.to1CheckBox.Checked && this.to1ComboBox.SelectedIndex != -1) {
                 this.service.To1 = this.Languages[this.to1ComboBox.SelectedIndex].Item1;
             } else {
@@ -99,20 +114,12 @@ namespace sikusiSubtitles.Translation {
             }
         }
 
-        private void to1ComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-            this.service.To1 = this.Languages[this.to1ComboBox.SelectedIndex].Item1;
-        }
-
-        private void to2CheckBox_CheckedChanged(object sender, EventArgs e) {
+        private void SetTo2() {
             if (this.to2CheckBox.Checked && this.to2ComboBox.SelectedIndex != -1) {
                 this.service.To2 = this.Languages[this.to2ComboBox.SelectedIndex].Item1;
             } else {
                 this.service.To2 = null;
             }
-        }
-
-        private void to2ComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-            this.service.To2 = this.Languages[this.to2ComboBox.SelectedIndex].Item1;
         }
 
         // 対応している言語のリスト

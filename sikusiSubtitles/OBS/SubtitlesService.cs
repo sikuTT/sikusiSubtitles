@@ -173,7 +173,7 @@ namespace sikusiSubtitles.OBS {
                     obsSocket.SetTextGDIPlusProperties(prop);
                 }
             } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine("SubtitlesService.UpdateGDIPlusText: " + ex.Message);
             }
         }
 

@@ -8,21 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace sikusiSubtitles.Translation {
-    public class AzureTranslationResult {
-        public Language? detectedLanguage { get; set; }
-        public List<Translation>? translations { get; set; }
-
-        public class Translation {
-            public string? text { get; set; }
-            public string? to { get; set; }
-        }
-
-        public class Language {
-            public string? language { get; set; }
-            public double? score { get; set; }
-        }
-    }
-
     public class AzureTranslationService : TranslationService {
         public string Key { get; set; }
         public string Region { get; set; }
@@ -33,7 +18,7 @@ namespace sikusiSubtitles.Translation {
         private static readonly string endpoint = "https://api.cognitive.microsofttranslator.com/";
         private HttpClient HttpClient = new HttpClient();
 
-        public AzureTranslationService(ServiceManager serviceManager) : base(serviceManager, "Azure", "Azure Cognitive Services", 400) {
+        public AzureTranslationService(ServiceManager serviceManager) : base(serviceManager, "Azure", "Azure Cognitive Services", 300) {
             this.Key = "";
             this.Region = "";
         }
@@ -41,17 +26,13 @@ namespace sikusiSubtitles.Translation {
         public override async void Translate(string text) {
             var from = this.From;
             var toList = new List<string>();
-            if (this.To1 != null) {
-                toList.Add(this.To1);
-            }
-            if (this.To2 != null) {
-                toList.Add(this.To2);
-            }
-            var result = await Translate(text, from, toList.ToArray());
+            if (this.To1 != null) toList.Add(this.To1);
+            if (this.To2 != null) toList.Add(this.To2);
+            var result = await TranslateAsync(text, from, toList.ToArray());
             this.InvokeTranslated(result);
         }
 
-        private async Task<TranslationResult> Translate(string text, string? from, string[] toList) {
+        private async Task<TranslationResult> TranslateAsync(string text, string? from, string[] toList) {
             var result = new TranslationResult();
             if (toList.Length == 0)
                 return result;
@@ -93,9 +74,11 @@ namespace sikusiSubtitles.Translation {
                             continue;
 
                         foreach (var translation in azureResult.translations) {
-                            var t = new TranslationResult.Translation();
-                            t.Text = translation.text != null ? translation.text : "";
-                            t.Language = translation.to;
+                            Debug.WriteLine("AzureTranslationService: " + translation.text);
+                            var t = new TranslationResult.Translation() {
+                                Text = translation.text ?? "",
+                                Language = translation.to
+                            };
                             result.Translations.Add(t);
                         }
                     }
@@ -107,6 +90,21 @@ namespace sikusiSubtitles.Translation {
 
                 return result;
             }
+        }
+    }
+
+    public class AzureTranslationResult {
+        public Language? detectedLanguage { get; set; }
+        public List<Translation>? translations { get; set; }
+
+        public class Translation {
+            public string? text { get; set; }
+            public string? to { get; set; }
+        }
+
+        public class Language {
+            public string? language { get; set; }
+            public double? score { get; set; }
         }
     }
 }

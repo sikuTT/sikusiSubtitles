@@ -46,20 +46,23 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.keyTextBox);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(26, 80);
+            this.groupBox1.Location = new System.Drawing.Point(10, 64);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(564, 68);
+            this.groupBox1.Size = new System.Drawing.Size(597, 68);
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "認証情報";
             // 
             // keyTextBox
             // 
-            this.keyTextBox.Location = new System.Drawing.Point(119, 27);
+            this.keyTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.keyTextBox.Location = new System.Drawing.Point(105, 27);
             this.keyTextBox.Name = "keyTextBox";
             this.keyTextBox.PasswordChar = '*';
-            this.keyTextBox.Size = new System.Drawing.Size(353, 23);
-            this.keyTextBox.TabIndex = 3;
+            this.keyTextBox.Size = new System.Drawing.Size(474, 23);
+            this.keyTextBox.TabIndex = 1;
+            this.keyTextBox.TextChanged += new System.EventHandler(this.keyTextBox_TextChanged);
             // 
             // label2
             // 
@@ -74,7 +77,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Yu Gothic UI", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(16, 16);
+            this.label1.Location = new System.Drawing.Point(0, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(491, 37);
             this.label1.TabIndex = 10;
@@ -90,9 +93,9 @@
             this.groupBox2.Controls.Add(this.to1ComboBox);
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Location = new System.Drawing.Point(26, 175);
+            this.groupBox2.Location = new System.Drawing.Point(10, 159);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(564, 172);
+            this.groupBox2.Size = new System.Drawing.Size(597, 169);
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "翻訳";
@@ -100,45 +103,53 @@
             // to2CheckBox
             // 
             this.to2CheckBox.AutoSize = true;
-            this.to2CheckBox.Location = new System.Drawing.Point(26, 107);
+            this.to2CheckBox.Location = new System.Drawing.Point(26, 108);
             this.to2CheckBox.Name = "to2CheckBox";
             this.to2CheckBox.Size = new System.Drawing.Size(69, 19);
-            this.to2CheckBox.TabIndex = 12;
+            this.to2CheckBox.TabIndex = 5;
             this.to2CheckBox.Text = "翻訳する";
             this.to2CheckBox.UseVisualStyleBackColor = true;
+            this.to2CheckBox.CheckedChanged += new System.EventHandler(this.to2CheckBox_CheckedChanged);
             // 
             // to1CheckBox
             // 
             this.to1CheckBox.AutoSize = true;
-            this.to1CheckBox.Location = new System.Drawing.Point(26, 31);
+            this.to1CheckBox.Location = new System.Drawing.Point(26, 32);
             this.to1CheckBox.Name = "to1CheckBox";
             this.to1CheckBox.Size = new System.Drawing.Size(69, 19);
-            this.to1CheckBox.TabIndex = 9;
+            this.to1CheckBox.TabIndex = 3;
             this.to1CheckBox.Text = "翻訳する";
             this.to1CheckBox.UseVisualStyleBackColor = true;
+            this.to1CheckBox.CheckedChanged += new System.EventHandler(this.to1CheckBox_CheckedChanged);
             // 
             // to2ComboBox
             // 
+            this.to2ComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.to2ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.to2ComboBox.FormattingEnabled = true;
-            this.to2ComboBox.Location = new System.Drawing.Point(119, 130);
+            this.to2ComboBox.Location = new System.Drawing.Point(105, 131);
             this.to2ComboBox.Name = "to2ComboBox";
-            this.to2ComboBox.Size = new System.Drawing.Size(353, 23);
-            this.to2ComboBox.TabIndex = 14;
+            this.to2ComboBox.Size = new System.Drawing.Size(474, 23);
+            this.to2ComboBox.TabIndex = 6;
+            this.to2ComboBox.SelectedIndexChanged += new System.EventHandler(this.to2ComboBox_SelectedIndexChanged);
             // 
             // to1ComboBox
             // 
+            this.to1ComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.to1ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.to1ComboBox.FormattingEnabled = true;
-            this.to1ComboBox.Location = new System.Drawing.Point(119, 57);
+            this.to1ComboBox.Location = new System.Drawing.Point(105, 58);
             this.to1ComboBox.Name = "to1ComboBox";
-            this.to1ComboBox.Size = new System.Drawing.Size(353, 23);
-            this.to1ComboBox.TabIndex = 11;
+            this.to1ComboBox.Size = new System.Drawing.Size(474, 23);
+            this.to1ComboBox.TabIndex = 4;
+            this.to1ComboBox.SelectedIndexChanged += new System.EventHandler(this.to1ComboBox_SelectedIndexChanged);
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(26, 133);
+            this.label6.Location = new System.Drawing.Point(26, 134);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(55, 15);
             this.label6.TabIndex = 13;
@@ -147,7 +158,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(26, 60);
+            this.label4.Location = new System.Drawing.Point(26, 61);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(55, 15);
             this.label4.TabIndex = 10;
@@ -155,18 +166,20 @@
             // 
             // fromComboBox
             // 
+            this.fromComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.fromComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.fromComboBox.FormattingEnabled = true;
-            this.fromComboBox.Location = new System.Drawing.Point(145, 373);
+            this.fromComboBox.Location = new System.Drawing.Point(115, 350);
             this.fromComboBox.Name = "fromComboBox";
-            this.fromComboBox.Size = new System.Drawing.Size(353, 23);
-            this.fromComboBox.TabIndex = 8;
+            this.fromComboBox.Size = new System.Drawing.Size(474, 23);
+            this.fromComboBox.TabIndex = 2;
             this.fromComboBox.Visible = false;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(52, 376);
+            this.label5.Location = new System.Drawing.Point(36, 353);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(43, 15);
             this.label5.TabIndex = 7;
@@ -184,7 +197,7 @@
             this.Controls.Add(this.fromComboBox);
             this.Controls.Add(this.label5);
             this.Name = "GoogleBasicTranslationPage";
-            this.Size = new System.Drawing.Size(610, 529);
+            this.Size = new System.Drawing.Size(610, 456);
             this.Load += new System.EventHandler(this.GoogleTranslationPage_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

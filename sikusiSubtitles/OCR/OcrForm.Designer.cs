@@ -23,49 +23,55 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            this.originalTextBox = new System.Windows.Forms.TextBox();
+            this.orcTextBox = new System.Windows.Forms.TextBox();
             this.translatedTextBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.translateButton = new System.Windows.Forms.Button();
             this.ocrButton = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.windowNameTextBox = new System.Windows.Forms.TextBox();
+            this.translationComboBox = new System.Windows.Forms.ComboBox();
+            this.languageComboBox = new System.Windows.Forms.ComboBox();
+            this.honn = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // originalTextBox
+            // orcTextBox
             // 
-            this.originalTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.orcTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.originalTextBox.Location = new System.Drawing.Point(12, 27);
-            this.originalTextBox.Multiline = true;
-            this.originalTextBox.Name = "originalTextBox";
-            this.originalTextBox.Size = new System.Drawing.Size(776, 97);
-            this.originalTextBox.TabIndex = 0;
+            this.orcTextBox.Location = new System.Drawing.Point(12, 139);
+            this.orcTextBox.Multiline = true;
+            this.orcTextBox.Name = "orcTextBox";
+            this.orcTextBox.Size = new System.Drawing.Size(795, 95);
+            this.orcTextBox.TabIndex = 4;
             // 
             // translatedTextBox
             // 
             this.translatedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.translatedTextBox.Location = new System.Drawing.Point(12, 176);
+            this.translatedTextBox.Location = new System.Drawing.Point(12, 263);
             this.translatedTextBox.Multiline = true;
             this.translatedTextBox.Name = "translatedTextBox";
             this.translatedTextBox.ReadOnly = true;
-            this.translatedTextBox.Size = new System.Drawing.Size(776, 204);
-            this.translatedTextBox.TabIndex = 3;
+            this.translatedTextBox.Size = new System.Drawing.Size(795, 157);
+            this.translatedTextBox.TabIndex = 5;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
+            this.label1.Location = new System.Drawing.Point(12, 121);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 15);
+            this.label1.Size = new System.Drawing.Size(42, 15);
             this.label1.TabIndex = 1;
-            this.label1.Text = "オリジナル";
+            this.label1.Text = "テキスト";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 158);
+            this.label2.Location = new System.Drawing.Point(12, 245);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(55, 15);
             this.label2.TabIndex = 2;
@@ -74,10 +80,10 @@
             // translateButton
             // 
             this.translateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.translateButton.Location = new System.Drawing.Point(713, 130);
+            this.translateButton.Location = new System.Drawing.Point(732, 44);
             this.translateButton.Name = "translateButton";
             this.translateButton.Size = new System.Drawing.Size(75, 30);
-            this.translateButton.TabIndex = 2;
+            this.translateButton.TabIndex = 3;
             this.translateButton.Text = "翻訳";
             this.translateButton.UseVisualStyleBackColor = true;
             this.translateButton.Click += new System.EventHandler(this.translateButton_Click);
@@ -85,27 +91,93 @@
             // ocrButton
             // 
             this.ocrButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ocrButton.Location = new System.Drawing.Point(632, 130);
+            this.ocrButton.Location = new System.Drawing.Point(651, 44);
             this.ocrButton.Name = "ocrButton";
             this.ocrButton.Size = new System.Drawing.Size(75, 30);
-            this.ocrButton.TabIndex = 1;
+            this.ocrButton.TabIndex = 2;
             this.ocrButton.Text = "文字認識";
             this.ocrButton.UseVisualStyleBackColor = true;
             this.ocrButton.Click += new System.EventHandler(this.ocrButton_Click);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 9);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(81, 15);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "キャプチャー対象";
+            // 
+            // windowNameTextBox
+            // 
+            this.windowNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.windowNameTextBox.Location = new System.Drawing.Point(99, 6);
+            this.windowNameTextBox.Name = "windowNameTextBox";
+            this.windowNameTextBox.ReadOnly = true;
+            this.windowNameTextBox.Size = new System.Drawing.Size(708, 23);
+            this.windowNameTextBox.TabIndex = 0;
+            // 
+            // translationComboBox
+            // 
+            this.translationComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.translationComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.translationComboBox.FormattingEnabled = true;
+            this.translationComboBox.Location = new System.Drawing.Point(99, 49);
+            this.translationComboBox.Name = "translationComboBox";
+            this.translationComboBox.Size = new System.Drawing.Size(546, 23);
+            this.translationComboBox.TabIndex = 1;
+            // 
+            // languageComboBox
+            // 
+            this.languageComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.languageComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.languageComboBox.FormattingEnabled = true;
+            this.languageComboBox.Location = new System.Drawing.Point(99, 78);
+            this.languageComboBox.Name = "languageComboBox";
+            this.languageComboBox.Size = new System.Drawing.Size(546, 23);
+            this.languageComboBox.TabIndex = 1;
+            // 
+            // honn
+            // 
+            this.honn.AutoSize = true;
+            this.honn.Location = new System.Drawing.Point(12, 54);
+            this.honn.Name = "honn";
+            this.honn.Size = new System.Drawing.Size(68, 15);
+            this.honn.TabIndex = 6;
+            this.honn.Text = "翻訳エンジン";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 82);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(67, 15);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "翻訳先言語";
             // 
             // OcrForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 392);
+            this.ClientSize = new System.Drawing.Size(819, 432);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.honn);
+            this.Controls.Add(this.languageComboBox);
+            this.Controls.Add(this.translationComboBox);
+            this.Controls.Add(this.windowNameTextBox);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.ocrButton);
             this.Controls.Add(this.translateButton);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.translatedTextBox);
-            this.Controls.Add(this.originalTextBox);
+            this.Controls.Add(this.orcTextBox);
             this.Name = "OcrForm";
             this.Text = "OcrForm";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OcrForm_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -113,11 +185,17 @@
 
         #endregion
 
-        private TextBox originalTextBox;
+        private TextBox orcTextBox;
         private TextBox translatedTextBox;
         private Label label1;
         private Label label2;
         private Button translateButton;
         private Button ocrButton;
+        private Label label3;
+        private TextBox windowNameTextBox;
+        private ComboBox translationComboBox;
+        private ComboBox languageComboBox;
+        private Label honn;
+        private Label label4;
     }
 }

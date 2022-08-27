@@ -8,12 +8,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace sikusiSubtitles.OCR {
-    public class GoogleVisionOcr : Ocr {
-        public GoogleVisionOcr() {
+    public class GoogleVisionOcrService : OcrService {
+        public GoogleVisionOcrService(Service.ServiceManager serviceManager) : base(serviceManager, "Google", "Google Cloud Vision", 200) {
             var credential = GoogleCredential.FromAccessToken("AIzaSyD1JBd2ZEbjCixjmM6mhJjEEpX7t-Ub84g");
         }
 
-        public override Result Execute(Bitmap bitmap) {
+        public override void Execute(Bitmap bitmap) {
             /*
             ImageConverter converter = new ImageConverter();
             Object? o = converter.ConvertTo(bitmap, typeof(byte[]));
@@ -38,8 +38,6 @@ namespace sikusiSubtitles.OCR {
                 }
             }
             */
-
-            return new Result(0);
         }
     }
 }

@@ -32,7 +32,10 @@
             this.setAreaButton = new System.Windows.Forms.Button();
             this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.translateButton = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.ocrComboBox = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -48,10 +51,10 @@
             // updateWidowListButton
             // 
             this.updateWidowListButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.updateWidowListButton.Location = new System.Drawing.Point(576, 288);
+            this.updateWidowListButton.Location = new System.Drawing.Point(590, 288);
             this.updateWidowListButton.Name = "updateWidowListButton";
             this.updateWidowListButton.Size = new System.Drawing.Size(107, 35);
-            this.updateWidowListButton.TabIndex = 7;
+            this.updateWidowListButton.TabIndex = 4;
             this.updateWidowListButton.Text = "リストを更新";
             this.updateWidowListButton.UseVisualStyleBackColor = true;
             this.updateWidowListButton.Click += new System.EventHandler(this.updateWidowListButton_Click);
@@ -65,11 +68,11 @@
             this.titleColumnHeader,
             this.processNameColumnHeader});
             this.windowListView.FullRowSelect = true;
-            this.windowListView.Location = new System.Drawing.Point(18, 49);
+            this.windowListView.Location = new System.Drawing.Point(18, 144);
             this.windowListView.MultiSelect = false;
             this.windowListView.Name = "windowListView";
-            this.windowListView.Size = new System.Drawing.Size(665, 233);
-            this.windowListView.TabIndex = 8;
+            this.windowListView.Size = new System.Drawing.Size(679, 138);
+            this.windowListView.TabIndex = 1;
             this.windowListView.UseCompatibleStateImageBehavior = false;
             this.windowListView.View = System.Windows.Forms.View.Details;
             this.windowListView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.windowListView_ItemSelectionChanged);
@@ -88,10 +91,10 @@
             // 
             this.setAreaButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.setAreaButton.Enabled = false;
-            this.setAreaButton.Location = new System.Drawing.Point(454, 288);
+            this.setAreaButton.Location = new System.Drawing.Point(468, 288);
             this.setAreaButton.Name = "setAreaButton";
             this.setAreaButton.Size = new System.Drawing.Size(116, 35);
-            this.setAreaButton.TabIndex = 9;
+            this.setAreaButton.TabIndex = 3;
             this.setAreaButton.Text = "読み取り位置を設定";
             this.setAreaButton.UseVisualStyleBackColor = true;
             this.setAreaButton.Click += new System.EventHandler(this.setAreaButton_Click);
@@ -103,16 +106,41 @@
             this.translateButton.Location = new System.Drawing.Point(18, 288);
             this.translateButton.Name = "translateButton";
             this.translateButton.Size = new System.Drawing.Size(110, 35);
-            this.translateButton.TabIndex = 10;
+            this.translateButton.TabIndex = 2;
             this.translateButton.Text = "翻訳ウィンドウ";
             this.translateButton.UseVisualStyleBackColor = true;
             this.translateButton.Click += new System.EventHandler(this.translateButton_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.ocrComboBox);
+            this.groupBox1.Location = new System.Drawing.Point(18, 53);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(679, 85);
+            this.groupBox1.TabIndex = 12;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "OCRサービス";
+            // 
+            // ocrComboBox
+            // 
+            this.ocrComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ocrComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ocrComboBox.FormattingEnabled = true;
+            this.ocrComboBox.Location = new System.Drawing.Point(23, 35);
+            this.ocrComboBox.Name = "ocrComboBox";
+            this.ocrComboBox.Size = new System.Drawing.Size(635, 23);
+            this.ocrComboBox.TabIndex = 0;
+            this.ocrComboBox.SelectedIndexChanged += new System.EventHandler(this.ocrComboBox_SelectedIndexChanged);
             // 
             // OcrPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.translateButton);
             this.Controls.Add(this.setAreaButton);
             this.Controls.Add(this.windowListView);
@@ -122,6 +150,7 @@
             this.Size = new System.Drawing.Size(700, 326);
             this.Load += new System.EventHandler(this.OcrPage_Load);
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -137,5 +166,7 @@
         private Button setAreaButton;
         private BindingSource bindingSource1;
         private Button translateButton;
+        private GroupBox groupBox1;
+        private ComboBox ocrComboBox;
     }
 }

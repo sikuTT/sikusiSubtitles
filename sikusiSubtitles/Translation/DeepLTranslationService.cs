@@ -18,10 +18,24 @@ namespace sikusiSubtitles.Translation {
         }
 
         public override async void Translate(string text) {
+            if (CheckParameters() == false) {
+                return;
+            }
+
             var toList = new List<string>();
             if (To1 != null) toList.Add(To1);
             if (To2 != null) toList.Add(To2);
             var result = await TranslateAsync(text, From, toList.ToArray());
+            this.InvokeTranslated(result);
+        }
+
+        public override async void Translate(string text, string to) {
+            if (CheckParameters() == false) {
+                return;
+            }
+
+            var toList = new string[] { to };
+            var result = await TranslateAsync(text, null, toList);
             this.InvokeTranslated(result);
         }
 
@@ -38,6 +52,15 @@ namespace sikusiSubtitles.Translation {
                 }
             }
             return result;
+        }
+
+        private bool CheckParameters() {
+            if (this.Key == null || this.Key == "") {
+                MessageBox.Show("APIキーが設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            } else {
+                return true;
+            }
         }
     }
 }

@@ -10,12 +10,8 @@ using System.Windows.Forms;
 
 namespace sikusiSubtitles.OCR {
     public partial class GoogleVisionOcrPage : SettingPage {
-        public Ocr Ocr { get { return ocr; } }
-
         public GoogleVisionOcrPage(Service.ServiceManager serviceManager) : base(serviceManager) {
             InitializeComponent();
         }
- 
-        readonly GoogleVisionOcr ocr = new GoogleVisionOcr();
     }
 }

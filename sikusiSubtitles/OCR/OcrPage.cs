@@ -2,20 +2,52 @@
 
 namespace sikusiSubtitles.OCR {
     public partial class OcrPage : SettingPage {
+        private List<OcrService> ocrServices = new List<OcrService>();
+        private List<int> processIdList = new List<int>();
+        private int selectedProcessId = 0;
+        private Rectangle? captureArea;
+
         public OcrPage(Service.ServiceManager serviceManager) : base(serviceManager) {
             InitializeComponent();
         }
 
-        public void SetOcrs(Ocr[] ocrs) {
-            this.Ocrs = ocrs;
+        public override void LoadSettings() {
+            this.ocrComboBox.SelectedIndex = 0;
+            for (var i = 0; i < this.ocrServices.Count; i++) {
+                if (this.ocrServices[i].Name == Properties.Settings.Default.OcrEngine) {
+                    this.ocrComboBox.SelectedIndex = i;
+                    break;
+                }
+            }
+        }
+
+        public override void SaveSettings() {
+            Properties.Settings.Default.OcrEngine = this.ocrComboBox.SelectedIndex != -1 ? this.ocrServices[this.ocrComboBox.SelectedIndex].Name : "";
         }
 
         /**
          * フォームロード
          */
         private void OcrPage_Load(object sender, EventArgs e) {
+            // OCRサービス一覧をコンボボックスに設定
+            this.ocrServices = this.serviceManager.GetServices<OcrService>();
+            foreach (var service in this.ocrServices) {
+                this.ocrComboBox.Items.Add(service.DisplayName);
+            }
+
             // ウィンドウ一覧を更新する
             UpdateWindowList();
+        }
+
+        /**
+         * OCRエンジンを選択
+         */
+        private void ocrComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            if (this.ocrComboBox.SelectedIndex != -1) {
+                this.serviceManager.SetActiveService(this.ocrServices[this.ocrComboBox.SelectedIndex]);
+            } else {
+                this.serviceManager.ResetActiveService(OcrService.SERVICE_NAME);
+            }
         }
 
         /**
@@ -59,7 +91,7 @@ namespace sikusiSubtitles.OCR {
          */
         private void translateButton_Click(object sender, EventArgs e) {
             if (captureArea != null) {
-                OcrForm ocrForm = new OcrForm(selectedProcessId, (Rectangle)captureArea);
+                OcrForm ocrForm = new OcrForm(this.serviceManager, selectedProcessId, (Rectangle)captureArea);
                 ocrForm.Visible = true;
             }
         }
@@ -99,10 +131,5 @@ namespace sikusiSubtitles.OCR {
             captureArea = rect;
             this.translateButton.Enabled = true;
         }
-
-        Ocr[] Ocrs = new Ocr[] {};
-        List<int> processIdList = new List<int>();
-        int selectedProcessId = 0;
-        Rectangle? captureArea;
     }
 }

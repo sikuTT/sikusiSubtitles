@@ -5,9 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace sikusiSubtitles.OCR {
-    public class AzureOcr : Ocr {
-        override public Result Execute(Bitmap bitmap) {
-            return new Result(0);
+    public class OcrResult {
+        public string Text { get; }
+
+        public OcrResult(string text) {
+            this.Text = text;
         }
     }
 }

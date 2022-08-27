@@ -1,4 +1,5 @@
-﻿using System;
+﻿using sikusiSubtitles.Translation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,41 +13,125 @@ using static sikusiSubtitles.OCR.ScreenCapture;
 
 namespace sikusiSubtitles.OCR {
     public partial class OcrForm : Form {
+        private Service.ServiceManager serviceManager;
         private int processId;
         private Rectangle captureArea;
+        private OcrService? ocrService;
+        private List<TranslationService> translationServices;
+        private TranslationService? translationService;
 
-        public OcrForm(int processId, Rectangle captureArea) {
+        public OcrForm(Service.ServiceManager serviceManager, int processId, Rectangle captureArea) {
             InitializeComponent();
 
+            this.serviceManager = serviceManager;
             this.processId = processId;
             this.captureArea = captureArea;
+
+            // OCRサービスを取得
+            this.ocrService = this.serviceManager.GetActiveService<OcrService>();
+            if (this.ocrService != null) {
+                this.ocrService.OcrFinished += OrcFinished;
+            }
+
+            // 翻訳サービスを取得
+            this.translationServices = this.serviceManager.GetServices<TranslationService>();
+            var activeTranslationService = this.serviceManager.GetActiveService<TranslationService>();
+            for (var i = 0; i < this.translationServices.Count; i++) {
+                var service = this.translationServices[i];
+                this.translationComboBox.Items.Add(service.DisplayName);
+                if (service == activeTranslationService) {
+                    this.translationComboBox.SelectedIndex = i;
+                }
+            }
+            if (this.translationComboBox.SelectedIndex == -1) {
+                this.translationComboBox.SelectedIndex = 0;
+            }
+
+            // キャプチャー対象のウィンドウ名をフォームに表示する。
+            Process process = Process.GetProcessById(processId);
+            this.windowNameTextBox.Text = process.MainWindowTitle;
         }
 
-        public void a() {
+        private void OcrForm_FormClosed(object sender, FormClosedEventArgs e) {
+            if (this.ocrService != null) {
+                this.ocrService.OcrFinished -= OrcFinished;
+            }
+        }
+
+        private void ocrButton_Click(object sender, EventArgs e) {
+            if (this.ocrService == null) {
+                MessageBox.Show("OCRに使用するサービスが設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            } else {
+                var bitmap = CaptureWindow();
+                if (bitmap == null) {
+                    MessageBox.Show("画面をキャプチャー出来ませんでした。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } else {
+                    this.ocrButton.Enabled = false;
+                    this.ocrService.Execute(bitmap);
+                }
+            }
+        }
+
+        private void translateButton_Click(object sender, EventArgs e) {
+            if (this.orcTextBox.Text == "") {
+                MessageBox.Show("文字が入力されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            } else if (this.translationComboBox.SelectedIndex == -1) {
+                MessageBox.Show("翻訳に使用するサービスが設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            } else {
+                Translate();
+            }
+        }
+
+        private Bitmap? CaptureWindow() {
             Process process = Process.GetProcessById(processId);
 
             // 画面をキャプチャーする
             RECT rect;
             if (GetWindowRect(process.MainWindowHandle, out rect)) {
-                var left = rect.left + ((Rectangle)captureArea).Left;
-                var top = rect.top + ((Rectangle)captureArea).Top;
-                var width = ((Rectangle)captureArea).Width;
-                var height = ((Rectangle)captureArea).Height;
+                var left = rect.left + captureArea.Left;
+                var top = rect.top + captureArea.Top;
+                var width = captureArea.Width;
+                var height = captureArea.Height;
 
                 Bitmap bitmap = new Bitmap(width, height);
                 using (Graphics g = Graphics.FromImage(bitmap)) {
                     g.CopyFromScreen(left, top, 0, 0, new Size(width, height));
-                    // Ocrs[0].Execute(bitmap);
                 }
+                return bitmap;
+            }
+            return null;
+        }
+
+        private void Translate() {
+            // translationServiceが設定されている場合、前回の翻訳が終わっていない。
+            // 新しく翻訳しなおすので、前回の翻訳は結果を受け取らないようにする。
+            if (this.translationService != null) {
+                this.translationService.Translated -= Translated;
+            }
+            this.translationService = this.translationServices[this.translationComboBox.SelectedIndex];
+            this.translationService.Translated += Translated;
+            this.translationService.Translate(this.orcTextBox.Text, "ja");
+        }
+
+        private void OrcFinished(object? sender, OcrResult result) {
+            if (this.ocrButton.Enabled == false) {
+                var text = result.Text.Replace("\r\n", " ").Replace("\r", " ").Replace("\n", " ");
+                this.orcTextBox.Text = text;
+                this.Translate();
+                this.ocrButton.Enabled = true;
             }
         }
 
-        private void ocrButton_Click(object sender, EventArgs e) {
+        private void Translated(object? sender, TranslationResult result) {
+            if (result.Translations.Count > 0) {
+                this.translatedTextBox.Text = result.Translations[0].Text;
+            }
 
-        }
-
-        private void translateButton_Click(object sender, EventArgs e) {
-
+            // 毎回、翻訳エンジンを選択できるので、今回の設定はクリアする。
+            if (this.translationService != null) {
+                this.translationService.Translated -= Translated;
+                this.translationService = null;
+            }
         }
     }
 }

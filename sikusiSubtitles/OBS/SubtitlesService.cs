@@ -31,7 +31,7 @@ namespace sikusiSubtitles.OBS {
         public int? ClearInterval { get; set; }
         public int? AdditionalTime { get; set; }
 
-        public SubtitlesService(Service.ServiceManager serviceManager) : base(serviceManager, ObsService.SERVICE_NAME, "Subtitles", "Subtitles", 200) {
+        public SubtitlesService(Service.ServiceManager serviceManager) : base(serviceManager, ObsService.SERVICE_NAME, "Subtitles", "字幕", 200) {
             this.VoiceTarget = "";
             this.Translation1Target = "";
             this.Translation2Target = "";

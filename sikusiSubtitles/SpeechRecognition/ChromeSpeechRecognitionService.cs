@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public class ChromeSpeechRecognitionService : SpeechRecognitionService {
-        public ChromeSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "Chrome", "Chrome", 100) {
+        public ChromeSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "Chrome", "Google Chrome", 100) {
         }
 
         public string? Language { get; set; }

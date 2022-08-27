@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using sikusiSubtitles.Service;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public abstract class SpeechRecognitionService : Service.Service {
@@ -11,8 +7,11 @@ namespace sikusiSubtitles.SpeechRecognition {
         public event EventHandler<SpeechRecognitionEventArgs>? Recognizing;
         public event EventHandler<SpeechRecognitionEventArgs>? Recognized;
 
-        public SpeechRecognitionService(string name, string displayName, int index) : base(SERVICE_NAME, name, displayName, index) {
+        public SpeechRecognitionService(ServiceManager serviceManager, string name, string displayName, int index) : base(serviceManager, SERVICE_NAME, name, displayName, index) {
         }
+
+        public abstract bool Start();
+        public abstract void Stop();
 
         protected void InvokeRecognizing(string text) {
             this.Recognizing?.Invoke(this, new SpeechRecognitionEventArgs(text));

@@ -18,7 +18,6 @@ namespace sikusiSubtitles.OBS {
     }
 
     public class SubtitlesService : Service.Service {
-        private Service.ServiceManager serviceManager;
         private ObsService? obsService;
         private SpeechRecognitionService? speechRecognitionService;
         private TranslationService? translationService;
@@ -32,18 +31,16 @@ namespace sikusiSubtitles.OBS {
         public int? ClearInterval { get; set; }
         public int? AdditionalTime { get; set; }
 
-        public SubtitlesService(Service.ServiceManager serviceManager, string name, string displayName, int index) : base(ObsService.SERVICE_NAME, name, displayName, index) {
-            this.serviceManager = serviceManager;
-
+        public SubtitlesService(Service.ServiceManager serviceManager) : base(serviceManager, ObsService.SERVICE_NAME, "Subtitles", "Subtitles", 200) {
             this.VoiceTarget = "";
             this.Translation1Target = "";
             this.Translation2Target = "";
         }
 
-        public override bool Start() {
-            this.obsService = this.serviceManager.GetService<ObsService>(ObsService.SERVICE_NAME, "OBS");
+        public bool Start() {
+            this.obsService = this.ServiceManager.GetService<ObsService>();
 
-            this.speechRecognitionService = this.serviceManager.GetActiveService<SpeechRecognitionService>();
+            this.speechRecognitionService = this.ServiceManager.GetActiveService<SpeechRecognitionService>();
             if (this.speechRecognitionService == null) {
                 return false;
             } else {
@@ -51,7 +48,7 @@ namespace sikusiSubtitles.OBS {
                 this.speechRecognitionService.Recognized += Recognized;
             }
 
-            this.translationService = this.serviceManager.GetActiveService<TranslationService>();
+            this.translationService = this.ServiceManager.GetActiveService<TranslationService>();
             if (this.translationService != null) {
                 this.translationService.Translated += Translated;
             }
@@ -59,13 +56,13 @@ namespace sikusiSubtitles.OBS {
             return true;
         }
 
-        public override void Stop() {
+        public void Stop() {
             if (this.speechRecognitionService != null) {
                 this.speechRecognitionService.Recognizing -= Recognizing;
                 this.speechRecognitionService.Recognized -= Recognized;
             }
 
-            this.translationService = this.serviceManager.GetActiveService<TranslationService>();
+            this.translationService = this.ServiceManager.GetActiveService<TranslationService>();
             if (this.translationService != null) {
                 this.translationService.Translated -= Translated;
             }

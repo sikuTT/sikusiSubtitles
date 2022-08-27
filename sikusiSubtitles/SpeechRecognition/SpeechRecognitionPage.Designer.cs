@@ -54,7 +54,8 @@
             this.micComboBox.Location = new System.Drawing.Point(74, 27);
             this.micComboBox.Name = "micComboBox";
             this.micComboBox.Size = new System.Drawing.Size(607, 23);
-            this.micComboBox.TabIndex = 4;
+            this.micComboBox.TabIndex = 1;
+            this.micComboBox.SelectedIndexChanged += new System.EventHandler(this.micComboBox_SelectedIndexChanged);
             // 
             // groupBox1
             // 
@@ -110,7 +111,7 @@
             this.serviceComboBox.Location = new System.Drawing.Point(74, 22);
             this.serviceComboBox.Name = "serviceComboBox";
             this.serviceComboBox.Size = new System.Drawing.Size(607, 23);
-            this.serviceComboBox.TabIndex = 6;
+            this.serviceComboBox.TabIndex = 2;
             this.serviceComboBox.SelectedIndexChanged += new System.EventHandler(this.serviceComboBox_SelectedIndexChanged);
             // 
             // label3

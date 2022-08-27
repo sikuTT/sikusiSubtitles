@@ -80,6 +80,7 @@
             this.splitContainer1.Size = new System.Drawing.Size(950, 481);
             this.splitContainer1.SplitterDistance = 316;
             this.splitContainer1.TabIndex = 2;
+            this.splitContainer1.TabStop = false;
             // 
             // menuView
             // 
@@ -123,7 +124,7 @@
             treeNode11,
             treeNode15});
             this.menuView.Size = new System.Drawing.Size(316, 481);
-            this.menuView.TabIndex = 1;
+            this.menuView.TabIndex = 10;
             this.menuView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.menuView_AfterSelect);
             // 
             // panel1
@@ -132,7 +133,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(630, 481);
-            this.panel1.TabIndex = 2;
+            this.panel1.TabIndex = 11;
             // 
             // speechRecognitionCheckBox
             // 
@@ -141,7 +142,7 @@
             this.speechRecognitionCheckBox.Location = new System.Drawing.Point(12, 12);
             this.speechRecognitionCheckBox.Name = "speechRecognitionCheckBox";
             this.speechRecognitionCheckBox.Size = new System.Drawing.Size(65, 25);
-            this.speechRecognitionCheckBox.TabIndex = 3;
+            this.speechRecognitionCheckBox.TabIndex = 1;
             this.speechRecognitionCheckBox.Text = "音声認識";
             this.speechRecognitionCheckBox.UseVisualStyleBackColor = false;
             this.speechRecognitionCheckBox.CheckedChanged += new System.EventHandler(this.speechRecognitionCheckBox_CheckedChanged);
@@ -153,7 +154,7 @@
             this.obsCheckBox.Location = new System.Drawing.Point(83, 12);
             this.obsCheckBox.Name = "obsCheckBox";
             this.obsCheckBox.Size = new System.Drawing.Size(63, 25);
-            this.obsCheckBox.TabIndex = 4;
+            this.obsCheckBox.TabIndex = 2;
             this.obsCheckBox.Text = "OBS接続";
             this.obsCheckBox.UseVisualStyleBackColor = false;
             this.obsCheckBox.CheckedChanged += new System.EventHandler(this.obsCheckBox_CheckedChanged);
@@ -168,7 +169,7 @@
             this.recognitionResultTextBox.Name = "recognitionResultTextBox";
             this.recognitionResultTextBox.ReadOnly = true;
             this.recognitionResultTextBox.Size = new System.Drawing.Size(950, 52);
-            this.recognitionResultTextBox.TabIndex = 5;
+            this.recognitionResultTextBox.TabIndex = 12;
             // 
             // label1
             // 

@@ -1,4 +1,5 @@
 ﻿using OBSWebsocketDotNet;
+using sikusiSubtitles.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,25 +18,14 @@ namespace sikusiSubtitles.OBS {
             get { return ObsSocket.IsConnected; }
         }
 
-        private Service.ServiceManager serviceManager;
-
-        public ObsService(Service.ServiceManager serviceManager, string name, string displayName, int index) : base(SERVICE_NAME, name, displayName, index) {
-            this.serviceManager = serviceManager;
+        public ObsService(ServiceManager serviceManager) : base(serviceManager, SERVICE_NAME, "OBS", "OBS", 100) {
             this.ObsSocket = new OBSWebsocket();
             this.IP = "";
             this.Port = 0;
             this.Password = "";
         }
 
-        public override bool Start() {
-            return Connect();
-        }
-
-        public override void Stop() {
-            Disconnect();
-        }
-
-        private bool Connect() {
+        public bool Connect() {
             if (this.IP == "") {
                 MessageBox.Show("接続先を設定してください。");
                 return false;
@@ -60,7 +50,7 @@ namespace sikusiSubtitles.OBS {
             return ObsSocket.IsConnected;
         }
 
-        private void Disconnect() {
+        public void Disconnect() {
             // 字幕終了
             SubtitlesStop();
 
@@ -68,14 +58,14 @@ namespace sikusiSubtitles.OBS {
         }
 
         private void SubtitlesStart() {
-            var service = serviceManager.GetService(SERVICE_NAME, "Subtitles");
+            var service = this.ServiceManager.GetService<SubtitlesService>();
             if (service != null) {
                 service.Start();
             }
         }
 
         private void SubtitlesStop() {
-            var service = serviceManager.GetService(SERVICE_NAME, "Subtitles");
+            var service = this.ServiceManager.GetService<SubtitlesService>();
             if (service != null) {
                 service.Stop();
             }

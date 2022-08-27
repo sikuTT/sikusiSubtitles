@@ -42,20 +42,23 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.keyTextBox);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(26, 80);
+            this.groupBox1.Location = new System.Drawing.Point(10, 64);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(523, 68);
+            this.groupBox1.Size = new System.Drawing.Size(554, 68);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "認証情報";
             // 
             // keyTextBox
             // 
-            this.keyTextBox.Location = new System.Drawing.Point(117, 27);
+            this.keyTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.keyTextBox.Location = new System.Drawing.Point(96, 27);
             this.keyTextBox.Name = "keyTextBox";
             this.keyTextBox.PasswordChar = '*';
-            this.keyTextBox.Size = new System.Drawing.Size(353, 23);
-            this.keyTextBox.TabIndex = 2;
+            this.keyTextBox.Size = new System.Drawing.Size(440, 23);
+            this.keyTextBox.TabIndex = 1;
+            this.keyTextBox.TextChanged += new System.EventHandler(this.keyTextBox_TextChanged);
             // 
             // label2
             // 
@@ -70,7 +73,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Yu Gothic UI", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(16, 16);
+            this.label1.Location = new System.Drawing.Point(0, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(265, 37);
             this.label1.TabIndex = 5;
@@ -84,30 +87,36 @@
             this.groupBox2.Controls.Add(this.engineComboBox);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Location = new System.Drawing.Point(26, 169);
+            this.groupBox2.Location = new System.Drawing.Point(10, 153);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(523, 110);
+            this.groupBox2.Size = new System.Drawing.Size(554, 110);
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "エンジン情報";
             // 
             // logComboBox
             // 
+            this.logComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.logComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.logComboBox.FormattingEnabled = true;
-            this.logComboBox.Location = new System.Drawing.Point(117, 68);
+            this.logComboBox.Location = new System.Drawing.Point(96, 68);
             this.logComboBox.Name = "logComboBox";
-            this.logComboBox.Size = new System.Drawing.Size(353, 23);
+            this.logComboBox.Size = new System.Drawing.Size(440, 23);
             this.logComboBox.TabIndex = 3;
+            this.logComboBox.SelectedIndexChanged += new System.EventHandler(this.logComboBox_SelectedIndexChanged);
             // 
             // engineComboBox
             // 
+            this.engineComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.engineComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.engineComboBox.FormattingEnabled = true;
-            this.engineComboBox.Location = new System.Drawing.Point(117, 26);
+            this.engineComboBox.Location = new System.Drawing.Point(96, 26);
             this.engineComboBox.Name = "engineComboBox";
-            this.engineComboBox.Size = new System.Drawing.Size(353, 23);
-            this.engineComboBox.TabIndex = 3;
+            this.engineComboBox.Size = new System.Drawing.Size(440, 23);
+            this.engineComboBox.TabIndex = 2;
+            this.engineComboBox.SelectedIndexChanged += new System.EventHandler(this.engineComboBox_SelectedIndexChanged);
             // 
             // label3
             // 

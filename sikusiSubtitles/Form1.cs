@@ -131,7 +131,9 @@ namespace sikusiSubtitles {
          */
         private void SpeechRecognitionStart() {
             var recognitionStarted = false;
-            if (this.speechRecognitionPage.Mic == null) {
+
+            var commonService = this.serviceManager.GetService<SpeechRecognitionCommonService>();
+            if (commonService == null || commonService.Device == null) {
                 MessageBox.Show("マイクを設定してください。");
             } else {
                 var service = this.serviceManager.GetActiveService<SpeechRecognitionService>();
@@ -173,14 +175,14 @@ namespace sikusiSubtitles {
         private void obsCheckBox_CheckedChanged(object sender, EventArgs e) {
             this.SetCheckBoxButtonColor(this.obsCheckBox);
 
-            var service = serviceManager.GetService(ObsService.SERVICE_NAME, "OBS") as ObsService;
+            var service = serviceManager.GetService<ObsService>();
             if (service != null) {
                 if (this.obsCheckBox.Checked) {
-                    if (service.Start() == false) {
+                    if (service.Connect() == false) {
                         this.obsCheckBox.Checked = false;
                     }
                 } else if (service.IsConnected) {
-                    service.Stop();
+                    service.Disconnect();
                 }
             }
         }

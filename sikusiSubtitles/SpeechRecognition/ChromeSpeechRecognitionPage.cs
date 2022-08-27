@@ -16,11 +16,12 @@ using System.Windows.Forms;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public partial class ChromeSpeechRecognitionPage : SettingPage {
-        private ChromeSpeechRecognitionService service = new ChromeSpeechRecognitionService();
+        private ChromeSpeechRecognitionService service;
 
         public ChromeSpeechRecognitionPage(ServiceManager serviceManager) : base(serviceManager) {
+            this.service = new ChromeSpeechRecognitionService(serviceManager);
+
             InitializeComponent();
-            serviceManager.AddService(service);
         }
 
         public override void LoadSettings() {

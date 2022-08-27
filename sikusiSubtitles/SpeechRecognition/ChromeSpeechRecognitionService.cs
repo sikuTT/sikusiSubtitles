@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using sikusiSubtitles.Service;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public class ChromeSpeechRecognitionService : SpeechRecognitionService {
-        public ChromeSpeechRecognitionService() : base("Chrome", "Chrome", 100) {
+        public ChromeSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "Chrome", "Chrome", 100) {
         }
 
         public string? Language { get; set; }
@@ -23,7 +24,7 @@ namespace sikusiSubtitles.SpeechRecognition {
         private string LastText = "";
         private bool isLastFinal = false;
 
-        public override bool Start() {
+        public  override bool Start() {
             if (this.Language == null) {
                 MessageBox.Show("言語を選択してください。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;

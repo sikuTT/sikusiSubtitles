@@ -15,8 +15,7 @@ namespace sikusiSubtitles.OBS {
         private ObsService service;
 
         public ObsPage(Service.ServiceManager serviceManager) : base(serviceManager) {
-            this.service = new ObsService(serviceManager, "OBS", "OBS", 100);
-            serviceManager.AddService(this.service);
+            this.service = new ObsService(serviceManager);
 
             InitializeComponent();
         }

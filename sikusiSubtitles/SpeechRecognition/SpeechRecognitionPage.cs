@@ -12,26 +12,17 @@ using System.Windows.Forms;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public partial class SpeechRecognitionPage : SettingPage {
+        private SpeechRecognitionCommonService service;
+
         /** 音声認識サービス一覧 */
         private List<SpeechRecognitionService> services = new List<SpeechRecognitionService>();
 
         /** マイク一覧 */
         private MMDeviceCollection micList;
 
-        /**
-         * 選択されているマイク
-         */
-        public MMDevice? Mic {
-            get {
-                if (this.micComboBox.SelectedIndex < 0) {
-                    return null;
-                } else {
-                    return this.micList[this.micComboBox.SelectedIndex];
-                }
-            }
-        }
-
         public SpeechRecognitionPage(Service.ServiceManager serviceManager) : base(serviceManager) {
+            this.service = new SpeechRecognitionCommonService(serviceManager);
+
             var enumerator = new MMDeviceEnumerator();
             this.micList = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
 
@@ -42,8 +33,10 @@ namespace sikusiSubtitles.SpeechRecognition {
          * 設定を保存する
          */
         public override void SaveSettings() {
+            var device = this.service.Device;
             var service = this.serviceManager.GetActiveService<SpeechRecognitionService>();
-            Properties.Settings.Default.MicID = Mic != null ? Mic.ID : "";
+
+            Properties.Settings.Default.MicID = device != null ? device.ID : "";
             Properties.Settings.Default.RecognitionEngine = service != null ? service.DisplayName : "";
         }
 
@@ -86,6 +79,13 @@ namespace sikusiSubtitles.SpeechRecognition {
             foreach (var service in this.services) {
                 this.serviceComboBox.Items.Add(service.DisplayName);
             }
+        }
+
+        /**
+         * 使用するマイクが変更された
+         */
+        private void micComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            this.service.Device = this.micList[this.micComboBox.SelectedIndex];
         }
 
         /**

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using sikusiSubtitles.Service;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -32,7 +33,7 @@ namespace sikusiSubtitles.Translation {
         private static readonly string endpoint = "https://api.cognitive.microsofttranslator.com/";
         private HttpClient HttpClient = new HttpClient();
 
-        public AzureTranslationService() : base("azure", "Azure Cognitive Services", 400) {
+        public AzureTranslationService(ServiceManager serviceManager) : base(serviceManager, "Azure", "Azure Cognitive Services", 400) {
             this.Key = "";
             this.Region = "";
         }

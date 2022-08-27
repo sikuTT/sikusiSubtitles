@@ -13,8 +13,7 @@ namespace sikusiSubtitles.OBS {
         private SubtitlesService service;
 
         public SubtitlesPage(Service.ServiceManager serviceManager) : base(serviceManager) {
-            service = new SubtitlesService(serviceManager, "Subtitles", "Subtitles", 200);
-            serviceManager.AddService(service);
+            service = new SubtitlesService(serviceManager);
 
             InitializeComponent();
         }

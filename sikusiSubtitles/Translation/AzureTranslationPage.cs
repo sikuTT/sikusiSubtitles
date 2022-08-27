@@ -12,7 +12,15 @@ using System.Windows.Forms;
 
 namespace sikusiSubtitles.Translation {
     public partial class AzureTranslationPage : SettingPage {
-        public AzureTranslationService service = new AzureTranslationService();
+        public AzureTranslationService service;
+
+        public AzureTranslationPage(Service.ServiceManager serviceManager) : base(serviceManager) {
+            this.service = new AzureTranslationService(serviceManager);
+
+            InitializeComponent();
+
+            Array.Sort(this.Languages, (a, b) => a.Item2.CompareTo(b.Item2));
+        }
 
         /**
          * 設定の読み込み
@@ -60,14 +68,6 @@ namespace sikusiSubtitles.Translation {
                 Properties.Settings.Default.AzureTranslationTo2 = "";
             }
             Properties.Settings.Default.AzureTranslationTo2Run = this.to2CheckBox.Checked;
-        }
-
-        public AzureTranslationPage(Service.ServiceManager serviceManager) : base(serviceManager) {
-            serviceManager.AddService(this.service);
-
-            InitializeComponent();
-
-            Array.Sort(this.Languages, (a, b) => a.Item2.CompareTo(b.Item2));
         }
 
         private void AzureTranslationPage_Load(object sender, EventArgs e) {

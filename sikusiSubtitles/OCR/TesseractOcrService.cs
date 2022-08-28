@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Tesseract;
@@ -14,7 +15,13 @@ namespace sikusiSubtitles.OCR {
         }
 
         public override void Execute(object obj, Bitmap bitmap) {
-            using (var tesseract = new TesseractEngine(@"c:\tessdata-main", "eng")) {
+            var path = GetDataPath();
+            if (path == null) {
+                MessageBox.Show("言語データが取得できません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            using (var tesseract = new TesseractEngine(path, "eng")) {
                 try {
                     // BitmapをTesseract用に変換
                     var image = BitmapToImage(bitmap);
@@ -33,6 +40,21 @@ namespace sikusiSubtitles.OCR {
             MemoryStream memStream = new MemoryStream();
             bitmap.Save(memStream, System.Drawing.Imaging.ImageFormat.Bmp);
             return Pix.LoadFromMemory(memStream.GetBuffer());
+        }
+
+        private string? GetDataPath() {
+            var myAssembly = Assembly.GetEntryAssembly();
+            var path = myAssembly?.Location;
+            if (path == null)
+                return null;
+
+            int index = path.LastIndexOf('\\');
+            if (index == -1)
+                return null;
+
+            path = path.Substring(0, index);
+            path += "\\tessdata";
+            return path;
         }
     }
 }

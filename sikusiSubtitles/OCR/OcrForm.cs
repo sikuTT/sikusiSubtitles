@@ -1,4 +1,5 @@
-﻿using sikusiSubtitles.Shortcut;
+﻿using sikusiSubtitles.OBS;
+using sikusiSubtitles.Shortcut;
 using sikusiSubtitles.Translation;
 using System;
 using System.Collections.Generic;
@@ -17,11 +18,14 @@ namespace sikusiSubtitles.OCR {
         private Service.ServiceManager serviceManager;
         private OcrService? ocrService;
         private ShortcutService? shortcutService;
+        private ObsService? obsService;
+        private SubtitlesService? subtitlesService;
         private List<TranslationService> translationServices;
         private TranslationService? translationService;
 
         private int processId;
         private Rectangle captureArea;
+        private List<string> obsTextSources = new List<string>();
 
         public OcrForm(Service.ServiceManager serviceManager, int processId, Rectangle captureArea) {
             InitializeComponent();
@@ -61,6 +65,11 @@ namespace sikusiSubtitles.OCR {
             if (shortcutService != null) {
                 shortcutService.ShortcutRun += ShortcutRun;
             }
+
+            // OBSのテキストソースの一覧を取得
+            obsService = this.serviceManager.GetService<ObsService>();
+            subtitlesService = this.serviceManager.GetService<SubtitlesService>();
+            GetObsTextSources();
         }
 
         private void OcrForm_FormClosed(object sender, FormClosedEventArgs e) {
@@ -73,12 +82,25 @@ namespace sikusiSubtitles.OCR {
             }
         }
 
+        /**
+         * OCRを実行
+         */
         private void ocrButton_Click(object sender, EventArgs e) {
             Ocr();
         }
 
+        /**
+         * 翻訳を実行
+         */
         private void translateButton_Click(object sender, EventArgs e) {
             Translate();
+        }
+
+        /**
+         * OBSのテキストソースの一覧を再取得
+         */
+        private void obsTextSourceRefreshButton_Click(object sender, EventArgs e) {
+            GetObsTextSources();
         }
 
         private Bitmap? CaptureWindow() {
@@ -135,6 +157,26 @@ namespace sikusiSubtitles.OCR {
             this.translationService.Translate(this, this.orcTextBox.Text, "ja");
         }
 
+        /**
+         * OBSのテキストソースの一覧を取得する。
+         */
+        private void GetObsTextSources() {
+            this.obsTextSourceComboBox.Items.Clear();
+            this.obsTextSourceComboBox.Items.Add("");
+            if (obsService != null && obsService.ObsSocket.IsConnected) {
+                var sources = obsService.ObsSocket.GetSourcesList();
+                sources.ForEach(source => {
+                    if (source.TypeID == "text_gdiplus_v2") {
+                        this.obsTextSources.Add(source.Name);
+                        this.obsTextSourceComboBox.Items.Add(source.Name);
+                    }
+                });
+            }
+        }
+
+        /**
+         * OCRが完了した
+         */
         private void OrcFinished(object? sender, OcrResult result) {
             if (result.Obj == this) {
                 var text = result.Text.Replace("\r\n", " ").Replace("\r", " ").Replace("\n", " ");
@@ -144,10 +186,19 @@ namespace sikusiSubtitles.OCR {
             }
         }
 
+        /**
+         * 翻訳が完了した
+         */
         private void Translated(object? sender, TranslationResult result) {
             if (result.Obj == this) {
                 if (result.Translations.Count > 0) {
                     this.translatedTextBox.Text = result.Translations[0].Text;
+
+                    // OBSに接続済みで、翻訳結果表示先が指定されている場合、OBS上に翻訳結果を表示する。
+                    if (obsService != null && obsService.ObsSocket.IsConnected && subtitlesService != null && obsTextSourceComboBox.SelectedIndex > 0) {
+                        var sourceName = obsTextSources[obsTextSourceComboBox.SelectedIndex - 1];
+                        this.subtitlesService.SetText(sourceName, result.Translations[0].Text ?? "");
+                    }
                 }
 
                 // 毎回、翻訳エンジンを選択できるので、今回の設定はクリアする。
@@ -160,7 +211,7 @@ namespace sikusiSubtitles.OCR {
         }
 
         /**
-         * ショートカットから処理を実行する
+         * ショートカットが実行された
          */
         private void ShortcutRun(object? sender, Shortcut.Shortcut shortcut) {
             if (shortcut.Name == "ExecuteOCR" && this.ocrButton.Enabled == true) {

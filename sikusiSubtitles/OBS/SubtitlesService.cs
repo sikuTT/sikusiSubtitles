@@ -68,6 +68,22 @@ namespace sikusiSubtitles.OBS {
             }
         }
 
+        public void SetText(string sourceName, string text) {
+            if (this.obsService == null) {
+                return;
+            }
+            try {
+                var obsSocket = this.obsService.ObsSocket;
+                if (obsService.IsConnected) {
+                    var prop = obsSocket.GetTextGDIPlusProperties(sourceName);
+                    prop.Text = text;
+                    obsSocket.SetTextGDIPlusProperties(prop);
+                }
+            } catch (Exception ex) {
+                Debug.WriteLine("SubtitlesService.SetText: " + ex.Message);
+            }
+        }
+
         private void Recognizing(object? sender, SpeechRecognitionEventArgs args) {
             if (this.obsService != null && this.obsService.IsConnected) {
                 if (args.Text != "") {
@@ -127,7 +143,7 @@ namespace sikusiSubtitles.OBS {
                 }
 
                 // 字幕を表示
-                this.UpdateGDIPlusText(target, CreateSubtitlesText(target));
+                this.SetText(target, CreateSubtitlesText(target));
 
                 // 字幕削除のタイマーを作成する。
                 if (timeout != null) {
@@ -163,22 +179,6 @@ namespace sikusiSubtitles.OBS {
             }
         }
 
-        private void UpdateGDIPlusText(string target, string text) {
-            if (this.obsService == null) {
-                return;
-            }
-            try {
-                var obsSocket = this.obsService.ObsSocket;
-                if (obsService.IsConnected) {
-                    var prop = obsSocket.GetTextGDIPlusProperties(target);
-                    prop.Text = text;
-                    obsSocket.SetTextGDIPlusProperties(prop);
-                }
-            } catch (Exception ex) {
-                Debug.WriteLine("SubtitlesService.UpdateGDIPlusText: " + ex.Message);
-            }
-        }
-
         private string CreateSubtitlesText(string target) {
             string displayText = this.recognizedText[target];
             if (this.recognizingText[target].Length > 0) {
@@ -192,7 +192,7 @@ namespace sikusiSubtitles.OBS {
                 foreach (var dic in clearTimer) {
                     if (dic.Value == sender) {
                         this.recognizedText[dic.Key] = "";
-                        this.UpdateGDIPlusText(dic.Key, CreateSubtitlesText(dic.Key));
+                        this.SetText(dic.Key, CreateSubtitlesText(dic.Key));
                         break;
                     }
                 }

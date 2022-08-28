@@ -83,7 +83,15 @@ namespace sikusiSubtitles.Shortcut {
                 if (text.Length > 0) {
                     text += " + ";
                 }
-                text += (Keys)key;
+                if (key == 16) {
+                    text += "SHIFT";
+                } else if (key == 17) {
+                    text += "CTRL";
+                } else if (key == 18) {
+                    text += "ALT";
+                } else {
+                    text += (Keys)key;
+                }
             }
             return text;
         }

@@ -13,7 +13,7 @@ namespace sikusiSubtitles.OCR {
             var credential = GoogleCredential.FromAccessToken("AIzaSyD1JBd2ZEbjCixjmM6mhJjEEpX7t-Ub84g");
         }
 
-        public override void Execute(Bitmap bitmap) {
+        public override void Execute(object obj, Bitmap bitmap) {
             /*
             ImageConverter converter = new ImageConverter();
             Object? o = converter.ConvertTo(bitmap, typeof(byte[]));

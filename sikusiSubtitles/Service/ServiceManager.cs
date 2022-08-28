@@ -98,10 +98,22 @@ namespace sikusiSubtitles.Service {
             }
         }
 
+        /**
+         * サービスの順番をindex順にする
+         */
         public void Update() {
             this.Services.Sort((a, b) => {
                 return a.Index - b.Index;
             });
+        }
+
+        /**
+         * すべてのサービスの作成後に、各サービスの初期化を呼び出す
+         */
+        public void Init() {
+            foreach (var service in Services) {
+                service.Init();
+            }
         }
     }
 }

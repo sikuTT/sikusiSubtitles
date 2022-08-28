@@ -1,5 +1,6 @@
 using sikusiSubtitles.OBS;
 using sikusiSubtitles.OCR;
+using sikusiSubtitles.Shortcut;
 using sikusiSubtitles.SpeechRecognition;
 using sikusiSubtitles.Translation;
 using System.Diagnostics;
@@ -30,31 +31,37 @@ namespace sikusiSubtitles {
         AzureOcrPage azureOcrPage;
         GoogleVisionOcrPage googleVisionOcrPage;
 
+        // Shortcut
+        ShortcutPage shortcutPage;
+
         public MainForm() {
             InitializeComponent();
 
             // Speech Recognition
-            speechRecognitionPage = new SpeechRecognitionPage(serviceManager) { Name = "speechRecognitionPage" };
-            chromeSpeechRecognitionPage = new ChromeSpeechRecognitionPage(serviceManager) { Name = "chromeSpeechRecognitionPage" };
-            azureSpeechRecognitionPage = new AzureSpeechRecognitionPage(serviceManager) { Name = "azureSpeechRecognitionPage" };
-            amiVoiceSpeechRecognitionPage = new AmiVoiceSpeechRecognitionPage(serviceManager) { Name = "amiVoiceSpeechRecognitionPage" };
+            speechRecognitionPage = new SpeechRecognitionPage(serviceManager);
+            chromeSpeechRecognitionPage = new ChromeSpeechRecognitionPage(serviceManager);
+            azureSpeechRecognitionPage = new AzureSpeechRecognitionPage(serviceManager);
+            amiVoiceSpeechRecognitionPage = new AmiVoiceSpeechRecognitionPage(serviceManager);
 
             // OBS
-            obsPage = new ObsPage(serviceManager) { Name = "obsPage" };
-            subtitlesPage = new SubtitlesPage(serviceManager) { Name = "subtitlesPage" };
+            obsPage = new ObsPage(serviceManager);
+            subtitlesPage = new SubtitlesPage(serviceManager);
 
             // translation
-            translationPage = new TranslationPage(serviceManager) { Name = "translationPage" };
-            azureTranslationPage = new AzureTranslationPage(serviceManager) { Name = "azureTranslationPage" };
-            googleBasicTranslationPage = new GoogleBasicTranslationPage(serviceManager) { Name = "googleBasicTranslationPage" };
-            googleAppsScriptTranslationPage = new GoogleAppsScriptTranslationPage(serviceManager) { Name = "googleAppsScriptTranslationPage" };
-            deeplTranslationPage = new DeepLTranslationPage(serviceManager) { Name = "deeplTranslationPage" };
+            translationPage = new TranslationPage(serviceManager);
+            azureTranslationPage = new AzureTranslationPage(serviceManager);
+            googleBasicTranslationPage = new GoogleBasicTranslationPage(serviceManager);
+            googleAppsScriptTranslationPage = new GoogleAppsScriptTranslationPage(serviceManager);
+            deeplTranslationPage = new DeepLTranslationPage(serviceManager);
 
             // OCR
-            ocrPage = new OcrPage(serviceManager) { Name = "ocrPage" };
-            tesseractOcrPage = new TesseractOcrPage(serviceManager) { Name = "tesseractOcrPage" };
-            azureOcrPage = new AzureOcrPage(serviceManager) { Name = "azureOcrPage" };
-            googleVisionOcrPage = new GoogleVisionOcrPage(serviceManager) { Name = "googleVisionOcrPage" };
+            ocrPage = new OcrPage(serviceManager);
+            tesseractOcrPage = new TesseractOcrPage(serviceManager);
+            azureOcrPage = new AzureOcrPage(serviceManager);
+            googleVisionOcrPage = new GoogleVisionOcrPage(serviceManager);
+
+            // Shortcut
+            shortcutPage = new ShortcutPage(serviceManager);
 
             this.pages = new SettingPage[] {
                 this.speechRecognitionPage,
@@ -72,6 +79,7 @@ namespace sikusiSubtitles {
                 this.tesseractOcrPage,
                 this.azureOcrPage,
                 this.googleVisionOcrPage,
+                this.shortcutPage,
             };
 
             foreach (var page in this.pages) {
@@ -79,6 +87,7 @@ namespace sikusiSubtitles {
             }
 
             this.serviceManager.Update();
+            this.serviceManager.Init();
         }
 
         private void Form1_Load(object sender, EventArgs e) {

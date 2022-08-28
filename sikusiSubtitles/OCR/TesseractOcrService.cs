@@ -1,4 +1,5 @@
-﻿using System;
+﻿using sikusiSubtitles.Shortcut;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing.Imaging;
@@ -12,7 +13,7 @@ namespace sikusiSubtitles.OCR {
         public TesseractOcrService(Service.ServiceManager serviceManager) : base(serviceManager, "Tesseract", "Tesseract", 100) {
         }
 
-        public override void Execute(Bitmap bitmap) {
+        public override void Execute(object obj, Bitmap bitmap) {
             using (var tesseract = new TesseractEngine(@"c:\tessdata-main", "eng")) {
                 try {
                     // BitmapをTesseract用に変換
@@ -21,7 +22,7 @@ namespace sikusiSubtitles.OCR {
                     // OCRの実行
                     Tesseract.Page page = tesseract.Process(image);
                     Debug.WriteLine("TesseractOcrService: " + page.GetText());
-                    this.InvokeOcrFinished(new OcrResult(page.GetText()));
+                    this.InvokeOcrFinished(new OcrResult(obj, page.GetText()));
                 } catch (Exception ex) {
                     Debug.WriteLine("TesseractOcrService.Execute: " + ex.Message);
                 }

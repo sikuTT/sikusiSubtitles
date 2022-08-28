@@ -89,14 +89,16 @@ namespace sikusiSubtitles.OBS {
         }
 
         private void Translated(object? sender, TranslationResult result) {
-            var targets = new string[] { this.Translation1Target, this.Translation2Target };
-            var i = 0;
-            foreach (var target in targets) {
-                if (target != null) {
-                    if (result.Translations.Count > i) {
-                        var translation = result.Translations[i++];
-                        if (translation != null && translation.Text != null) {
-                            SetSubtitles(translation.Text, target, true, this.ClearInterval, this.AdditionalTime);
+            if (result.Obj == this) {
+                var targets = new string[] { this.Translation1Target, this.Translation2Target };
+                var i = 0;
+                foreach (var target in targets) {
+                    if (target != null) {
+                        if (result.Translations.Count > i) {
+                            var translation = result.Translations[i++];
+                            if (translation != null && translation.Text != null) {
+                                SetSubtitles(translation.Text, target, true, this.ClearInterval, this.AdditionalTime);
+                            }
                         }
                     }
                 }
@@ -157,7 +159,7 @@ namespace sikusiSubtitles.OBS {
         // 翻訳サービスが設定されている場合、翻訳する
         private void Translate(string text) {
             if (this.translationService != null) {
-                this.translationService.Translate(text);
+                this.translationService.Translate(this, text);
             }
         }
 

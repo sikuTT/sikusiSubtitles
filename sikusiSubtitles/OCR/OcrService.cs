@@ -14,7 +14,7 @@ namespace sikusiSubtitles.OCR {
         public OcrService(ServiceManager serviceManager, string name, string displayName, int index) : base(serviceManager, SERVICE_NAME, name, displayName, index) {
         }
 
-        public abstract void Execute(Bitmap bitmap);
+        public abstract void Execute(object obj, Bitmap bitmap);
 
         protected void InvokeOcrFinished(OcrResult result) {
             this.OcrFinished?.Invoke(this, result);

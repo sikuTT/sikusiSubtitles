@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.OCR {
     public class OcrResult {
+        public object Obj { get; }
         public string Text { get; }
 
-        public OcrResult(string text) {
+        public OcrResult(object obj, string text) {
+            this.Obj = obj;
             this.Text = text;
         }
     }

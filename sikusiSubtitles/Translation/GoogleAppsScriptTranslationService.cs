@@ -18,7 +18,7 @@ namespace sikusiSubtitles.Translation {
         public GoogleAppsScriptTranslationService(ServiceManager serviceManager) : base(serviceManager, "GoogleAppsScript", "Google Apps Script", 200) {
         }
 
-        public override async void Translate(string text) {
+        public override async void Translate(object obj, string text) {
             if (CheckParameters() == false) {
                 return;
             }
@@ -26,22 +26,22 @@ namespace sikusiSubtitles.Translation {
             var toList = new List<string>();
             if (To1 != null) toList.Add(To1);
             if (To2 != null) toList.Add(To2);
-            var result = await TranslateAsync(text, From, toList.ToArray());
+            var result = await TranslateAsync(obj, text, From, toList.ToArray());
             this.InvokeTranslated(result);
         }
 
-        public override async void Translate(string text, string to) {
+        public override async void Translate(object obj, string text, string to) {
             if (CheckParameters() == false) {
                 return;
             }
 
             var toList = new string[] { to };
-            var result = await TranslateAsync(text, null, toList);
+            var result = await TranslateAsync(obj, text, null, toList);
             this.InvokeTranslated(result);
         }
 
-        public async Task<TranslationResult> TranslateAsync(string text, string? from, string[] toList) {
-            TranslationResult result = new TranslationResult();
+        public async Task<TranslationResult> TranslateAsync(object obj, string text, string? from, string[] toList) {
+            TranslationResult result = new TranslationResult(obj);
             if (toList.Length == 0)
                 return result;
 

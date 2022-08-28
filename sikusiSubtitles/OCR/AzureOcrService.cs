@@ -9,7 +9,7 @@ namespace sikusiSubtitles.OCR {
         public AzureOcrService(Service.ServiceManager serviceManager) : base(serviceManager, "Azure", "Azure Cognitive Services", 300) {
         }
 
-        public override void Execute(Bitmap bitmap) {
+        public override void Execute(object obj, Bitmap bitmap) {
         }
     }
 }

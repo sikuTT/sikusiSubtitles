@@ -2,12 +2,15 @@
 
 namespace sikusiSubtitles.OCR {
     public partial class OcrPage : SettingPage {
+        private OcrCommonService service;
         private List<OcrService> ocrServices = new List<OcrService>();
         private List<int> processIdList = new List<int>();
         private int selectedProcessId = 0;
         private Rectangle? captureArea;
 
         public OcrPage(Service.ServiceManager serviceManager) : base(serviceManager) {
+            this.service = new OcrCommonService(serviceManager);
+
             InitializeComponent();
         }
 

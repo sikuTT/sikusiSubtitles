@@ -14,8 +14,8 @@ namespace sikusiSubtitles.Translation {
         public TranslationService(ServiceManager serviceManager, string name, string displayName, int index) : base(serviceManager, SERVICE_NAME, name, displayName, index) {
         }
 
-        public abstract void Translate(string text);
-        public abstract void Translate(string text, string to);
+        public abstract void Translate(object obj, string text);
+        public abstract void Translate(object obj, string text, string to);
 
         protected void InvokeTranslated(TranslationResult result) {
             this.Translated?.Invoke(this, result);

@@ -17,7 +17,7 @@ namespace sikusiSubtitles.Translation {
         public DeepLTranslationService(ServiceManager serviceManager) : base(serviceManager, "DeepL", "DeepL", 400) {
         }
 
-        public override async void Translate(string text) {
+        public override async void Translate(object obj, string text) {
             if (CheckParameters() == false) {
                 return;
             }
@@ -25,22 +25,22 @@ namespace sikusiSubtitles.Translation {
             var toList = new List<string>();
             if (To1 != null) toList.Add(To1);
             if (To2 != null) toList.Add(To2);
-            var result = await TranslateAsync(text, From, toList.ToArray());
+            var result = await TranslateAsync(obj, text, From, toList.ToArray());
             this.InvokeTranslated(result);
         }
 
-        public override async void Translate(string text, string to) {
+        public override async void Translate(object obj, string text, string to) {
             if (CheckParameters() == false) {
                 return;
             }
 
             var toList = new string[] { to };
-            var result = await TranslateAsync(text, null, toList);
+            var result = await TranslateAsync(obj, text, null, toList);
             this.InvokeTranslated(result);
         }
 
-        private async Task<TranslationResult> TranslateAsync(string text, string? from, string[] toList) {
-            var result = new TranslationResult();
+        private async Task<TranslationResult> TranslateAsync(object obj, string text, string? from, string[] toList) {
+            var result = new TranslationResult(obj);
 
             if (this.Key != null) {
                 var translator = new Translator(this.Key);

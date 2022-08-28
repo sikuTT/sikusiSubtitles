@@ -23,7 +23,7 @@ namespace sikusiSubtitles.Translation {
             this.Region = "";
         }
 
-        public override async void Translate(string text) {
+        public override async void Translate(object obj, string text) {
             if (CheckParameters() == false) {
                 return;
             }
@@ -32,22 +32,22 @@ namespace sikusiSubtitles.Translation {
             var toList = new List<string>();
             if (this.To1 != null) toList.Add(this.To1);
             if (this.To2 != null) toList.Add(this.To2);
-            var result = await TranslateAsync(text, from, toList.ToArray());
+            var result = await TranslateAsync(obj, text, from, toList.ToArray());
             this.InvokeTranslated(result);
         }
 
-        public override async void Translate(string text, string to) {
+        public override async void Translate(object obj, string text, string to) {
             if (CheckParameters() == false) {
                 return;
             }
 
             var toList = new string[] { to };
-            var result = await TranslateAsync(text, null, toList);
+            var result = await TranslateAsync(obj, text, null, toList);
             this.InvokeTranslated(result);
         }
 
-        private async Task<TranslationResult> TranslateAsync(string text, string? from, string[] toList) {
-            var result = new TranslationResult();
+        private async Task<TranslationResult> TranslateAsync(object obj, string text, string? from, string[] toList) {
+            var result = new TranslationResult(obj);
             if (toList.Length == 0)
                 return result;
 

@@ -49,6 +49,7 @@
             treeNode12,
             treeNode13,
             treeNode14});
+            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("ショートカット");
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.menuView = new System.Windows.Forms.TreeView();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -88,41 +89,44 @@
             this.menuView.Font = new System.Drawing.Font("Yu Gothic UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.menuView.Location = new System.Drawing.Point(0, 0);
             this.menuView.Name = "menuView";
-            treeNode1.Name = "chromeSpeechRecognitionPage";
+            treeNode1.Name = "ChromeSpeechRecognitionPage";
             treeNode1.Text = "Chrome";
-            treeNode2.Name = "azureSpeechRecognitionPage";
+            treeNode2.Name = "AzureSpeechRecognitionPage";
             treeNode2.Text = "Azure Cognitive Services";
-            treeNode3.Name = "amiVoiceSpeechRecognitionPage";
+            treeNode3.Name = "AmiVoiceSpeechRecognitionPage";
             treeNode3.Text = "AmiVoice";
-            treeNode4.Name = "speechRecognitionPage";
+            treeNode4.Name = "SpeechRecognitionPage";
             treeNode4.Text = "音声認識";
-            treeNode5.Name = "subtitlesPage";
+            treeNode5.Name = "SubtitlesPage";
             treeNode5.Text = "字幕";
-            treeNode6.Name = "obsPage";
+            treeNode6.Name = "ObsPage";
             treeNode6.Text = "OBS";
-            treeNode7.Name = "googleBasicTranslationPage";
+            treeNode7.Name = "GoogleBasicTranslationPage";
             treeNode7.Text = "Google Cloud Translation - Basic";
-            treeNode8.Name = "googleAppsScriptTranslationPage";
+            treeNode8.Name = "GoogleAppsScriptTranslationPage";
             treeNode8.Text = "Google Apps Script";
-            treeNode9.Name = "azureTranslationPage";
+            treeNode9.Name = "AzureTranslationPage";
             treeNode9.Text = "Azure Cognitive Services";
-            treeNode10.Name = "deeplTranslationPage";
+            treeNode10.Name = "DeepLTranslationPage";
             treeNode10.Text = "DeepL";
-            treeNode11.Name = "translationPage";
+            treeNode11.Name = "TranslationPage";
             treeNode11.Text = "翻訳";
-            treeNode12.Name = "tesseractOcrPage";
+            treeNode12.Name = "TesseractOcrPage";
             treeNode12.Text = "Tesseract";
-            treeNode13.Name = "googleVisionOcrPage";
+            treeNode13.Name = "GoogleVisionOcrPage";
             treeNode13.Text = "Google Cloud Vision AI";
-            treeNode14.Name = "azureOcrPage";
+            treeNode14.Name = "AzureOcrPage";
             treeNode14.Text = "Azure Cognitive Search";
-            treeNode15.Name = "ocrPage";
+            treeNode15.Name = "OcrPage";
             treeNode15.Text = "OCR";
+            treeNode16.Name = "ShortcutPage";
+            treeNode16.Text = "ショートカット";
             this.menuView.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode4,
             treeNode6,
             treeNode11,
-            treeNode15});
+            treeNode15,
+            treeNode16});
             this.menuView.Size = new System.Drawing.Size(316, 481);
             this.menuView.TabIndex = 10;
             this.menuView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.menuView_AfterSelect);
@@ -181,7 +185,7 @@
             this.label1.TabIndex = 6;
             this.label1.Text = "Ver. 0.1.4";
             // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -191,7 +195,7 @@
             this.Controls.Add(this.obsCheckBox);
             this.Controls.Add(this.speechRecognitionCheckBox);
             this.Controls.Add(this.splitContainer1);
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "sikusiSubtitles";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);

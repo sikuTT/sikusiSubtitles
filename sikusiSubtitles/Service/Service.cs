@@ -20,5 +20,7 @@ namespace sikusiSubtitles.Service {
             Index = index;
             serviceManager.AddService(this);
         }
+
+        public virtual void Init() {}
     }
 }

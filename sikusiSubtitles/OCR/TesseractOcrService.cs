@@ -11,10 +11,17 @@ using Tesseract;
 
 namespace sikusiSubtitles.OCR {
     public class TesseractOcrService : OcrService {
+        public string OcrLanguage { get; set; }
+        public string TranslationEngine { get; set; }
+        public string TranslationLanguage { get; set; }
+
         public TesseractOcrService(Service.ServiceManager serviceManager) : base(serviceManager, "Tesseract", "Tesseract", 100) {
+            OcrLanguage = "";
+            TranslationEngine = "";
+            TranslationLanguage = "";
         }
 
-        public override void Execute(object obj, Bitmap bitmap) {
+    public override void Execute(object obj, Bitmap bitmap) {
             var path = GetDataPath();
             if (path == null) {
                 MessageBox.Show("言語データが取得できません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -34,6 +41,25 @@ namespace sikusiSubtitles.OCR {
                     Debug.WriteLine("TesseractOcrService.Execute: " + ex.Message);
                 }
             }
+        }
+
+        public List<string> GetLanguageDatas() {
+            List<string> langs = new List<string>();
+
+            var path = GetDataPath();
+            if (path != null) {
+                var files = Directory.GetFiles(path, "*.traineddata");
+                foreach (var file in files) {
+                    var i = file.LastIndexOf('\\');
+                    if (i != -1) {
+                        var lang = file.Substring(i + 1);
+                        lang = lang.Substring(0, lang.Length - 12);
+                        langs.Add(lang);
+                    }
+                }
+            }
+
+            return langs;
         }
 
         private Pix BitmapToImage(Bitmap bitmap) {

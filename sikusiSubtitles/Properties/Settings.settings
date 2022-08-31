@@ -144,7 +144,19 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="OcrEngine" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Tesseract</Value>
+    </Setting>
+    <Setting Name="OcrShortcutKey" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="TesseractOcrLanguage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">eng</Value>
+    </Setting>
+    <Setting Name="TesseractTranslationEngine" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="TesseractTranslationLanguage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ja</Value>
     </Setting>
   </Settings>
 </SettingsFile>

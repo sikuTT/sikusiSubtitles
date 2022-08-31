@@ -589,13 +589,61 @@ namespace sikusiSubtitles.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Tesseract")]
         public string OcrEngine {
             get {
                 return ((string)(this["OcrEngine"]));
             }
             set {
                 this["OcrEngine"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OcrShortcutKey {
+            get {
+                return ((string)(this["OcrShortcutKey"]));
+            }
+            set {
+                this["OcrShortcutKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("eng")]
+        public string TesseractOcrLanguage {
+            get {
+                return ((string)(this["TesseractOcrLanguage"]));
+            }
+            set {
+                this["TesseractOcrLanguage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TesseractTranslationEngine {
+            get {
+                return ((string)(this["TesseractTranslationEngine"]));
+            }
+            set {
+                this["TesseractTranslationEngine"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ja")]
+        public string TesseractTranslationLanguage {
+            get {
+                return ((string)(this["TesseractTranslationLanguage"]));
+            }
+            set {
+                this["TesseractTranslationLanguage"] = value;
             }
         }
     }

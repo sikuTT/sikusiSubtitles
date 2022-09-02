@@ -12,14 +12,14 @@ using System.Windows.Forms;
 namespace sikusiSubtitles.Translation {
     public partial class DeepLTranslationPage : SettingPage {
         private DeepLTranslationService service;
-        private Tuple<string, string>[] languages;
+        private List<Tuple<string, string>> languages;
 
         public override void LoadSettings() {
             this.keyTextBox.Text = this.Decrypt(Properties.Settings.Default.DeepLTranslationKey);
             this.to1CheckBox.Checked = Properties.Settings.Default.DeepLTranslationTo1Run;
             this.to2CheckBox.Checked = Properties.Settings.Default.DeepLTranslationTo2Run;
 
-            for (var i = 0; i < this.languages.Length; i++) {
+            for (var i = 0; i < this.languages.Count; i++) {
                 if (this.languages[i].Item1 == Properties.Settings.Default.DeepLTranslationFrom) {
                     this.fromComboBox.SelectedIndex = i;
                 } else if (this.languages[i].Item1 == Properties.Settings.Default.DeepLTranslationTo1) {

@@ -11,5 +11,9 @@ namespace sikusiSubtitles.OCR {
 
         public override void Execute(object obj, Bitmap bitmap) {
         }
+
+        public override List<string> GetLanguages() {
+            return new List<string>();
+        }
     }
 }

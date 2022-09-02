@@ -15,7 +15,7 @@ namespace sikusiSubtitles.Translation {
         public string? To2 { get; set; }
 
         public DeepLTranslationService(ServiceManager serviceManager) : base(serviceManager, "DeepL", "DeepL", 400) {
-            Array.Sort(this.languages, (a, b) => a.Item2.CompareTo(b.Item2));
+            this.languages.Sort((a, b) => a.Item2.CompareTo(b.Item2));
         }
 
         public override async void Translate(object obj, string text) {
@@ -40,7 +40,7 @@ namespace sikusiSubtitles.Translation {
             this.InvokeTranslated(result);
         }
 
-        public override Tuple<string, string>[] GetLanguages() {
+        public override List<Tuple<string, string>> GetLanguages() {
             return this.languages;
         }
 
@@ -68,7 +68,7 @@ namespace sikusiSubtitles.Translation {
             }
         }
 
-        private Tuple<string, string>[] languages = {
+        private List<Tuple<string, string>> languages = new List<Tuple<string, string>> {
             new Tuple<string, string>("bg", "Bulgarian"),
             new Tuple<string, string>("cs", "Czech"),
             new Tuple<string, string>("da", "Danish"),

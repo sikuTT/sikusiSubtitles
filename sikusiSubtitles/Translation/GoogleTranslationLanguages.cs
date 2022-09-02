@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 namespace sikusiSubtitles.Translation {
     public class GoogleTranslationLanguages {
         public GoogleTranslationLanguages() {
-            Array.Sort(languages, (a, b) => a.Item2.CompareTo(b.Item2));
+            languages.Sort((a, b) => a.Item2.CompareTo(b.Item2));
         }
 
-        public Tuple<string, string>[] Languages { get { return languages; } }
+        public List<Tuple<string, string>> Languages { get { return languages; } }
 
-        Tuple<string, string>[] languages = {
+        List<Tuple<string, string>> languages = new List<Tuple<string, string>>{
             new Tuple<string, string>("af", "アフリカーンス語"),
             new Tuple<string, string>("sq", "アルバニア語"),
             new Tuple<string, string>("am", "アムハラ語"),

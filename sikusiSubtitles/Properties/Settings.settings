@@ -158,5 +158,14 @@
     <Setting Name="TesseractTranslationLanguage" Type="System.String" Scope="User">
       <Value Profile="(Default)">ja</Value>
     </Setting>
+    <Setting Name="OcrTranslationEngine" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="OcrLanguage" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="OcrTranslationLanguage" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

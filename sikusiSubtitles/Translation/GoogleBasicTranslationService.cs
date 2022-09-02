@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.Translation {
     public class GoogleBasicTranslationService : TranslationService {
-        private Tuple<string, string>[] langueages = new GoogleTranslationLanguages().Languages;
+        private List<Tuple<string, string>> langueages = new GoogleTranslationLanguages().Languages;
 
         public string? Key { get; set; }
         public string? From { get; set; }
@@ -75,7 +75,7 @@ namespace sikusiSubtitles.Translation {
             return result;
         }
 
-        public override Tuple<string, string>[] GetLanguages() {
+        public override List<Tuple<string, string>> GetLanguages() {
             return this.langueages;
         }
 

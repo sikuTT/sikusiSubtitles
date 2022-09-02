@@ -15,14 +15,14 @@ using System.Windows.Forms;
 namespace sikusiSubtitles.Translation {
     public partial class GoogleBasicTranslationPage : SettingPage {
         private GoogleBasicTranslationService service;
-        private Tuple<string, string>[] languages = new GoogleTranslationLanguages().Languages;
+        private List<Tuple<string, string>> languages = new GoogleTranslationLanguages().Languages;
 
         public GoogleBasicTranslationPage(Service.ServiceManager serviceManager) : base(serviceManager) {
             this.service = new GoogleBasicTranslationService(serviceManager);
 
             InitializeComponent();
 
-            Array.Sort(languages, (a, b) => a.Item2.CompareTo(b.Item2));
+            languages.Sort((a, b) => a.Item2.CompareTo(b.Item2));
         }
 
         public override void LoadSettings() {
@@ -30,7 +30,7 @@ namespace sikusiSubtitles.Translation {
             this.to1CheckBox.Checked = Properties.Settings.Default.GoogleTranslationBasicTo1Run;
             this.to2CheckBox.Checked = Properties.Settings.Default.GoogleTranslationBasicTo2Run;
 
-            for (var i = 0; i < this.languages.Length; i++) {
+            for (var i = 0; i < this.languages.Count; i++) {
                 if (this.languages[i].Item1 == Properties.Settings.Default.GoogleTranslationBasicFrom) {
                     this.fromComboBox.SelectedIndex = i;
                 } else if (this.languages[i].Item1 == Properties.Settings.Default.GoogleTranslationBasicTo1) {

@@ -2,6 +2,7 @@
 using sikusiSubtitles.Service;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,6 +42,10 @@ namespace sikusiSubtitles.OBS {
             } catch (ErrorResponseException) {
                 // MessageBox.Show("Connect failed : " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 MessageBox.Show("接続できませんでした。接続先を確認してください。");
+                return false;
+            } catch (Exception ex) {
+                MessageBox.Show("接続できませんでした。");
+                Debug.WriteLine(ex.Message);
                 return false;
             }
 

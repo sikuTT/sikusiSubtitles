@@ -13,7 +13,7 @@ using System.Windows.Forms;
 namespace sikusiSubtitles.Translation {
     public partial class GoogleAppsScriptTranslationPage : SettingPage {
         GoogleAppsScriptTranslationService service;
-        Tuple<string, string>[] languages = new GoogleTranslationLanguages().Languages;
+        List<Tuple<string, string>> languages = new GoogleTranslationLanguages().Languages;
 
         public GoogleAppsScriptTranslationPage(Service.ServiceManager serviceManager) : base(serviceManager) {
             this.service = new GoogleAppsScriptTranslationService(serviceManager);
@@ -27,7 +27,7 @@ namespace sikusiSubtitles.Translation {
             this.to1CheckBox.Checked = Properties.Settings.Default.GoogleAppsScriptTranslationTo1Run;
             this.to2CheckBox.Checked = Properties.Settings.Default.GoogleAppsScriptTranslationTo2Run;
 
-            for (var i = 0; i < this.languages.Length; i++) {
+            for (var i = 0; i < this.languages.Count; i++) {
                 if (this.languages[i].Item1 == Properties.Settings.Default.GoogleAppsScriptTranslationFrom) {
                     this.fromComboBox.SelectedIndex = i;
                 } else if (this.languages[i].Item1 == Properties.Settings.Default.GoogleAppsScriptTranslationTo1) {

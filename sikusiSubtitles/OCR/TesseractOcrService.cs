@@ -11,14 +11,7 @@ using Tesseract;
 
 namespace sikusiSubtitles.OCR {
     public class TesseractOcrService : OcrService {
-        public string OcrLanguage { get; set; }
-        public string TranslationEngine { get; set; }
-        public string TranslationLanguage { get; set; }
-
         public TesseractOcrService(Service.ServiceManager serviceManager) : base(serviceManager, "Tesseract", "Tesseract", 100) {
-            OcrLanguage = "";
-            TranslationEngine = "";
-            TranslationLanguage = "";
         }
 
     public override void Execute(object obj, Bitmap bitmap) {
@@ -43,7 +36,7 @@ namespace sikusiSubtitles.OCR {
             }
         }
 
-        public List<string> GetLanguageDatas() {
+        public override List<string> GetLanguages() {
             List<string> langs = new List<string>();
 
             var path = GetDataPath();

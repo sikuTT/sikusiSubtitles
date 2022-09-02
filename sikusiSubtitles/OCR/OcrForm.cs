@@ -16,12 +16,16 @@ using static sikusiSubtitles.OCR.ScreenCapture;
 namespace sikusiSubtitles.OCR {
     public partial class OcrForm : Form {
         private Service.ServiceManager serviceManager;
+        private OcrCommonService? ocrCommonService;
         private OcrService? ocrService;
-        private ShortcutService? shortcutService;
+
+        private List<TranslationService> translationServices = new List<TranslationService>();
+        private TranslationService? translationService;
+
         private ObsService? obsService;
         private SubtitlesService? subtitlesService;
-        private List<TranslationService> translationServices;
-        private TranslationService? translationService;
+
+        private ShortcutService? shortcutService;
 
         private int processId;
         private Rectangle captureArea;
@@ -31,26 +35,6 @@ namespace sikusiSubtitles.OCR {
             InitializeComponent();
 
             this.serviceManager = serviceManager;
-
-            // OCRサービスを取得
-            this.ocrService = this.serviceManager.GetActiveService<OcrService>();
-            if (this.ocrService != null) {
-                this.ocrService.OcrFinished += OrcFinished;
-            }
-
-            // 翻訳サービスを取得
-            this.translationServices = this.serviceManager.GetServices<TranslationService>();
-            var activeTranslationService = this.serviceManager.GetActiveService<TranslationService>();
-            for (var i = 0; i < this.translationServices.Count; i++) {
-                var service = this.translationServices[i];
-                this.translationComboBox.Items.Add(service.DisplayName);
-                if (service == activeTranslationService) {
-                    this.translationComboBox.SelectedIndex = i;
-                }
-            }
-            if (this.translationComboBox.SelectedIndex == -1) {
-                this.translationComboBox.SelectedIndex = 0;
-            }
 
             // キャプチャー対象
             this.processId = processId;
@@ -65,6 +49,21 @@ namespace sikusiSubtitles.OCR {
             if (shortcutService != null) {
                 shortcutService.ShortcutRun += ShortcutRun;
             }
+        }
+
+        private void OcrForm_Load(object sender, EventArgs e) {
+            // OCRサービス
+            this.ocrCommonService = this.serviceManager.GetService<OcrCommonService>();
+            this.translationServices = this.serviceManager.GetServices<TranslationService>();
+            this.ocrService = this.serviceManager.GetActiveService<OcrService>();
+            if (this.ocrService != null) {
+                this.ocrService.OcrFinished += OcrFinished;
+            }
+
+            // 翻訳エンジンの一覧をコンボボックスに設定
+            this.translationServices.ForEach(service => this.translationEngineComboBox.Items.Add(service.DisplayName));
+            var i = this.translationServices.FindIndex(service => service.Name == ocrCommonService?.TranslationService?.Name);
+            this.translationEngineComboBox.SelectedIndex = i != -1 ? i : 0;
 
             // OBSのテキストソースの一覧を取得
             obsService = this.serviceManager.GetService<ObsService>();
@@ -74,11 +73,28 @@ namespace sikusiSubtitles.OCR {
 
         private void OcrForm_FormClosed(object sender, FormClosedEventArgs e) {
             if (this.ocrService != null) {
-                this.ocrService.OcrFinished -= OrcFinished;
+                this.ocrService.OcrFinished -= OcrFinished;
             }
 
             if (this.shortcutService != null) {
               this.shortcutService.ShortcutRun -= ShortcutRun;
+            }
+        }
+
+        /** 翻訳エンジンが変更された */
+        private void translationEngineComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            translationLangComboBox.Items.Clear();
+            if (translationEngineComboBox.SelectedIndex != -1) {
+                this.translationService = translationServices[translationEngineComboBox.SelectedIndex];
+                var langs = this.translationService.GetLanguages();
+                foreach (var lang in langs) {
+                    var i = this.translationLangComboBox.Items.Add(lang.Item2);
+                    if (lang.Item1 == this.ocrCommonService?.TranslationLanguage) {
+                        this.translationLangComboBox.SelectedIndex = i;
+                    }
+                }
+            } else {
+                this.translationService = null;
             }
         }
 
@@ -141,10 +157,10 @@ namespace sikusiSubtitles.OCR {
 
         private void Translate() {
             this.translateButton.Enabled = false;
-            if (this.orcTextBox.Text == "") {
+            if (this.ocrTextBox.Text == "") {
                 MessageBox.Show("文字が入力されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 this.translateButton.Enabled = true;
-            } else if (this.translationComboBox.SelectedIndex == -1) {
+            } else if (this.translationEngineComboBox.SelectedIndex == -1) {
                 MessageBox.Show("翻訳に使用するサービスが設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.translateButton.Enabled = true;
             } else {
@@ -152,9 +168,9 @@ namespace sikusiSubtitles.OCR {
             }
         }
         private void DoTranslate() {
-            this.translationService = this.translationServices[this.translationComboBox.SelectedIndex];
+            this.translationService = this.translationServices[this.translationEngineComboBox.SelectedIndex];
             this.translationService.Translated += Translated;
-            this.translationService.Translate(this, this.orcTextBox.Text, "ja");
+            this.translationService.Translate(this, this.ocrTextBox.Text, "ja");
         }
 
         /**
@@ -177,10 +193,10 @@ namespace sikusiSubtitles.OCR {
         /**
          * OCRが完了した
          */
-        private void OrcFinished(object? sender, OcrResult result) {
+        private void OcrFinished(object? sender, OcrResult result) {
             if (result.Obj == this) {
                 var text = result.Text.Replace("\r\n", " ").Replace("\r", " ").Replace("\n", " ");
-                this.orcTextBox.Text = text;
+                this.ocrTextBox.Text = text;
                 this.Translate();
                 this.ocrButton.Enabled = true;
             }

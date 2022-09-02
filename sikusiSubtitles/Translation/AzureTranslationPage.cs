@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace sikusiSubtitles.Translation {
     public partial class AzureTranslationPage : SettingPage {
-        private Tuple<string, string>[] languages;
+        private List<Tuple<string, string>> languages;
 
         public AzureTranslationService service;
 
@@ -33,7 +33,7 @@ namespace sikusiSubtitles.Translation {
             this.to1CheckBox.Checked = Properties.Settings.Default.AzureTranslationTo1Run;
             this.to2CheckBox.Checked = Properties.Settings.Default.AzureTranslationTo2Run;
 
-            for (var i = 0; i < this.languages.Length; i++) {
+            for (var i = 0; i < this.languages.Count; i++) {
                 if (this.languages[i].Item1 == Properties.Settings.Default.AzureTranslationFrom) {
                     this.fromComboBox.SelectedIndex = i;
                 } else if (this.languages[i].Item1 == Properties.Settings.Default.AzureTranslationTo1) {

@@ -646,5 +646,41 @@ namespace sikusiSubtitles.Properties {
                 this["TesseractTranslationLanguage"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OcrTranslationEngine {
+            get {
+                return ((string)(this["OcrTranslationEngine"]));
+            }
+            set {
+                this["OcrTranslationEngine"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OcrLanguage {
+            get {
+                return ((string)(this["OcrLanguage"]));
+            }
+            set {
+                this["OcrLanguage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OcrTranslationLanguage {
+            get {
+                return ((string)(this["OcrTranslationLanguage"]));
+            }
+            set {
+                this["OcrTranslationLanguage"] = value;
+            }
+        }
     }
 }

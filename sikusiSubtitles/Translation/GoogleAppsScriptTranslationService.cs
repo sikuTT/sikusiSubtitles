@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace sikusiSubtitles.Translation {
     public class GoogleAppsScriptTranslationService : TranslationService {
         private HttpClient HttpClient = new HttpClient();
-        private Tuple<string, string>[] languages = new GoogleTranslationLanguages().Languages;
+        private List<Tuple<string, string>> languages = new GoogleTranslationLanguages().Languages;
 
         public string? Key { get; set; }
         public string? From { get; set; }
@@ -70,7 +70,7 @@ namespace sikusiSubtitles.Translation {
             return result;
         }
 
-        public override Tuple<string, string>[] GetLanguages() {
+        public override List<Tuple<string, string>> GetLanguages() {
             return this.languages;
         }
 

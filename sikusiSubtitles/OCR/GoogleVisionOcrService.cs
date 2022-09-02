@@ -39,5 +39,9 @@ namespace sikusiSubtitles.OCR {
             }
             */
         }
+
+        public override List<string> GetLanguages() {
+            return new List<string>();
+        }
     }
 }

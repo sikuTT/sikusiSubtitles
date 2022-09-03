@@ -183,17 +183,17 @@ namespace sikusiSubtitles {
             this.SetRecognitionResultText(args.Text);
         }
 
-        private void obsCheckBox_CheckedChanged(object sender, EventArgs e) {
+        async private void obsCheckBox_CheckedChanged(object sender, EventArgs e) {
             this.SetCheckBoxButtonColor(this.obsCheckBox);
 
             var service = serviceManager.GetService<ObsService>();
             if (service != null) {
                 if (this.obsCheckBox.Checked) {
-                    if (service.Connect() == false) {
+                    if (await service.ConnectAsync() == false) {
                         this.obsCheckBox.Checked = false;
                     }
                 } else if (service.IsConnected) {
-                    service.Disconnect();
+                    await service.DisconnectAsync();
                 }
             }
         }

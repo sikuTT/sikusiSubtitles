@@ -1,4 +1,6 @@
-﻿using sikusiSubtitles.SpeechRecognition;
+﻿using Newtonsoft.Json.Linq;
+using ObsWebSocket5.Message.Data.Response.InputSettings;
+using sikusiSubtitles.SpeechRecognition;
 using sikusiSubtitles.Translation;
 using System;
 using System.Collections.Generic;
@@ -68,35 +70,42 @@ namespace sikusiSubtitles.OBS {
             }
         }
 
-        public void SetText(string sourceName, string text) {
+        async public Task SetTextAsync(string sourceName, string text) {
+            Debug.WriteLine("1. SetTextAsync " + sourceName + " " + text);
             if (this.obsService == null) {
                 return;
             }
             try {
                 var obsSocket = this.obsService.ObsSocket;
                 if (obsService.IsConnected) {
-                    var prop = obsSocket.GetTextGDIPlusProperties(sourceName);
-                    prop.Text = text;
-                    obsSocket.SetTextGDIPlusProperties(prop);
+                    Debug.WriteLine("2. SetTextAsync " + sourceName + " " + text);
+                    var response = await obsSocket.GetInputSettingsAsync(sourceName);
+                    Debug.WriteLine("3. SetTextAsync " + sourceName + " " + text);
+                    var settings = response?.d?.responseData?.inputSettings as TextGdiplusV2;
+                    if (settings != null) {
+                        Debug.WriteLine("4. SetTextAsync " + sourceName + " " + text);
+                        settings.text = text;
+                        await obsSocket.SetInputSettingsAsync(sourceName, settings);
+                    }
                 }
             } catch (Exception ex) {
                 Debug.WriteLine("SubtitlesService.SetText: " + ex.Message);
             }
         }
 
-        private void Recognizing(object? sender, SpeechRecognitionEventArgs args) {
+        async private void Recognizing(object? sender, SpeechRecognitionEventArgs args) {
             if (this.obsService != null && this.obsService.IsConnected) {
                 if (args.Text != "") {
-                    SetSubtitles(args.Text, this.VoiceTarget, false);
+                    await SetSubtitlesAsync(args.Text, this.VoiceTarget, false);
                 }
             }
         }
 
-        private void Recognized(object? sender, SpeechRecognitionEventArgs args) {
+        async private void Recognized(object? sender, SpeechRecognitionEventArgs args) {
             if (this.obsService != null && this.obsService.IsConnected) {
                 if (args.Text != "") {
                     // 字幕を表示する。
-                    SetSubtitles(args.Text, this.VoiceTarget, true, this.ClearInterval, this.AdditionalTime);
+                    await SetSubtitlesAsync(args.Text, this.VoiceTarget, true, this.ClearInterval, this.AdditionalTime);
 
                     // 翻訳サービスが設定されている場合、翻訳する
                     Translate(args.Text);
@@ -104,7 +113,7 @@ namespace sikusiSubtitles.OBS {
             }
         }
 
-        private void Translated(object? sender, TranslationResult result) {
+        async private void Translated(object? sender, TranslationResult result) {
             if (result.Obj == this) {
                 var targets = new string[] { this.Translation1Target, this.Translation2Target };
                 var i = 0;
@@ -113,7 +122,7 @@ namespace sikusiSubtitles.OBS {
                         if (result.Translations.Count > i) {
                             var translation = result.Translations[i++];
                             if (translation != null && translation.Text != null) {
-                                SetSubtitles(translation.Text, target, true, this.ClearInterval, this.AdditionalTime);
+                                await SetSubtitlesAsync(translation.Text, target, true, this.ClearInterval, this.AdditionalTime);
                             }
                         }
                     }
@@ -121,7 +130,7 @@ namespace sikusiSubtitles.OBS {
             }
         }
 
-        private void SetSubtitles(string text, string target, bool recognized, int? timeout = null, int? additionalTimeout = null) {
+        async private Task SetSubtitlesAsync(string text, string target, bool recognized, int? timeout = null, int? additionalTimeout = null) {
             if (this.obsService == null || this.obsService.IsConnected == false) {
                 return;
             }
@@ -143,7 +152,7 @@ namespace sikusiSubtitles.OBS {
                 }
 
                 // 字幕を表示
-                this.SetText(target, CreateSubtitlesText(target));
+                await this.SetTextAsync(target, CreateSubtitlesText(target));
 
                 // 字幕削除のタイマーを作成する。
                 if (timeout != null) {
@@ -192,7 +201,7 @@ namespace sikusiSubtitles.OBS {
                 foreach (var dic in clearTimer) {
                     if (dic.Value == sender) {
                         this.recognizedText[dic.Key] = "";
-                        this.SetText(dic.Key, CreateSubtitlesText(dic.Key));
+                        this.SetTextAsync(dic.Key, CreateSubtitlesText(dic.Key));
                         break;
                     }
                 }

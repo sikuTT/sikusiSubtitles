@@ -43,6 +43,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AmiVoiceWrp\AmiVoiceWrp.csproj" />
+    <ProjectReference Include="..\ObsWebSocket5\ObsWebSocket5.csproj" />
   </ItemGroup>
 
   <ItemGroup>

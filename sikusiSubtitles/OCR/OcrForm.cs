@@ -180,6 +180,7 @@ namespace sikusiSubtitles.OCR {
             this.obsTextSourceComboBox.Items.Clear();
             this.obsTextSourceComboBox.Items.Add("");
             if (obsService != null && obsService.ObsSocket.IsConnected) {
+/*
                 var sources = obsService.ObsSocket.GetSourcesList();
                 sources.ForEach(source => {
                     if (source.TypeID == "text_gdiplus_v2") {
@@ -187,6 +188,7 @@ namespace sikusiSubtitles.OCR {
                         this.obsTextSourceComboBox.Items.Add(source.Name);
                     }
                 });
+*/
             }
         }
 
@@ -213,7 +215,7 @@ namespace sikusiSubtitles.OCR {
                     // OBSに接続済みで、翻訳結果表示先が指定されている場合、OBS上に翻訳結果を表示する。
                     if (obsService != null && obsService.ObsSocket.IsConnected && subtitlesService != null && obsTextSourceComboBox.SelectedIndex > 0) {
                         var sourceName = obsTextSources[obsTextSourceComboBox.SelectedIndex - 1];
-                        this.subtitlesService.SetText(sourceName, result.Translations[0].Text ?? "");
+                        this.subtitlesService.SetTextAsync(sourceName, result.Translations[0].Text ?? "");
                     }
                 }
 

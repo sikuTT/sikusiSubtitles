@@ -12,50 +12,19 @@ using System.Windows.Forms;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public partial class SpeechRecognitionPage : SettingPage {
-        /** 音声認識サービスの一覧 */
-        public enum ServiceType {
-            None,
-            Chrome,
-            Azure,
-            AmiVoice,
-        }
+        private SpeechRecognitionCommonService service;
+
+        /** 音声認識サービス一覧 */
+        private List<SpeechRecognitionService> services = new List<SpeechRecognitionService>();
 
         /** マイク一覧 */
-        private MMDeviceCollection MicList;
+        private MMDeviceCollection micList;
 
-        /**
-         * 選択されているマイク
-         */
-        public MMDevice? Mic {
-            get {
-                if (this.micComboBox.SelectedIndex < 0) {
-                    return null;
-                } else {
-                    return this.MicList[this.micComboBox.SelectedIndex];
-                }
-            }
-        }
+        public SpeechRecognitionPage(Service.ServiceManager serviceManager) : base(serviceManager) {
+            this.service = new SpeechRecognitionCommonService(serviceManager);
 
-        /**
-         * 選択されている音声認識サービス
-         */
-        public ServiceType Service {
-            get {
-                if (this.chromeSpeechRecognitionRadioButton.Checked) {
-                    return ServiceType.Chrome;
-                }  else if (this.azureSpeechRecognitionRadioButton.Checked) {
-                    return ServiceType.Azure;
-                } else if (this.amiVoiceSpeechRecognitionRadioButton.Checked) {
-                    return ServiceType.AmiVoice;
-                } else {
-                    return ServiceType.None;
-                }
-            }
-        }
-
-        public SpeechRecognitionPage() {
             var enumerator = new MMDeviceEnumerator();
-            this.MicList = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
+            this.micList = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
 
             InitializeComponent();
         }
@@ -64,8 +33,11 @@ namespace sikusiSubtitles.SpeechRecognition {
          * 設定を保存する
          */
         public override void SaveSettings() {
-            Properties.Settings.Default.MicID = Mic != null ? Mic.ID : "";
-            Properties.Settings.Default.RecognitionEngine = Service.ToString();
+            var device = this.service.Device;
+            var service = this.serviceManager.GetActiveService<SpeechRecognitionService>();
+
+            Properties.Settings.Default.MicID = device != null ? device.ID : "";
+            Properties.Settings.Default.RecognitionEngine = service != null ? service.DisplayName : "";
         }
 
         /**
@@ -75,28 +47,53 @@ namespace sikusiSubtitles.SpeechRecognition {
             // マイク設定
             var enumerator = new MMDeviceEnumerator();
             MMDevice defaultDevice = enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Console);
-            bool setMic = false;
-            for (int i = 0; i < this.MicList.Count; ++i) {
-                var endpoint = this.MicList[i];
-                if (setMic == false && endpoint.ID == defaultDevice.ID) {
+            for (int i = 0; i < this.micList.Count; ++i) {
+                var mic = this.micList[i];
+                if (mic.ID == defaultDevice.ID) {
                     this.micComboBox.SelectedIndex = i;
-                } else if (endpoint.ID == Properties.Settings.Default.MicID) {
+                } else if (mic.ID == Properties.Settings.Default.MicID) {
                     this.micComboBox.SelectedIndex = i;
-                    setMic = true;
+                    break;
                 }
             }
 
             // 音声認識エンジン
-            this.chromeSpeechRecognitionRadioButton.Checked = Properties.Settings.Default.RecognitionEngine == ServiceType.Chrome.ToString();
-            this.azureSpeechRecognitionRadioButton.Checked = Properties.Settings.Default.RecognitionEngine == ServiceType.Azure.ToString();
-            this.amiVoiceSpeechRecognitionRadioButton.Checked = Properties.Settings.Default.RecognitionEngine == ServiceType.AmiVoice.ToString();
+            this.serviceComboBox.SelectedIndex = 0;
+            for (int i = 0; i < this.services.Count; ++i) {
+                if (Properties.Settings.Default.RecognitionEngine == this.services[i].Name) {
+                    this.serviceComboBox.SelectedIndex = i;
+                    break;
+                }
+            }
         }
 
+        /**
+         * フォームがロードされた
+         */
         private void SpeechRecognitionPage_Load(object sender, EventArgs e) {
-            this.micComboBox.Items.Clear();
-            foreach (var endpoint in this.MicList) {
-                this.micComboBox.Items.Add(endpoint.FriendlyName);
+            foreach (var mic in this.micList) {
+                this.micComboBox.Items.Add(mic.FriendlyName);
             }
+
+            this.services = this.serviceManager.GetServices<SpeechRecognitionService>();
+            foreach (var service in this.services) {
+                this.serviceComboBox.Items.Add(service.DisplayName);
+            }
+        }
+
+        /**
+         * 使用するマイクが変更された
+         */
+        private void micComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            this.service.Device = this.micList[this.micComboBox.SelectedIndex];
+        }
+
+        /**
+         * 使用する音声認識サービスが変更された
+         */
+        private void serviceComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            var service = this.services[this.serviceComboBox.SelectedIndex];
+            this.serviceManager.SetActiveService(service);
         }
     }
 }

@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.Translation {
     public class TranslationResult {
-        public TranslationResult() {
+        public TranslationResult(object obj) {
+            Obj = obj;
             Translations = new List<Translation>();
             Error = false;
         }
 
+        public object Obj;
         public string? DetectLanguage { get; set; }
 
         public List<Translation> Translations { get; set; }

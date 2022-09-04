@@ -12,45 +12,27 @@ using System.Windows.Forms;
 
 namespace sikusiSubtitles.Translation {
     public partial class GoogleAppsScriptTranslationPage : SettingPage {
-        Tuple<string, string>[] Languages = new GoogleTranslationLanguages().Languages;
-        HttpClient HttpClient = new HttpClient();
+        GoogleAppsScriptTranslationService service;
+        List<Tuple<string, string>> languages = new GoogleTranslationLanguages().Languages;
 
-        public GoogleAppsScriptTranslationPage() {
+        public GoogleAppsScriptTranslationPage(Service.ServiceManager serviceManager) : base(serviceManager) {
+            this.service = new GoogleAppsScriptTranslationService(serviceManager);
+
             InitializeComponent();
         }
 
-        public bool IsTo1 { get { return this.to1CheckBox.Checked; } }
-        public bool IsTo2 { get { return this.to2CheckBox.Checked; } }
-
-        public string? From { get { return this.fromComboBox.SelectedIndex >= 0 ? this.Languages[this.fromComboBox.SelectedIndex].Item1 : null; } }
-
-        /**
-         * 翻訳先の言語一覧
-         */
-        public List<string> To {
-            get {
-                var to = new List<String>();
-                if (this.to1CheckBox.Checked && this.to1ComboBox.SelectedIndex != -1) {
-                    to.Add(this.Languages[this.to1ComboBox.SelectedIndex].Item1);
-                }
-                if (this.to2CheckBox.Checked && this.to2ComboBox.SelectedIndex != -1) {
-                    to.Add(this.Languages[this.to2ComboBox.SelectedIndex].Item1);
-                }
-                return to;
-            }
-        }
 
         public override void LoadSettings() {
             this.keyTextBox.Text = this.Decrypt(Properties.Settings.Default.GoogleAppsScriptTranslationKey);
             this.to1CheckBox.Checked = Properties.Settings.Default.GoogleAppsScriptTranslationTo1Run;
             this.to2CheckBox.Checked = Properties.Settings.Default.GoogleAppsScriptTranslationTo2Run;
 
-            for (var i = 0; i < this.Languages.Length; i++) {
-                if (this.Languages[i].Item1 == Properties.Settings.Default.GoogleAppsScriptTranslationFrom) {
+            for (var i = 0; i < this.languages.Count; i++) {
+                if (this.languages[i].Item1 == Properties.Settings.Default.GoogleAppsScriptTranslationFrom) {
                     this.fromComboBox.SelectedIndex = i;
-                } else if (this.Languages[i].Item1 == Properties.Settings.Default.GoogleAppsScriptTranslationTo1) {
+                } else if (this.languages[i].Item1 == Properties.Settings.Default.GoogleAppsScriptTranslationTo1) {
                     this.to1ComboBox.SelectedIndex = i;
-                } else if (this.Languages[i].Item1 == Properties.Settings.Default.GoogleAppsScriptTranslationTo2) {
+                } else if (this.languages[i].Item1 == Properties.Settings.Default.GoogleAppsScriptTranslationTo2) {
                     this.to2ComboBox.SelectedIndex = i;
                 }
             }
@@ -62,57 +44,77 @@ namespace sikusiSubtitles.Translation {
             Properties.Settings.Default.GoogleAppsScriptTranslationTo2Run = this.to2CheckBox.Checked;
 
             if (this.fromComboBox.SelectedIndex >= 0) {
-                Properties.Settings.Default.GoogleAppsScriptTranslationFrom = this.Languages[this.fromComboBox.SelectedIndex].Item1;
+                Properties.Settings.Default.GoogleAppsScriptTranslationFrom = this.languages[this.fromComboBox.SelectedIndex].Item1;
             } else {
                 Properties.Settings.Default.GoogleAppsScriptTranslationFrom = "";
             }
 
             if (this.to1ComboBox.SelectedIndex >= 0) {
-                Properties.Settings.Default.GoogleAppsScriptTranslationTo1 = this.Languages[this.to1ComboBox.SelectedIndex].Item1;
+                Properties.Settings.Default.GoogleAppsScriptTranslationTo1 = this.languages[this.to1ComboBox.SelectedIndex].Item1;
             } else {
                 Properties.Settings.Default.GoogleAppsScriptTranslationTo1 = "";
             }
 
             if (this.to2ComboBox.SelectedIndex >= 0) {
-                Properties.Settings.Default.GoogleAppsScriptTranslationTo2 = this.Languages[this.to2ComboBox.SelectedIndex].Item1;
+                Properties.Settings.Default.GoogleAppsScriptTranslationTo2 = this.languages[this.to2ComboBox.SelectedIndex].Item1;
             } else {
                 Properties.Settings.Default.GoogleAppsScriptTranslationTo2 = "";
             }
         }
 
-        public async Task<TranslationResult> TranslateAsync(string text, string? from, string[] toList) {
-            TranslationResult result = new TranslationResult();
-            if (toList.Length == 0)
-                return result;
-
-            try {
-                foreach (var to in toList) {
-                    var url = "https://script.google.com/macros/s/";
-                    url += this.keyTextBox.Text + "/exec?text=" + text;
-                    if (from != null)
-                        url += "&source=" + from;
-                    url += "&target=" + to;
-                    using var request = new HttpRequestMessage();
-                    request.Method = HttpMethod.Get;
-                    request.RequestUri = new Uri(url);
-                    HttpResponseMessage response = await this.HttpClient.SendAsync(request).ConfigureAwait(false);
-                    string responseText = await response.Content.ReadAsStringAsync();
-                    result.Translations.Add(new TranslationResult.Translation() { Text = responseText });
-                }
-            } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);
-                result.Translations.Add(new TranslationResult.Translation() { Text = ex.Message });
-                result.Error = true;
-            }
-
-            return result;
-        }
-
         private void GoogleAppsScriptTranslationPage_Load(object sender, EventArgs e) {
-            foreach (var lang in this.Languages) {
+            foreach (var lang in this.languages) {
                 this.fromComboBox.Items.Add(lang.Item2);
                 this.to1ComboBox.Items.Add(lang.Item2);
                 this.to2ComboBox.Items.Add(lang.Item2);
+            }
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            ProcessStartInfo pi = new ProcessStartInfo() {
+                FileName = "https://script.google.com/home",
+                UseShellExecute = true,
+            };
+            System.Diagnostics.Process.Start(pi);
+        }
+
+        private void keyTextBox_TextChanged(object sender, EventArgs e) {
+            this.service.Key = keyTextBox.Text;
+        }
+
+        private void fromComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            this.service.From = this.languages[fromComboBox.SelectedIndex].Item1;
+        }
+
+        private void to1CheckBox_CheckedChanged(object sender, EventArgs e) {
+            this.SetTo1();
+        }
+
+        private void to1ComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            this.SetTo1();
+        }
+
+        private void to2CheckBox_CheckedChanged(object sender, EventArgs e) {
+            this.SetTo2();
+        }
+
+        private void to2ComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            this.SetTo2();
+        }
+
+        private void SetTo1() {
+            if (this.to1CheckBox.Checked && this.to1ComboBox.SelectedIndex != -1) {
+                this.service.To1 = this.languages[this.to1ComboBox.SelectedIndex].Item1;
+            } else {
+                this.service.To1 = null;
+            }
+        }
+
+        private void SetTo2() {
+            if (this.to2CheckBox.Checked && this.to2ComboBox.SelectedIndex != -1) {
+                this.service.To2 = this.languages[this.to2ComboBox.SelectedIndex].Item1;
+            } else {
+                this.service.To2 = null;
             }
         }
     }

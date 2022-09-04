@@ -14,12 +14,11 @@ using System.Windows.Forms;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public partial class AzureSpeechRecognitionPage : SettingPage {
-        SpeechRecognizer? Recognizer;
+        AzureSpeechRecognitionService service;
 
-        public event EventHandler<SpeechRecognitionEventArgs>? Recognizing;
-        public event EventHandler<SpeechRecognitionEventArgs>? Recognized;
+        public AzureSpeechRecognitionPage(Service.ServiceManager serviceManager) : base(serviceManager) {
+            this.service = new AzureSpeechRecognitionService(serviceManager);
 
-        public AzureSpeechRecognitionPage() {
             InitializeComponent();
         }
 
@@ -52,48 +51,16 @@ namespace sikusiSubtitles.SpeechRecognition {
             }
         }
 
-        public bool SpeechRecognitionStart(MMDevice device) {
-            var speechConfig = SpeechConfig.FromSubscription(this.keyTextBox.Text, this.regionTextBox.Text);
-            this.RecognizeFromMic(device, speechConfig);
-            return true;
+        private void keyTextBox_TextChanged(object sender, EventArgs e) {
+            this.service.Key = keyTextBox.Text;
         }
 
-        public async void SpeechRecognitionStop() {
-            if (this.Recognizer != null) {
-                await this.Recognizer.StopContinuousRecognitionAsync();
-                this.Recognizer.Recognizing -= RecognizingHandler;
-                this.Recognizer.Recognized -= RecognizedHandler;
-                this.Recognizer.Canceled -= CanceledHandler;
-                this.Recognizer = null;
-            }
+        private void regionTextBox_TextChanged(object sender, EventArgs e) {
+            this.service.Region = regionTextBox.Text;
         }
 
-        private void RecognizeFromMic(MMDevice device, SpeechConfig speechConfig) {
-            var lang = this.Languages[this.languageComboBox.SelectedIndex].Item1;
-            var audioConfig = AudioConfig.FromMicrophoneInput(device.ID);
-            this.Recognizer = new SpeechRecognizer(speechConfig, lang, audioConfig);
-
-            this.Recognizer.Recognizing += RecognizingHandler;
-            this.Recognizer.Recognized += RecognizedHandler;
-            this.Recognizer.Canceled += CanceledHandler;
-
-            //Asks user for mic input and prints transcription result on screen
-            Debug.WriteLine("Speak into your microphone.");
-            this.Recognizer.StartContinuousRecognitionAsync();
-        }
-
-        private void RecognizingHandler(Object? sender, Microsoft.CognitiveServices.Speech.SpeechRecognitionEventArgs args) {
-            Debug.WriteLine("Recognizing: " + args.Result.Reason.ToString() +  ", " + args.Result.Text);
-            this.Recognizing?.Invoke(this, new SpeechRecognitionEventArgs(args.Result.Text));
-        }
-
-        private void RecognizedHandler(Object? sender, Microsoft.CognitiveServices.Speech.SpeechRecognitionEventArgs args) {
-            Debug.WriteLine("Recognized: " + args.Result.Reason.ToString() + ", " + args.Result.Text);
-            this.Recognized?.Invoke(this, new SpeechRecognitionEventArgs(args.Result.Text));
-        }
-
-        private void CanceledHandler(Object? sender, Microsoft.CognitiveServices.Speech.SpeechRecognitionCanceledEventArgs args) {
-            Debug.WriteLine("Canceled: " + args.ErrorCode + ", " + args.ErrorDetails + ", " + args.Reason.ToString());
+        private void languageComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            this.service.Language = this.Languages[languageComboBox.SelectedIndex].Item1;
         }
 
         Tuple<string, string>[] Languages = {

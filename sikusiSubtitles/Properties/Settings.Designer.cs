@@ -12,7 +12,7 @@ namespace sikusiSubtitles.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.1.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.2.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -584,6 +584,102 @@ namespace sikusiSubtitles.Properties {
             }
             set {
                 this["DeepLTranslationTo2Run"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Tesseract")]
+        public string OcrEngine {
+            get {
+                return ((string)(this["OcrEngine"]));
+            }
+            set {
+                this["OcrEngine"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OcrShortcutKey {
+            get {
+                return ((string)(this["OcrShortcutKey"]));
+            }
+            set {
+                this["OcrShortcutKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("eng")]
+        public string TesseractOcrLanguage {
+            get {
+                return ((string)(this["TesseractOcrLanguage"]));
+            }
+            set {
+                this["TesseractOcrLanguage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TesseractTranslationEngine {
+            get {
+                return ((string)(this["TesseractTranslationEngine"]));
+            }
+            set {
+                this["TesseractTranslationEngine"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ja")]
+        public string TesseractTranslationLanguage {
+            get {
+                return ((string)(this["TesseractTranslationLanguage"]));
+            }
+            set {
+                this["TesseractTranslationLanguage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OcrTranslationEngine {
+            get {
+                return ((string)(this["OcrTranslationEngine"]));
+            }
+            set {
+                this["OcrTranslationEngine"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OcrLanguage {
+            get {
+                return ((string)(this["OcrLanguage"]));
+            }
+            set {
+                this["OcrLanguage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OcrTranslationLanguage {
+            get {
+                return ((string)(this["OcrTranslationLanguage"]));
+            }
+            set {
+                this["OcrTranslationLanguage"] = value;
             }
         }
     }

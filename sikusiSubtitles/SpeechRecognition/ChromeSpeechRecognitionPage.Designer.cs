@@ -40,7 +40,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Yu Gothic UI", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(16, 16);
+            this.label1.Location = new System.Drawing.Point(0, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(247, 37);
             this.label1.TabIndex = 5;
@@ -53,9 +53,9 @@
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.portNumericUpDown);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(26, 80);
+            this.groupBox1.Location = new System.Drawing.Point(10, 64);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(595, 82);
+            this.groupBox1.Size = new System.Drawing.Size(626, 82);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "接続情報";
@@ -63,7 +63,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(119, 53);
+            this.label3.Location = new System.Drawing.Point(93, 54);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(219, 15);
             this.label3.TabIndex = 5;
@@ -71,7 +71,7 @@
             // 
             // portNumericUpDown
             // 
-            this.portNumericUpDown.Location = new System.Drawing.Point(119, 27);
+            this.portNumericUpDown.Location = new System.Drawing.Point(93, 28);
             this.portNumericUpDown.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -84,12 +84,13 @@
             0});
             this.portNumericUpDown.Name = "portNumericUpDown";
             this.portNumericUpDown.Size = new System.Drawing.Size(120, 23);
-            this.portNumericUpDown.TabIndex = 4;
+            this.portNumericUpDown.TabIndex = 1;
             this.portNumericUpDown.Value = new decimal(new int[] {
             14949,
             0,
             0,
             0});
+            this.portNumericUpDown.ValueChanged += new System.EventHandler(this.portNumericUpDown_ValueChanged);
             // 
             // label2
             // 
@@ -106,21 +107,24 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.languageComboBox);
             this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Location = new System.Drawing.Point(26, 185);
+            this.groupBox2.Location = new System.Drawing.Point(10, 169);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(595, 70);
+            this.groupBox2.Size = new System.Drawing.Size(626, 70);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "言語情報";
             // 
             // languageComboBox
             // 
+            this.languageComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.languageComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.languageComboBox.FormattingEnabled = true;
-            this.languageComboBox.Location = new System.Drawing.Point(119, 27);
+            this.languageComboBox.Location = new System.Drawing.Point(93, 27);
             this.languageComboBox.Name = "languageComboBox";
-            this.languageComboBox.Size = new System.Drawing.Size(373, 23);
-            this.languageComboBox.TabIndex = 1;
+            this.languageComboBox.Size = new System.Drawing.Size(514, 23);
+            this.languageComboBox.TabIndex = 2;
+            this.languageComboBox.SelectedIndexChanged += new System.EventHandler(this.languageComboBox_SelectedIndexChanged);
             // 
             // label5
             // 

@@ -143,5 +143,29 @@
     <Setting Name="DeepLTranslationTo2Run" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="OcrEngine" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Tesseract</Value>
+    </Setting>
+    <Setting Name="OcrShortcutKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="TesseractOcrLanguage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">eng</Value>
+    </Setting>
+    <Setting Name="TesseractTranslationEngine" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="TesseractTranslationLanguage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ja</Value>
+    </Setting>
+    <Setting Name="OcrTranslationEngine" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="OcrLanguage" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="OcrTranslationLanguage" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

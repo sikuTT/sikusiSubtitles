@@ -10,48 +10,11 @@ using System.Windows.Forms;
 
 namespace sikusiSubtitles.OBS {
     public partial class SubtitlesPage : SettingPage {
-        /**
-         * 音声字幕のソース名
-         */
-        public string Voice {
-            get { return this.voiceTextBox.Text; }
-        }
+        private SubtitlesService service;
 
-        /**
-         * 翻訳１のソース名
-         */
-        public string Translation1 {
-            get { return this.translation1TextBox.Text; }
-        }
+        public SubtitlesPage(Service.ServiceManager serviceManager) : base(serviceManager) {
+            service = new SubtitlesService(serviceManager);
 
-        /**
-         * 翻訳２のソース名
-         */
-        public string Translation2 {
-            get { return this.translation2TextBox.Text; }
-        }
-
-        public int? ClearInterval {
-            get {
-                if (this.clearCheckBox.Checked) {
-                    return (int)this.clearIntervalNumericUpDown.Value;
-                } else {
-                    return null;
-                }
-            }
-        }
-
-        public int? AdditionalTime {
-            get {
-                if (this.additionalCheckBox.Checked) {
-                    return this.additionalTrackBar.Value;
-                } else {
-                    return null;
-                }
-            }
-        }
-
-        public SubtitlesPage() {
             InitializeComponent();
         }
 
@@ -73,6 +36,50 @@ namespace sikusiSubtitles.OBS {
             Properties.Settings.Default.SubtitlesClearInterval = (int)this.clearIntervalNumericUpDown.Value;
             Properties.Settings.Default.SubtitlesAddtional = this.additionalCheckBox.Checked;
             Properties.Settings.Default.SubtitlesAdditionalTime = this.additionalTrackBar.Value;
+        }
+
+        private void voiceTextBox_TextChanged(object sender, EventArgs e) {
+            this.service.VoiceTarget = voiceTextBox.Text;
+        }
+
+        private void translation1TextBox_TextChanged(object sender, EventArgs e) {
+            this.service.Translation1Target = translation1TextBox.Text;
+        }
+
+        private void translation2TextBox_TextChanged(object sender, EventArgs e) {
+            this.service.Translation2Target = translation2TextBox.Text;
+        }
+
+        private void clearCheckBox_CheckedChanged(object sender, EventArgs e) {
+            SetClearInterval();
+        }
+
+        private void clearIntervalNumericUpDown_ValueChanged(object sender, EventArgs e) {
+            SetClearInterval();
+        }
+
+        private void additionalCheckBox_CheckedChanged(object sender, EventArgs e) {
+            SetAdditionalTime();
+        }
+
+        private void additionalTrackBar_Scroll(object sender, EventArgs e) {
+            SetAdditionalTime();
+        }
+
+        private void SetClearInterval() {
+            if (this.clearCheckBox.Checked) {
+                this.service.ClearInterval = (int)this.clearIntervalNumericUpDown.Value;
+            } else {
+                this.service.ClearInterval = null;
+            }
+        }
+
+        private void SetAdditionalTime() {
+            if (this.additionalCheckBox.Checked) {
+                this.service.AdditionalTime = this.additionalTrackBar.Value;
+            } else {
+                this.service.AdditionalTime = null;
+            }
         }
     }
 }

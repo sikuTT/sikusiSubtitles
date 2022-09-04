@@ -71,19 +71,15 @@ namespace sikusiSubtitles.OBS {
         }
 
         async public Task SetTextAsync(string sourceName, string text) {
-            Debug.WriteLine("1. SetTextAsync " + sourceName + " " + text);
             if (this.obsService == null) {
                 return;
             }
             try {
                 var obsSocket = this.obsService.ObsSocket;
                 if (obsService.IsConnected) {
-                    Debug.WriteLine("2. SetTextAsync " + sourceName + " " + text);
                     var response = await obsSocket.GetInputSettingsAsync(sourceName);
-                    Debug.WriteLine("3. SetTextAsync " + sourceName + " " + text);
                     var settings = response?.d?.responseData?.inputSettings as TextGdiplusV2;
                     if (settings != null) {
-                        Debug.WriteLine("4. SetTextAsync " + sourceName + " " + text);
                         settings.text = text;
                         await obsSocket.SetInputSettingsAsync(sourceName, settings);
                     }

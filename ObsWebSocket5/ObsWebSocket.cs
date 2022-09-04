@@ -133,8 +133,6 @@ namespace ObsWebSocket5 {
             } while (!result.EndOfMessage);
 
             var message = Encoding.UTF8.GetString(buffer.ToArray(), 0, buffer.Count);
-            Debug.WriteLine(message);
-            Debug.WriteLine("");
             return message;
         }
 

@@ -207,7 +207,7 @@ namespace sikusiSubtitles.OCR {
         /**
          * 翻訳が完了した
          */
-        private void Translated(object? sender, TranslationResult result) {
+        async private void Translated(object? sender, TranslationResult result) {
             if (result.Obj == this) {
                 if (result.Translations.Count > 0) {
                     this.translatedTextBox.Text = result.Translations[0].Text;
@@ -215,7 +215,7 @@ namespace sikusiSubtitles.OCR {
                     // OBSに接続済みで、翻訳結果表示先が指定されている場合、OBS上に翻訳結果を表示する。
                     if (obsService != null && obsService.ObsSocket.IsConnected && subtitlesService != null && obsTextSourceComboBox.SelectedIndex > 0) {
                         var sourceName = obsTextSources[obsTextSourceComboBox.SelectedIndex - 1];
-                        this.subtitlesService.SetTextAsync(sourceName, result.Translations[0].Text ?? "");
+                        await this.subtitlesService.SetTextAsync(sourceName, result.Translations[0].Text ?? "");
                     }
                 }
 

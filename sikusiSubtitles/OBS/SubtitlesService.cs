@@ -196,12 +196,12 @@ namespace sikusiSubtitles.OBS {
             return displayText;
         }
 
-        private void ClearSubtitles(Object? sender, System.Timers.ElapsedEventArgs args) {
+        async private void ClearSubtitles(Object? sender, System.Timers.ElapsedEventArgs args) {
             try {
                 foreach (var dic in clearTimer) {
                     if (dic.Value == sender) {
                         this.recognizedText[dic.Key] = "";
-                        this.SetTextAsync(dic.Key, CreateSubtitlesText(dic.Key));
+                        await this.SetTextAsync(dic.Key, CreateSubtitlesText(dic.Key));
                         break;
                     }
                 }

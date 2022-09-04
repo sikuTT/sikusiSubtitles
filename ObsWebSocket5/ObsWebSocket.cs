@@ -48,7 +48,14 @@ namespace ObsWebSocket5 {
 
         async public Task<RequestResponse<GetSceneListResponse>?> GetSceneListAsync() {
             var requestData = new GetSceneListRequest();
-            return await SendRequestAsync<GetSceneListResponse>(requestData);
+            var responseData = await SendRequestAsync<GetSceneListResponse>(requestData);
+            return responseData;
+        }
+
+        async public Task<RequestResponse<GetGroupSceneItemListResponse>?> GetGroupSceneItemListAsync(string sceneName) {
+            var requestData = new GetGroupSceneItemListRequest() { sceneName = sceneName };
+            var responseData = await SendRequestAsync<GetGroupSceneItemListResponse>(requestData);
+            return responseData;
         }
 
         async public Task<RequestResponse<GetSceneItemListResponse>?> GetSceneItemListAsync(string sceneName) {
@@ -133,6 +140,8 @@ namespace ObsWebSocket5 {
             } while (!result.EndOfMessage);
 
             var message = Encoding.UTF8.GetString(buffer.ToArray(), 0, buffer.Count);
+            Debug.WriteLine(message);
+            Debug.WriteLine("");
             return message;
         }
 

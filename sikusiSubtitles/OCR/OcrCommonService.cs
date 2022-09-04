@@ -26,6 +26,10 @@ namespace sikusiSubtitles.OCR {
         public TranslationService? TranslationService { get; set; }
         public string TranslationLanguage { get; set; }
 
+        public Shortcut.Shortcut OcrShortcut { get { return ocrShortcut; } }
+
+        private Shortcut.Shortcut ocrShortcut = new Shortcut.Shortcut("ExecuteOCR", "OCR", "画面から文字を取得し翻訳する", "");
+
         public OcrCommonService(ServiceManager serviceManager) : base(serviceManager, OcrService.SERVICE_NAME, "OCR", "OCR", 500) {
             OcrLanguage = "";
             TranslationLanguage = "";
@@ -34,7 +38,7 @@ namespace sikusiSubtitles.OCR {
         public override void Init() {
             var shortcutService = this.ServiceManager.GetService<ShortcutService>();
             if (shortcutService != null) {
-                shortcutService.Shortcuts.Add(new Shortcut.Shortcut("ExecuteOCR", "OCR", "画面から文字を取得し翻訳する", ""));
+                shortcutService.Shortcuts.Add(ocrShortcut);
             }
         }
     }

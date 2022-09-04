@@ -22,6 +22,7 @@ namespace sikusiSubtitles.OCR {
             this.service.OcrLanguage = Properties.Settings.Default.OcrLanguage;
             this.service.TranslationService = this.translationServices.Find(service => service.Name == Properties.Settings.Default.OcrTranslationEngine);
             this.service.TranslationLanguage = Properties.Settings.Default.OcrTranslationLanguage;
+            this.service.OcrShortcut.ShortcutKey = Properties.Settings.Default.OcrShortcutKey;
 
             // 読み込んだ設定をフォームに反映
             this.ocrComboBox.SelectedIndex = this.ocrServices.FindIndex(service => service.Name == Properties.Settings.Default.OcrEngine);
@@ -33,6 +34,7 @@ namespace sikusiSubtitles.OCR {
             Properties.Settings.Default.OcrLanguage = this.service.OcrLanguage;
             Properties.Settings.Default.OcrTranslationEngine = this.service.TranslationService?.Name;
             Properties.Settings.Default.OcrTranslationLanguage = this.service.TranslationLanguage;
+            Properties.Settings.Default.OcrShortcutKey = this.service.OcrShortcut.ShortcutKey;
         }
 
         /**

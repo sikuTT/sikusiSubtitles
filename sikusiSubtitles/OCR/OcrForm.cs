@@ -29,7 +29,6 @@ namespace sikusiSubtitles.OCR {
 
         private int processId;
         private Rectangle captureArea;
-        private List<string> obsTextSources = new List<string>();
 
         public OcrForm(Service.ServiceManager serviceManager, int processId, Rectangle captureArea) {
             InitializeComponent();
@@ -68,7 +67,7 @@ namespace sikusiSubtitles.OCR {
             // OBSのテキストソースの一覧を取得
             obsService = this.serviceManager.GetService<ObsService>();
             subtitlesService = this.serviceManager.GetService<SubtitlesService>();
-            GetObsTextSources();
+            GetObsTextSourcesAsync();
         }
 
         private void OcrForm_FormClosed(object sender, FormClosedEventArgs e) {
@@ -116,7 +115,7 @@ namespace sikusiSubtitles.OCR {
          * OBSのテキストソースの一覧を再取得
          */
         private void obsTextSourceRefreshButton_Click(object sender, EventArgs e) {
-            GetObsTextSources();
+            GetObsTextSourcesAsync();
         }
 
         private Bitmap? CaptureWindow() {
@@ -179,20 +178,39 @@ namespace sikusiSubtitles.OCR {
         /**
          * OBSのテキストソースの一覧を取得する。
          */
-        private void GetObsTextSources() {
+        async private void GetObsTextSourcesAsync() {
             this.obsTextSourceComboBox.Items.Clear();
-            this.obsTextSourceComboBox.Items.Add("");
+            var nameList = new List<string>() { "" };
             if (obsService != null && obsService.ObsSocket.IsConnected) {
-/*
-                var sources = obsService.ObsSocket.GetSourcesList();
-                sources.ForEach(source => {
-                    if (source.TypeID == "text_gdiplus_v2") {
-                        this.obsTextSources.Add(source.Name);
-                        this.obsTextSourceComboBox.Items.Add(source.Name);
+                // シーン一覧を取得する
+                var sceneList= await obsService.ObsSocket.GetSceneListAsync();
+                var sceneNames = sceneList?.d?.responseData?.scenes?.Select(scene => scene.sceneName).ToList();
+                if (sceneNames != null) {
+                    // 各シーン内のソースを取得し、GDIテキストだけを取り出す
+                    foreach (var sceneName in sceneNames) {
+                        // シーン内のソース一覧を取得し、GDIテキストとグループだけを取り出す
+                        var sceneItemList = await obsService.ObsSocket.GetSceneItemListAsync(sceneName);
+                        var sourceItems = sceneItemList?.d?.responseData?.sceneItems?.Where(item => item.inputKind == "text_gdiplus_v2" || item.isGroup == true).ToList();
+                        if (sourceItems != null) {
+                            // シーン内のアイテムを1個ずつ処理
+                            foreach (var item in sourceItems) {
+                                if (item.isGroup == true) {
+                                    // グループの場合、グループ内のソース一覧を取得し、その中からGDIテキストだけを取得する
+                                    var groupItemList = await obsService.ObsSocket.GetGroupSceneItemListAsync(item.sourceName);
+                                    var groupSourceItems = groupItemList?.d?.responseData?.sceneItems?.Where(item => item.inputKind == "text_gdiplus_v2").Select(item => item.sourceName).ToList();
+                                    if (groupSourceItems != null) {
+                                        nameList.AddRange(groupSourceItems);
+                                    }
+                                } else {
+                                    // テキストなら名前を取得
+                                    nameList.Add(item.sourceName);
+                                }
+                            }
+                        }
                     }
-                });
-*/
+                }
             }
+            this.obsTextSourceComboBox.Items.AddRange(nameList.Distinct().ToArray());
         }
 
         /**
@@ -216,9 +234,11 @@ namespace sikusiSubtitles.OCR {
                     this.translatedTextBox.Text = result.Translations[0].Text;
 
                     // OBSに接続済みで、翻訳結果表示先が指定されている場合、OBS上に翻訳結果を表示する。
-                    if (obsService != null && obsService.ObsSocket.IsConnected && subtitlesService != null && obsTextSourceComboBox.SelectedIndex > 0) {
-                        var sourceName = obsTextSources[obsTextSourceComboBox.SelectedIndex - 1];
-                        await this.subtitlesService.SetTextAsync(sourceName, result.Translations[0].Text ?? "");
+                    if (obsService != null && obsService.ObsSocket.IsConnected && subtitlesService != null && this.obsTextSourceComboBox.SelectedItem != null) {
+                        var sourceName = this.obsTextSourceComboBox.SelectedItem.ToString();
+                        if (sourceName != null) {
+                            await this.subtitlesService.SetTextAsync(sourceName, result.Translations[0].Text ?? "");
+                        }
                     }
                 } else {
                     // 翻訳に失敗

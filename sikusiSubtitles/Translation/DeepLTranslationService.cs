@@ -47,15 +47,20 @@ namespace sikusiSubtitles.Translation {
         private async Task<TranslationResult> TranslateAsync(object obj, string text, string? from, string[] toList) {
             var result = new TranslationResult(obj);
 
-            if (this.Key != null) {
-                var translator = new Translator(this.Key);
+            try {
+                if (this.Key != null) {
+                    var translator = new Translator(this.Key);
 
-                foreach (var to in toList) {
-                    var translatedText = await translator.TranslateTextAsync(text, from, to);
-                    Debug.WriteLine("DeepLTranslationService: " + translatedText);
-                    result.Translations.Add(new TranslationResult.Translation() { Text = translatedText.Text });
+                    foreach (var to in toList) {
+                        var translatedText = await translator.TranslateTextAsync(text, from, to);
+                        Debug.WriteLine("DeepLTranslationService: " + translatedText);
+                        result.Translations.Add(new TranslationResult.Translation() { Text = translatedText.Text });
+                    }
                 }
+            } catch (Exception ex) {
+                Debug.WriteLine("DeepLTranslationService: " + ex.Message);
             }
+
             return result;
         }
 
@@ -74,7 +79,6 @@ namespace sikusiSubtitles.Translation {
             new Tuple<string, string>("da", "Danish"),
             new Tuple<string, string>("de", "German"),
             new Tuple<string, string>("el", "Greek"),
-            new Tuple<string, string>("en", "English"),
             new Tuple<string, string>("en-GB", "English (British)"),
             new Tuple<string, string>("en-US", "English (American)"),
             new Tuple<string, string>("es", "Spanish"),
@@ -89,7 +93,6 @@ namespace sikusiSubtitles.Translation {
             new Tuple<string, string>("lv", "Latvian"),
             new Tuple<string, string>("nl", "Dutch"),
             new Tuple<string, string>("pl", "Polish"),
-            new Tuple<string, string>("pt", "Portuguese"),
             new Tuple<string, string>("pt-BR", "Portuguese (Brazilian)"),
             new Tuple<string, string>("pt-PT", "Portuguese (European)"),
             new Tuple<string, string>("ro", "Romanian"),

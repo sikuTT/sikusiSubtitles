@@ -170,7 +170,10 @@ namespace sikusiSubtitles.OCR {
         private void DoTranslate() {
             this.translationService = this.translationServices[this.translationEngineComboBox.SelectedIndex];
             this.translationService.Translated += Translated;
-            this.translationService.Translate(this, this.ocrTextBox.Text, "ja");
+
+            var langs = this.translationService.GetLanguages();
+            var lang = langs[this.translationLangComboBox.SelectedIndex];
+            this.translationService.Translate(this, this.ocrTextBox.Text, lang.Item1);
         }
 
         /**
@@ -217,6 +220,9 @@ namespace sikusiSubtitles.OCR {
                         var sourceName = obsTextSources[obsTextSourceComboBox.SelectedIndex - 1];
                         await this.subtitlesService.SetTextAsync(sourceName, result.Translations[0].Text ?? "");
                     }
+                } else {
+                    // 翻訳に失敗
+                    MessageBox.Show("翻訳に失敗しました。", null, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
 
                 // 毎回、翻訳エンジンを選択できるので、今回の設定はクリアする。

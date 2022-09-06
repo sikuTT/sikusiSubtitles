@@ -84,25 +84,21 @@ namespace sikusiSubtitles {
 
             foreach (var page in this.pages) {
                 this.panel1.Controls.Add(page);
+                page.Dock = DockStyle.Fill;
             }
 
-            this.serviceManager.Update();
             this.serviceManager.Init();
         }
 
         private void Form1_Load(object sender, EventArgs e) {
             this.menuView.ExpandAll();
-            foreach (var page in this.pages) {
-                page.Dock = DockStyle.Fill;
-                page.LoadSettings();
-            }
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e) {
             foreach (var page in this.pages) {
-                page.SaveSettings();
                 page.Unload();
             }
+            this.serviceManager.Save();
             Properties.Settings.Default.Save();
         }
 

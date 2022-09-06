@@ -12,15 +12,20 @@ namespace sikusiSubtitles.Service {
         public string DisplayName { get; set; }
         public int Index { get; set; }
 
-        public Service(ServiceManager serviceManager, string serviceName, string name, string displayName, int index) {
+        public bool IsManager { get; set; }
+
+        public Service(ServiceManager serviceManager, string serviceName, string name, string displayName, int index, bool manager = false) {
             ServiceManager = serviceManager;
             ServiceName = serviceName;
             Name = name;
             DisplayName = displayName;
             Index = index;
+            IsManager = manager;
             serviceManager.AddService(this);
         }
 
+        public virtual void Save() {}
+        public virtual void Load() {}
         public virtual void Init() {}
     }
 }

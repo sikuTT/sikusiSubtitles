@@ -9,20 +9,33 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.OBS {
     public class ObsService : Service.Service {
-        public static string SERVICE_NAME = "OBS";
         public ObsWebSocket ObsSocket { get; }
         public string IP { get; set; }
         public int Port { get; set; }
         public string Password { get; set; }
 
+        private SubtitlesService? subtitlesService;
+
         public bool IsConnected {
             get { return ObsSocket.IsConnected; }
         }
 
-        public ObsService(ServiceManager serviceManager) : base(serviceManager, SERVICE_NAME, "OBS", "OBS", 100) {
+        public override void Load() {
+            IP = Properties.Settings.Default.ObsIP;
+            Port = Properties.Settings.Default.ObsPort;
+            Password = Properties.Settings.Default.ObsPassword;
+        }
+
+        public override void Save() {
+            Properties.Settings.Default.ObsIP = IP;
+            Properties.Settings.Default.ObsPort = Port;
+            Properties.Settings.Default.ObsPassword = Password;
+        }
+
+        public ObsService(ServiceManager serviceManager) : base(serviceManager, ObsServiceManager.ServiceName, "OBS", "OBS", 100) {
             this.ObsSocket = new ObsWebSocket();
-            this.IP = "";
-            this.Port = 0;
+            this.IP = "127.0.0.1";
+            this.Port = 4455;
             this.Password = "";
         }
 
@@ -32,7 +45,7 @@ namespace sikusiSubtitles.OBS {
                 return false;
             }
 
-            var url = "ws://" + this.IP + ":" + this.Port + "/";
+            var url = String.Format("ws://{0}:{1}/", IP, Port);
             try {
                 await ObsSocket.ConnectAsync(url, this.Password);
             // } catch (AuthFailureException) {
@@ -57,16 +70,16 @@ namespace sikusiSubtitles.OBS {
         }
 
         private void SubtitlesStart() {
-            var service = this.ServiceManager.GetService<SubtitlesService>();
-            if (service != null) {
-                service.Start();
+            subtitlesService = this.ServiceManager.GetService<SubtitlesService>();
+            if (subtitlesService  != null) {
+                subtitlesService.Start(this);
             }
         }
 
         private void SubtitlesStop() {
-            var service = this.ServiceManager.GetService<SubtitlesService>();
-            if (service != null) {
-                service.Stop();
+            if (subtitlesService != null) {
+                subtitlesService.Stop();
+                subtitlesService = null;
             }
         }
     }

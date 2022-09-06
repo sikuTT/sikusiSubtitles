@@ -6,16 +6,22 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.Service {
     public class ServiceManager {
+        public List<Service> Managers { get; set; }
         public List<Service> Services { get; set; }
 
         private Dictionary<string, Service> activeServices = new Dictionary<string, Service>();
 
         public ServiceManager() {
+            this.Managers = new List<Service>();
             this.Services = new List<Service>();
         }
 
         public void AddService(Service service) {
-            this.Services.Add(service);
+            if (service.IsManager) {
+                this.Managers.Add(service);
+            } else {
+                this.Services.Add(service);
+            }
         }
 
         public List<Type> GetServices<Type>() where Type : Service {
@@ -107,10 +113,26 @@ namespace sikusiSubtitles.Service {
             });
         }
 
+        // 設定の保存
+        public void Save() {
+            foreach (var service in Services) {
+                service.Save();
+            }
+        }
+
+        // 設定の読み込み
+        public void Load() {
+            foreach (var service in Services) {
+                service.Load();
+            }
+        }
+
         /**
          * すべてのサービスの作成後に、各サービスの初期化を呼び出す
          */
         public void Init() {
+            Update();
+            Load();
             foreach (var service in Services) {
                 service.Init();
             }

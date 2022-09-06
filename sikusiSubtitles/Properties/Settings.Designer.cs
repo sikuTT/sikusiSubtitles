@@ -109,7 +109,7 @@ namespace sikusiSubtitles.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("4444")]
+        [global::System.Configuration.DefaultSettingValueAttribute("4455")]
         public int ObsPort {
             get {
                 return ((int)(this["ObsPort"]));
@@ -140,78 +140,6 @@ namespace sikusiSubtitles.Properties {
             }
             set {
                 this["SubtitlesVoice"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string SubtitlesTranslation1 {
-            get {
-                return ((string)(this["SubtitlesTranslation1"]));
-            }
-            set {
-                this["SubtitlesTranslation1"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string SubtitlesTranslation2 {
-            get {
-                return ((string)(this["SubtitlesTranslation2"]));
-            }
-            set {
-                this["SubtitlesTranslation2"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool SubtitlesClear {
-            get {
-                return ((bool)(this["SubtitlesClear"]));
-            }
-            set {
-                this["SubtitlesClear"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("5")]
-        public int SubtitlesClearInterval {
-            get {
-                return ((int)(this["SubtitlesClearInterval"]));
-            }
-            set {
-                this["SubtitlesClearInterval"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool SubtitlesAddtional {
-            get {
-                return ((bool)(this["SubtitlesAddtional"]));
-            }
-            set {
-                this["SubtitlesAddtional"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
-        public int SubtitlesAdditionalTime {
-            get {
-                return ((int)(this["SubtitlesAdditionalTime"]));
-            }
-            set {
-                this["SubtitlesAdditionalTime"] = value;
             }
         }
         
@@ -680,6 +608,162 @@ namespace sikusiSubtitles.Properties {
             }
             set {
                 this["OcrTranslationLanguage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SubtitlesTranslationEngine {
+            get {
+                return ((string)(this["SubtitlesTranslationEngine"]));
+            }
+            set {
+                this["SubtitlesTranslationEngine"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SubtitlesTranslationLanguageFrom {
+            get {
+                return ((string)(this["SubtitlesTranslationLanguageFrom"]));
+            }
+            set {
+                this["SubtitlesTranslationLanguageFrom"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SubtitlesVoiceTarget {
+            get {
+                return ((string)(this["SubtitlesVoiceTarget"]));
+            }
+            set {
+                this["SubtitlesVoiceTarget"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SubtitlesTranslationTarget1 {
+            get {
+                return ((string)(this["SubtitlesTranslationTarget1"]));
+            }
+            set {
+                this["SubtitlesTranslationTarget1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SubtitlesTranslationTarget2 {
+            get {
+                return ((string)(this["SubtitlesTranslationTarget2"]));
+            }
+            set {
+                this["SubtitlesTranslationTarget2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SubtitlesIsClearInterval {
+            get {
+                return ((bool)(this["SubtitlesIsClearInterval"]));
+            }
+            set {
+                this["SubtitlesIsClearInterval"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int SubtitlesClearInterval {
+            get {
+                return ((int)(this["SubtitlesClearInterval"]));
+            }
+            set {
+                this["SubtitlesClearInterval"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SubtitlesIsAdditionalTime {
+            get {
+                return ((bool)(this["SubtitlesIsAdditionalTime"]));
+            }
+            set {
+                this["SubtitlesIsAdditionalTime"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int SubtitlesAdditionalTime {
+            get {
+                return ((int)(this["SubtitlesAdditionalTime"]));
+            }
+            set {
+                this["SubtitlesAdditionalTime"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SubtitlesTranslation1 {
+            get {
+                return ((bool)(this["SubtitlesTranslation1"]));
+            }
+            set {
+                this["SubtitlesTranslation1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SubtitlesTranslation2 {
+            get {
+                return ((bool)(this["SubtitlesTranslation2"]));
+            }
+            set {
+                this["SubtitlesTranslation2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SubtitlesTranslationLanguageTo1 {
+            get {
+                return ((string)(this["SubtitlesTranslationLanguageTo1"]));
+            }
+            set {
+                this["SubtitlesTranslationLanguageTo1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SubtitlesTranslationLanguageTo2 {
+            get {
+                return ((string)(this["SubtitlesTranslationLanguageTo2"]));
+            }
+            set {
+                this["SubtitlesTranslationLanguageTo2"] = value;
             }
         }
     }

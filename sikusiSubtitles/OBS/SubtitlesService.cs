@@ -23,24 +23,65 @@ namespace sikusiSubtitles.OBS {
         private ObsService? obsService;
         private SpeechRecognitionService? speechRecognitionService;
         private TranslationService? translationService;
+
         private Dictionary<string, string> recognizedText = new Dictionary<string, string>();
         private Dictionary<string, string> recognizingText = new Dictionary<string, string>();
         private Dictionary<string, System.Timers.Timer> clearTimer = new Dictionary<string, System.Timers.Timer>();
 
+        public string TranslationEngine { get; set; }
+        public string TranslationLanguageFrom { get; set; }
+        public string[] TranslationLanguageTo { get; set; }
+        public bool[] Translation { get; set; }
         public string VoiceTarget { get; set; }
-        public string Translation1Target { get; set; }
-        public string Translation2Target { get; set; }
-        public int? ClearInterval { get; set; }
-        public int? AdditionalTime { get; set; }
+        public string[] TranslationTargets { get; set; }
+        public bool IsClearInterval { get; set; }
+        public int ClearInterval { get; set; }
+        public bool IsAdditionalTime { get; set; }
+        public int AdditionalTime { get; set; }
 
-        public SubtitlesService(Service.ServiceManager serviceManager) : base(serviceManager, ObsService.SERVICE_NAME, "Subtitles", "字幕", 200) {
-            this.VoiceTarget = "";
-            this.Translation1Target = "";
-            this.Translation2Target = "";
+        public override void Load() {
+            TranslationEngine = Properties.Settings.Default.SubtitlesTranslationEngine;
+            TranslationLanguageFrom = Properties.Settings.Default.SubtitlesTranslationLanguageFrom;
+            TranslationLanguageTo[0] = Properties.Settings.Default.SubtitlesTranslationLanguageTo1;
+            TranslationLanguageTo[1] = Properties.Settings.Default.SubtitlesTranslationLanguageTo2;
+            Translation[0] = Properties.Settings.Default.SubtitlesTranslation1;
+            Translation[1] = Properties.Settings.Default.SubtitlesTranslation2;
+            VoiceTarget = Properties.Settings.Default.SubtitlesVoiceTarget;
+            TranslationTargets[0] = Properties.Settings.Default.SubtitlesTranslationTarget1;
+            TranslationTargets[1] = Properties.Settings.Default.SubtitlesTranslationTarget2;
+            IsClearInterval = Properties.Settings.Default.SubtitlesIsClearInterval;
+            ClearInterval = Properties.Settings.Default.SubtitlesClearInterval;
+            IsAdditionalTime = Properties.Settings.Default.SubtitlesIsAdditionalTime;
+            AdditionalTime = Properties.Settings.Default.SubtitlesAdditionalTime;
         }
 
-        public bool Start() {
-            this.obsService = this.ServiceManager.GetService<ObsService>();
+        public override void Save() {
+            Properties.Settings.Default.SubtitlesTranslationEngine = TranslationEngine;
+            Properties.Settings.Default.SubtitlesTranslationLanguageFrom = TranslationLanguageFrom;
+            Properties.Settings.Default.SubtitlesTranslationLanguageTo1 = TranslationLanguageTo[0];
+            Properties.Settings.Default.SubtitlesTranslationLanguageTo2 = TranslationLanguageTo[1];
+            Properties.Settings.Default.SubtitlesTranslation1 = Translation[0];
+            Properties.Settings.Default.SubtitlesTranslation2 = Translation[1];
+            Properties.Settings.Default.SubtitlesVoiceTarget = VoiceTarget;
+            Properties.Settings.Default.SubtitlesTranslationTarget1 = TranslationTargets[0];
+            Properties.Settings.Default.SubtitlesTranslationTarget2 = TranslationTargets[1];
+            Properties.Settings.Default.SubtitlesIsClearInterval = IsClearInterval;
+            Properties.Settings.Default.SubtitlesClearInterval = (int)ClearInterval;
+            Properties.Settings.Default.SubtitlesIsAdditionalTime = IsAdditionalTime;
+            Properties.Settings.Default.SubtitlesAdditionalTime = (int)AdditionalTime;
+        }
+
+        public SubtitlesService(Service.ServiceManager serviceManager) : base(serviceManager, ObsServiceManager.ServiceName, "Subtitles", "字幕", 200) {
+            TranslationEngine = "";
+            TranslationLanguageFrom = "";
+            TranslationLanguageTo = new string[2];
+            Translation = new bool[2];
+            VoiceTarget = "";
+            TranslationTargets = new string[2];
+        }
+
+        public bool Start(ObsService obsService) {
+            this.obsService = obsService;
 
             this.speechRecognitionService = this.ServiceManager.GetActiveService<SpeechRecognitionService>();
             if (this.speechRecognitionService == null) {
@@ -50,7 +91,8 @@ namespace sikusiSubtitles.OBS {
                 this.speechRecognitionService.Recognized += Recognized;
             }
 
-            this.translationService = this.ServiceManager.GetActiveService<TranslationService>();
+            var translationServices = this.ServiceManager.GetServices<TranslationService>();
+            this.translationService = translationServices.Where(service => service.Name == TranslationEngine).First();
             if (this.translationService != null) {
                 this.translationService.Translated += Translated;
             }
@@ -64,7 +106,6 @@ namespace sikusiSubtitles.OBS {
                 this.speechRecognitionService.Recognized -= Recognized;
             }
 
-            this.translationService = this.ServiceManager.GetActiveService<TranslationService>();
             if (this.translationService != null) {
                 this.translationService.Translated -= Translated;
             }
@@ -75,8 +116,8 @@ namespace sikusiSubtitles.OBS {
                 return;
             }
             try {
-                var obsSocket = this.obsService.ObsSocket;
                 if (obsService.IsConnected) {
+                    var obsSocket = this.obsService.ObsSocket;
                     var response = await obsSocket.GetInputSettingsAsync(sourceName);
                     var settings = response?.d?.responseData?.inputSettings as TextGdiplusV2;
                     if (settings != null) {
@@ -111,14 +152,13 @@ namespace sikusiSubtitles.OBS {
 
         async private void Translated(object? sender, TranslationResult result) {
             if (result.Obj == this) {
-                var targets = new string[] { this.Translation1Target, this.Translation2Target };
                 var i = 0;
-                foreach (var target in targets) {
+                foreach (var target in this.TranslationTargets) {
                     if (target != null) {
                         if (result.Translations.Count > i) {
                             var translation = result.Translations[i++];
                             if (translation != null && translation.Text != null) {
-                                await SetSubtitlesAsync(translation.Text, target, true, this.ClearInterval, this.AdditionalTime);
+                                await SetSubtitlesAsync(translation.Text, target, true, this.IsClearInterval ? this.ClearInterval : null, this.IsAdditionalTime ? this.AdditionalTime : null);
                             }
                         }
                     }

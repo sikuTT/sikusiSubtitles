@@ -19,21 +19,23 @@ namespace sikusiSubtitles.OBS {
             InitializeComponent();
         }
 
-        public override void LoadSettings() {
-            this.ipTextBox.Text = Properties.Settings.Default.ObsIP;
-            this.service.IP = Properties.Settings.Default.ObsIP;
-
-            this.portNumericUpDown.Value = Properties.Settings.Default.ObsPort;
-            this.service.Port = Properties.Settings.Default.ObsPort;
-
-            this.passwordTextBox.Text = Properties.Settings.Default.ObsPassword;
-            this.service.Password = Properties.Settings.Default.ObsPassword;
+        private void ObsPage_Load(object sender, EventArgs e) {
+            this.ipTextBox.Text = service.IP;
+            portNumericUpDown.Value = service.Port;
+            passwordTextBox.Text = service.Password;
         }
 
-        public override void SaveSettings() {
-            Properties.Settings.Default.ObsIP = this.ipTextBox.Text;
-            Properties.Settings.Default.ObsPort = (int)this.portNumericUpDown.Value;
-            Properties.Settings.Default.ObsPassword = this.passwordTextBox.Text;
+        private void ipTextBox_TextChanged(object sender, EventArgs e) {
+            service.IP = this.ipTextBox.Text;
+
+        }
+
+        private void portNumericUpDown_ValueChanged(object sender, EventArgs e) {
+            service.Port = (int)portNumericUpDown.Value;
+        }
+
+        private void passwordTextBox_TextChanged(object sender, EventArgs e) {
+            service.Password = passwordTextBox.Text;
         }
     }
 }

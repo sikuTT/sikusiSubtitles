@@ -59,6 +59,7 @@
             this.passwordTextBox.PasswordChar = '*';
             this.passwordTextBox.Size = new System.Drawing.Size(353, 23);
             this.passwordTextBox.TabIndex = 6;
+            this.passwordTextBox.TextChanged += new System.EventHandler(this.passwordTextBox_TextChanged);
             // 
             // label4
             // 
@@ -86,10 +87,11 @@
             this.portNumericUpDown.Size = new System.Drawing.Size(120, 23);
             this.portNumericUpDown.TabIndex = 4;
             this.portNumericUpDown.Value = new decimal(new int[] {
-            4444,
+            4455,
             0,
             0,
             0});
+            this.portNumericUpDown.ValueChanged += new System.EventHandler(this.portNumericUpDown_ValueChanged);
             // 
             // ipTextBox
             // 
@@ -98,6 +100,7 @@
             this.ipTextBox.Size = new System.Drawing.Size(353, 23);
             this.ipTextBox.TabIndex = 2;
             this.ipTextBox.Text = "127.0.0.1";
+            this.ipTextBox.TextChanged += new System.EventHandler(this.ipTextBox_TextChanged);
             // 
             // label3
             // 
@@ -136,6 +139,7 @@
             this.Controls.Add(this.label1);
             this.Name = "ObsPage";
             this.Size = new System.Drawing.Size(686, 283);
+            this.Load += new System.EventHandler(this.ObsPage_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.portNumericUpDown)).EndInit();

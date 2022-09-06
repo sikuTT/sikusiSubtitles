@@ -17,26 +17,6 @@ namespace sikusiSubtitles.OCR {
             InitializeComponent();
         }
 
-        public override void LoadSettings() {
-            this.service.OcrService = this.ocrServices.Find(service => service.Name == Properties.Settings.Default.OcrEngine);
-            this.service.OcrLanguage = Properties.Settings.Default.OcrLanguage;
-            this.service.TranslationService = this.translationServices.Find(service => service.Name == Properties.Settings.Default.OcrTranslationEngine);
-            this.service.TranslationLanguage = Properties.Settings.Default.OcrTranslationLanguage;
-            this.service.OcrShortcut.ShortcutKey = Properties.Settings.Default.OcrShortcutKey;
-
-            // 読み込んだ設定をフォームに反映
-            this.ocrComboBox.SelectedIndex = this.ocrServices.FindIndex(service => service.Name == Properties.Settings.Default.OcrEngine);
-            this.translationEngineComboBox.SelectedIndex = this.translationServices.FindIndex(service => service.Name == Properties.Settings.Default.OcrTranslationEngine);
-        }
-
-        public override void SaveSettings() {
-            Properties.Settings.Default.OcrEngine = this.service.OcrService?.Name;
-            Properties.Settings.Default.OcrLanguage = this.service.OcrLanguage;
-            Properties.Settings.Default.OcrTranslationEngine = this.service.TranslationService?.Name;
-            Properties.Settings.Default.OcrTranslationLanguage = this.service.TranslationLanguage;
-            Properties.Settings.Default.OcrShortcutKey = this.service.OcrShortcut.ShortcutKey;
-        }
-
         /**
          * フォームロード
          */

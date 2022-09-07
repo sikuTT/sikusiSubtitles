@@ -35,5 +35,17 @@ namespace sikusiSubtitles.OBS {
             Properties.Settings.Default.ObsPort = (int)this.portNumericUpDown.Value;
             Properties.Settings.Default.ObsPassword = this.passwordTextBox.Text;
         }
+
+        private void ipTextBox_TextChanged(object sender, EventArgs e) {
+            service.IP = ipTextBox.Text;
+        }
+
+        private void portNumericUpDown_ValueChanged(object sender, EventArgs e) {
+            service.Port = (int)portNumericUpDown.Value;
+        }
+
+        private void passwordTextBox_TextChanged(object sender, EventArgs e) {
+            service.Password = passwordTextBox.Text;
+        }
     }
 }

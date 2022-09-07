@@ -11,6 +11,7 @@ namespace sikusiSubtitles {
         SettingPage[] pages;
 
         // Speech Recognition
+        SpeechRecognitionService? speechRecognitionService;
         SpeechRecognitionPage speechRecognitionPage;
         ChromeSpeechRecognitionPage chromeSpeechRecognitionPage;
         AzureSpeechRecognitionPage azureSpeechRecognitionPage;
@@ -146,6 +147,7 @@ namespace sikusiSubtitles {
                 var service = this.serviceManager.GetActiveService<SpeechRecognitionService>();
                 if (service != null) {
                     if (service.Start()) {
+                        speechRecognitionService = service;
                         service.Recognizing += Recognizing;
                         service.Recognized += Recognized;
                         recognitionStarted = true;
@@ -163,11 +165,11 @@ namespace sikusiSubtitles {
          * âπê∫îFéØÇèIóπÇ∑ÇÈ
          */
         private void SpeechRecognitionStop() {
-            var service = this.serviceManager.GetActiveService<SpeechRecognitionService>();
-            if (service != null) {
-                service.Recognizing -= Recognizing;
-                service.Recognized -= Recognized;
-                service.Stop();
+            if (speechRecognitionService != null) {
+                speechRecognitionService.Recognizing -= Recognizing;
+                speechRecognitionService.Recognized -= Recognized;
+                speechRecognitionService.Stop();
+                speechRecognitionService = null;
             }
         }
 

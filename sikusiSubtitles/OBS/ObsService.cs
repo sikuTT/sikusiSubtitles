@@ -48,10 +48,10 @@ namespace sikusiSubtitles.OBS {
             var url = String.Format("ws://{0}:{1}/", IP, Port);
             try {
                 await ObsSocket.ConnectAsync(url, this.Password);
-            // } catch (AuthFailureException) {
-            //     MessageBox.Show("認証に失敗しました。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //     return false;
-            } catch (Exception ex) {
+            } catch (AuthenticationFailedException) {
+                MessageBox.Show("認証に失敗しました。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            } catch (Exception) {
                 MessageBox.Show("接続できませんでした。接続先を確認してください。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }

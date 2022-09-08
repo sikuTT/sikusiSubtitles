@@ -17,19 +17,32 @@ namespace sikusiSubtitles.SpeechRecognition {
         private WrpListener? Listener;
 
         public string? Key { get; set; }
-        public string? Engine { get; set; }
-        public bool? SaveLog { get; set; }
+        public bool? Log { get; set; }
 
         public AmiVoiceSpeechRecognitionServie(ServiceManager serviceManager) : base(serviceManager, "AmiVoice", "AmiVoice", 300) {
         }
 
+        public override void Load() {
+            Key = this.Decrypt(Properties.Settings.Default.AmiVoiceKey);
+            Log = Properties.Settings.Default.AmiVoiceLog;
+        }
+
+        public override void Save() {
+            Properties.Settings.Default.AmiVoiceKey = Encrypt(Key ?? "");
+            Properties.Settings.Default.AmiVoiceLog = Log ?? true;
+        }
+
+        public override List<Tuple<string, string>> GetLanguages() {
+            return engines;
+        }
+
         public override bool Start() {
             try {
-                var commonService = this.ServiceManager.GetService<SpeechRecognitionCommonService>();
-                if (commonService == null || commonService.Device == null) {
+                var manager = this.ServiceManager.GetManager<SpeechRecognitionServiceManager>();
+                if (manager?.Device == null) {
                     return false;
                 }
-                MMDevice device = commonService.Device;
+                MMDevice device = manager.Device;
 
                 if (this.ListenerStart() == false)
                     return false;
@@ -95,13 +108,14 @@ namespace sikusiSubtitles.SpeechRecognition {
         }
 
         private bool ListenerStart() {
+            var manager = this.ServiceManager.GetManager<SpeechRecognitionServiceManager>();
             if (this.Key == null || this.Key == "") {
                 MessageBox.Show("APIキーが設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
-            } else if (this.Engine == null) {
+            } else if (manager.Language == null) {
                 MessageBox.Show("エンジンが設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
-            } else if (this.SaveLog == null) {
+            } else if (this.Log == null) {
                 MessageBox.Show("ログの有無が設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
@@ -110,16 +124,16 @@ namespace sikusiSubtitles.SpeechRecognition {
             Listener.Recognized += RecognizedHandler;
 
             // WebSocket 音声認識サーバの初期化
-            Debug.WriteLine(String.Format("AmiVoice 使用エンジン={0}", Engine));
-            Debug.WriteLine(String.Format("AmiVoice ログ保存={0}）", SaveLog));
+            Debug.WriteLine(String.Format("AmiVoice 使用エンジン={0}", manager.Language));
+            Debug.WriteLine(String.Format("AmiVoice ログ保存={0}）", this.Log));
             var serverURL = "wss://acp-api.amivoice.com/v1/";
-            if (this.SaveLog == false)
+            if (this.Log == false)
                 serverURL += "nolog/";
             this.Wrp = com.amivoice.wrp.Wrp.construct();
             this.Wrp.setListener(Listener);
             this.Wrp.setServerURL(serverURL);
             this.Wrp.setCodec("lsb22k");
-            this.Wrp.setGrammarFileNames(this.Engine);
+            this.Wrp.setGrammarFileNames(manager.Language);
             this.Wrp.setAuthorization(this.Key);
 
             // WebSocket 音声認識サーバへの接続
@@ -191,6 +205,22 @@ namespace sikusiSubtitles.SpeechRecognition {
                 Debug.WriteLine(ex.Message);
             }
         }
+
+        private List<Tuple<string, string>> engines = new List<Tuple<string, string>>() {
+            new Tuple<string, string>("-a-general-input", "音声入力_汎用"),
+            // new Tuple<string, string>("-a-medgeneral-input", "音声入力_医療"),
+            // new Tuple<string, string>("-a-bizmrreport-input", "音声入力_製薬"),
+            // new Tuple<string, string>("-a-medkarte-input", "音声入力_電子カルテ"),
+            // new Tuple<string, string>("-a-bizinsurance-input", "音声入力_保険"),
+            // new Tuple<string, string>("-a-bizfinance-input", "音声入力_金融"),
+            new Tuple<string, string>("-a-general", "会話_汎用"),
+            // new Tuple<string, string>("-a-medgeneral", "会話_医療"),
+            // new Tuple<string, string>("-a-bizmrreport", "会話_製薬"),
+            // new Tuple<string, string>("-a-bizfinance", "会話_金融"),
+            // new Tuple<string, string>("-a-bizinsurance", "会話_保険"),
+            new Tuple<string, string>("-a-general-en", "英語_汎用"),
+            new Tuple<string, string>("-a-general-zh", "中国語_汎用"),
+        };
     }
 
     public class WrpListener : com.amivoice.wrp.WrpListener {

@@ -15,7 +15,6 @@ namespace sikusiSubtitles.SpeechRecognition {
         public ChromeSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "Chrome", "Google Chrome", 100) {
         }
 
-        public string? Language { get; set; }
         public int Port { get; set; }
 
         private HttpListener? Listener;
@@ -24,8 +23,21 @@ namespace sikusiSubtitles.SpeechRecognition {
         private string LastText = "";
         private bool isLastFinal = false;
 
-        public  override bool Start() {
-            if (this.Language == null) {
+        public override void Load() {
+            Port = Properties.Settings.Default.ChromePort;
+        }
+
+        public override void Save() {
+            Properties.Settings.Default.ChromePort = Port;
+        }
+
+        public override List<Tuple<string, string>> GetLanguages() {
+            return this.Languages;
+        }
+
+        public override bool Start() {
+            var manager = this.ServiceManager.GetManager<SpeechRecognitionServiceManager>();
+            if (manager?.Language == null) {
                 MessageBox.Show("言語を選択してください。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
@@ -36,7 +48,7 @@ namespace sikusiSubtitles.SpeechRecognition {
             if (this.HttpListenerStart(uri) == false)
                 return false;
 
-            if (this.LunchChrome(uri) == false) {
+            if (this.LunchChrome(uri, manager.Lanugage) == false) {
                 this.HttpListenerStop();
                 return false;
             }
@@ -164,11 +176,11 @@ namespace sikusiSubtitles.SpeechRecognition {
             }
         }
 
-        private bool LunchChrome(string prefix) {
+        private bool LunchChrome(string prefix, string language) {
             try {
                 var service = ChromeDriverService.CreateDefaultService();
                 service.HideCommandPromptWindow = true;
-                var url = prefix + "browser-recognition/index.html?lang=" + this.Language;
+                var url = prefix + "browser-recognition/index.html?lang=" + language;
 
                 var options = new ChromeOptions();
                 // options.AddArgument($"--app={url}");
@@ -220,5 +232,16 @@ namespace sikusiSubtitles.SpeechRecognition {
                 Debug.WriteLine(ex.Message);
             }
         }
+
+        List<Tuple<string, string>> Languages = new List<Tuple<string, string>>() {
+            new Tuple<string, string>("ja-JP", "日本語"),
+            new Tuple<string, string>("en-US", "英語"),
+            new Tuple<string, string>("es-ES", "スペイン語（スペイン）"),
+            new Tuple<string, string>("pt-P", "ポルトガル語（ポルトガル）"),
+            new Tuple<string, string>("pt-BR", "ポルトガル語（ブラジル）"),
+            new Tuple<string, string>("ko-KR", "韓国語"),
+            new Tuple<string, string>("zh", "中国語（簡体字、中国本土）"),
+            new Tuple<string, string>("cmn-Hant-TW", "中国語（繁体字、台湾）"),
+        };
     }
 }

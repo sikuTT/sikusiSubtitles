@@ -17,9 +17,6 @@
     <Setting Name="AzureSpeechRecognitionRegion" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="AzureSpeechRecognitionLanguage" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="ObsIP" Type="System.String" Scope="User">
       <Value Profile="(Default)">127.0.0.1</Value>
     </Setting>
@@ -83,8 +80,8 @@
     <Setting Name="AmiVoiceEngine" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="AmiVoiceLog" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="AmiVoiceLog" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ChromeLanguage" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

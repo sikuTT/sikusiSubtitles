@@ -48,10 +48,6 @@ namespace sikusiSubtitles.Service {
             return services;
         }
 
-        public List<Service> GetServices(string serviceName) {
-            return GetServices<Service>(serviceName);
-        }
-
         public Type? GetService<Type>() where Type : Service {
             foreach (var service in this.Services) {
                 var type = service as Type;
@@ -62,20 +58,14 @@ namespace sikusiSubtitles.Service {
             return null;
         }
 
-        public Type? GetService<Type>(string serviceName, string name) where Type : Service {
-            foreach (var service in this.Services) {
-                if (service.ServiceName == serviceName && service.Name == name) {
-                    var type = service as Type;
-                    if (type != null) {
-                        return type;
-                    }
+        public Type? GetManager<Type>() where Type : Service {
+            foreach (var service in this.Managers) {
+                var type = service as Type;
+                if (type != null) {
+                    return type;
                 }
             }
             return null;
-        }
-
-        public Service? GetService(string serviceName, string name) {
-            return GetService<Service>(serviceName, name);
         }
 
         public void SetActiveService(Service service) {

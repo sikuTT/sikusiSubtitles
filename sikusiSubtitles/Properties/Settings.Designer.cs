@@ -85,18 +85,6 @@ namespace sikusiSubtitles.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string AzureSpeechRecognitionLanguage {
-            get {
-                return ((string)(this["AzureSpeechRecognitionLanguage"]));
-            }
-            set {
-                this["AzureSpeechRecognitionLanguage"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1")]
         public string ObsIP {
             get {
@@ -349,10 +337,10 @@ namespace sikusiSubtitles.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string AmiVoiceLog {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AmiVoiceLog {
             get {
-                return ((string)(this["AmiVoiceLog"]));
+                return ((bool)(this["AmiVoiceLog"]));
             }
             set {
                 this["AmiVoiceLog"] = value;

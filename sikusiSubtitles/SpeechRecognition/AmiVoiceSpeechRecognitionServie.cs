@@ -112,7 +112,7 @@ namespace sikusiSubtitles.SpeechRecognition {
             if (this.Key == null || this.Key == "") {
                 MessageBox.Show("APIキーが設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
-            } else if (manager.Language == null) {
+            } else if (manager == null || manager.Language == "") {
                 MessageBox.Show("エンジンが設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             } else if (this.Log == null) {

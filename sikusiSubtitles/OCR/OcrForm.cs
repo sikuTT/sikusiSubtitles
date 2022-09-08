@@ -16,7 +16,7 @@ using static sikusiSubtitles.OCR.ScreenCapture;
 namespace sikusiSubtitles.OCR {
     public partial class OcrForm : Form {
         private Service.ServiceManager serviceManager;
-        private OcrCommonService? ocrCommonService;
+        private OcrServiceManager? ocrManager;
         private OcrService? ocrService;
 
         private List<TranslationService> translationServices = new List<TranslationService>();
@@ -52,16 +52,19 @@ namespace sikusiSubtitles.OCR {
 
         private void OcrForm_Load(object sender, EventArgs e) {
             // OCRサービス
-            this.ocrCommonService = this.serviceManager.GetService<OcrCommonService>();
-            this.translationServices = this.serviceManager.GetServices<TranslationService>();
-            this.ocrService = this.serviceManager.GetActiveService<OcrService>();
-            if (this.ocrService != null) {
-                this.ocrService.OcrFinished += OcrFinished;
+            this.ocrManager = this.serviceManager.GetManager<OcrServiceManager>();
+            if (this.ocrManager != null) {
+                this.ocrService = ocrManager.GetEngine();
+                if (this.ocrService != null) {
+                    this.ocrService.OcrFinished += OcrFinished;
+                }
             }
+
+            this.translationServices = this.serviceManager.GetServices<TranslationService>();
 
             // 翻訳エンジンの一覧をコンボボックスに設定
             this.translationServices.ForEach(service => this.translationEngineComboBox.Items.Add(service.DisplayName));
-            var i = this.translationServices.FindIndex(service => service.Name == ocrCommonService?.TranslationService?.Name);
+            var i = this.translationServices.FindIndex(service => service.Name == ocrManager?.TranslationService?.Name);
             this.translationEngineComboBox.SelectedIndex = i != -1 ? i : 0;
 
             // OBSのテキストソースの一覧を取得
@@ -86,12 +89,12 @@ namespace sikusiSubtitles.OCR {
             if (translationEngineComboBox.SelectedIndex != -1) {
                 this.translationService = translationServices[translationEngineComboBox.SelectedIndex];
                 var langs = this.translationService.GetLanguages();
-                foreach (var lang in langs) {
+                langs.ForEach(lang => {
                     var i = this.translationLangComboBox.Items.Add(lang.Item2);
-                    if (lang.Item1 == this.ocrCommonService?.TranslationLanguage) {
+                    if (lang.Item1 == this.ocrManager?.TranslationLanguage) {
                         this.translationLangComboBox.SelectedIndex = i;
                     }
-                }
+                });
             } else {
                 this.translationService = null;
             }
@@ -166,13 +169,26 @@ namespace sikusiSubtitles.OCR {
                 DoTranslate();
             }
         }
-        private void DoTranslate() {
+        private async void DoTranslate() {
             this.translationService = this.translationServices[this.translationEngineComboBox.SelectedIndex];
-            this.translationService.Translated += Translated;
-
             var langs = this.translationService.GetLanguages();
             var lang = langs[this.translationLangComboBox.SelectedIndex];
-            this.translationService.Translate(this, this.ocrTextBox.Text, lang.Item1);
+            var result = await this.translationService.TranslateAsync(this.ocrTextBox.Text, null, lang.Item1);
+            if (result.Translations.Count > 0) {
+                this.translatedTextBox.Text = result.Translations[0].Text;
+
+                // OBSに接続済みで、翻訳結果表示先が指定されている場合、OBS上に翻訳結果を表示する。
+                if (obsService != null && obsService.ObsSocket.IsConnected && subtitlesService != null && this.obsTextSourceComboBox.SelectedItem != null) {
+                    var sourceName = this.obsTextSourceComboBox.SelectedItem.ToString();
+                    if (sourceName != null) {
+                        await this.subtitlesService.SetTextAsync(sourceName, result.Translations[0].Text ?? "");
+                    }
+                }
+            } else {
+                // 翻訳に失敗
+                MessageBox.Show("翻訳に失敗しました。", null, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            this.translateButton.Enabled = true;
         }
 
         /**
@@ -222,35 +238,6 @@ namespace sikusiSubtitles.OCR {
                 this.ocrTextBox.Text = text;
                 this.Translate();
                 this.ocrButton.Enabled = true;
-            }
-        }
-
-        /**
-         * 翻訳が完了した
-         */
-        async private void Translated(object? sender, TranslationResult result) {
-            if (result.Obj == this) {
-                if (result.Translations.Count > 0) {
-                    this.translatedTextBox.Text = result.Translations[0].Text;
-
-                    // OBSに接続済みで、翻訳結果表示先が指定されている場合、OBS上に翻訳結果を表示する。
-                    if (obsService != null && obsService.ObsSocket.IsConnected && subtitlesService != null && this.obsTextSourceComboBox.SelectedItem != null) {
-                        var sourceName = this.obsTextSourceComboBox.SelectedItem.ToString();
-                        if (sourceName != null) {
-                            await this.subtitlesService.SetTextAsync(sourceName, result.Translations[0].Text ?? "");
-                        }
-                    }
-                } else {
-                    // 翻訳に失敗
-                    MessageBox.Show("翻訳に失敗しました。", null, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-
-                // 毎回、翻訳エンジンを選択できるので、今回の設定はクリアする。
-                if (this.translationService != null) {
-                    this.translationService.Translated -= Translated;
-                    this.translationService = null;
-                }
-                this.translateButton.Enabled = true;
             }
         }
 

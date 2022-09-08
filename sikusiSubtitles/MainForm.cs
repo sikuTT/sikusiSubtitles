@@ -140,11 +140,11 @@ namespace sikusiSubtitles {
         private void SpeechRecognitionStart() {
             var recognitionStarted = false;
 
-            var commonService = this.serviceManager.GetService<SpeechRecognitionCommonService>();
-            if (commonService == null || commonService.Device == null) {
+            var manager = this.serviceManager.GetManager<SpeechRecognitionServiceManager>();
+            if (manager?.Device == null) {
                 MessageBox.Show("マイクを設定してください。");
             } else {
-                var service = this.serviceManager.GetActiveService<SpeechRecognitionService>();
+                var service = manager.GetEngine();
                 if (service != null) {
                     if (service.Start()) {
                         speechRecognitionService = service;

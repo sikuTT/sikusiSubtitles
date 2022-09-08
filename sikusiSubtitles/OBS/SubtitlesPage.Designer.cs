@@ -67,7 +67,7 @@
             this.groupBox1.Controls.Add(this.voiceTextBox);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(10, 334);
+            this.groupBox1.Location = new System.Drawing.Point(10, 61);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(717, 149);
             this.groupBox1.TabIndex = 7;
@@ -255,7 +255,7 @@
             this.groupBox3.Controls.Add(this.translationFromComboBox);
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.translationEngineComboBox);
-            this.groupBox3.Location = new System.Drawing.Point(10, 64);
+            this.groupBox3.Location = new System.Drawing.Point(10, 242);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(717, 241);
             this.groupBox3.TabIndex = 8;

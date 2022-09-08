@@ -68,52 +68,35 @@ namespace sikusiSubtitles.Service {
             return null;
         }
 
-        public void SetActiveService(Service service) {
-            this.activeServices[service.ServiceName] = service;
-        }
-
-        public void ResetActiveService(string serviceName) {
-            this.activeServices.Remove(serviceName);
-        }
-
-        public Type? GetActiveService<Type>() where Type : Service {
-            foreach(var service in this.activeServices.Values) {
-                var type = service as Type;
-                if (type != null) {
-                    return type;
-                }
-            }
-            return null;
-        }
-
-        public Service? GetActiveService(string serviceName) {
-            if (this.activeServices.ContainsKey(serviceName)) {
-                return this.activeServices[serviceName];
-            } else {
-                return null;
-            }
-        }
-
         /**
          * サービスの順番をindex順にする
          */
         public void Update() {
+            this.Managers.Sort((a, b) => {
+                return a.Index - b.Index;
+            });
             this.Services.Sort((a, b) => {
                 return a.Index - b.Index;
             });
         }
 
-        // 設定の保存
-        public void Save() {
+        // 設定の読み込み
+        public void Load() {
+            foreach (var service in Managers) {
+                service.Load();
+            }
             foreach (var service in Services) {
-                service.Save();
+                service.Load();
             }
         }
 
-        // 設定の読み込み
-        public void Load() {
+        // 設定の保存
+        public void Save() {
+            foreach (var service in Managers) {
+                service.Save();
+            }
             foreach (var service in Services) {
-                service.Load();
+                service.Save();
             }
         }
 
@@ -123,6 +106,9 @@ namespace sikusiSubtitles.Service {
         public void Init() {
             Update();
             Load();
+            foreach (var service in Managers) {
+                service.Init();
+            }
             foreach (var service in Services) {
                 service.Init();
             }

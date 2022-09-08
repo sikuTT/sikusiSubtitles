@@ -6,8 +6,8 @@ namespace sikusiSubtitles.SpeechRecognition {
         public static new string ServiceName = "SpeechRecognition";
 
         public MMDevice? Device { get; set; }
-        public string? Engine { get; set; }
-        public string? Language { get; set; }
+        public string Engine { get; set; } = "";
+        public string Language { get; set; } = "";
 
         public override void Load() {
             // マイク設定
@@ -20,11 +20,13 @@ namespace sikusiSubtitles.SpeechRecognition {
 
             // 音声認識エンジン
             Engine = Properties.Settings.Default.RecognitionEngine;
+            Language = Properties.Settings.Default.SystemSpeechRecognitionLanguage;
         }
 
         public override void Save() {
             Properties.Settings.Default.MicID = Device?.ID ?? "";
-            Properties.Settings.Default.RecognitionEngine = Engine ?? "";
+            Properties.Settings.Default.RecognitionEngine = Engine;
+            Properties.Settings.Default.SystemSpeechRecognitionLanguage = Language;
         }
 
         public SpeechRecognitionServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, ServiceName, "音声認識", 100, true) {

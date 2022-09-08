@@ -8,25 +8,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace sikusiSubtitles.OCR {
-    public class OcrCommonService : Service.Service{
-        public OcrService? OcrService {
-            get { return ocrService; }
-            set {
-                this.ocrService = value;
-                if (value != null) {
-                    this.ServiceManager.SetActiveService(value);
-                } else {
-                    this.ServiceManager.ResetActiveService(OcrService.SERVICE_NAME);
-                }
-            }
-        }
-        OcrService? ocrService;
+    public class OcrServiceManager : Service.Service{
+        public static new string ServiceName = "OCR";
 
-        public string OcrEngine { get; set; }
-        public string OcrLanguage { get; set; }
+        public string OcrEngine { get; set; } = "";
+        public string OcrLanguage { get; set; } = "";
         public TranslationService? TranslationService { get; set; }
-        public string TranslationEngine { get; set; }
-        public string TranslationLanguage { get; set; }
+        public string TranslationEngine { get; set; } = "";
+        public string TranslationLanguage { get; set; } = "";
 
         public Shortcut.Shortcut OcrShortcut { get { return ocrShortcut; } }
 
@@ -48,11 +37,7 @@ namespace sikusiSubtitles.OCR {
             Properties.Settings.Default.OcrShortcutKey = OcrShortcut.ShortcutKey;
         }
 
-        public OcrCommonService(ServiceManager serviceManager) : base(serviceManager, OcrService.SERVICE_NAME, "OCR", "OCR", 500) {
-            OcrEngine = "";
-            OcrLanguage = "";
-            TranslationEngine = "";
-            TranslationLanguage = "";
+        public OcrServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, "OCR", "OCR", 500) {
         }
 
         public override void Init() {
@@ -60,6 +45,11 @@ namespace sikusiSubtitles.OCR {
             if (shortcutService != null) {
                 shortcutService.Shortcuts.Add(ocrShortcut);
             }
+        }
+
+        public OcrService GetEngine() {
+            var services =  this.ServiceManager.GetServices<OcrService>();
+            return services.Where(service => service.Name == OcrEngine).First();
         }
     }
 }

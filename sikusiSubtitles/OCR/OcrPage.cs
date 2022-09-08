@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace sikusiSubtitles.OCR {
     public partial class OcrPage : SettingPage {
-        private OcrCommonService service;
+        private OcrServiceManager service;
         private List<OcrService> ocrServices = new List<OcrService>();
         private List<TranslationService> translationServices = new List<TranslationService>();
 
@@ -12,7 +12,7 @@ namespace sikusiSubtitles.OCR {
         private Rectangle? captureArea;
 
         public OcrPage(Service.ServiceManager serviceManager) : base(serviceManager) {
-            this.service = new OcrCommonService(serviceManager);
+            this.service = new OcrServiceManager(serviceManager);
 
             InitializeComponent();
         }
@@ -38,15 +38,16 @@ namespace sikusiSubtitles.OCR {
          */
         private void ocrComboBox_SelectedIndexChanged(object sender, EventArgs e) {
             if (ocrComboBox.SelectedIndex != -1) {
-                service.OcrService = this.ocrServices[this.ocrComboBox.SelectedIndex];
+                service.OcrEngine = this.ocrServices[this.ocrComboBox.SelectedIndex].Name;
             } else {
-                service.OcrService = null;
+                service.OcrEngine = "";
             }
 
             // OCRの読み取り言語を、選択したOCRが対応している言語一覧で設定しなおす
             ocrLangComboBox.Items.Clear();
-            if (service.OcrService != null) {
-                var langs = service.OcrService.GetLanguages();
+            var ocrService = service.GetEngine();
+            if (ocrService != null) {
+                var langs = ocrService.GetLanguages();
                 langs.ForEach(lang => this.ocrLangComboBox.Items.Add(lang));
                 ocrLangComboBox.SelectedIndex = langs.FindIndex(lang => lang == service.OcrLanguage);
             }
@@ -54,9 +55,10 @@ namespace sikusiSubtitles.OCR {
 
         /** OCR読み取り言語を選択 */
         private void ocrLangComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-            if (service.OcrService != null) {
+            var ocrService = service.GetEngine();
+            if (ocrService != null) {
                 if (this.ocrLangComboBox.SelectedIndex != -1) {
-                    var langs = service.OcrService.GetLanguages();
+                    var langs = ocrService.GetLanguages();
                     service.OcrLanguage = langs[ocrLangComboBox.SelectedIndex];
                 } else {
                     service.OcrLanguage = "";

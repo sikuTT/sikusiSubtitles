@@ -20,6 +20,8 @@ namespace sikusiSubtitles.OBS {
     }
 
     public class SubtitlesService : Service.Service {
+        private static int TranslationMaxCount = 2;
+
         private ObsService? obsService;
         private SpeechRecognitionService? speechRecognitionService;
         private TranslationService? translationService;
@@ -28,16 +30,16 @@ namespace sikusiSubtitles.OBS {
         private Dictionary<string, string> recognizingText = new Dictionary<string, string>();
         private Dictionary<string, System.Timers.Timer> clearTimer = new Dictionary<string, System.Timers.Timer>();
 
-        public string TranslationEngine { get; set; }
-        public string TranslationLanguageFrom { get; set; }
-        public string[] TranslationLanguageTo { get; set; }
-        public bool[] Translation { get; set; }
-        public string VoiceTarget { get; set; }
-        public string[] TranslationTargets { get; set; }
-        public bool IsClearInterval { get; set; }
-        public int ClearInterval { get; set; }
-        public bool IsAdditionalTime { get; set; }
-        public int AdditionalTime { get; set; }
+        public string TranslationEngine { get; set; } = "";
+        public string TranslationLanguageFrom { get; set; } = "";
+        public string[] TranslationLanguageTo { get; set; } = new string[TranslationMaxCount];
+        public bool[] Translation { get; set; } = new bool[TranslationMaxCount];
+        public string VoiceTarget { get; set; } = "";
+        public string[] TranslationTargets { get; set; } = new string[TranslationMaxCount];
+        public bool IsClearInterval { get; set; } = false;
+        public int ClearInterval { get; set; } = 0;
+        public bool IsAdditionalTime { get; set; } = false;
+        public int AdditionalTime { get; set; } = 0;
 
         public override void Load() {
             TranslationEngine = Properties.Settings.Default.SubtitlesTranslationEngine;
@@ -72,42 +74,33 @@ namespace sikusiSubtitles.OBS {
         }
 
         public SubtitlesService(Service.ServiceManager serviceManager) : base(serviceManager, ObsServiceManager.ServiceName, "Subtitles", "字幕", 200) {
-            TranslationEngine = "";
-            TranslationLanguageFrom = "";
-            TranslationLanguageTo = new string[2];
-            Translation = new bool[2];
-            VoiceTarget = "";
-            TranslationTargets = new string[2];
         }
 
         public bool Start(ObsService obsService) {
             this.obsService = obsService;
 
-            this.speechRecognitionService = this.ServiceManager.GetActiveService<SpeechRecognitionService>();
-            if (this.speechRecognitionService == null) {
-                return false;
-            } else {
-                this.speechRecognitionService.Recognizing += Recognizing;
-                this.speechRecognitionService.Recognized += Recognized;
-            }
+            var manager = this.ServiceManager.GetManager<SpeechRecognitionServiceManager>();
+            if (manager != null) {
+                this.speechRecognitionService = manager.GetEngine();
 
-            var translationServices = this.ServiceManager.GetServices<TranslationService>();
-            this.translationService = translationServices.Where(service => service.Name == TranslationEngine).First();
-            if (this.translationService != null) {
-                this.translationService.Translated += Translated;
-            }
+                if (this.speechRecognitionService != null) {
+                    this.speechRecognitionService.Recognizing += Recognizing;
+                    this.speechRecognitionService.Recognized += Recognized;
 
-            return true;
+                    var translationServices = this.ServiceManager.GetServices<TranslationService>();
+                    this.translationService = translationServices.Where(service => service.Name == TranslationEngine).First();
+
+                    return true;
+                }
+            }
+            return false;
         }
 
         public void Stop() {
             if (this.speechRecognitionService != null) {
                 this.speechRecognitionService.Recognizing -= Recognizing;
                 this.speechRecognitionService.Recognized -= Recognized;
-            }
-
-            if (this.translationService != null) {
-                this.translationService.Translated -= Translated;
+                this.speechRecognitionService = null;
             }
         }
 
@@ -145,23 +138,7 @@ namespace sikusiSubtitles.OBS {
                     await SetSubtitlesAsync(args.Text, this.VoiceTarget, true, this.ClearInterval, this.AdditionalTime);
 
                     // 翻訳サービスが設定されている場合、翻訳する
-                    Translate(args.Text);
-                }
-            }
-        }
-
-        async private void Translated(object? sender, TranslationResult result) {
-            if (result.Obj == this) {
-                var i = 0;
-                foreach (var target in this.TranslationTargets) {
-                    if (target != null) {
-                        if (result.Translations.Count > i) {
-                            var translation = result.Translations[i++];
-                            if (translation != null && translation.Text != null) {
-                                await SetSubtitlesAsync(translation.Text, target, true, this.IsClearInterval ? this.ClearInterval : null, this.IsAdditionalTime ? this.AdditionalTime : null);
-                            }
-                        }
-                    }
+                    await TranslateAsync(args.Text);
                 }
             }
         }
@@ -218,9 +195,23 @@ namespace sikusiSubtitles.OBS {
         }
 
         // 翻訳サービスが設定されている場合、翻訳する
-        private void Translate(string text) {
+        private async Task TranslateAsync(string text) {
             if (this.translationService != null) {
-                this.translationService.Translate(this, text);
+                var toList = new List<string>();
+                for (var i = 0; i < TranslationMaxCount; i++) {
+                    if (Translation[i] == true && TranslationTargets[i] != null && TranslationTargets[i] != "") {
+                        toList.Add(TranslationTargets[i]);
+                    }
+                }
+                var result = await this.translationService.TranslateAsync(text, this.TranslationLanguageFrom, toList.ToArray());
+                for (int i = 0, j = 0 ; i < TranslationMaxCount; i++) {
+                    if (Translation[i] == true && TranslationTargets[i] != null && TranslationTargets[i] != "") {
+                        var translation = result.Translations[j++];
+                        if (translation != null && translation.Text != null) {
+                            await SetSubtitlesAsync(translation.Text, TranslationTargets[i], true, this.IsClearInterval ? this.ClearInterval : null, this.IsAdditionalTime ? this.AdditionalTime : null);
+                        }
+                    }
+                }
             }
         }
 

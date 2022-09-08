@@ -37,7 +37,7 @@ namespace sikusiSubtitles.SpeechRecognition {
 
         public override bool Start() {
             var manager = this.ServiceManager.GetManager<SpeechRecognitionServiceManager>();
-            if (manager?.Language == null) {
+            if (manager == null || manager.Language == "") {
                 MessageBox.Show("言語を選択してください。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
@@ -48,7 +48,7 @@ namespace sikusiSubtitles.SpeechRecognition {
             if (this.HttpListenerStart(uri) == false)
                 return false;
 
-            if (this.LunchChrome(uri, manager.Lanugage) == false) {
+            if (this.LunchChrome(uri, manager.Language) == false) {
                 this.HttpListenerStop();
                 return false;
             }

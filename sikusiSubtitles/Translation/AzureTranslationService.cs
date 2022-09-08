@@ -9,107 +9,95 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.Translation {
     public class AzureTranslationService : TranslationService {
-        public string Key { get; set; }
-        public string Region { get; set; }
-        public string? From { get; set; }
-        public string? To1 { get; set; }
-        public string? To2 { get; set; }
+        public string Key { get; set; } = "";
+        public string Region { get; set; } = "";
 
         private static readonly string endpoint = "https://api.cognitive.microsofttranslator.com/";
         private HttpClient HttpClient = new HttpClient();
 
         public AzureTranslationService(ServiceManager serviceManager) : base(serviceManager, "Azure", "Azure Cognitive Services", 300) {
-            this.Key = "";
-            this.Region = "";
-
             this.languages.Sort((a, b) => a.Item2.CompareTo(b.Item2));
         }
 
-        public override async void Translate(object obj, string text) {
-            if (CheckParameters() == false) {
-                return;
-            }
-
-            var from = this.From;
-            var toList = new List<string>();
-            if (this.To1 != null) toList.Add(this.To1);
-            if (this.To2 != null) toList.Add(this.To2);
-            var result = await TranslateAsync(obj, text, from, toList.ToArray());
-            this.InvokeTranslated(result);
+        public override void Load() {
+            Key = Decrypt(Properties.Settings.Default.AzureTranslationKey);
+            Region = Properties.Settings.Default.AzureTranslationRegion;
         }
 
-        public override async void Translate(object obj, string text, string to) {
-            if (CheckParameters() == false) {
-                return;
-            }
-
-            var toList = new string[] { to };
-            var result = await TranslateAsync(obj, text, null, toList);
-            this.InvokeTranslated(result);
+        public override void Save() {
+            Properties.Settings.Default.AzureTranslationKey = Encrypt(Key);
+            Properties.Settings.Default.AzureTranslationRegion = Region;
         }
 
         public override List<Tuple<string, string>> GetLanguages() {
             return this.languages;
         }
 
-        private async Task<TranslationResult> TranslateAsync(object obj, string text, string? from, string[] toList) {
-            var result = new TranslationResult(obj);
-            if (toList.Length == 0)
-                return result;
+        public async override Task<TranslationResult> TranslateAsync(string text, string? from, string to) {
+            var result = await TranslateAsync(text, from, new string[] { to });
+            return result;
+        }
 
-            string route = String.Format("translate?api-version=3.0");
-            if (from != null) {
-                route = route + "&from=" + from;
-            }
-            foreach (var to in toList) {
-                route = route + "&to=" + to;
-            }
+        public async override Task<TranslationResult> TranslateAsync(string text, string? from, string[] toList) {
+            var result = new TranslationResult();
 
-            object[] body = new object[] { new { Text = text } };
-            var requestBody = JsonConvert.SerializeObject(body);
-            var uri = new Uri(endpoint + route);
+            try {
+                if (CheckParameters() == false) return result;
+                if (toList.Length == 0) return result;
 
-            using (var request = new HttpRequestMessage()) {
-                try {
-                    // Build the request.
-                    request.Method = HttpMethod.Post;
-                    request.RequestUri = uri;
-                    request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
-                    request.Headers.Add("Ocp-Apim-Subscription-Key", this.Key);
-                    request.Headers.Add("Ocp-Apim-Subscription-Region", this.Region);
-
-                    // Send the request and get response.
-                    HttpResponseMessage response = await this.HttpClient.SendAsync(request).ConfigureAwait(false);
-
-                    // Read response.
-                    string responseText = await response.Content.ReadAsStringAsync();
-                    AzureTranslationResult[]? azureResults = JsonConvert.DeserializeObject<AzureTranslationResult[]>(responseText);
-
-                    if (azureResults == null)
-                        return result;
-                    foreach (var azureResult in azureResults) {
-                        result.DetectLanguage = azureResult.detectedLanguage?.language;
-
-                        if (azureResult.translations == null)
-                            continue;
-
-                        foreach (var translation in azureResult.translations) {
-                            Debug.WriteLine("AzureTranslationService: " + translation.text);
-                            var t = new TranslationResult.Translation() {
-                                Text = translation.text ?? "",
-                                Language = translation.to
-                            };
-                            result.Translations.Add(t);
-                        }
-                    }
-                } catch (Exception ex) {
-                    Debug.WriteLine(ex.Message);
-                    result.Error = true;
-                    result.Translations.Add(new TranslationResult.Translation() { Text = ex.Message });
+                string route = String.Format("translate?api-version=3.0");
+                if (from != null) {
+                    route = route + "&from=" + from;
+                }
+                foreach (var to in toList) {
+                    route = route + "&to=" + to;
                 }
 
-                return result;
+                object[] body = new object[] { new { Text = text } };
+                var requestBody = JsonConvert.SerializeObject(body);
+                var uri = new Uri(endpoint + route);
+
+                using var request = new HttpRequestMessage();
+
+                // Build the request.
+                request.Method = HttpMethod.Post;
+                request.RequestUri = uri;
+                request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+                request.Headers.Add("Ocp-Apim-Subscription-Key", this.Key);
+                request.Headers.Add("Ocp-Apim-Subscription-Region", this.Region);
+
+                // Send the request and get response.
+                HttpResponseMessage response = await this.HttpClient.SendAsync(request).ConfigureAwait(false);
+
+                // Read response.
+                string responseText = await response.Content.ReadAsStringAsync();
+                AzureTranslationResult[]? azureResults = JsonConvert.DeserializeObject<AzureTranslationResult[]>(responseText);
+
+                if (azureResults == null) return result;
+                foreach (var azureResult in azureResults) {
+                    result.DetectLanguage = azureResult.detectedLanguage?.language;
+
+                    if (azureResult.translations == null)
+                        continue;
+
+                    foreach (var translation in azureResult.translations) {
+                        Debug.WriteLine("AzureTranslationService: " + translation.text);
+                        var t = new TranslationResult.Translation() {
+                            Text = translation.text ?? "",
+                            Language = translation.to
+                        };
+                        result.Translations.Add(t);
+                    }
+                }
+            } catch (Exception ex) {
+                Debug.WriteLine("AzureTranslationService: " + ex.Message);
+                result.Error = true;
+                result.Translations.Add(new TranslationResult.Translation() { Text = ex.Message });
+            } finally {
+                InvokeTranslated(result);
             }
+
+            return result;
         }
 
         private bool CheckParameters() {

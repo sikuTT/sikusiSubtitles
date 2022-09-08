@@ -29,7 +29,7 @@
     <Setting Name="SubtitlesVoice" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="TtranslationService" Type="System.String" Scope="User">
+    <Setting Name="TtranslationEngine" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="AzureTranslationKey" Type="System.String" Scope="User">
@@ -38,41 +38,11 @@
     <Setting Name="AzureTranslationRegion" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="AzureTranslationFrom" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="AzureTranslationTo1" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="AzureTranslationTo2" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="AzureTranslationTo1Run" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="AzureTranslationTo2Run" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
     <Setting Name="ChromePort" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">14949</Value>
     </Setting>
     <Setting Name="GoogleTranslationBasicKey" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="GoogleTranslationBasicFrom" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="GoogleTranslationBasicTo1" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="GoogleTranslationBasicTo2" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="GoogleTranslationBasicTo1Run" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="GoogleTranslationBasicTo2Run" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="AmiVoiceKey" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -106,21 +76,6 @@
     </Setting>
     <Setting Name="DeepLTranslationKey" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="DeepLTranslationFrom" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="DeepLTranslationTo1" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="DeepLTranslationTo2" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="DeepLTranslationTo1Run" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="DeepLTranslationTo2Run" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="OcrEngine" Type="System.String" Scope="User">
       <Value Profile="(Default)">Tesseract</Value>

@@ -9,63 +9,54 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.Translation {
     public class DeepLTranslationService : TranslationService {
-        public string? Key { get; set; }
-        public string? From { get; set; }
-        public string? To1 { get; set; }
-        public string? To2 { get; set; }
+        public string Key { get; set; } = "";
 
         public DeepLTranslationService(ServiceManager serviceManager) : base(serviceManager, "DeepL", "DeepL", 400) {
             this.languages.Sort((a, b) => a.Item2.CompareTo(b.Item2));
         }
 
-        public override async void Translate(object obj, string text) {
-            if (CheckParameters() == false) {
-                return;
-            }
-
-            var toList = new List<string>();
-            if (To1 != null) toList.Add(To1);
-            if (To2 != null) toList.Add(To2);
-            var result = await TranslateAsync(obj, text, From, toList.ToArray());
-            this.InvokeTranslated(result);
+        public override void Load() {
+            Key = Decrypt(Properties.Settings.Default.DeepLTranslationKey);
         }
 
-        public override async void Translate(object obj, string text, string to) {
-            if (CheckParameters() == false) {
-                return;
-            }
-
-            var toList = new string[] { to };
-            var result = await TranslateAsync(obj, text, null, toList);
-            this.InvokeTranslated(result);
+        public override void Save() {
+            Properties.Settings.Default.DeepLTranslationKey = Encrypt(Key);
         }
 
         public override List<Tuple<string, string>> GetLanguages() {
             return this.languages;
         }
 
-        private async Task<TranslationResult> TranslateAsync(object obj, string text, string? from, string[] toList) {
-            var result = new TranslationResult(obj);
+        public override async Task<TranslationResult> TranslateAsync(string text, string? from, string to) {
+            var result = await TranslateAsync(text, from, new string[] { to });
+            return result;
+        }
+
+        public override async Task<TranslationResult> TranslateAsync(string text, string? from, string[] toList) {
+            var result = new TranslationResult();
 
             try {
-                if (this.Key != null) {
-                    var translator = new Translator(this.Key);
+                if (CheckParameters() == false) return result;
 
-                    foreach (var to in toList) {
-                        var translatedText = await translator.TranslateTextAsync(text, from, to);
-                        Debug.WriteLine("DeepLTranslationService: " + translatedText);
-                        result.Translations.Add(new TranslationResult.Translation() { Text = translatedText.Text });
-                    }
+                var translator = new Translator(this.Key);
+
+                foreach (var to in toList) {
+                    var translatedText = await translator.TranslateTextAsync(text, from, to);
+                    Debug.WriteLine("DeepLTranslationService: " + translatedText);
+                    result.Translations.Add(new TranslationResult.Translation() { Text = translatedText.Text });
                 }
             } catch (Exception ex) {
                 Debug.WriteLine("DeepLTranslationService: " + ex.Message);
+                result.Error = true;
+                result.Translations.Add(new TranslationResult.Translation() { Text = ex.Message });
+            } finally {
+                InvokeTranslated(result);
             }
-
             return result;
         }
 
         private bool CheckParameters() {
-            if (this.Key == null || this.Key == "") {
+            if (this.Key == "") {
                 MessageBox.Show("APIキーが設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             } else {

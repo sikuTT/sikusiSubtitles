@@ -134,12 +134,12 @@ namespace sikusiSubtitles.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string TtranslationService {
+        public string TtranslationEngine {
             get {
-                return ((string)(this["TtranslationService"]));
+                return ((string)(this["TtranslationEngine"]));
             }
             set {
-                this["TtranslationService"] = value;
+                this["TtranslationEngine"] = value;
             }
         }
         
@@ -169,66 +169,6 @@ namespace sikusiSubtitles.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string AzureTranslationFrom {
-            get {
-                return ((string)(this["AzureTranslationFrom"]));
-            }
-            set {
-                this["AzureTranslationFrom"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string AzureTranslationTo1 {
-            get {
-                return ((string)(this["AzureTranslationTo1"]));
-            }
-            set {
-                this["AzureTranslationTo1"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string AzureTranslationTo2 {
-            get {
-                return ((string)(this["AzureTranslationTo2"]));
-            }
-            set {
-                this["AzureTranslationTo2"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool AzureTranslationTo1Run {
-            get {
-                return ((bool)(this["AzureTranslationTo1Run"]));
-            }
-            set {
-                this["AzureTranslationTo1Run"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool AzureTranslationTo2Run {
-            get {
-                return ((bool)(this["AzureTranslationTo2Run"]));
-            }
-            set {
-                this["AzureTranslationTo2Run"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("14949")]
         public int ChromePort {
             get {
@@ -248,66 +188,6 @@ namespace sikusiSubtitles.Properties {
             }
             set {
                 this["GoogleTranslationBasicKey"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string GoogleTranslationBasicFrom {
-            get {
-                return ((string)(this["GoogleTranslationBasicFrom"]));
-            }
-            set {
-                this["GoogleTranslationBasicFrom"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string GoogleTranslationBasicTo1 {
-            get {
-                return ((string)(this["GoogleTranslationBasicTo1"]));
-            }
-            set {
-                this["GoogleTranslationBasicTo1"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string GoogleTranslationBasicTo2 {
-            get {
-                return ((string)(this["GoogleTranslationBasicTo2"]));
-            }
-            set {
-                this["GoogleTranslationBasicTo2"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool GoogleTranslationBasicTo1Run {
-            get {
-                return ((bool)(this["GoogleTranslationBasicTo1Run"]));
-            }
-            set {
-                this["GoogleTranslationBasicTo1Run"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool GoogleTranslationBasicTo2Run {
-            get {
-                return ((bool)(this["GoogleTranslationBasicTo2Run"]));
-            }
-            set {
-                this["GoogleTranslationBasicTo2Run"] = value;
             }
         }
         
@@ -440,66 +320,6 @@ namespace sikusiSubtitles.Properties {
             }
             set {
                 this["DeepLTranslationKey"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string DeepLTranslationFrom {
-            get {
-                return ((string)(this["DeepLTranslationFrom"]));
-            }
-            set {
-                this["DeepLTranslationFrom"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string DeepLTranslationTo1 {
-            get {
-                return ((string)(this["DeepLTranslationTo1"]));
-            }
-            set {
-                this["DeepLTranslationTo1"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string DeepLTranslationTo2 {
-            get {
-                return ((string)(this["DeepLTranslationTo2"]));
-            }
-            set {
-                this["DeepLTranslationTo2"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool DeepLTranslationTo1Run {
-            get {
-                return ((bool)(this["DeepLTranslationTo1Run"]));
-            }
-            set {
-                this["DeepLTranslationTo1Run"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool DeepLTranslationTo2Run {
-            get {
-                return ((bool)(this["DeepLTranslationTo2Run"]));
-            }
-            set {
-                this["DeepLTranslationTo2Run"] = value;
             }
         }
         

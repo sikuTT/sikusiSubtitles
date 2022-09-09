@@ -21,6 +21,10 @@ namespace sikusiSubtitles.Translation {
             InitializeComponent();
         }
 
+        private void GoogleAppsScriptTranslationPage_Load(object sender, EventArgs e) {
+            keyTextBox.Text = service.Key;
+        }
+
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             ProcessStartInfo pi = new ProcessStartInfo() {
                 FileName = "https://script.google.com/home",

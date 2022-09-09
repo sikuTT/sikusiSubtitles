@@ -105,6 +105,7 @@
             this.Controls.Add(this.label1);
             this.Name = "AzureTranslationPage";
             this.Size = new System.Drawing.Size(594, 231);
+            this.Load += new System.EventHandler(this.AzureTranslationPage_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);

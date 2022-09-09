@@ -19,6 +19,10 @@ namespace sikusiSubtitles.Translation {
             InitializeComponent();
         }
 
+        private void DeepLTranslationPage_Load(object sender, EventArgs e) {
+            keyTextBox.Text = service.Key;
+        }
+
         private void keyTextBox_TextChanged(object sender, EventArgs e) {
             this.service.Key = keyTextBox.Text;
         }

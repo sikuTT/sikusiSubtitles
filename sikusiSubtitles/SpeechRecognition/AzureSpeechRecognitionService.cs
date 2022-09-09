@@ -13,8 +13,8 @@ namespace sikusiSubtitles.SpeechRecognition {
     public class AzureSpeechRecognitionService : SpeechRecognitionService {
         private SpeechRecognizer? Recognizer;
 
-        public string? Key { get; set; }
-        public string? Region { get; set; }
+        public string Key { get; set; } = "";
+        public string Region { get; set; } = "";
 
         public AzureSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "Azure", "Azure Cognitive Service", 200) {
         }
@@ -34,10 +34,10 @@ namespace sikusiSubtitles.SpeechRecognition {
         }
 
         public override bool Start() {
-            if (Key == null) {
+            if (Key == "") {
                 MessageBox.Show("APIキーが設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
-            } else if (Region == null) {
+            } else if (Region == "") {
                 MessageBox.Show("地域が設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }

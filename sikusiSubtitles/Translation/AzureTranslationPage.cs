@@ -20,6 +20,11 @@ namespace sikusiSubtitles.Translation {
             InitializeComponent();
         }
 
+        private void AzureTranslationPage_Load(object sender, EventArgs e) {
+            this.keyTextBox.Text = service.Key;
+            this.regionTextBox.Text = service.Region;
+        }
+
         private void keyTextBox_TextChanged(object sender, EventArgs e) {
             this.service.Key = this.keyTextBox.Text;
         }

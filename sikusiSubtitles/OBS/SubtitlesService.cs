@@ -199,12 +199,12 @@ namespace sikusiSubtitles.OBS {
             if (this.translationService != null) {
                 var toList = new List<string>();
                 for (var i = 0; i < TranslationMaxCount; i++) {
-                    if (Translation[i] == true && TranslationTargets[i] != null && TranslationTargets[i] != "") {
-                        toList.Add(TranslationTargets[i]);
+                    if (Translation[i] == true && TranslationLanguageTo[i] != null && TranslationLanguageTo[i] != "") {
+                        toList.Add(TranslationLanguageTo[i]);
                     }
                 }
                 var result = await this.translationService.TranslateAsync(text, this.TranslationLanguageFrom, toList.ToArray());
-                for (int i = 0, j = 0 ; i < TranslationMaxCount; i++) {
+                for (int i = 0, j = 0 ; i < TranslationMaxCount && j  < result.Translations.Count; i++) {
                     if (Translation[i] == true && TranslationTargets[i] != null && TranslationTargets[i] != "") {
                         var translation = result.Translations[j++];
                         if (translation != null && translation.Text != null) {

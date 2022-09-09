@@ -33,9 +33,14 @@ namespace sikusiSubtitles.SpeechRecognition {
         }
 
         private void AmiVoiceSpeechRecognitionPage_Load(object sender, EventArgs e) {
+            this.keyTextBox.Text = service.Key;
+
             // ログ
             logs.ForEach(log => {
-                this.logComboBox.Items.Add(log.Item2);
+                var i = this.logComboBox.Items.Add(log.Item2);
+                if (log.Item1 == service.Log) {
+                    this.logComboBox.SelectedIndex = i;
+                }
             });
         }
 

@@ -13,7 +13,7 @@ namespace sikusiSubtitles.SpeechRecognition {
             // マイク設定
             var enumerator = new MMDeviceEnumerator();
             var micList = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
-            Device = micList.Where(mic => mic.ID == Properties.Settings.Default.MicID).First();
+            Device = micList.Where(mic => mic.ID == Properties.Settings.Default.MicID).FirstOrDefault();
             if (Device == null) {
                 Device = enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Console);
             }

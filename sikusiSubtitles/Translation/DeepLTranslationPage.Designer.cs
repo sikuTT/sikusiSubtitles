@@ -82,6 +82,7 @@
             this.Controls.Add(this.label1);
             this.Name = "DeepLTranslationPage";
             this.Size = new System.Drawing.Size(583, 185);
+            this.Load += new System.EventHandler(this.DeepLTranslationPage_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);

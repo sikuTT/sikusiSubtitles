@@ -82,6 +82,7 @@
             this.Controls.Add(this.label1);
             this.Name = "GoogleBasicTranslationPage";
             this.Size = new System.Drawing.Size(765, 169);
+            this.Load += new System.EventHandler(this.GoogleBasicTranslationPage_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);

@@ -196,59 +196,6 @@ namespace sikusiSubtitles {
             }
         }
 
-        private void Translate(string text) {
-/*
-            // 翻訳する
-            TranslationResult? result = null;
-            if (this.translationPage.Service == TranslationPage.ServiceType.Azure)
-                result = await this.azureTranslationPage.TranslateAsync(text, this.azureTranslationPage.From, this.azureTranslationPage.To.ToArray());
-            else if (this.translationPage.Service == TranslationPage.ServiceType.GoogleBasic)
-                result = await this.googleBasicTranslationPage.TranslateAsync(text, this.googleBasicTranslationPage.From, this.googleBasicTranslationPage.To.ToArray());
-            else if (this.translationPage.Service == TranslationPage.ServiceType.GoogleAppsScript)
-                result = await this.googleAppsScriptTranslationPage.TranslateAsync(text, this.googleAppsScriptTranslationPage.From, this.googleAppsScriptTranslationPage.To.ToArray());
-            else if (this.translationPage.Service == TranslationPage.ServiceType.DeepL)
-                result = await this.deeplTranslationPage.TranslateAsync(text, this.deeplTranslationPage.From, this.deeplTranslationPage.To.ToArray());
-
-            // 翻訳できなければ処理を終わる。
-            // そうでなければ翻訳結果を画面に表示
-            if (result == null)
-                return;
-            else if (result.Error == false) {
-                foreach (var translation in result.Translations) {
-                    if (translation.Text != null) {
-                        this.AddRecognitionResultText(translation.Text);
-                    }
-                }
-            }
-
-            // 翻訳結果を取得
-            string?[] texts = { null, null };
-            int i = 0;
-            if (this.translationPage.Service == TranslationPage.ServiceType.Azure)
-                i = this.azureTranslationPage.IsTo1 ? 0 : 1;
-            else if (this.translationPage.Service == TranslationPage.ServiceType.GoogleBasic)
-                i = this.googleBasicTranslationPage.IsTo1 ? 0 : 1;
-            else if (this.translationPage.Service == TranslationPage.ServiceType.GoogleAppsScript)
-                i = this.googleAppsScriptTranslationPage.IsTo1 ? 0 : 1;
-            else if (this.translationPage.Service == TranslationPage.ServiceType.DeepL)
-                i = this.deeplTranslationPage.IsTo1 ? 0 : 1;
-
-            for (var j = 0; j < result.Translations.Count && i < texts.Length; ++i, ++j) {
-                texts[i] = result.Translations[j].Text;
-            }
-
-            // 翻訳結果をOBSに表示
-            string[] target = { this.subtitlesPage.Translation1, this.subtitlesPage.Translation2 };
-            for (var j = 0; j < texts.Length; j++) {
-                string? str = texts[j];
-                if (str != null) {
-                    Debug.WriteLine("Translated: " + str);
-                    this.obsPage.SetSubtitles(str, target[j], true, this.subtitlesPage.ClearInterval, this.subtitlesPage.AdditionalTime);
-                }
-            }
-*/
-        }
-
         /**
          * チェックボックスボタンの状態に合わせて色を変更する
          * （デフォルトの色は分かりにくいので）

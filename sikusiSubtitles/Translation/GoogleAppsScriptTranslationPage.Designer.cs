@@ -124,6 +124,7 @@
             this.Controls.Add(this.label1);
             this.Name = "GoogleAppsScriptTranslationPage";
             this.Size = new System.Drawing.Size(823, 383);
+            this.Load += new System.EventHandler(this.GoogleAppsScriptTranslationPage_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);

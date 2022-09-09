@@ -22,13 +22,9 @@ namespace sikusiSubtitles.SpeechRecognition {
             InitializeComponent();
         }
 
-        /**
-         * 設定の読み込み
-         */
-        public override void LoadSettings() {
-        }
-
         private void AzureSpeechRecognition_Load(object sender, EventArgs e) {
+            keyTextBox.Text = service.Key;
+            regionTextBox.Text = service.Region;
         }
 
         private void keyTextBox_TextChanged(object sender, EventArgs e) {

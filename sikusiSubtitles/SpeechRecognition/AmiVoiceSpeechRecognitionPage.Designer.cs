@@ -29,9 +29,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.logComboBox = new System.Windows.Forms.ComboBox();
-            this.engineComboBox = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -84,12 +82,10 @@
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.logComboBox);
-            this.groupBox2.Controls.Add(this.engineComboBox);
             this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Location = new System.Drawing.Point(10, 153);
+            this.groupBox2.Location = new System.Drawing.Point(10, 156);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(554, 110);
+            this.groupBox2.Size = new System.Drawing.Size(554, 78);
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "エンジン情報";
@@ -100,41 +96,20 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.logComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.logComboBox.FormattingEnabled = true;
-            this.logComboBox.Location = new System.Drawing.Point(96, 68);
+            this.logComboBox.Location = new System.Drawing.Point(96, 33);
             this.logComboBox.Name = "logComboBox";
             this.logComboBox.Size = new System.Drawing.Size(440, 23);
             this.logComboBox.TabIndex = 3;
             this.logComboBox.SelectedIndexChanged += new System.EventHandler(this.logComboBox_SelectedIndexChanged);
             // 
-            // engineComboBox
-            // 
-            this.engineComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.engineComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.engineComboBox.FormattingEnabled = true;
-            this.engineComboBox.Location = new System.Drawing.Point(96, 26);
-            this.engineComboBox.Name = "engineComboBox";
-            this.engineComboBox.Size = new System.Drawing.Size(440, 23);
-            this.engineComboBox.TabIndex = 2;
-            this.engineComboBox.SelectedIndexChanged += new System.EventHandler(this.engineComboBox_SelectedIndexChanged);
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(24, 71);
+            this.label3.Location = new System.Drawing.Point(24, 36);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(49, 15);
             this.label3.TabIndex = 0;
             this.label3.Text = "ログ保存";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(24, 29);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(44, 15);
-            this.label4.TabIndex = 0;
-            this.label4.Text = "エンジン";
             // 
             // AmiVoiceSpeechRecognitionPage
             // 
@@ -145,7 +120,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label1);
             this.Name = "AmiVoiceSpeechRecognitionPage";
-            this.Size = new System.Drawing.Size(567, 347);
+            this.Size = new System.Drawing.Size(567, 257);
             this.Load += new System.EventHandler(this.AmiVoiceSpeechRecognitionPage_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -164,8 +139,6 @@
         private Label label1;
         private GroupBox groupBox2;
         private ComboBox logComboBox;
-        private ComboBox engineComboBox;
         private Label label3;
-        private Label label4;
     }
 }

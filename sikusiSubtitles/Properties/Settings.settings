@@ -17,14 +17,11 @@
     <Setting Name="AzureSpeechRecognitionRegion" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="AzureSpeechRecognitionLanguage" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="ObsIP" Type="System.String" Scope="User">
       <Value Profile="(Default)">127.0.0.1</Value>
     </Setting>
     <Setting Name="ObsPort" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">4444</Value>
+      <Value Profile="(Default)">4455</Value>
     </Setting>
     <Setting Name="ObsPassword" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -32,25 +29,7 @@
     <Setting Name="SubtitlesVoice" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="SubtitlesTranslation1" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="SubtitlesTranslation2" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="SubtitlesClear" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="SubtitlesClearInterval" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">5</Value>
-    </Setting>
-    <Setting Name="SubtitlesAddtional" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="SubtitlesAdditionalTime" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">1</Value>
-    </Setting>
-    <Setting Name="TtranslationService" Type="System.String" Scope="User">
+    <Setting Name="TtranslationEngine" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="AzureTranslationKey" Type="System.String" Scope="User">
@@ -59,41 +38,11 @@
     <Setting Name="AzureTranslationRegion" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="AzureTranslationFrom" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="AzureTranslationTo1" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="AzureTranslationTo2" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="AzureTranslationTo1Run" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="AzureTranslationTo2Run" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
     <Setting Name="ChromePort" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">14949</Value>
     </Setting>
     <Setting Name="GoogleTranslationBasicKey" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="GoogleTranslationBasicFrom" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="GoogleTranslationBasicTo1" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="GoogleTranslationBasicTo2" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="GoogleTranslationBasicTo1Run" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="GoogleTranslationBasicTo2Run" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="AmiVoiceKey" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -101,8 +50,8 @@
     <Setting Name="AmiVoiceEngine" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="AmiVoiceLog" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="AmiVoiceLog" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ChromeLanguage" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -128,21 +77,6 @@
     <Setting Name="DeepLTranslationKey" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="DeepLTranslationFrom" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="DeepLTranslationTo1" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="DeepLTranslationTo2" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="DeepLTranslationTo1Run" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="DeepLTranslationTo2Run" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
     <Setting Name="OcrEngine" Type="System.String" Scope="User">
       <Value Profile="(Default)">Tesseract</Value>
     </Setting>
@@ -150,7 +84,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="TesseractOcrLanguage" Type="System.String" Scope="User">
-      <Value Profile="(Default)">eng</Value>
+      <Value Profile="(Default)">English</Value>
     </Setting>
     <Setting Name="TesseractTranslationEngine" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -165,6 +99,48 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="OcrTranslationLanguage" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SubtitlesTranslationEngine" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SubtitlesTranslationLanguageFrom" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SubtitlesVoiceTarget" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SubtitlesTranslationTarget1" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SubtitlesTranslationTarget2" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SubtitlesIsClearInterval" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SubtitlesClearInterval" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="SubtitlesIsAdditionalTime" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SubtitlesAdditionalTime" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="SubtitlesTranslation1" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SubtitlesTranslation2" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SubtitlesTranslationLanguageTo1" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SubtitlesTranslationLanguageTo2" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ClearOcrTraslatedTextShortcutKey" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

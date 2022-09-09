@@ -7,23 +7,14 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.OCR {
     public abstract class OcrService : Service.Service {
-        public static string SERVICE_NAME = "OCR";
-
-        public string OcrLanguage { get; set; }
-        public string TranslationEngine { get; set; }
-        public string TranslationLanguage { get; set; }
-
         public event EventHandler<OcrResult>? OcrFinished;
 
-        public OcrService(ServiceManager serviceManager, string name, string displayName, int index) : base(serviceManager, SERVICE_NAME, name, displayName, index) {
-            OcrLanguage = "";
-            TranslationEngine = "";
-            TranslationLanguage = "";
+        public OcrService(ServiceManager serviceManager, string name, string displayName, int index) : base(serviceManager, OcrServiceManager.ServiceName, name, displayName, index) {
         }
 
-        public abstract void Execute(object obj, Bitmap bitmap);
+        public abstract List<Tuple<string, string>> GetLanguages();
 
-        public abstract List<string> GetLanguages();
+        public abstract Task<string?> ExecuteAsync(Bitmap bitmap, string language);
 
         protected void InvokeOcrFinished(OcrResult result) {
             this.OcrFinished?.Invoke(this, result);

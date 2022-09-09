@@ -6,16 +6,22 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.Service {
     public class ServiceManager {
+        public List<Service> Managers { get; set; }
         public List<Service> Services { get; set; }
 
         private Dictionary<string, Service> activeServices = new Dictionary<string, Service>();
 
         public ServiceManager() {
+            this.Managers = new List<Service>();
             this.Services = new List<Service>();
         }
 
         public void AddService(Service service) {
-            this.Services.Add(service);
+            if (service.IsManager) {
+                this.Managers.Add(service);
+            } else {
+                this.Services.Add(service);
+            }
         }
 
         public List<Type> GetServices<Type>() where Type : Service {
@@ -42,10 +48,6 @@ namespace sikusiSubtitles.Service {
             return services;
         }
 
-        public List<Service> GetServices(string serviceName) {
-            return GetServices<Service>(serviceName);
-        }
-
         public Type? GetService<Type>() where Type : Service {
             foreach (var service in this.Services) {
                 var type = service as Type;
@@ -56,32 +58,8 @@ namespace sikusiSubtitles.Service {
             return null;
         }
 
-        public Type? GetService<Type>(string serviceName, string name) where Type : Service {
-            foreach (var service in this.Services) {
-                if (service.ServiceName == serviceName && service.Name == name) {
-                    var type = service as Type;
-                    if (type != null) {
-                        return type;
-                    }
-                }
-            }
-            return null;
-        }
-
-        public Service? GetService(string serviceName, string name) {
-            return GetService<Service>(serviceName, name);
-        }
-
-        public void SetActiveService(Service service) {
-            this.activeServices[service.ServiceName] = service;
-        }
-
-        public void ResetActiveService(string serviceName) {
-            this.activeServices.Remove(serviceName);
-        }
-
-        public Type? GetActiveService<Type>() where Type : Service {
-            foreach(var service in this.activeServices.Values) {
+        public Type? GetManager<Type>() where Type : Service {
+            foreach (var service in this.Managers) {
                 var type = service as Type;
                 if (type != null) {
                     return type;
@@ -90,27 +68,47 @@ namespace sikusiSubtitles.Service {
             return null;
         }
 
-        public Service? GetActiveService(string serviceName) {
-            if (this.activeServices.ContainsKey(serviceName)) {
-                return this.activeServices[serviceName];
-            } else {
-                return null;
-            }
-        }
-
         /**
          * サービスの順番をindex順にする
          */
         public void Update() {
+            this.Managers.Sort((a, b) => {
+                return a.Index - b.Index;
+            });
             this.Services.Sort((a, b) => {
                 return a.Index - b.Index;
             });
+        }
+
+        // 設定の読み込み
+        public void Load() {
+            foreach (var service in Managers) {
+                service.Load();
+            }
+            foreach (var service in Services) {
+                service.Load();
+            }
+        }
+
+        // 設定の保存
+        public void Save() {
+            foreach (var service in Managers) {
+                service.Save();
+            }
+            foreach (var service in Services) {
+                service.Save();
+            }
         }
 
         /**
          * すべてのサービスの作成後に、各サービスの初期化を呼び出す
          */
         public void Init() {
+            Update();
+            Load();
+            foreach (var service in Managers) {
+                service.Init();
+            }
             foreach (var service in Services) {
                 service.Init();
             }

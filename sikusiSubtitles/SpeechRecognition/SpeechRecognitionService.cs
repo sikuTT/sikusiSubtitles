@@ -2,12 +2,12 @@
 
 namespace sikusiSubtitles.SpeechRecognition {
     public abstract class SpeechRecognitionService : Service.Service {
-        public static string SERVICE_NAME = "SpeechRecognition";
-
         public event EventHandler<SpeechRecognitionEventArgs>? Recognizing;
         public event EventHandler<SpeechRecognitionEventArgs>? Recognized;
 
-        public SpeechRecognitionService(ServiceManager serviceManager, string name, string displayName, int index) : base(serviceManager, SERVICE_NAME, name, displayName, index) {
+        public abstract List<Tuple<string, string>> GetLanguages();
+
+        public SpeechRecognitionService(ServiceManager serviceManager, string name, string displayName, int index) : base(serviceManager, SpeechRecognitionServiceManager.ServiceName, name, displayName, index) {
         }
 
         public abstract bool Start();

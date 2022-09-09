@@ -11,42 +11,34 @@ namespace sikusiSubtitles.Translation {
         private HttpClient HttpClient = new HttpClient();
         private List<Tuple<string, string>> languages = new GoogleTranslationLanguages().Languages;
 
-        public string? Key { get; set; }
-        public string? From { get; set; }
-        public string? To1 { get; set; }
-        public string? To2 { get; set; }
+        public string Key { get; set; } = "";
 
         public GoogleAppsScriptTranslationService(ServiceManager serviceManager) : base(serviceManager, "GoogleAppsScript", "Google Apps Script", 200) {
         }
 
-        public override async void Translate(object obj, string text) {
-            if (CheckParameters() == false) {
-                return;
-            }
-
-            var toList = new List<string>();
-            if (To1 != null) toList.Add(To1);
-            if (To2 != null) toList.Add(To2);
-            var result = await TranslateAsync(obj, text, From, toList.ToArray());
-            this.InvokeTranslated(result);
+        public override void Load() {
+            Key = Decrypt(Properties.Settings.Default.GoogleAppsScriptTranslationKey);
         }
 
-        public override async void Translate(object obj, string text, string to) {
-            if (CheckParameters() == false) {
-                return;
-            }
-
-            var toList = new string[] { to };
-            var result = await TranslateAsync(obj, text, null, toList);
-            this.InvokeTranslated(result);
+        public override void Save() {
+            Properties.Settings.Default.GoogleAppsScriptTranslationKey = Encrypt(Key);
         }
 
-        public async Task<TranslationResult> TranslateAsync(object obj, string text, string? from, string[] toList) {
-            TranslationResult result = new TranslationResult(obj);
-            if (toList.Length == 0)
-                return result;
+        public override List<Tuple<string, string>> GetLanguages() {
+            return this.languages;
+        }
+
+        public override async Task<TranslationResult> TranslateAsync(string text, string? from, string to) {
+            var result = await TranslateAsync(text, from, new string[] { to });
+            return result;
+        }
+
+        public override async Task<TranslationResult> TranslateAsync(string text, string? from, string[] toList) {
+            var result = new TranslationResult();
 
             try {
+                if (CheckParameters() == false) return result;
+
                 foreach (var to in toList) {
                     var url = "https://script.google.com/macros/s/";
                     url += this.Key + "/exec?text=" + text;
@@ -62,16 +54,13 @@ namespace sikusiSubtitles.Translation {
                     Debug.WriteLine("GoogleAppsScriptTranslationService: " + responseText);
                 }
             } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);
-                result.Translations.Add(new TranslationResult.Translation() { Text = ex.Message });
+                Debug.WriteLine("GoogleAppsScriptTranslationService: " + ex.Message);
                 result.Error = true;
+                result.Translations.Add(new TranslationResult.Translation() { Text = ex.Message });
+            } finally {
+                InvokeTranslated(result);
             }
-
             return result;
-        }
-
-        public override List<Tuple<string, string>> GetLanguages() {
-            return this.languages;
         }
 
         private bool CheckParameters() {

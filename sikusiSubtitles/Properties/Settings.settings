@@ -5,10 +5,10 @@
     <Setting Name="MicID" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="RecognitionEngine" Type="System.String" Scope="User">
+    <Setting Name="SpeechRecognitionEngine" Type="System.String" Scope="User">
       <Value Profile="(Default)">Chrome</Value>
     </Setting>
-    <Setting Name="SystemSpeechRecognitionLanguage" Type="System.String" Scope="User">
+    <Setting Name="SpeechRecognitionLanguage" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="AzureSpeechRecognitionKey" Type="System.String" Scope="User">

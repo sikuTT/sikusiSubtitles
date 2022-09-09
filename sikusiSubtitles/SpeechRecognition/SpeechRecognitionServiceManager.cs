@@ -19,14 +19,14 @@ namespace sikusiSubtitles.SpeechRecognition {
             }
 
             // 音声認識エンジン
-            Engine = Properties.Settings.Default.RecognitionEngine;
-            Language = Properties.Settings.Default.SystemSpeechRecognitionLanguage;
+            Engine = Properties.Settings.Default.SpeechRecognitionEngine;
+            Language = Properties.Settings.Default.SpeechRecognitionLanguage;
         }
 
         public override void Save() {
             Properties.Settings.Default.MicID = Device?.ID ?? "";
-            Properties.Settings.Default.RecognitionEngine = Engine;
-            Properties.Settings.Default.SystemSpeechRecognitionLanguage = Language;
+            Properties.Settings.Default.SpeechRecognitionEngine = Engine;
+            Properties.Settings.Default.SpeechRecognitionLanguage = Language;
         }
 
         public SpeechRecognitionServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, ServiceName, "音声認識", 100, true) {

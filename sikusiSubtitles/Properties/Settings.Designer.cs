@@ -38,27 +38,39 @@ namespace sikusiSubtitles.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Chrome")]
-        public string RecognitionEngine {
+        public string SpeechRecognitionEngine {
             get {
-                return ((string)(this["RecognitionEngine"]));
+                return ((string)(this["SpeechRecognitionEngine"]));
             }
             set {
-                this["RecognitionEngine"] = value;
+                this["SpeechRecognitionEngine"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string SystemSpeechRecognitionLanguage {
+        public string SpeechRecognitionLanguage {
             get {
-                return ((string)(this["SystemSpeechRecognitionLanguage"]));
+                return ((string)(this["SpeechRecognitionLanguage"]));
             }
             set {
-                this["SystemSpeechRecognitionLanguage"] = value;
+                this["SpeechRecognitionLanguage"] = value;
             }
         }
-        
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ChromeLanguage {
+            get {
+                return ((string)(this["ChromeLanguage"]));
+            }
+            set {
+                this["ChromeLanguage"] = value;
+            }
+        }
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
@@ -82,7 +94,43 @@ namespace sikusiSubtitles.Properties {
                 this["AzureSpeechRecognitionRegion"] = value;
             }
         }
-        
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AmiVoiceKey {
+            get {
+                return ((string)(this["AmiVoiceKey"]));
+            }
+            set {
+                this["AmiVoiceKey"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AmiVoiceEngine {
+            get {
+                return ((string)(this["AmiVoiceEngine"]));
+            }
+            set {
+                this["AmiVoiceEngine"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AmiVoiceLog {
+            get {
+                return ((bool)(this["AmiVoiceLog"]));
+            }
+            set {
+                this["AmiVoiceLog"] = value;
+            }
+        }
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1")]
@@ -188,54 +236,6 @@ namespace sikusiSubtitles.Properties {
             }
             set {
                 this["GoogleTranslationBasicKey"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string AmiVoiceKey {
-            get {
-                return ((string)(this["AmiVoiceKey"]));
-            }
-            set {
-                this["AmiVoiceKey"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string AmiVoiceEngine {
-            get {
-                return ((string)(this["AmiVoiceEngine"]));
-            }
-            set {
-                this["AmiVoiceEngine"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool AmiVoiceLog {
-            get {
-                return ((bool)(this["AmiVoiceLog"]));
-            }
-            set {
-                this["AmiVoiceLog"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string ChromeLanguage {
-            get {
-                return ((string)(this["ChromeLanguage"]));
-            }
-            set {
-                this["ChromeLanguage"] = value;
             }
         }
         

@@ -1,5 +1,4 @@
-﻿using sikusiSubtitles.Shortcut;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing.Imaging;
@@ -14,30 +13,8 @@ namespace sikusiSubtitles.OCR {
         public TesseractOcrService(Service.ServiceManager serviceManager) : base(serviceManager, "Tesseract", "Tesseract", 100) {
         }
 
-    public override void Execute(object obj, Bitmap bitmap) {
-            var path = GetDataPath();
-            if (path == null) {
-                MessageBox.Show("言語データが取得できません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            using (var tesseract = new TesseractEngine(path, "eng")) {
-                try {
-                    // BitmapをTesseract用に変換
-                    var image = BitmapToImage(bitmap);
-
-                    // OCRの実行
-                    Tesseract.Page page = tesseract.Process(image);
-                    Debug.WriteLine("TesseractOcrService: " + page.GetText());
-                    this.InvokeOcrFinished(new OcrResult(obj, page.GetText()));
-                } catch (Exception ex) {
-                    Debug.WriteLine("TesseractOcrService.Execute: " + ex.Message);
-                }
-            }
-        }
-
-        public override List<string> GetLanguages() {
-            List<string> langs = new List<string>();
+        public override List<Tuple<string, string>> GetLanguages() {
+            List<Tuple<string, string>> langs = new List<Tuple<string, string>>();
 
             var path = GetDataPath();
             if (path != null) {
@@ -47,12 +24,39 @@ namespace sikusiSubtitles.OCR {
                     if (i != -1) {
                         var lang = file.Substring(i + 1);
                         lang = lang.Substring(0, lang.Length - 12);
-                        langs.Add(lang);
+                        langs.Add(new Tuple<string, string>(lang, lang));
                     }
                 }
             }
 
             return langs;
+        }
+
+        public async override Task<string?> ExecuteAsync(Bitmap bitmap, string language) {
+            var path = GetDataPath();
+            if (path == null) {
+                MessageBox.Show("言語データが取得できません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
+            }
+
+            using var tesseract = new TesseractEngine(path, language);
+            try {
+                // BitmapをTesseract用に変換
+                var image = BitmapToImage(bitmap);
+
+                // OCRの実行
+                Page? page = null;
+                await Task.Run(() => page = tesseract.Process(image));
+
+                Debug.WriteLine("TesseractOcrService: " + page?.GetText());
+                if (page != null) {
+                    this.InvokeOcrFinished(new OcrResult(page.GetText()));
+                    return page.GetText();
+                }
+            } catch (Exception ex) {
+                Debug.WriteLine("TesseractOcrService.Execute: " + ex.Message);
+            }
+            return null;
         }
 
         private Pix BitmapToImage(Bitmap bitmap) {

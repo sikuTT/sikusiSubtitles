@@ -349,7 +349,7 @@ namespace sikusiSubtitles.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("eng")]
+        [global::System.Configuration.DefaultSettingValueAttribute("English")]
         public string TesseractOcrLanguage {
             get {
                 return ((string)(this["TesseractOcrLanguage"]));
@@ -572,6 +572,18 @@ namespace sikusiSubtitles.Properties {
             }
             set {
                 this["SubtitlesTranslationLanguageTo2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ClearOcrTraslatedTextShortcutKey {
+            get {
+                return ((string)(this["ClearOcrTraslatedTextShortcutKey"]));
+            }
+            set {
+                this["ClearOcrTraslatedTextShortcutKey"] = value;
             }
         }
     }

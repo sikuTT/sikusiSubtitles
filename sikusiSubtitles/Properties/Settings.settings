@@ -84,7 +84,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="TesseractOcrLanguage" Type="System.String" Scope="User">
-      <Value Profile="(Default)">eng</Value>
+      <Value Profile="(Default)">English</Value>
     </Setting>
     <Setting Name="TesseractTranslationEngine" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -138,6 +138,9 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="SubtitlesTranslationLanguageTo2" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ClearOcrTraslatedTextShortcutKey" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

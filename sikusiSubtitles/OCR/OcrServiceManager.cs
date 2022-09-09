@@ -13,20 +13,22 @@ namespace sikusiSubtitles.OCR {
 
         public string OcrEngine { get; set; } = "";
         public string OcrLanguage { get; set; } = "";
-        public TranslationService? TranslationService { get; set; }
         public string TranslationEngine { get; set; } = "";
         public string TranslationLanguage { get; set; } = "";
 
-        public Shortcut.Shortcut OcrShortcut { get { return ocrShortcut; } }
+        private Shortcut.Shortcut ocrShortcut = new Shortcut.Shortcut("execute-ocr", "OCR", "画面から文字を取得し翻訳する", "");
+        private Shortcut.Shortcut clearOcrTranslatedTextShortcut = new Shortcut.Shortcut("clear-ocr-translated-text", "OCR", "OCRの翻訳結果をクリアする", "");
 
-        private Shortcut.Shortcut ocrShortcut = new Shortcut.Shortcut("ExecuteOCR", "OCR", "画面から文字を取得し翻訳する", "");
+        public OcrServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, "OCR", "OCR", 500, true) {
+        }
 
         public override void Load() {
             OcrEngine = Properties.Settings.Default.OcrEngine;
             OcrLanguage = Properties.Settings.Default.OcrLanguage;
             TranslationEngine = Properties.Settings.Default.OcrTranslationEngine;
             TranslationLanguage = Properties.Settings.Default.OcrTranslationLanguage;
-            OcrShortcut.ShortcutKey = Properties.Settings.Default.OcrShortcutKey;
+            ocrShortcut.ShortcutKey = Properties.Settings.Default.OcrShortcutKey;
+            clearOcrTranslatedTextShortcut.ShortcutKey = Properties.Settings.Default.ClearOcrTraslatedTextShortcutKey;
         }
 
         public override void Save() {
@@ -34,22 +36,26 @@ namespace sikusiSubtitles.OCR {
             Properties.Settings.Default.OcrLanguage = OcrLanguage;
             Properties.Settings.Default.OcrTranslationEngine = TranslationEngine;
             Properties.Settings.Default.OcrTranslationLanguage = TranslationLanguage;
-            Properties.Settings.Default.OcrShortcutKey = OcrShortcut.ShortcutKey;
-        }
-
-        public OcrServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, "OCR", "OCR", 500) {
+            Properties.Settings.Default.OcrShortcutKey = ocrShortcut.ShortcutKey;
+            Properties.Settings.Default.ClearOcrTraslatedTextShortcutKey = clearOcrTranslatedTextShortcut.ShortcutKey;
         }
 
         public override void Init() {
             var shortcutService = this.ServiceManager.GetService<ShortcutService>();
             if (shortcutService != null) {
                 shortcutService.Shortcuts.Add(ocrShortcut);
+                shortcutService.Shortcuts.Add(clearOcrTranslatedTextShortcut);
             }
         }
 
-        public OcrService GetEngine() {
-            var services =  this.ServiceManager.GetServices<OcrService>();
-            return services.Where(service => service.Name == OcrEngine).First();
+        public OcrService? GetOcrEngine() {
+            var services = this.ServiceManager.GetServices<OcrService>();
+            return services.Where(service => service.Name == OcrEngine).FirstOrDefault();
+        }
+
+        public TranslationService? GetTranslationEngine() {
+            var services = this.ServiceManager.GetServices<TranslationService>();
+            return services.Where(service => service.Name == TranslationEngine).FirstOrDefault();
         }
     }
 }

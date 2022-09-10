@@ -284,7 +284,7 @@ namespace sikusiSubtitles.OCR {
         private async void ClearObsTranslatedText() {
             var obsService = this.serviceManager.GetService<ObsService>();
             var subtitlesService = this.serviceManager.GetService<SubtitlesService>();
-            if (obsService?.IsConnected == true && subtitlesService != null) {
+            if (obsService?.IsConnected == true && subtitlesService != null && obsTextSourceComboBox.SelectedItem != null) {
                 var sourceName = obsTextSourceComboBox.SelectedItem.ToString();
                 if (sourceName != null) {
                     await subtitlesService.SetTextAsync(sourceName, "");

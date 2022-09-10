@@ -16,8 +16,8 @@ namespace ObsWebSocket5 {
 
     public class ObsWebSocket {
         SemaphoreSlim recvSemaphore = new SemaphoreSlim(1, 1);
-        SemaphoreSlim sendSemaphore = new SemaphoreSlim(1, 1);
         ReceiveData? receiveData;
+        bool recvWaiting = false;
 
         ClientWebSocket? webSocket;
         string? password;
@@ -114,11 +114,13 @@ namespace ObsWebSocket5 {
         /** OBSからのメッセージを待つ */
         async private Task ReceiveMessage() {
             while (IsConnected) {
-                var needWaitSendSemaphore = false;
+                var needWaitSendProcess = false;
                 try {
                     recvSemaphore.Wait();
+                    recvWaiting = true;
                     receiveData = null;
                     receiveData = await ReceiveAsync();
+                    recvWaiting = false;
                     if (receiveData?.Data != null) {
                         var op = receiveData.Data["op"];
                         if (op != null) {
@@ -127,7 +129,7 @@ namespace ObsWebSocket5 {
                             } else if ((int)op == (int)Message.WebSocketOpCode.Identified) {
                             } else if ((int)op == (int)Message.WebSocketOpCode.Event) {
                             } else if ((int)op == (int)Message.WebSocketOpCode.RequestResponse) {
-                                needWaitSendSemaphore = true;
+                                needWaitSendProcess = true;
                             }
                         }
                     } else {
@@ -136,10 +138,8 @@ namespace ObsWebSocket5 {
                 } finally {
                     recvSemaphore.Release();
                 }
-
-                if (needWaitSendSemaphore) {
-                    sendSemaphore.Wait(5000);
-                    sendSemaphore.Release();
+                if (needWaitSendProcess) {
+                    while (receiveData != null) Thread.Sleep(10);
                 }
             }
         }
@@ -185,7 +185,7 @@ namespace ObsWebSocket5 {
             request.d.requestId = requestId;
             request.d.requestData = requestData;
 
-            sendSemaphore.Wait();
+            while (recvWaiting == false) Thread.Sleep(10);
             await SendAsync(request);
             try {
                 recvSemaphore.Wait();
@@ -196,7 +196,6 @@ namespace ObsWebSocket5 {
                 }
             } finally {
                 recvSemaphore.Release();
-                sendSemaphore.Release();
             }
             return null;
         }

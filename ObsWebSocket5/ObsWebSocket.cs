@@ -16,8 +16,7 @@ namespace ObsWebSocket5 {
 
     public class ObsWebSocket {
         SemaphoreSlim recvSemaphore = new SemaphoreSlim(1, 1);
-        ReceiveData? receiveData;
-        bool recvWaiting = false;
+        Dictionary<string, JObject> receiveDataList = new Dictionary<string, JObject>();
 
         ClientWebSocket? webSocket;
         string? password;
@@ -114,32 +113,22 @@ namespace ObsWebSocket5 {
         /** OBSからのメッセージを待つ */
         async private Task ReceiveMessage() {
             while (IsConnected) {
-                var needWaitSendProcess = false;
-                try {
-                    recvSemaphore.Wait();
-                    recvWaiting = true;
-                    receiveData = null;
-                    receiveData = await ReceiveAsync();
-                    recvWaiting = false;
-                    if (receiveData?.Data != null) {
-                        var op = receiveData.Data["op"];
-                        if (op != null) {
-                            if ((int)op == (int)Message.WebSocketOpCode.Hello) {
-                                await SendIdentifyAsync(receiveData.Data.ToObject<Hello>());
-                            } else if ((int)op == (int)Message.WebSocketOpCode.Identified) {
-                            } else if ((int)op == (int)Message.WebSocketOpCode.Event) {
-                            } else if ((int)op == (int)Message.WebSocketOpCode.RequestResponse) {
-                                needWaitSendProcess = true;
+                var recvData = await ReceiveAsync();
+                if (recvData?.Data != null) {
+                    var op = recvData.Data["op"];
+                    if (op != null) {
+                        if ((int)op == (int)WebSocketOpCode.Event) {
+                        } else if ((int)op == (int)WebSocketOpCode.RequestResponse) {
+                            var responseData = recvData.Data.ToObject<RequestResponse<JObject>>();
+                            if (responseData != null) {
+                                recvSemaphore.Wait();
+                                receiveDataList.Add(responseData.d.requestId, recvData.Data);
+                                recvSemaphore.Release();
                             }
                         }
-                    } else {
-                        break;
                     }
-                } finally {
-                    recvSemaphore.Release();
-                }
-                if (needWaitSendProcess) {
-                    while (receiveData != null) Thread.Sleep(10);
+                } else {
+                    break;
                 }
             }
         }
@@ -185,17 +174,24 @@ namespace ObsWebSocket5 {
             request.d.requestId = requestId;
             request.d.requestData = requestData;
 
-            while (recvWaiting == false) Thread.Sleep(10);
             await SendAsync(request);
-            try {
-                recvSemaphore.Wait();
-                if (receiveData?.Data != null) {
-                    var data = receiveData.Data.ToObject<RequestResponse<T>>();
-                    receiveData = null;
-                    return data;
+
+            // レスポンスを取得できるまで待つ
+            for (var i = 0; i < 100; i++) {
+                try {
+                    recvSemaphore.Wait();
+                    JObject? recvData;
+                    if (receiveDataList.TryGetValue(requestId, out recvData)) {
+                        var response = recvData.ToObject<RequestResponse<T>>();
+                        if (response?.d.requestId == requestId) {
+                            receiveDataList.Remove(requestId);
+                            return response;
+                        }
+                    }
+                } finally {
+                    recvSemaphore.Release();
                 }
-            } finally {
-                recvSemaphore.Release();
+                Thread.Sleep(10);
             }
             return null;
         }

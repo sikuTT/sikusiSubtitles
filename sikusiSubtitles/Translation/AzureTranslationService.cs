@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using sikusiSubtitles.Service;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,6 +15,7 @@ namespace sikusiSubtitles.Translation {
         private HttpClient HttpClient = new HttpClient();
 
         public AzureTranslationService(ServiceManager serviceManager) : base(serviceManager, "Azure", "Azure Cognitive Services", 300) {
+            SettingPage = new AzureTranslationPage(serviceManager, this);
             this.languages.Sort((a, b) => a.Item2.CompareTo(b.Item2));
         }
 

@@ -1,6 +1,5 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using sikusiSubtitles.Service;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,8 +17,8 @@ namespace sikusiSubtitles.SpeechRecognition {
     public partial class ChromeSpeechRecognitionPage : SettingPage {
         private ChromeSpeechRecognitionService service;
 
-        public ChromeSpeechRecognitionPage(ServiceManager serviceManager) : base(serviceManager) {
-            this.service = new ChromeSpeechRecognitionService(serviceManager);
+        public ChromeSpeechRecognitionPage(ServiceManager serviceManager, ChromeSpeechRecognitionService service) : base(serviceManager) {
+            this.service = service;
 
             InitializeComponent();
         }

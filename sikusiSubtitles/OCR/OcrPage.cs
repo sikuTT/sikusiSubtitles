@@ -11,8 +11,8 @@ namespace sikusiSubtitles.OCR {
         private int selectedProcessId = 0;
         private Rectangle? captureArea;
 
-        public OcrPage(Service.ServiceManager serviceManager) : base(serviceManager) {
-            this.ocrManager = new OcrServiceManager(serviceManager);
+        public OcrPage(ServiceManager serviceManager, OcrServiceManager service) : base(serviceManager) {
+            this.ocrManager = service;
 
             InitializeComponent();
         }

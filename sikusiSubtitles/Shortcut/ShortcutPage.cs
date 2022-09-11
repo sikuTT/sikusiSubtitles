@@ -20,8 +20,8 @@ namespace sikusiSubtitles.Shortcut {
             this.service.End();
         }
 
-        public ShortcutPage(Service.ServiceManager serviceManager) : base(serviceManager) {
-            service = new ShortcutService(serviceManager);
+        public ShortcutPage(ServiceManager serviceManager, ShortcutService service) : base(serviceManager) {
+            this.service = service;
             service.Start();
 
             InitializeComponent();

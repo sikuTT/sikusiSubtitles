@@ -22,8 +22,8 @@ namespace sikusiSubtitles.SpeechRecognition {
 
         private List<Tuple<string, string>> languages = new List<Tuple<string, string>>();
 
-        public SpeechRecognitionPage(Service.ServiceManager serviceManager) : base(serviceManager) {
-            this.service = new SpeechRecognitionServiceManager(serviceManager);
+        public SpeechRecognitionPage(ServiceManager serviceManager, SpeechRecognitionServiceManager service) : base(serviceManager) {
+            this.service = service;
 
             var enumerator = new MMDeviceEnumerator();
             this.micList = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);

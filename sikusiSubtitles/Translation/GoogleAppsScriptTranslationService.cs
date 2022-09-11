@@ -1,5 +1,4 @@
-﻿using sikusiSubtitles.Service;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -13,7 +12,8 @@ namespace sikusiSubtitles.Translation {
 
         public string Key { get; set; } = "";
 
-        public GoogleAppsScriptTranslationService(ServiceManager serviceManager) : base(serviceManager, "GoogleAppsScript", "Google Apps Script", 200) {
+        public GoogleAppsScriptTranslationService(ServiceManager serviceManager) : base(serviceManager, "GoogleAppsScript", "Google Apps Script", 100) {
+            SettingPage = new GoogleAppsScriptTranslationPage(serviceManager, this);
         }
 
         public override void Load() {

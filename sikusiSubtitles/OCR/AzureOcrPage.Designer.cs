@@ -46,9 +46,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.keyTextBox);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(14, 53);
+            this.groupBox1.Location = new System.Drawing.Point(10, 64);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(430, 78);
+            this.groupBox1.Size = new System.Drawing.Size(437, 78);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "認証情報";
@@ -60,7 +60,7 @@
             this.keyTextBox.Location = new System.Drawing.Point(73, 28);
             this.keyTextBox.Name = "keyTextBox";
             this.keyTextBox.PasswordChar = '*';
-            this.keyTextBox.Size = new System.Drawing.Size(338, 23);
+            this.keyTextBox.Size = new System.Drawing.Size(345, 23);
             this.keyTextBox.TabIndex = 0;
             this.keyTextBox.TextChanged += new System.EventHandler(this.keyTextBox_TextChanged);
             // 

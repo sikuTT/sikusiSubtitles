@@ -1,5 +1,4 @@
-﻿using sikusiSubtitles.Service;
-using sikusiSubtitles.Shortcut;
+﻿using sikusiSubtitles.Shortcut;
 using sikusiSubtitles.Translation;
 using System;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace sikusiSubtitles.OCR {
-    public class OcrServiceManager : Service.Service{
+    public class OcrServiceManager : sikusiSubtitles.Service{
         public static new string ServiceName = "OCR";
 
         public string OcrEngine { get; set; } = "";
@@ -19,7 +18,8 @@ namespace sikusiSubtitles.OCR {
         private Shortcut.Shortcut ocrShortcut = new Shortcut.Shortcut("execute-ocr", "OCR", "画面から文字を取得し翻訳する", "");
         private Shortcut.Shortcut clearOcrTranslatedTextShortcut = new Shortcut.Shortcut("clear-ocr-translated-text", "OCR", "OCRの翻訳結果をクリアする", "");
 
-        public OcrServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, "OCR", "OCR", 500, true) {
+        public OcrServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, ServiceName, "OCR", 400, true) {
+            SettingPage = new OcrPage(serviceManager, this);
         }
 
         public override void Load() {

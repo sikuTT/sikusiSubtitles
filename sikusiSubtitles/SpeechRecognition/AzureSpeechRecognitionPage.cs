@@ -16,8 +16,8 @@ namespace sikusiSubtitles.SpeechRecognition {
     public partial class AzureSpeechRecognitionPage : SettingPage {
         AzureSpeechRecognitionService service;
 
-        public AzureSpeechRecognitionPage(Service.ServiceManager serviceManager) : base(serviceManager) {
-            this.service = new AzureSpeechRecognitionService(serviceManager);
+        public AzureSpeechRecognitionPage(ServiceManager serviceManager, AzureSpeechRecognitionService service) : base(serviceManager) {
+            this.service = service;
 
             InitializeComponent();
         }

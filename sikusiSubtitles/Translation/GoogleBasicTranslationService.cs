@@ -1,7 +1,6 @@
 ﻿using Google.Apis.Services;
 using Google.Apis.Translate.v2;
 using Google.Apis.Translate.v2.Data;
-using sikusiSubtitles.Service;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,7 +14,8 @@ namespace sikusiSubtitles.Translation {
 
         public string Key { get; set; } = "";
 
-        public GoogleBasicTranslationService(ServiceManager serviceManager) : base(serviceManager, "GoogleBasic", "Google Cloud Translation - Basic", 100) {
+        public GoogleBasicTranslationService(ServiceManager serviceManager) : base(serviceManager, "GoogleBasic", "Google Cloud Translation - Basic", 200) {
+            SettingPage = new GoogleBasicTranslationPage(serviceManager, this);
         }
 
         public override void Load() {

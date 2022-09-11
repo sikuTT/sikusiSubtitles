@@ -1,5 +1,4 @@
 ﻿using ObsWebSocket5;
-using sikusiSubtitles.Service;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace sikusiSubtitles.OBS {
-    public class ObsService : Service.Service {
+    public class ObsService : sikusiSubtitles.Service {
         public ObsWebSocket ObsSocket { get; }
         public string IP { get; set; }
         public int Port { get; set; }
@@ -18,6 +17,15 @@ namespace sikusiSubtitles.OBS {
 
         public bool IsConnected {
             get { return ObsSocket.IsConnected; }
+        }
+
+        public ObsService(ServiceManager serviceManager) : base(serviceManager, ObsServiceManager.ServiceName, "OBS", "OBS", 100) {
+            SettingPage = new ObsPage(serviceManager, this);
+
+            this.ObsSocket = new ObsWebSocket();
+            this.IP = "127.0.0.1";
+            this.Port = 4455;
+            this.Password = "";
         }
 
         public override void Load() {
@@ -30,13 +38,6 @@ namespace sikusiSubtitles.OBS {
             Properties.Settings.Default.ObsIP = IP;
             Properties.Settings.Default.ObsPort = Port;
             Properties.Settings.Default.ObsPassword = Password;
-        }
-
-        public ObsService(ServiceManager serviceManager) : base(serviceManager, ObsServiceManager.ServiceName, "OBS", "OBS", 100) {
-            this.ObsSocket = new ObsWebSocket();
-            this.IP = "127.0.0.1";
-            this.Port = 4455;
-            this.Password = "";
         }
 
         async public Task<bool> ConnectAsync() {

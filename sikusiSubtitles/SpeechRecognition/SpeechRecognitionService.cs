@@ -1,7 +1,5 @@
-﻿using sikusiSubtitles.Service;
-
-namespace sikusiSubtitles.SpeechRecognition {
-    public abstract class SpeechRecognitionService : Service.Service {
+﻿namespace sikusiSubtitles.SpeechRecognition {
+    public abstract class SpeechRecognitionService : sikusiSubtitles.Service {
         public event EventHandler<SpeechRecognitionEventArgs>? Recognizing;
         public event EventHandler<SpeechRecognitionEventArgs>? Recognized;
 

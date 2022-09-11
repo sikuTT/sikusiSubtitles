@@ -13,8 +13,8 @@ namespace sikusiSubtitles.OBS {
     public partial class ObsPage : SettingPage {
         private ObsService service;
 
-        public ObsPage(Service.ServiceManager serviceManager) : base(serviceManager) {
-            this.service = new ObsService(serviceManager);
+        public ObsPage(ServiceManager serviceManager, ObsService service) : base(serviceManager) {
+            this.service = service;
 
             InitializeComponent();
         }

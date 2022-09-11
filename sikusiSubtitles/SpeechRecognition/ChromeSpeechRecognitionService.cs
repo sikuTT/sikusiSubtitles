@@ -1,6 +1,5 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using sikusiSubtitles.Service;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,9 +11,6 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public class ChromeSpeechRecognitionService : SpeechRecognitionService {
-        public ChromeSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "Chrome", "Google Chrome", 100) {
-        }
-
         public int Port { get; set; }
 
         private HttpListener? Listener;
@@ -22,6 +18,10 @@ namespace sikusiSubtitles.SpeechRecognition {
         private System.Timers.Timer? ChromeTimer;
         private string LastText = "";
         private bool isLastFinal = false;
+
+        public ChromeSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "Chrome", "Google Chrome", 100) {
+            SettingPage = new ChromeSpeechRecognitionPage(serviceManager, this);
+        }
 
         public override void Load() {
             Port = Properties.Settings.Default.ChromePort;

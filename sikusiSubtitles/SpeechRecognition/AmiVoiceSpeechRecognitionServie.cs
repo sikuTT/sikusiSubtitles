@@ -2,7 +2,6 @@
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using Newtonsoft.Json;
-using sikusiSubtitles.Service;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,6 +19,7 @@ namespace sikusiSubtitles.SpeechRecognition {
         public bool? Log { get; set; }
 
         public AmiVoiceSpeechRecognitionServie(ServiceManager serviceManager) : base(serviceManager, "AmiVoice", "AmiVoice", 300) {
+            SettingPage = new AmiVoiceSpeechRecognitionPage(serviceManager, this);
         }
 
         public override void Load() {

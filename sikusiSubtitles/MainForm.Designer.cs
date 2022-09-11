@@ -43,9 +43,11 @@
             treeNode9,
             treeNode10});
             System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Tesseract");
-            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("OCR", new System.Windows.Forms.TreeNode[] {
-            treeNode12});
-            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("ショートカット");
+            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Azure");
+            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("OCR", new System.Windows.Forms.TreeNode[] {
+            treeNode12,
+            treeNode13});
+            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("ショートカット");
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.menuView = new System.Windows.Forms.TreeView();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -109,16 +111,18 @@
             treeNode11.Text = "翻訳";
             treeNode12.Name = "TesseractOcrPage";
             treeNode12.Text = "Tesseract";
-            treeNode13.Name = "OcrPage";
-            treeNode13.Text = "OCR";
-            treeNode14.Name = "ShortcutPage";
-            treeNode14.Text = "ショートカット";
+            treeNode13.Name = "AzureOcrPage";
+            treeNode13.Text = "Azure";
+            treeNode14.Name = "OcrPage";
+            treeNode14.Text = "OCR";
+            treeNode15.Name = "ShortcutPage";
+            treeNode15.Text = "ショートカット";
             this.menuView.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode4,
             treeNode6,
             treeNode11,
-            treeNode13,
-            treeNode14});
+            treeNode14,
+            treeNode15});
             this.menuView.Size = new System.Drawing.Size(316, 481);
             this.menuView.TabIndex = 10;
             this.menuView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.menuView_AfterSelect);

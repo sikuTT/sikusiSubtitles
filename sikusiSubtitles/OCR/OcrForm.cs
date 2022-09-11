@@ -180,25 +180,36 @@ namespace sikusiSubtitles.OCR {
         }
 
         private async void Ocr() {
-            this.ocrButton.Enabled = false;
-            if (this.ocrService == null) {
-                MessageBox.Show("OCRに使用するサービスが設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            } else {
-                var bitmap = CaptureWindow();
-                if (bitmap == null) {
-                    MessageBox.Show("画面をキャプチャー出来ませんでした。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                } else {
-                    if (ocrLanguage != null) {
+            try {
+                this.ocrButton.Enabled = false;
+
+                if (this.ocrEngineComboBox.SelectedIndex == -1) {
+                    MessageBox.Show("OCRに使用するサービスが設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } else if (this.ocrLanguageComboBox.SelectedIndex == -1) {
+                    MessageBox.Show("OCRで読み取る言語が設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } else if (this.ocrService != null && ocrLanguage != null) {
+                    var bitmap = CaptureWindow();
+                    if (bitmap == null) {
+                        MessageBox.Show("画面をキャプチャー出来ませんでした。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    } else {
                         string? text = await this.ocrService.ExecuteAsync(bitmap, ocrLanguage);
                         if (text != null) {
-                            text = text.Replace("\r\n", " ").Replace("\r", " ").Replace("\n", " ");
                             this.ocrTextBox.Text = text;
-                            this.Translate();
+
+                            // 文字が取得できた場合、翻訳をする
+                            if (text.Length > 0) {
+                                this.Translate();
+                            }
+                        } else {
+                            this.ocrTextBox.Text = "";
                         }
                     }
                 }
+            } catch (Exception ex) {
+                Debug.WriteLine("ServiceManager: " + ex.Message);
+            } finally {
+                this.ocrButton.Enabled = true;
             }
-            this.ocrButton.Enabled = true;
         }
 
         private void Translate() {

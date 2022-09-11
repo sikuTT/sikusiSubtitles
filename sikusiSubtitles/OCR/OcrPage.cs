@@ -45,14 +45,14 @@ namespace sikusiSubtitles.OCR {
         private void ocrComboBox_SelectedIndexChanged(object sender, EventArgs e) {
             ocrLangComboBox.Items.Clear();
 
+            if (ocrComboBox.SelectedIndex != -1) {
+                ocrManager.OcrEngine = ocrServices[ocrComboBox.SelectedIndex].Name;
+            } else {
+                ocrManager.OcrEngine = "";
+            }
+
             var service = ocrManager.GetOcrEngine();
             if (service != null) {
-                if (ocrComboBox.SelectedIndex != -1) {
-                    ocrManager.OcrEngine = ocrServices[ocrComboBox.SelectedIndex].Name;
-                } else {
-                    ocrManager.OcrEngine = "";
-                }
-
                 // OCRの読み取り言語を、選択したOCRが対応している言語一覧で設定しなおす
                 var langs = service.GetLanguages();
                 langs.ForEach(lang => {

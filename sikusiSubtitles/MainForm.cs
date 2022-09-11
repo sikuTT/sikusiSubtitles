@@ -29,7 +29,7 @@ namespace sikusiSubtitles {
         // OCR
         OcrPage ocrPage;
         TesseractOcrPage tesseractOcrPage;
-        // AzureOcrPage azureOcrPage;
+        AzureOcrPage azureOcrPage;
         // GoogleVisionOcrPage googleVisionOcrPage;
 
         // Shortcut
@@ -58,7 +58,7 @@ namespace sikusiSubtitles {
             // OCR
             ocrPage = new OcrPage(serviceManager);
             tesseractOcrPage = new TesseractOcrPage(serviceManager);
-            // azureOcrPage = new AzureOcrPage(serviceManager);
+            azureOcrPage = new AzureOcrPage(serviceManager);
             // googleVisionOcrPage = new GoogleVisionOcrPage(serviceManager);
 
             // Shortcut
@@ -78,7 +78,7 @@ namespace sikusiSubtitles {
                 this.deeplTranslationPage,
                 this.ocrPage,
                 this.tesseractOcrPage,
-                // this.azureOcrPage,
+                this.azureOcrPage,
                 // this.googleVisionOcrPage,
                 this.shortcutPage,
             };

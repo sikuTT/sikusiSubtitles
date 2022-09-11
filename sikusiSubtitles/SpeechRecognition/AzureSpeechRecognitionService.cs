@@ -15,7 +15,7 @@ namespace sikusiSubtitles.SpeechRecognition {
         public string Key { get; set; } = "";
         public string Region { get; set; } = "";
 
-        public AzureSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "Azure", "Azure Cognitive Service", 200) {
+        public AzureSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "Azure", "Azure Cognitive Service - Speech Service", 200) {
             SettingPage = new AzureSpeechRecognitionPage(serviceManager, this);
         }
 

@@ -21,7 +21,7 @@ namespace sikusiSubtitles.OCR {
                     text1 += ' ';
                 }
             }
-            text1 += text1 + text2;
+            text1 += text2;
             return text1;
         }
 

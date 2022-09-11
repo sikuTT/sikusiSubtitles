@@ -54,14 +54,19 @@ namespace sikusiSubtitles.OCR {
                 ReadOperationResult results;
                 do {
                     results = await client.GetReadResultAsync(Guid.Parse(operationId));
+                    if (results.Status == OperationStatusCodes.Running || results.Status == OperationStatusCodes.NotStarted) {
+                        Thread.Sleep(100);
+                    }
                 }
                 while ((results.Status == OperationStatusCodes.Running || results.Status == OperationStatusCodes.NotStarted));
 
                 string resultString = "";
-                var analyzeResult = results.AnalyzeResult.ReadResults;
-                foreach (ReadResult page in analyzeResult) {
-                    foreach (Line line in page.Lines) {
-                        resultString = ConcatString(resultString, line.Text);
+                if (results.AnalyzeResult?.ReadResults != null) {
+                    var analyzeResult = results.AnalyzeResult.ReadResults;
+                    foreach (ReadResult page in analyzeResult) {
+                        foreach (Line line in page.Lines) {
+                            resultString = ConcatString(resultString, line.Text);
+                        }
                     }
                 }
                 this.InvokeOcrFinished(new OcrResult(resultString));
@@ -69,6 +74,7 @@ namespace sikusiSubtitles.OCR {
             } catch (Exception ex) {
                 Debug.WriteLine("AzureOcrService: " + ex.Message);
             }
+            Debug.WriteLine("End");
 
             return null;
         }

@@ -24,7 +24,9 @@
         /// </summary>
         private void InitializeComponent() {
             this.label1 = new System.Windows.Forms.Label();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -37,21 +39,42 @@
             this.label1.TabIndex = 6;
             this.label1.Text = "OCR - Tesseract";
             // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(12, 109);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(229, 15);
+            this.linkLabel1.TabIndex = 7;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "https://github.com/tesseract-ocr/tessdata";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Yu Gothic UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label2.Location = new System.Drawing.Point(49, 85);
+            this.label2.Location = new System.Drawing.Point(12, 69);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(197, 45);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "設定項目なし";
+            this.label2.Size = new System.Drawing.Size(402, 15);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "読み取り可能な言語を追加する場合、下記のリンク先から言語データをダウンロードし";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 84);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(310, 15);
+            this.label3.TabIndex = 9;
+            this.label3.Text = "アプリケーションインストール先フォルダ内のtessdataへ配置します。";
             // 
             // TesseractOcrPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
+            this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.label1);
             this.Name = "TesseractOcrPage";
             this.Size = new System.Drawing.Size(634, 243);
@@ -64,6 +87,8 @@
         #endregion
 
         private Label label1;
+        private LinkLabel linkLabel1;
         private Label label2;
+        private Label label3;
     }
 }

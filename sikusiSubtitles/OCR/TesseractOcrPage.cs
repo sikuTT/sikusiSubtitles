@@ -22,5 +22,13 @@ namespace sikusiSubtitles.OCR {
 
         private void TesseractOcrPage_Load(object sender, EventArgs e) {
         }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            ProcessStartInfo pi = new ProcessStartInfo() {
+                FileName = "https://github.com/tesseract-ocr/tessdata",
+                UseShellExecute = true,
+            };
+            System.Diagnostics.Process.Start(pi);
+        }
     }
 }

@@ -18,8 +18,8 @@ namespace sikusiSubtitles.SpeechRecognition {
         private AmiVoiceSpeechRecognitionServie service;
         private List<Tuple<string, string>> engines = new List<Tuple<string, string>>();
 
-        public AmiVoiceSpeechRecognitionPage(Service.ServiceManager serviceManager) : base(serviceManager) {
-            this.service = new AmiVoiceSpeechRecognitionServie(serviceManager);
+        public AmiVoiceSpeechRecognitionPage(ServiceManager serviceManager, AmiVoiceSpeechRecognitionServie service) : base(serviceManager) {
+            this.service = service;
 
             InitializeComponent();
         }

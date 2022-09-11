@@ -1,5 +1,4 @@
-﻿using sikusiSubtitles.Service;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace sikusiSubtitles.Shortcut {
-    public class ShortcutService : Service.Service {
+    public class ShortcutService : sikusiSubtitles.Service {
         delegate IntPtr delegateHookCallback(int nCode, IntPtr wParam, IntPtr lParam);
 
         delegateHookCallback handler;
@@ -34,14 +33,13 @@ namespace sikusiSubtitles.Shortcut {
         // 現在同時に入力されているキーの一覧
         List<int> keys = new List<int>();
 
-        public static string SERVICE_NAME = "Shortcut";
-
         // ショートカット一覧
         public List<Shortcut> Shortcuts { get; set; }
 
         public event EventHandler<Shortcut>? ShortcutRun;
 
-        public ShortcutService(ServiceManager serviceManager) : base(serviceManager, SERVICE_NAME, "Shortcut", "ショートカット", 500) {
+        public ShortcutService(ServiceManager serviceManager) : base(serviceManager, ShortcutServiceManager.ServiceName, "Shortcut", "ショートカット", 500) {
+            SettingPage = new ShortcutPage(serviceManager, this);
             handler = HookCallback;
             Shortcuts = new List<Shortcut>();
         }

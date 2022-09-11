@@ -23,41 +23,14 @@
         ///  the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Chrome");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Azure Cognitive Services");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("AmiVoice");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("音声認識", new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3});
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("字幕");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("OBS", new System.Windows.Forms.TreeNode[] {
-            treeNode5});
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Google Cloud Translation - Basic");
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Google Apps Script");
-            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Azure Cognitive Services");
-            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("DeepL");
-            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("翻訳", new System.Windows.Forms.TreeNode[] {
-            treeNode7,
-            treeNode8,
-            treeNode9,
-            treeNode10});
-            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Tesseract");
-            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Azure");
-            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("OCR", new System.Windows.Forms.TreeNode[] {
-            treeNode12,
-            treeNode13});
-            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("ショートカット");
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.menuView = new System.Windows.Forms.TreeView();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.speechRecognitionCheckBox = new System.Windows.Forms.CheckBox();
             this.obsCheckBox = new System.Windows.Forms.CheckBox();
             this.recognitionResultTextBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -72,10 +45,6 @@
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.menuView);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.panel1);
             this.splitContainer1.Size = new System.Drawing.Size(950, 481);
             this.splitContainer1.SplitterDistance = 316;
             this.splitContainer1.TabIndex = 2;
@@ -87,53 +56,9 @@
             this.menuView.Font = new System.Drawing.Font("Yu Gothic UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.menuView.Location = new System.Drawing.Point(0, 0);
             this.menuView.Name = "menuView";
-            treeNode1.Name = "ChromeSpeechRecognitionPage";
-            treeNode1.Text = "Chrome";
-            treeNode2.Name = "AzureSpeechRecognitionPage";
-            treeNode2.Text = "Azure Cognitive Services";
-            treeNode3.Name = "AmiVoiceSpeechRecognitionPage";
-            treeNode3.Text = "AmiVoice";
-            treeNode4.Name = "SpeechRecognitionPage";
-            treeNode4.Text = "音声認識";
-            treeNode5.Name = "SubtitlesPage";
-            treeNode5.Text = "字幕";
-            treeNode6.Name = "ObsPage";
-            treeNode6.Text = "OBS";
-            treeNode7.Name = "GoogleBasicTranslationPage";
-            treeNode7.Text = "Google Cloud Translation - Basic";
-            treeNode8.Name = "GoogleAppsScriptTranslationPage";
-            treeNode8.Text = "Google Apps Script";
-            treeNode9.Name = "AzureTranslationPage";
-            treeNode9.Text = "Azure Cognitive Services";
-            treeNode10.Name = "DeepLTranslationPage";
-            treeNode10.Text = "DeepL";
-            treeNode11.Name = "TranslationPage";
-            treeNode11.Text = "翻訳";
-            treeNode12.Name = "TesseractOcrPage";
-            treeNode12.Text = "Tesseract";
-            treeNode13.Name = "AzureOcrPage";
-            treeNode13.Text = "Azure";
-            treeNode14.Name = "OcrPage";
-            treeNode14.Text = "OCR";
-            treeNode15.Name = "ShortcutPage";
-            treeNode15.Text = "ショートカット";
-            this.menuView.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode4,
-            treeNode6,
-            treeNode11,
-            treeNode14,
-            treeNode15});
             this.menuView.Size = new System.Drawing.Size(316, 481);
             this.menuView.TabIndex = 10;
             this.menuView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.menuView_AfterSelect);
-            // 
-            // panel1
-            // 
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(630, 481);
-            this.panel1.TabIndex = 11;
             // 
             // speechRecognitionCheckBox
             // 
@@ -196,7 +121,6 @@
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -209,7 +133,6 @@
         private CheckBox obsCheckBox;
         private SplitContainer splitContainer1;
         private TreeView menuView;
-        private Panel panel1;
         private TextBox recognitionResultTextBox;
         private Label label1;
     }

@@ -1,5 +1,4 @@
 ﻿using DeepL;
-using sikusiSubtitles.Service;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,6 +11,7 @@ namespace sikusiSubtitles.Translation {
         public string Key { get; set; } = "";
 
         public DeepLTranslationService(ServiceManager serviceManager) : base(serviceManager, "DeepL", "DeepL", 400) {
+            SettingPage = new DeepLTranslationPage(serviceManager, this);
             this.languages.Sort((a, b) => a.Item2.CompareTo(b.Item2));
         }
 

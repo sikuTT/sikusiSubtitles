@@ -13,8 +13,8 @@ namespace sikusiSubtitles.Translation {
     public partial class DeepLTranslationPage : SettingPage {
         private DeepLTranslationService service;
 
-        public DeepLTranslationPage(Service.ServiceManager serviceManager) : base (serviceManager) {
-            this.service = new DeepLTranslationService(serviceManager);
+        public DeepLTranslationPage(ServiceManager serviceManager, DeepLTranslationService service) : base (serviceManager) {
+            this.service = service;
 
             InitializeComponent();
         }

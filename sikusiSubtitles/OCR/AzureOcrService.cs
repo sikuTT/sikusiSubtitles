@@ -1,6 +1,5 @@
 ﻿using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
-using sikusiSubtitles.Service;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,6 +15,7 @@ namespace sikusiSubtitles.OCR {
 
 
         public AzureOcrService(ServiceManager serviceManager) : base(serviceManager, "AzureOcr", "Azure Computer Vision", 200) {
+            SettingPage = new AzureOcrPage(serviceManager, this);
         }
 
         public override void Load() {

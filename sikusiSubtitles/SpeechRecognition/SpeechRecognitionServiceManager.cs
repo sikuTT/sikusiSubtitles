@@ -1,13 +1,16 @@
 ﻿using NAudio.CoreAudioApi;
-using sikusiSubtitles.Service;
 
 namespace sikusiSubtitles.SpeechRecognition {
-    public class SpeechRecognitionServiceManager : Service.Service {
+    public class SpeechRecognitionServiceManager : sikusiSubtitles.Service {
         public static new string ServiceName = "SpeechRecognition";
 
         public MMDevice? Device { get; set; }
         public string Engine { get; set; } = "";
         public string Language { get; set; } = "";
+
+        public SpeechRecognitionServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, ServiceName, "音声認識", 200, true) {
+            SettingPage = new SpeechRecognitionPage(serviceManager, this);
+        }
 
         public override void Load() {
             // マイク設定
@@ -27,9 +30,6 @@ namespace sikusiSubtitles.SpeechRecognition {
             Properties.Settings.Default.MicID = Device?.ID ?? "";
             Properties.Settings.Default.SpeechRecognitionEngine = Engine;
             Properties.Settings.Default.SpeechRecognitionLanguage = Language;
-        }
-
-        public SpeechRecognitionServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, ServiceName, "音声認識", 100, true) {
         }
 
         public SpeechRecognitionService? GetEngine() {

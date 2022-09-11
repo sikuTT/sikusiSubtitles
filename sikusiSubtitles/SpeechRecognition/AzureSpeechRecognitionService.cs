@@ -1,7 +1,6 @@
 ﻿using Microsoft.CognitiveServices.Speech;
 using Microsoft.CognitiveServices.Speech.Audio;
 using NAudio.CoreAudioApi;
-using sikusiSubtitles.Service;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,6 +16,7 @@ namespace sikusiSubtitles.SpeechRecognition {
         public string Region { get; set; } = "";
 
         public AzureSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "Azure", "Azure Cognitive Service", 200) {
+            SettingPage = new AzureSpeechRecognitionPage(serviceManager, this);
         }
 
         public override void Load() {

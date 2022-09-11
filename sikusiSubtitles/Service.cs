@@ -5,9 +5,11 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace sikusiSubtitles.Service {
+namespace sikusiSubtitles {
     public abstract class Service {
         protected ServiceManager ServiceManager;
+        protected SettingPage? SettingPage = null;
+
         public string ServiceName { get; set; }
         public string Name { get; set; }
         public string DisplayName { get; set; }
@@ -25,9 +27,13 @@ namespace sikusiSubtitles.Service {
             serviceManager.AddService(this);
         }
 
-        public virtual void Save() {}
-        public virtual void Load() {}
-        public virtual void Init() {}
+        public virtual void Save() { }
+        public virtual void Load() { }
+        public virtual void Init() { }
+
+        public virtual SettingPage? GetSettingPage() {
+            return SettingPage;
+        }
 
         protected string Encrypt(string text) {
             if (text == "")

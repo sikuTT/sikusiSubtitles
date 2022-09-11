@@ -14,8 +14,8 @@ namespace sikusiSubtitles.Translation {
     public partial class AzureTranslationPage : SettingPage {
         public AzureTranslationService service;
 
-        public AzureTranslationPage(Service.ServiceManager serviceManager) : base(serviceManager) {
-            this.service = new AzureTranslationService(serviceManager);
+        public AzureTranslationPage(ServiceManager serviceManager, AzureTranslationService service) : base(serviceManager) {
+            this.service = service;
 
             InitializeComponent();
         }

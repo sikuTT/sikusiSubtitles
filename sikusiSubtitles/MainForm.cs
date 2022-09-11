@@ -7,97 +7,84 @@ using System.Diagnostics;
 
 namespace sikusiSubtitles {
     public partial class MainForm : Form {
-        Service.ServiceManager serviceManager = new Service.ServiceManager();
-        SettingPage[] pages;
-
-        // Speech Recognition
+        ServiceManager serviceManager = new ServiceManager();
         SpeechRecognitionService? speechRecognitionService;
-        SpeechRecognitionPage speechRecognitionPage;
-        ChromeSpeechRecognitionPage chromeSpeechRecognitionPage;
-        AzureSpeechRecognitionPage azureSpeechRecognitionPage;
-        AmiVoiceSpeechRecognitionPage amiVoiceSpeechRecognitionPage;
-        ObsPage obsPage;
-        SubtitlesPage subtitlesPage;
-
-        // translation
-        TranslationPage translationPage;
-        AzureTranslationPage azureTranslationPage;
-        GoogleBasicTranslationPage googleBasicTranslationPage;
-        GoogleAppsScriptTranslationPage googleAppsScriptTranslationPage;
-        DeepLTranslationPage deeplTranslationPage;
-
-        // OCR
-        OcrPage ocrPage;
-        TesseractOcrPage tesseractOcrPage;
-        AzureOcrPage azureOcrPage;
-        // GoogleVisionOcrPage googleVisionOcrPage;
-
-        // Shortcut
-        ShortcutPage shortcutPage;
 
         public MainForm() {
             InitializeComponent();
 
-            // Speech Recognition
-            speechRecognitionPage = new SpeechRecognitionPage(serviceManager);
-            chromeSpeechRecognitionPage = new ChromeSpeechRecognitionPage(serviceManager);
-            azureSpeechRecognitionPage = new AzureSpeechRecognitionPage(serviceManager);
-            amiVoiceSpeechRecognitionPage = new AmiVoiceSpeechRecognitionPage(serviceManager);
+            // OBS Service
+            new ObsServiceManager(this.serviceManager);
+            new ObsService(this.serviceManager);
+            new SubtitlesService(this.serviceManager);
 
-            // OBS
-            obsPage = new ObsPage(serviceManager);
-            subtitlesPage = new SubtitlesPage(serviceManager);
+            // Speech Recognition Service
+            new SpeechRecognitionServiceManager(this.serviceManager);
+            new ChromeSpeechRecognitionService(this.serviceManager);
+            new AzureSpeechRecognitionService(this.serviceManager);
+            new AmiVoiceSpeechRecognitionServie(this.serviceManager);
 
-            // translation
-            translationPage = new TranslationPage(serviceManager);
-            azureTranslationPage = new AzureTranslationPage(serviceManager);
-            googleBasicTranslationPage = new GoogleBasicTranslationPage(serviceManager);
-            googleAppsScriptTranslationPage = new GoogleAppsScriptTranslationPage(serviceManager);
-            deeplTranslationPage = new DeepLTranslationPage(serviceManager);
+            // Translation Service
+            new TranslationServiceManager(this.serviceManager);
+            new GoogleAppsScriptTranslationService(this.serviceManager);
+            new GoogleBasicTranslationService(this.serviceManager);
+            new AzureTranslationService(this.serviceManager);
+            new DeepLTranslationService(this.serviceManager);
 
-            // OCR
-            ocrPage = new OcrPage(serviceManager);
-            tesseractOcrPage = new TesseractOcrPage(serviceManager);
-            azureOcrPage = new AzureOcrPage(serviceManager);
-            // googleVisionOcrPage = new GoogleVisionOcrPage(serviceManager);
+            // OCR Service
+            new OcrServiceManager(this.serviceManager);
+            new TesseractOcrService(this.serviceManager);
+            new AzureOcrService(this.serviceManager);
 
-            // Shortcut
-            shortcutPage = new ShortcutPage(serviceManager);
+            // Shortcut Service
+            new ShortcutServiceManager(this.serviceManager);
+            new ShortcutService(this.serviceManager);
 
-            this.pages = new SettingPage[] {
-                this.speechRecognitionPage,
-                this.chromeSpeechRecognitionPage,
-                this.azureSpeechRecognitionPage,
-                this.amiVoiceSpeechRecognitionPage,
-                this.obsPage,
-                this.subtitlesPage,
-                this.translationPage,
-                this.azureTranslationPage,
-                this.googleBasicTranslationPage,
-                this.googleAppsScriptTranslationPage,
-                this.deeplTranslationPage,
-                this.ocrPage,
-                this.tesseractOcrPage,
-                this.azureOcrPage,
-                // this.googleVisionOcrPage,
-                this.shortcutPage,
-            };
-
-            foreach (var page in this.pages) {
-                this.panel1.Controls.Add(page);
-                page.Dock = DockStyle.Fill;
-            }
-
+            // Init all services
             this.serviceManager.Init();
         }
 
         private void Form1_Load(object sender, EventArgs e) {
+            this.serviceManager.Managers.ForEach(service => {
+                var page = service.GetSettingPage();
+                // サービスに設定ページが存在する場合、フォームに設定ページを追加する
+                // ツリービューに設定ページを表示するメニューを作成
+                var node = new TreeNode(service.DisplayName) { Name = service.Name };
+                this.menuView.Nodes.Add(node);
+
+                if (page != null) {
+                    // 設定ページを作成する
+                    page.Name = service.Name;
+                    page.Dock = DockStyle.Fill;
+                    this.splitContainer1.Panel2.Controls.Add(page);
+                }
+            });
+
+            this.serviceManager.Services.ForEach(service => {
+                var page = service.GetSettingPage();
+                // サービスに設定ページが存在する場合、フォームに設定ページを追加する
+                if (page != null) {
+                    // 親のメニューを取得
+                    var parentNodes = menuView.Nodes.Find(service.ServiceName, false);
+                    if (parentNodes.Length > 0 && parentNodes[0].Name != service.Name) {
+                        var node = new TreeNode(service.DisplayName) { Name = service.Name };
+                        parentNodes[0].Nodes.Add(node);
+                    }
+
+                    // 設定ページを作成する
+                    page.Name = service.Name;
+                    page.Dock = DockStyle.Fill;
+                    this.splitContainer1.Panel2.Controls.Add(page);
+                }
+            });
+
             this.menuView.ExpandAll();
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e) {
-            foreach (var page in this.pages) {
-                page.Unload();
+            foreach (var control in this.splitContainer1.Panel2.Controls) {
+                var page = control as SettingPage;
+                if (page != null) page.Unload();
             }
             this.serviceManager.Save();
             Properties.Settings.Default.Save();
@@ -107,19 +94,30 @@ namespace sikusiSubtitles {
             if (e.Node == null)
                 return;
 
-            foreach (var page in this.pages) {
-                if (e.Node.Name == page.Name) {
-                    this.ShowChildPage(page);
+            if (SelectNode(e.Node) == false) {
+                if (e.Node.Nodes.Count > 0) {
+                    SelectNode(e.Node.Nodes[0]);
                 }
             }
         }
 
+        private bool SelectNode(TreeNode node) {
+            if (node != null) {
+                var controls = this.splitContainer1.Panel2.Controls.Find(node.Name, false);
+                var page = controls.Length > 0 ? controls[0] as SettingPage : null;
+                if (page != null) {
+                    this.ShowChildPage(page);
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private void ShowChildPage(UserControl view) {
-            foreach (var page in this.pages) {
-                if (view == page) {
-                    page.Visible = true;
-                } else {
-                    page.Visible = false;
+            foreach (var control in this.splitContainer1.Panel2.Controls) {
+                var page = control as UserControl;
+                if (page != null) {
+                    page.Visible = view == control;
                 }
             }
         }

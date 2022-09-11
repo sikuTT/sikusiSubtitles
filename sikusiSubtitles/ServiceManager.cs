@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace sikusiSubtitles.Service {
+namespace sikusiSubtitles {
     public class ServiceManager {
         public List<Service> Managers { get; set; }
         public List<Service> Services { get; set; }
@@ -12,21 +12,21 @@ namespace sikusiSubtitles.Service {
         private Dictionary<string, Service> activeServices = new Dictionary<string, Service>();
 
         public ServiceManager() {
-            this.Managers = new List<Service>();
-            this.Services = new List<Service>();
+            Managers = new List<Service>();
+            Services = new List<Service>();
         }
 
         public void AddService(Service service) {
             if (service.IsManager) {
-                this.Managers.Add(service);
+                Managers.Add(service);
             } else {
-                this.Services.Add(service);
+                Services.Add(service);
             }
         }
 
         public List<Type> GetServices<Type>() where Type : Service {
             var services = new List<Type>();
-            foreach (var service in this.Services) {
+            foreach (var service in Services) {
                 var type = service as Type;
                 if (type != null) {
                     services.Add(type);
@@ -37,7 +37,7 @@ namespace sikusiSubtitles.Service {
 
         public List<Type> GetServices<Type>(string serviceName) where Type : Service {
             var services = new List<Type>();
-            foreach (var service in this.Services) {
+            foreach (var service in Services) {
                 if (service.ServiceName == serviceName) {
                     var type = service as Type;
                     if (type != null) {
@@ -49,7 +49,7 @@ namespace sikusiSubtitles.Service {
         }
 
         public Type? GetService<Type>() where Type : Service {
-            foreach (var service in this.Services) {
+            foreach (var service in Services) {
                 var type = service as Type;
                 if (type != null) {
                     return type;
@@ -59,7 +59,7 @@ namespace sikusiSubtitles.Service {
         }
 
         public Type? GetManager<Type>() where Type : Service {
-            foreach (var service in this.Managers) {
+            foreach (var service in Managers) {
                 var type = service as Type;
                 if (type != null) {
                     return type;
@@ -71,11 +71,11 @@ namespace sikusiSubtitles.Service {
         /**
          * サービスの順番をindex順にする
          */
-        public void Update() {
-            this.Managers.Sort((a, b) => {
+        public void Sort() {
+            Managers.Sort((a, b) => {
                 return a.Index - b.Index;
             });
-            this.Services.Sort((a, b) => {
+            Services.Sort((a, b) => {
                 return a.Index - b.Index;
             });
         }
@@ -104,7 +104,7 @@ namespace sikusiSubtitles.Service {
          * すべてのサービスの作成後に、各サービスの初期化を呼び出す
          */
         public void Init() {
-            Update();
+            Sort();
             Load();
             foreach (var service in Managers) {
                 service.Init();

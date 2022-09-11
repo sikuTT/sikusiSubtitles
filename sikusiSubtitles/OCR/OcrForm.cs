@@ -15,7 +15,7 @@ using static sikusiSubtitles.OCR.ScreenCapture;
 
 namespace sikusiSubtitles.OCR {
     public partial class OcrForm : Form {
-        private Service.ServiceManager serviceManager;
+        private ServiceManager serviceManager;
 
         private OcrServiceManager? ocrManager;
         private List<OcrService> ocrServices = new List<OcrService>();
@@ -33,7 +33,7 @@ namespace sikusiSubtitles.OCR {
         private int processId;
         private Rectangle captureArea;
 
-        public OcrForm(Service.ServiceManager serviceManager, int processId, Rectangle captureArea) {
+        public OcrForm(ServiceManager serviceManager, int processId, Rectangle captureArea) {
             this.serviceManager = serviceManager;
 
             InitializeComponent();

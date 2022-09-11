@@ -14,8 +14,8 @@ namespace sikusiSubtitles.OCR {
     public partial class TesseractOcrPage : SettingPage {
         TesseractOcrService service;
 
-        public TesseractOcrPage(Service.ServiceManager serviceManager) : base(serviceManager) {
-            this.service = new TesseractOcrService(serviceManager);
+        public TesseractOcrPage(ServiceManager serviceManager, TesseractOcrService service) : base(serviceManager) {
+            this.service = service;
 
             InitializeComponent();
         }

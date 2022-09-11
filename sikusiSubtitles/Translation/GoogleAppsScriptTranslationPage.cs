@@ -15,8 +15,8 @@ namespace sikusiSubtitles.Translation {
         GoogleAppsScriptTranslationService service;
         List<Tuple<string, string>> languages = new GoogleTranslationLanguages().Languages;
 
-        public GoogleAppsScriptTranslationPage(Service.ServiceManager serviceManager) : base(serviceManager) {
-            this.service = new GoogleAppsScriptTranslationService(serviceManager);
+        public GoogleAppsScriptTranslationPage(ServiceManager serviceManager, GoogleAppsScriptTranslationService service) : base(serviceManager) {
+            this.service = service;
 
             InitializeComponent();
         }

@@ -19,7 +19,7 @@ namespace sikusiSubtitles.OBS {
         public bool Recognized { get; set; }
     }
 
-    public class SubtitlesService : Service.Service {
+    public class SubtitlesService : sikusiSubtitles.Service {
         private static int TranslationMaxCount = 2;
 
         private ObsService? obsService;
@@ -41,6 +41,9 @@ namespace sikusiSubtitles.OBS {
         public bool IsAdditionalTime { get; set; } = false;
         public int AdditionalTime { get; set; } = 0;
 
+        public SubtitlesService(ServiceManager serviceManager) : base(serviceManager, ObsServiceManager.ServiceName, "Subtitles", "字幕", 200) {
+            SettingPage = new SubtitlesPage(serviceManager, this);
+        }
         public override void Load() {
             TranslationEngine = Properties.Settings.Default.SubtitlesTranslationEngine;
             TranslationLanguageFrom = Properties.Settings.Default.SubtitlesTranslationLanguageFrom;
@@ -71,9 +74,6 @@ namespace sikusiSubtitles.OBS {
             Properties.Settings.Default.SubtitlesClearInterval = (int)ClearInterval;
             Properties.Settings.Default.SubtitlesIsAdditionalTime = IsAdditionalTime;
             Properties.Settings.Default.SubtitlesAdditionalTime = (int)AdditionalTime;
-        }
-
-        public SubtitlesService(Service.ServiceManager serviceManager) : base(serviceManager, ObsServiceManager.ServiceName, "Subtitles", "字幕", 200) {
         }
 
         public bool Start(ObsService obsService) {

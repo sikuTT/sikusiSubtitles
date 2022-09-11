@@ -15,8 +15,8 @@ namespace sikusiSubtitles.OBS {
         private List<TranslationService> translationServices = new List<TranslationService>();
         private TranslationService? translationService;
 
-        public SubtitlesPage(Service.ServiceManager serviceManager) : base(serviceManager) {
-            service = new SubtitlesService(serviceManager);
+        public SubtitlesPage(ServiceManager serviceManager, SubtitlesService service) : base(serviceManager) {
+            this.service = service;
 
             InitializeComponent();
         }

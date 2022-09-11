@@ -16,8 +16,8 @@ namespace sikusiSubtitles.Translation {
     public partial class GoogleBasicTranslationPage : SettingPage {
         private GoogleBasicTranslationService service;
 
-        public GoogleBasicTranslationPage(Service.ServiceManager serviceManager) : base(serviceManager) {
-            this.service = new GoogleBasicTranslationService(serviceManager);
+        public GoogleBasicTranslationPage(ServiceManager serviceManager, GoogleBasicTranslationService service) : base(serviceManager) {
+            this.service = service;
 
             InitializeComponent();
         }

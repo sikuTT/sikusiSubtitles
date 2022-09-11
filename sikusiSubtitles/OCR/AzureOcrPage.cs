@@ -12,8 +12,8 @@ namespace sikusiSubtitles.OCR {
     public partial class AzureOcrPage : SettingPage {
         AzureOcrService service;
 
-        public AzureOcrPage(Service.ServiceManager serviceManager) : base(serviceManager) {
-            this.service = new AzureOcrService(serviceManager);
+        public AzureOcrPage(ServiceManager serviceManager, AzureOcrService service) : base(serviceManager) {
+            this.service = service;
 
             InitializeComponent();
         }

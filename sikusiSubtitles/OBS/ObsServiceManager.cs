@@ -1,5 +1,4 @@
 ﻿using ObsWebSocket5;
-using sikusiSubtitles.Service;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace sikusiSubtitles.OBS {
-    public class ObsServiceManager : Service.Service {
+    public class ObsServiceManager : sikusiSubtitles.Service {
         public static new string ServiceName = "OBS";
-        public ObsServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, "OBS", "OBS", 100) {
+        public ObsServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, ServiceName, "OBS", 100, true) {
         }
     }
 }

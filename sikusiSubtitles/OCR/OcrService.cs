@@ -16,6 +16,21 @@ namespace sikusiSubtitles.OCR {
 
         public abstract Task<string?> ExecuteAsync(Bitmap bitmap, string language);
 
+        protected string ConcatString(string text1, string text2) {
+            if (text1.Length > 0) {
+                if (Char.IsLetterOrDigit(text1.Last())) {
+                    text1 += ' ';
+                }
+            }
+            text1 += text1 + text2;
+            return text1;
+        }
+
+        protected string RemoveLineBreak(string text) {
+            text = text.Replace("\r\n", " ").Replace("\r", " ").Replace("\n", " ");
+            return text;
+        }
+
         protected void InvokeOcrFinished(OcrResult result) {
             this.OcrFinished?.Invoke(this, result);
         }

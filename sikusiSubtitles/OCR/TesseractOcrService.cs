@@ -39,8 +39,9 @@ namespace sikusiSubtitles.OCR {
                 return null;
             }
 
-            using var tesseract = new TesseractEngine(path, language);
             try {
+                using var tesseract = new TesseractEngine(path, language);
+
                 // BitmapをTesseract用に変換
                 var image = BitmapToImage(bitmap);
 
@@ -50,8 +51,9 @@ namespace sikusiSubtitles.OCR {
 
                 Debug.WriteLine("TesseractOcrService: " + page?.GetText());
                 if (page != null) {
-                    this.InvokeOcrFinished(new OcrResult(page.GetText()));
-                    return page.GetText();
+                    string text = RemoveLineBreak(page.GetText());
+                    this.InvokeOcrFinished(new OcrResult(text));
+                    return text;
                 }
             } catch (Exception ex) {
                 Debug.WriteLine("TesseractOcrService.Execute: " + ex.Message);

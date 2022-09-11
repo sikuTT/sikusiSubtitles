@@ -36,9 +36,9 @@
             this.label1.Font = new System.Drawing.Font("Yu Gothic UI", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.label1.Location = new System.Drawing.Point(3, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(167, 37);
+            this.label1.Size = new System.Drawing.Size(385, 37);
             this.label1.TabIndex = 7;
-            this.label1.Text = "OCR - Azure";
+            this.label1.Text = "OCR - Azure Cognitive Service";
             // 
             // groupBox1
             // 
@@ -48,7 +48,7 @@
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Location = new System.Drawing.Point(10, 64);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(437, 78);
+            this.groupBox1.Size = new System.Drawing.Size(662, 78);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "認証情報";
@@ -60,7 +60,7 @@
             this.keyTextBox.Location = new System.Drawing.Point(73, 28);
             this.keyTextBox.Name = "keyTextBox";
             this.keyTextBox.PasswordChar = '*';
-            this.keyTextBox.Size = new System.Drawing.Size(345, 23);
+            this.keyTextBox.Size = new System.Drawing.Size(570, 23);
             this.keyTextBox.TabIndex = 0;
             this.keyTextBox.TextChanged += new System.EventHandler(this.keyTextBox_TextChanged);
             // 
@@ -80,7 +80,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label1);
             this.Name = "AzureOcrPage";
-            this.Size = new System.Drawing.Size(447, 258);
+            this.Size = new System.Drawing.Size(672, 258);
             this.Load += new System.EventHandler(this.AzureOcrPage_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

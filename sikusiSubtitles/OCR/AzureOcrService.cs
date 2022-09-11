@@ -14,7 +14,7 @@ namespace sikusiSubtitles.OCR {
         public string Key { get; set; } = "";
 
 
-        public AzureOcrService(ServiceManager serviceManager) : base(serviceManager, "AzureOcr", "Azure Computer Vision", 200) {
+        public AzureOcrService(ServiceManager serviceManager) : base(serviceManager, "AzureOcr", "Azure Cognitive Service - Computer Vision", 200) {
             SettingPage = new AzureOcrPage(serviceManager, this);
         }
 

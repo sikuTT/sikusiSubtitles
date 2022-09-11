@@ -14,7 +14,7 @@ namespace sikusiSubtitles.Translation {
         private static readonly string endpoint = "https://api.cognitive.microsofttranslator.com/";
         private HttpClient HttpClient = new HttpClient();
 
-        public AzureTranslationService(ServiceManager serviceManager) : base(serviceManager, "Azure", "Azure Cognitive Services", 300) {
+        public AzureTranslationService(ServiceManager serviceManager) : base(serviceManager, "Azure", "Azure Cognitive Services - Translator", 300) {
             SettingPage = new AzureTranslationPage(serviceManager, this);
             this.languages.Sort((a, b) => a.Item2.CompareTo(b.Item2));
         }

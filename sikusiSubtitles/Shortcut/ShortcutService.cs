@@ -44,6 +44,10 @@ namespace sikusiSubtitles.Shortcut {
             Shortcuts = new List<Shortcut>();
         }
 
+        public override void Init() {
+            Start();
+        }
+
         public void Start() {
             const int WH_KEYBOARD_LL = 13;
 

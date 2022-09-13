@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ObsWebSocket5.Message {
+namespace ObsWebSocket5 {
     public enum WebSocketOpCode {
         Hello = 0,
         Identify = 1,

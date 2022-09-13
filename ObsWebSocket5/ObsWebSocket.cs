@@ -20,12 +20,14 @@ namespace ObsWebSocket5 {
 
         ClientWebSocket? webSocket;
         string? password;
+        EventSubscription eventSubscriptions = EventSubscription.None;
 
         public bool IsConnected { get { return webSocket != null && webSocket.State ==WebSocketState.Open; } }
 
-        async public Task ConnectAsync(string uri) {
-            webSocket = new ClientWebSocket();
+        async public Task ConnectAsync(string uri, EventSubscription eventSubscriptions = EventSubscription.None) {
             try {
+                webSocket = new ClientWebSocket();
+                this.eventSubscriptions = eventSubscriptions;
                 await webSocket.ConnectAsync(new Uri(uri), CancellationToken.None);
                 await RecvHelloAsync();
                 Task.Run(() => ReceiveMessage());
@@ -38,7 +40,7 @@ namespace ObsWebSocket5 {
             }
         }
 
-        async public Task ConnectAsync(string uri, string password) {
+        async public Task ConnectAsync(string uri, string password, EventSubscription eventSubscriptions = EventSubscription.None) {
             this.password = password;
             await ConnectAsync(uri);
         }
@@ -54,60 +56,70 @@ namespace ObsWebSocket5 {
             }
         }
 
-        async public Task<RequestResponse<GetSceneListResponse>?> GetSceneListAsync() {
+        async public Task<GetSceneListResponse> GetSceneListAsync() {
             var requestData = new GetSceneListRequest();
             var responseData = await SendRequestAsync<GetSceneListResponse>(requestData);
-            return responseData;
+            return GetResponseOrThrow(responseData);
         }
 
-        async public Task<RequestResponse<GetGroupSceneItemListResponse>?> GetGroupSceneItemListAsync(string sceneName) {
+        async public Task<GetGroupSceneItemListResponse> GetGroupSceneItemListAsync(string sceneName) {
             var requestData = new GetGroupSceneItemListRequest() { sceneName = sceneName };
             var responseData = await SendRequestAsync<GetGroupSceneItemListResponse>(requestData);
-            return responseData;
+            return GetResponseOrThrow(responseData);
         }
 
-        async public Task<RequestResponse<GetSceneItemListResponse>?> GetSceneItemListAsync(string sceneName) {
+        async public Task<GetSceneItemListResponse> GetSceneItemListAsync(string sceneName) {
             var requestData = new GetSceneItemListRequest() { sceneName = sceneName };
-            return await SendRequestAsync<GetSceneItemListResponse>(requestData);
+            var responseData = await SendRequestAsync<GetSceneItemListResponse>(requestData);
+            return GetResponseOrThrow(responseData);
         }
 
-        async public Task<RequestResponse<GetInputDefaultSettingsResponse>?> GetInputDefaultSettingsAsync(string inputKind) {
+        async public Task<GetInputDefaultSettingsResponse> GetInputDefaultSettingsAsync(string inputKind) {
             var requestData = new GetInputDefaultSettingsRequest() { inputKind = inputKind };
             var responseData = await SendRequestAsync<GetInputDefaultSettingsResponse>(requestData);
-            if (responseData?.d?.responseData != null) {
-                var settings = responseData.d.responseData.defaultInputSettings as JObject;
-                if (settings != null) {
-                    if (inputKind == "text_gdiplus_v2") {
-                        var data = settings.ToObject<TextGdiplusV2>();
-                        if (data != null) {
-                            responseData.d.responseData.defaultInputSettings = data;
-                        }
+            var settings = responseData?.d?.responseData?.defaultInputSettings as JObject;
+            if (settings != null) {
+                if (inputKind == "text_gdiplus_v2") {
+                    var data = settings.ToObject<TextGdiplusV2>();
+                    if (data != null) {
+                        responseData.d.responseData.defaultInputSettings = data;
                     }
                 }
             }
-            return responseData;
+            return GetResponseOrThrow(responseData);
         }
 
-        async public Task<RequestResponse<GetInputSettingsResponse>?> GetInputSettingsAsync(string inputName) {
+        async public Task<GetInputSettingsResponse> GetInputSettingsAsync(string inputName) {
             var requestData = new GetInputSettingsRequest() { inputName = inputName };
             var responseData = await SendRequestAsync<GetInputSettingsResponse>(requestData);
-            if (responseData?.d?.responseData != null) {
-                var settings = responseData.d.responseData.inputSettings as JObject;
-                if (settings != null) {
-                    if (responseData.d.responseData.inputKind == "text_gdiplus_v2") {
-                        var data = settings.ToObject<TextGdiplusV2>();
-                        if (data != null) {
-                            responseData.d.responseData.inputSettings = data;
-                        }
+            var settings = responseData?.d?.responseData?.inputSettings as JObject;
+            if (settings != null) {
+                if (responseData?.d?.responseData?.inputKind == "text_gdiplus_v2") {
+                    var data = settings.ToObject<TextGdiplusV2>();
+                    if (data != null) {
+                        responseData.d.responseData.inputSettings = data;
                     }
                 }
             }
-            return responseData;
+            return GetResponseOrThrow(responseData);
         }
 
-        async public Task<RequestResponse<ResponseData>?> SetInputSettingsAsync(string inputName, TextGdiplusV2 settings) {
+        async public Task<ResponseData> SetInputSettingsAsync(string inputName, TextGdiplusV2 settings) {
             var requestData = new SetInputSettingsRequest() { inputName = inputName, inputSettings = settings };
-            return await SendRequestAsync<ResponseData>(requestData);
+            var responseData = await SendRequestAsync<ResponseData>(requestData);
+            return GetResponseOrThrow(responseData);
+        }
+
+        private T GetResponseOrThrow<T>(RequestResponse<T>? responseData) where T : ResponseData, new() {
+            if (responseData?.d?.requestStatus.code == RequestStatusCode.Success) {
+                if (responseData?.d?.responseData != null) {
+                    return responseData.d.responseData;
+                } else {
+                    return new T();
+                }
+            } else {
+                throw new ResponseException(responseData?.d?.requestStatus.code, responseData?.d?.requestStatus.comment);
+            }
         }
 
         /** OBSからのメッセージを待つ */
@@ -148,7 +160,11 @@ namespace ObsWebSocket5 {
                 switch (data.Result.MessageType) {
                     case WebSocketMessageType.Close:
                         await CloseAsync();
-                        return data;
+                        WebSocketCloseCode? code = null;
+                        if (data.Result.CloseStatus != null) {
+                            code = (WebSocketCloseCode)data.Result.CloseStatus;
+                        }
+                        throw new WebSocketClosedException(code, data.Result.CloseStatusDescription);
                     case WebSocketMessageType.Binary:
                         await CloseAsync();
                         return data;
@@ -230,7 +246,7 @@ namespace ObsWebSocket5 {
                     string base64Secret = Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(password + hello.d.authentication.salt)));
                     identity.d.authentication = Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(base64Secret + hello.d.authentication.challenge)));
                 }
-                // identity.d.eventSubscriptions = (int)Message.EventSubscription.All;
+                identity.d.eventSubscriptions = (int)this.eventSubscriptions;
                 await SendAsync(identity);
             }
         }
@@ -239,13 +255,7 @@ namespace ObsWebSocket5 {
         async private Task RecvIdentifiedAsync() {
             if (webSocket != null) {
                 var data = await ReceiveAsync();
-                if (data?.Data != null) {
-                    return;
-                } else {
-                    throw new AuthenticationFailedException();
-                }
             }
-            throw new WebSocketException();
         }
     }
 }

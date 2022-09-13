@@ -112,7 +112,7 @@ namespace sikusiSubtitles.OBS {
                 if (obsService.IsConnected) {
                     var obsSocket = this.obsService.ObsSocket;
                     var response = await obsSocket.GetInputSettingsAsync(sourceName);
-                    var settings = response?.d?.responseData?.inputSettings as TextGdiplusV2;
+                    var settings = response.inputSettings as TextGdiplusV2;
                     if (settings != null) {
                         settings.text = text;
                         await obsSocket.SetInputSettingsAsync(sourceName, settings);

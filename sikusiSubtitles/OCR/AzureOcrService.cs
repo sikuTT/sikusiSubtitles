@@ -69,7 +69,6 @@ namespace sikusiSubtitles.OCR {
                         }
                     }
                 }
-                this.InvokeOcrFinished(new OcrResult(resultString));
                 return resultString;
             } catch (Exception ex) {
                 Debug.WriteLine("AzureOcrService: " + ex.Message);

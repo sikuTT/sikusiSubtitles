@@ -49,7 +49,7 @@ namespace sikusiSubtitles.OBS {
             var url = String.Format("ws://{0}:{1}/", IP, Port);
             try {
                 await ObsSocket.ConnectAsync(url, this.Password);
-            } catch (AuthenticationFailedException) {
+            } catch (WebSocketClosedException) {
                 MessageBox.Show("認証に失敗しました。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             } catch (Exception) {

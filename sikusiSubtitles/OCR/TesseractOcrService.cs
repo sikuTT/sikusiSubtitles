@@ -53,7 +53,6 @@ namespace sikusiSubtitles.OCR {
                 Debug.WriteLine("TesseractOcrService: " + page?.GetText());
                 if (page != null) {
                     string text = RemoveLineBreak(page.GetText());
-                    this.InvokeOcrFinished(new OcrResult(text));
                     return text;
                 }
             } catch (Exception ex) {

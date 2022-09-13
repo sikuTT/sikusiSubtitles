@@ -263,20 +263,20 @@ namespace sikusiSubtitles.OCR {
                 var nameList = new List<string>() { "" };
                 // シーン一覧を取得する
                 var sceneList = await obsService.ObsSocket.GetSceneListAsync();
-                var sceneNames = sceneList?.d?.responseData?.scenes?.Select(scene => scene.sceneName).ToList();
+                var sceneNames = sceneList.scenes.Select(scene => scene.sceneName).ToList();
                 if (sceneNames != null) {
                     // 各シーン内のソースを取得し、GDIテキストだけを取り出す
                     foreach (var sceneName in sceneNames) {
                         // シーン内のソース一覧を取得し、GDIテキストとグループだけを取り出す
                         var sceneItemList = await obsService.ObsSocket.GetSceneItemListAsync(sceneName);
-                        var sourceItems = sceneItemList?.d?.responseData?.sceneItems?.Where(item => item.inputKind == "text_gdiplus_v2" || item.isGroup == true).ToList();
+                        var sourceItems = sceneItemList.sceneItems.Where(item => item.inputKind == "text_gdiplus_v2" || item.isGroup == true).ToList();
                         if (sourceItems != null) {
                             // シーン内のアイテムを1個ずつ処理
                             foreach (var item in sourceItems) {
                                 if (item.isGroup == true) {
                                     // グループの場合、グループ内のソース一覧を取得し、その中からGDIテキストだけを取得する
                                     var groupItemList = await obsService.ObsSocket.GetGroupSceneItemListAsync(item.sourceName);
-                                    var groupSourceItems = groupItemList?.d?.responseData?.sceneItems?.Where(item => item.inputKind == "text_gdiplus_v2").Select(item => item.sourceName).ToList();
+                                    var groupSourceItems = groupItemList.sceneItems.Where(item => item.inputKind == "text_gdiplus_v2").Select(item => item.sourceName).ToList();
                                     if (groupSourceItems != null) {
                                         nameList.AddRange(groupSourceItems);
                                     }

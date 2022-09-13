@@ -57,8 +57,6 @@ namespace sikusiSubtitles.Translation {
                 Debug.WriteLine("GoogleAppsScriptTranslationService: " + ex.Message);
                 result.Error = true;
                 result.Translations.Add(new TranslationResult.Translation() { Text = ex.Message });
-            } finally {
-                InvokeTranslated(result);
             }
             return result;
         }

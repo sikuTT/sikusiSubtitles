@@ -93,8 +93,6 @@ namespace sikusiSubtitles.Translation {
                 Debug.WriteLine("AzureTranslationService: " + ex.Message);
                 result.Error = true;
                 result.Translations.Add(new TranslationResult.Translation() { Text = ex.Message });
-            } finally {
-                InvokeTranslated(result);
             }
 
             return result;

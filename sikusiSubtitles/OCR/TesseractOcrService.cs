@@ -17,17 +17,20 @@ namespace sikusiSubtitles.OCR {
         public override List<Tuple<string, string>> GetLanguages() {
             List<Tuple<string, string>> langs = new List<Tuple<string, string>>();
 
-            var path = GetDataPath();
-            if (path != null) {
-                var files = Directory.GetFiles(path, "*.traineddata");
-                foreach (var file in files) {
-                    var i = file.LastIndexOf('\\');
-                    if (i != -1) {
-                        var lang = file.Substring(i + 1);
-                        lang = lang.Substring(0, lang.Length - 12);
-                        langs.Add(new Tuple<string, string>(lang, lang));
+            try {
+                var path = GetDataPath();
+                if (path != null) {
+                    var files = Directory.GetFiles(path, "*.traineddata");
+                    foreach (var file in files) {
+                        var i = file.LastIndexOf('\\');
+                        if (i != -1) {
+                            var lang = file.Substring(i + 1);
+                            lang = lang.Substring(0, lang.Length - 12);
+                            langs.Add(new Tuple<string, string>(lang, lang));
+                        }
                     }
                 }
+            } catch (Exception) {
             }
 
             return langs;

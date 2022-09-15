@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ObsWebSocket5 {
-    public enum RequestStatusCode {
+    public enum RequestStatus {
         NoError = 10,
         Success = 100,
         MissingRequestType = 203,

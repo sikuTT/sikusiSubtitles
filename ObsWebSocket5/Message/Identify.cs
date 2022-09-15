@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace ObsWebSocket5.Message {
 #pragma warning disable CS8618 // null 非許容のフィールドには、コンストラクターの終了時に null 以外の値が入っていなければなりません。Null 許容として宣言することをご検討ください。
-    public class Identify {
-        public int op = (int)WebSocketOpCode.Identify;
-        public D d = new D();
+    public class Identify : Data<Identify.D> {
+        public Identify() : base(WebSocketOpCode.Identify) {
+            this.d = new D();
+        }
 
-        public class D {
+    public class D {
             public int rpcVersion;
             public string? authentication;
             public int? eventSubscriptions;

@@ -14,13 +14,15 @@ namespace ObsWebSocket5 {
         public JObject? Data { get; set; }
     }
 
-    public class ObsWebSocket {
+    public partial class ObsWebSocket {
         SemaphoreSlim recvSemaphore = new SemaphoreSlim(1, 1);
         Dictionary<string, JObject> receiveDataList = new Dictionary<string, JObject>();
 
         ClientWebSocket? webSocket;
         string? password;
         EventSubscription eventSubscriptions = EventSubscription.None;
+
+        public event EventHandler<Event.D>? EventReceived;
 
         public bool IsConnected { get { return webSocket != null && webSocket.State ==WebSocketState.Open; } }
 
@@ -42,7 +44,7 @@ namespace ObsWebSocket5 {
 
         async public Task ConnectAsync(string uri, string password, EventSubscription eventSubscriptions = EventSubscription.None) {
             this.password = password;
-            await ConnectAsync(uri);
+            await ConnectAsync(uri, eventSubscriptions);
         }
 
         async public Task CloseAsync() {
@@ -81,7 +83,7 @@ namespace ObsWebSocket5 {
             if (settings != null) {
                 if (inputKind == "text_gdiplus_v2") {
                     var data = settings.ToObject<TextGdiplusV2>();
-                    if (data != null) {
+                    if (responseData?.d?.responseData != null && data != null) {
                         responseData.d.responseData.defaultInputSettings = data;
                     }
                 }
@@ -111,7 +113,7 @@ namespace ObsWebSocket5 {
         }
 
         private T GetResponseOrThrow<T>(RequestResponse<T>? responseData) where T : ResponseData, new() {
-            if (responseData?.d?.requestStatus.code == RequestStatusCode.Success) {
+            if (responseData?.d?.requestStatus.code == RequestStatus.Success) {
                 if (responseData?.d?.responseData != null) {
                     return responseData.d.responseData;
                 } else {
@@ -130,6 +132,10 @@ namespace ObsWebSocket5 {
                     var op = recvData.Data["op"];
                     if (op != null) {
                         if ((int)op == (int)WebSocketOpCode.Event) {
+                            var data = recvData.Data.ToObject<Event>();
+                            if (data != null) {
+                                EventReceived?.Invoke(this, data.d);
+                            }
                         } else if ((int)op == (int)WebSocketOpCode.RequestResponse) {
                             var responseData = recvData.Data.ToObject<RequestResponse<JObject>>();
                             if (responseData != null) {

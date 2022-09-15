@@ -88,7 +88,7 @@ namespace sikusiSubtitles.OBS {
                     this.speechRecognitionService.Recognized += Recognized;
 
                     var translationServices = this.ServiceManager.GetServices<TranslationService>();
-                    this.translationService = translationServices.Where(service => service.Name == TranslationEngine).First();
+                    this.translationService = translationServices.Where(service => service.Name == TranslationEngine).FirstOrDefault();
 
                     return true;
                 }

@@ -91,6 +91,8 @@ namespace sikusiSubtitles.Shortcut {
                     text += "CTRL";
                 } else if (key == 18) {
                     text += "ALT";
+                } else if ((key >= 48 && key <= 57)) {
+                    text += (char)key;
                 } else {
                     text += (Keys)key;
                 }
@@ -106,10 +108,13 @@ namespace sikusiSubtitles.Shortcut {
             try {
                 var push = ((int)wParam & 0x00000001) == 0;
                 var keyCode = (short)Marshal.ReadInt32(lParam);
-                if (keyCode == 160 || keyCode == 161) {
+                if (keyCode >= 240) {
+                    // キーを話した時のイベントがこないので処理しない
+                    return CallNextHookEx(hookPtr, nCode, wParam, lParam);
+                } else if (keyCode == 160 || keyCode == 161) {
                     // LShiftKey, RShiftKeyはShiftKeyにする
                     keyCode = 16;
-                } else if (keyCode ==162 || keyCode == 163) {
+                } else if (keyCode == 162 || keyCode == 163) {
                     // LControlKey, RControlKeyはControlKeyにする。
                     keyCode = 17;
                 } else if (keyCode == 164 || keyCode == 165) {
@@ -119,6 +124,9 @@ namespace sikusiSubtitles.Shortcut {
                 if (push) {
                     if (!this.keys.Contains(keyCode)) {
                         this.keys.Add(keyCode);
+
+                        string text = CreateShortcutText(keys);
+                        this.ShortcutRun?.Invoke(this, new Shortcut("", "", "", text));
                     }
                 } else {
                     if (this.keys.Contains(keyCode)) {

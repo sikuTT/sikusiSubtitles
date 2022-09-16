@@ -27,9 +27,10 @@
             this.shortcutListView = new System.Windows.Forms.ListView();
             this.commandColumnHeader = new System.Windows.Forms.ColumnHeader();
             this.keyColumnHeader = new System.Windows.Forms.ColumnHeader();
+            this.sourceColumnHeader = new System.Windows.Forms.ColumnHeader();
             this.shortcutTextBox = new System.Windows.Forms.TextBox();
             this.setShortcutButton = new System.Windows.Forms.Button();
-            this.sourceColumnHeader = new System.Windows.Forms.ColumnHeader();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -74,6 +75,11 @@
             this.keyColumnHeader.Text = "キー";
             this.keyColumnHeader.Width = 200;
             // 
+            // sourceColumnHeader
+            // 
+            this.sourceColumnHeader.Text = "ソース";
+            this.sourceColumnHeader.Width = 100;
+            // 
             // shortcutTextBox
             // 
             this.shortcutTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -101,15 +107,22 @@
             this.setShortcutButton.UseVisualStyleBackColor = true;
             this.setShortcutButton.Click += new System.EventHandler(this.setShortcutButton_Click);
             // 
-            // sourceColumnHeader
+            // textBox1
             // 
-            this.sourceColumnHeader.Text = "ソース";
-            this.sourceColumnHeader.Width = 100;
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox1.Location = new System.Drawing.Point(238, 29);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(302, 16);
+            this.textBox1.TabIndex = 10;
+            this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // ShortcutPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.setShortcutButton);
             this.Controls.Add(this.shortcutTextBox);
             this.Controls.Add(this.shortcutListView);
@@ -131,5 +144,6 @@
         private TextBox shortcutTextBox;
         private Button setShortcutButton;
         private ColumnHeader sourceColumnHeader;
+        private TextBox textBox1;
     }
 }

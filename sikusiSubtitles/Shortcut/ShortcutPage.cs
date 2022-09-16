@@ -18,6 +18,12 @@ namespace sikusiSubtitles.Shortcut {
 
         public override void Unload() {
             this.service.End();
+
+            // ショートカットイベントを取得
+            var shortcutService = this.serviceManager.GetService<ShortcutService>();
+            if (shortcutService != null) {
+                shortcutService.ShortcutRun -= ShortcutRun;
+            }
         }
 
         public ShortcutPage(ServiceManager serviceManager, ShortcutService service) : base(serviceManager) {
@@ -31,6 +37,12 @@ namespace sikusiSubtitles.Shortcut {
             foreach (var shortcut in service.Shortcuts) {
                 ListViewItem item = new ListViewItem(new String[] { shortcut.Command, shortcut.ShortcutKey, shortcut.Source });
                 this.shortcutListView.Items.Add(item);
+            }
+
+            // ショートカットイベントを取得
+            var shortcutService = this.serviceManager.GetService<ShortcutService>();
+            if (shortcutService != null) {
+                shortcutService.ShortcutRun += ShortcutRun;
             }
         }
 
@@ -47,9 +59,11 @@ namespace sikusiSubtitles.Shortcut {
         }
 
         private void shortcutTextBox_KeyDown(object sender, KeyEventArgs e) {
-            if (this.keys.Contains(e.KeyValue) == false) {
-                this.keys.Add(e.KeyValue);
-                this.shortcutTextBox.Text = service.CreateShortcutText(this.keys);
+            if (e.KeyValue < 240) {
+                if (this.keys.Contains(e.KeyValue) == false) {
+                    this.keys.Add(e.KeyValue);
+                    this.shortcutTextBox.Text = service.CreateShortcutText(this.keys);
+                }
             }
         }
 
@@ -69,6 +83,11 @@ namespace sikusiSubtitles.Shortcut {
                 var i = this.shortcutListView.SelectedIndices[0];
                 service.Shortcuts[i].ShortcutKey = this.shortcutTextBox.Text;
             }
+        }
+
+        private void ShortcutRun(object? sender, Shortcut shortcut) {
+            textBox1.Text = shortcut.ShortcutKey;
+
         }
     }
 }

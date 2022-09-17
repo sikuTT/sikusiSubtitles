@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using ObsWebSocket5.Message.Data.InputSettings;
 using ObsWebSocket5.Message.Data.Request;
 namespace ObsWebSocket5 {
@@ -205,6 +206,12 @@ namespace ObsWebSocket5 {
         async public Task<GetInputSettingsResponse> GetInputSettingsAsync(string inputName) {
             var requestData = new GetInputSettingsRequest() { inputName = inputName };
             var responseData = await SendRequestAsync<GetInputSettingsResponse>(requestData);
+            var obj = responseData?.d?.responseData?.inputSettings as JObject;
+            if (obj != null) {
+                if (responseData?.d?.responseData?.inputKind == "text_gdiplus_v2") {
+                    responseData.d.responseData.inputSettings = obj.ToObject<TextGdiplusV2>();
+                }
+            }
             return GetResponseOrThrow(responseData);
         }
         async public Task<SetInputSettingsResponse> SetInputSettingsAsync(string inputName, InputSettings inputSettings, bool overlay = true) {

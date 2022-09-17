@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ObsWebSocket5.Message;
-using ObsWebSocket5.Message.Data;
-using ObsWebSocket5.Message.Data.Response.InputSettings;
+using ObsWebSocket5.Message.Data.Request;
 using System.Diagnostics;
 using System.Net.WebSockets;
 using System.Security.Cryptography;
@@ -56,60 +55,6 @@ namespace ObsWebSocket5 {
             } else {
                 return;
             }
-        }
-
-        async public Task<GetSceneListResponse> GetSceneListAsync() {
-            var requestData = new GetSceneListRequest();
-            var responseData = await SendRequestAsync<GetSceneListResponse>(requestData);
-            return GetResponseOrThrow(responseData);
-        }
-
-        async public Task<GetGroupSceneItemListResponse> GetGroupSceneItemListAsync(string sceneName) {
-            var requestData = new GetGroupSceneItemListRequest() { sceneName = sceneName };
-            var responseData = await SendRequestAsync<GetGroupSceneItemListResponse>(requestData);
-            return GetResponseOrThrow(responseData);
-        }
-
-        async public Task<GetSceneItemListResponse> GetSceneItemListAsync(string sceneName) {
-            var requestData = new GetSceneItemListRequest() { sceneName = sceneName };
-            var responseData = await SendRequestAsync<GetSceneItemListResponse>(requestData);
-            return GetResponseOrThrow(responseData);
-        }
-
-        async public Task<GetInputDefaultSettingsResponse> GetInputDefaultSettingsAsync(string inputKind) {
-            var requestData = new GetInputDefaultSettingsRequest() { inputKind = inputKind };
-            var responseData = await SendRequestAsync<GetInputDefaultSettingsResponse>(requestData);
-            var settings = responseData?.d?.responseData?.defaultInputSettings as JObject;
-            if (settings != null) {
-                if (inputKind == "text_gdiplus_v2") {
-                    var data = settings.ToObject<TextGdiplusV2>();
-                    if (responseData?.d?.responseData != null && data != null) {
-                        responseData.d.responseData.defaultInputSettings = data;
-                    }
-                }
-            }
-            return GetResponseOrThrow(responseData);
-        }
-
-        async public Task<GetInputSettingsResponse> GetInputSettingsAsync(string inputName) {
-            var requestData = new GetInputSettingsRequest() { inputName = inputName };
-            var responseData = await SendRequestAsync<GetInputSettingsResponse>(requestData);
-            var settings = responseData?.d?.responseData?.inputSettings as JObject;
-            if (settings != null) {
-                if (responseData?.d?.responseData?.inputKind == "text_gdiplus_v2") {
-                    var data = settings.ToObject<TextGdiplusV2>();
-                    if (data != null) {
-                        responseData.d.responseData.inputSettings = data;
-                    }
-                }
-            }
-            return GetResponseOrThrow(responseData);
-        }
-
-        async public Task<ResponseData> SetInputSettingsAsync(string inputName, TextGdiplusV2 settings) {
-            var requestData = new SetInputSettingsRequest() { inputName = inputName, inputSettings = settings };
-            var responseData = await SendRequestAsync<ResponseData>(requestData);
-            return GetResponseOrThrow(responseData);
         }
 
         private T GetResponseOrThrow<T>(RequestResponse<T>? responseData) where T : ResponseData, new() {

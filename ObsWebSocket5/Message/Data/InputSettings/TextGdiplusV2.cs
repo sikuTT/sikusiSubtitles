@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ObsWebSocket5.Message.Data.Response.InputSettings {
-    public class TextGdiplusV2 {
+namespace ObsWebSocket5.Message.Data.InputSettings {
+    public class TextGdiplusV2 : InputSettings {
         public string? align;
         public bool? antialiasing;
         public uint? bk_color;

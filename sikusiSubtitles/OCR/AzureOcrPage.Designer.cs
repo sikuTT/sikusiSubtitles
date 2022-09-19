@@ -25,6 +25,8 @@
         private void InitializeComponent() {
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.endpointTextBox = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.keyTextBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
@@ -44,23 +46,45 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.endpointTextBox);
+            this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.keyTextBox);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Location = new System.Drawing.Point(10, 64);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(662, 78);
+            this.groupBox1.Size = new System.Drawing.Size(662, 157);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "認証情報";
+            // 
+            // endpointTextBox
+            // 
+            this.endpointTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.endpointTextBox.Location = new System.Drawing.Point(82, 62);
+            this.endpointTextBox.Name = "endpointTextBox";
+            this.endpointTextBox.PasswordChar = '*';
+            this.endpointTextBox.Size = new System.Drawing.Size(561, 23);
+            this.endpointTextBox.TabIndex = 0;
+            this.endpointTextBox.TextChanged += new System.EventHandler(this.endpointTextBox_TextChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(21, 67);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(55, 15);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "Endpoint";
             // 
             // keyTextBox
             // 
             this.keyTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.keyTextBox.Location = new System.Drawing.Point(73, 28);
+            this.keyTextBox.Location = new System.Drawing.Point(82, 28);
             this.keyTextBox.Name = "keyTextBox";
             this.keyTextBox.PasswordChar = '*';
-            this.keyTextBox.Size = new System.Drawing.Size(570, 23);
+            this.keyTextBox.Size = new System.Drawing.Size(561, 23);
             this.keyTextBox.TabIndex = 0;
             this.keyTextBox.TextChanged += new System.EventHandler(this.keyTextBox_TextChanged);
             // 
@@ -95,5 +119,7 @@
         private GroupBox groupBox1;
         private TextBox keyTextBox;
         private Label label2;
+        private TextBox endpointTextBox;
+        private Label label3;
     }
 }

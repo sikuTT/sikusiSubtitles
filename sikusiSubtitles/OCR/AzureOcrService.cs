@@ -9,9 +9,8 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.OCR {
     public class AzureOcrService : OcrService{
-        private static string endpoint = "https://siku-stream-vision.cognitiveservices.azure.com/";
-
         public string Key { get; set; } = "";
+        public string Endpoint { get; set; } = "";
 
 
         public AzureOcrService(ServiceManager serviceManager) : base(serviceManager, "AzureOcr", "Azure Cognitive Service - Computer Vision", 200) {
@@ -20,10 +19,12 @@ namespace sikusiSubtitles.OCR {
 
         public override void Load() {
             Key = Decrypt(Properties.Settings.Default.AzureOcrKey);
+            Endpoint= Properties.Settings.Default.AzureOcrEndpoint;
         }
 
         public override void Save() {
             Properties.Settings.Default.AzureOcrKey = Encrypt(Key);
+            Properties.Settings.Default.AzureOcrEndpoint = Endpoint;
         }
 
         public override List<Tuple<string, string>> GetLanguages() {
@@ -32,7 +33,7 @@ namespace sikusiSubtitles.OCR {
 
         public async override Task<string?> ExecuteAsync(Bitmap bitmap, string language) {
             try {
-                ComputerVisionClient client = new ComputerVisionClient(new ApiKeyServiceClientCredentials(Key)) { Endpoint = endpoint };
+                ComputerVisionClient client = new ComputerVisionClient(new ApiKeyServiceClientCredentials(Key)) { Endpoint = this.Endpoint };
 
                 MemoryStream memoryStream = new MemoryStream();
                 bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);

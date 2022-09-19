@@ -598,5 +598,17 @@ namespace sikusiSubtitles.Properties {
                 this["AzureOcrKey"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AzureOcrEndpoint {
+            get {
+                return ((string)(this["AzureOcrEndpoint"]));
+            }
+            set {
+                this["AzureOcrEndpoint"] = value;
+            }
+        }
     }
 }

@@ -20,10 +20,15 @@ namespace sikusiSubtitles.OCR {
 
         private void AzureOcrPage_Load(object sender, EventArgs e) {
             keyTextBox.Text = service.Key;
+            endpointTextBox.Text = service.Endpoint;
         }
 
         private void keyTextBox_TextChanged(object sender, EventArgs e) {
             service.Key = keyTextBox.Text;
+        }
+
+        private void endpointTextBox_TextChanged(object sender, EventArgs e) {
+            service.Endpoint = endpointTextBox.Text;
         }
     }
 }

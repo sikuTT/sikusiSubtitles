@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * The state of the record output has changed.
 
@@ -6,10 +7,11 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class RecordStateChanged : EventData {
         /** Whether the output is active */
-        bool outputActive;
+        public bool outputActive;
         /** The specific state of the output */
-        string outputState;
+        public string outputState;
         /** File name for the saved recording, if record stopped. `null` otherwise */
-        string outputPath;
+        public string outputPath;
     }
+#pragma warning restore CS8618
 }

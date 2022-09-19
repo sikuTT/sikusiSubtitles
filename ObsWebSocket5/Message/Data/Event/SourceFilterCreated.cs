@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * A filter has been added to a source.
 
@@ -6,16 +7,17 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class SourceFilterCreated : EventData {
         /** Name of the source the filter was added to */
-        string sourceName;
+        public string sourceName;
         /** Name of the filter */
-        string filterName;
+        public string filterName;
         /** The kind of the filter */
-        string filterKind;
+        public string filterKind;
         /** Index position of the filter */
-        long filterIndex;
+        public long filterIndex;
         /** The settings configured to the filter when it was created */
-        object filterSettings;
+        public object filterSettings;
         /** The default settings for the filter */
-        object defaultFilterSettings;
+        public object defaultFilterSettings;
     }
+#pragma warning restore CS8618
 }

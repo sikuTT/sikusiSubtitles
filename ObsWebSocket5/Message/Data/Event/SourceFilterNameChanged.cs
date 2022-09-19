@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * The name of a source filter has changed.
 
@@ -6,10 +7,11 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class SourceFilterNameChanged : EventData {
         /** The source the filter is on */
-        string sourceName;
+        public string sourceName;
         /** Old name of the filter */
-        string oldFilterName;
+        public string oldFilterName;
         /** New name of the filter */
-        string filterName;
+        public string filterName;
     }
+#pragma warning restore CS8618
 }

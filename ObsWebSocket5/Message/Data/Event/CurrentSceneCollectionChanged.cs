@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * The current scene collection has changed.
      * 
@@ -8,6 +9,7 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class CurrentSceneCollectionChanged : EventData {
         /** Name of the new scene collection */
-        string sceneCollectionName;
+        public string sceneCollectionName;
     }
+#pragma warning restore CS8618
 }

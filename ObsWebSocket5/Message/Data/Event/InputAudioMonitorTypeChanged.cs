@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * The monitor type of an input has changed.
      * 
@@ -12,8 +13,9 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class InputAudioMonitorTypeChanged : EventData {
         /** Name of the input */
-        string inputName;
+        public string inputName;
         /** New monitor type of the input */
-        string monitorType;
+        public string monitorType;
     }
+#pragma warning restore CS8618
 }

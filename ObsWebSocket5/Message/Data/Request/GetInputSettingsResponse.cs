@@ -1,5 +1,3 @@
-using Newtonsoft.Json.Linq;
-
 namespace ObsWebSocket5.Message.Data.Request {
 #pragma warning disable CS8618
     public class GetInputSettingsResponse : ResponseData {

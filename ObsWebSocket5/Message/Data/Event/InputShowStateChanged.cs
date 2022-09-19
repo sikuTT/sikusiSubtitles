@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * An input's show state has changed.
      * 
@@ -8,8 +9,9 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class InputShowStateChanged : EventData {
         /** Name of the input */
-        string inputName;
+        public string inputName;
         /** Whether the input is showing */
-        bool videoShowing;
+        public bool videoShowing;
     }
+#pragma warning restore CS8618
 }

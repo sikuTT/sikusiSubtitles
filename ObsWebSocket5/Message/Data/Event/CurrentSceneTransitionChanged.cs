@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * The current scene transition has changed.
 
@@ -6,6 +7,7 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class CurrentSceneTransitionChanged : EventData {
         /** Name of the new transition */
-        string transitionName;
+        public string transitionName;
     }
+#pragma warning restore CS8618
 }

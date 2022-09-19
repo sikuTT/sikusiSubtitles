@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * A new scene has been created.
 
@@ -6,8 +7,9 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class SceneCreated : EventData {
         /** Name of the new scene */
-        string sceneName;
+        public string sceneName;
         /** Whether the new scene is a group */
-        bool isGroup;
+        public bool isGroup;
     }
+#pragma warning restore CS8618
 }

@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * An event has been emitted from a vendor.
      * 
@@ -9,10 +10,11 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class VendorEvent : EventData {
         /** Name of the vendor emitting the event */
-        string vendorName;
+        public string vendorName;
         /** Vendor-provided event typedef */
-        string eventType;
+        public string eventType;
         /** Vendor-provided event data. {} if event does not provide any data */
-        object eventData;
+        public object eventData;
     }
+#pragma warning restore CS8618
 }

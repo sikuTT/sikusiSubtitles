@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * The current profile has begun changing.
 
@@ -6,6 +7,7 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class CurrentProfileChanging : EventData {
         /** Name of the current profile */
-        string profileName;
+        public string profileName;
     }
+#pragma warning restore CS8618
 }

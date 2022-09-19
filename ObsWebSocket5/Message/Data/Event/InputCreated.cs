@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * An input has been created.
 
@@ -6,14 +7,15 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class InputCreated : EventData {
         /** Name of the input */
-        string inputName;
+        public string inputName;
         /** The kind of the input */
-        string inputKind;
+        public string inputKind;
         /** The unversioned kind of input (aka no `_v2` stuff) */
-        string unversionedInputKind;
+        public string unversionedInputKind;
         /** The settings configured to the input when it was created */
-        object inputSettings;
+        public object inputSettings;
         /** The default settings for the input */
-        object defaultInputSettings;
+        public object defaultInputSettings;
     }
+#pragma warning restore CS8618
 }

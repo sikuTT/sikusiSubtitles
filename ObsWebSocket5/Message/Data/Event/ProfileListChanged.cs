@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * The profile list has changed.
 
@@ -6,6 +7,7 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class ProfileListChanged : EventData {
         /** Updated list of profiles */
-        string[] profiles;
+        public string[] profiles;
     }
+#pragma warning restore CS8618
 }

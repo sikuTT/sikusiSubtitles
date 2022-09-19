@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * The audio tracks of an input have changed.
 
@@ -6,8 +7,9 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class InputAudioTracksChanged : EventData {
         /** Name of the input */
-        string inputName;
+        public string inputName;
         /** Object of audio tracks along with their associated enable states */
-        object inputAudioTracks;
+        public object inputAudioTracks;
     }
+#pragma warning restore CS8618
 }

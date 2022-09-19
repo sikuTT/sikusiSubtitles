@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * Studio mode has been enabled or disabled.
 
@@ -6,6 +7,7 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class StudioModeStateChanged : EventData {
         /** True == Enabled, False == Disabled */
-        bool studioModeEnabled;
+        public bool studioModeEnabled;
     }
+#pragma warning restore CS8618
 }

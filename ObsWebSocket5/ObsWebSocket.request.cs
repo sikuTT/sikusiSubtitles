@@ -208,8 +208,12 @@ namespace ObsWebSocket5 {
             var responseData = await SendRequestAsync<GetInputSettingsResponse>(requestData);
             var obj = responseData?.d?.responseData?.inputSettings as JObject;
             if (obj != null) {
+                InputSettings? inputSettings = null;
                 if (responseData?.d?.responseData?.inputKind == "text_gdiplus_v2") {
-                    responseData.d.responseData.inputSettings = obj.ToObject<TextGdiplusV2>();
+                    inputSettings = obj.ToObject<TextGdiplusV2>();
+                }
+                if (inputSettings != null) {
+                    responseData.d.responseData.inputSettings = inputSettings;
                 }
             }
             return GetResponseOrThrow(responseData);

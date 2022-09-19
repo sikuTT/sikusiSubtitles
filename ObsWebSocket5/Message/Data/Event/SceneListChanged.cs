@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * The list of scenes has changed.
      * 
@@ -8,6 +9,7 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class SceneListChanged : EventData {
         /** Updated array of scenes */
-        object[] scenes;
+        public object[] scenes;
     }
+#pragma warning restore CS8618
 }

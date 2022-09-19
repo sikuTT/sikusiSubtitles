@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * The transform/crop of a scene item has changed.
 
@@ -6,10 +7,11 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class SceneItemTransformChanged : EventData {
         /** The name of the scene the item is in */
-        string sceneName;
+        public string sceneName;
         /** Numeric ID of the scene item */
-        long sceneItemId;
+        public long sceneItemId;
         /** New transform/crop info of the scene item */
-        object sceneItemTransform;
+        public object sceneItemTransform;
     }
+#pragma warning restore CS8618
 }

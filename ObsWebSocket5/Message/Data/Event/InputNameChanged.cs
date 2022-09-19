@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * The name of an input has changed.
 
@@ -6,8 +7,9 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class InputNameChanged : EventData {
         /** Old name of the input */
-        string oldInputName;
+        public string oldInputName;
         /** New name of the input */
-        string inputName;
+        public string inputName;
     }
+#pragma warning restore CS8618
 }

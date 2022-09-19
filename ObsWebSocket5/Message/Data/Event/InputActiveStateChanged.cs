@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * An input's active state has changed.
      * 
@@ -8,8 +9,9 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class InputActiveStateChanged : EventData {
         /** Name of the input */
-        string inputName;
+        public string inputName;
         /** Whether the input is active */
-        bool videoActive;
+        public bool videoActive;
     }
+#pragma warning restore CS8618
 }

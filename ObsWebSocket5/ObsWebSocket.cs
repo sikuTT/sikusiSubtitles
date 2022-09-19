@@ -31,7 +31,10 @@ namespace ObsWebSocket5 {
                 this.eventSubscriptions = eventSubscriptions;
                 await webSocket.ConnectAsync(new Uri(uri), CancellationToken.None);
                 await RecvHelloAsync();
-                Task.Run(() => ReceiveMessage());
+#pragma warning disable CS4014 // この呼び出しは待機されなかったため、現在のメソッドの実行は呼び出しの完了を待たずに続行されます
+                ReceiveMessage();
+                // Task.Run(async () => await ReceiveMessage());
+#pragma warning restore CS4014 // この呼び出しは待機されなかったため、現在のメソッドの実行は呼び出しの完了を待たずに続行されます
             } catch (Exception) {
                 if (webSocket != null) {
                     webSocket.Dispose();
@@ -48,24 +51,26 @@ namespace ObsWebSocket5 {
 
         async public Task CloseAsync() {
             if (webSocket != null) {
-                await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, null, CancellationToken.None);
-                webSocket.Dispose();
-                webSocket = null;
+                if (webSocket.State == WebSocketState.Open) {
+                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, null, CancellationToken.None);
+                    webSocket.Dispose();
+                    webSocket = null;
+                }
                 return;
             } else {
                 return;
             }
         }
 
-        private T GetResponseOrThrow<T>(RequestResponse<T>? responseData) where T : ResponseData, new() {
-            if (responseData?.d?.requestStatus.code == RequestStatus.Success) {
-                if (responseData?.d?.responseData != null) {
-                    return responseData.d.responseData;
+        private T GetResponseOrThrow<T>(RequestResponse<T>? response) where T : ResponseData, new() {
+            if (response?.d?.requestStatus.code == RequestStatus.Success) {
+                if (response?.d?.responseData != null) {
+                    return response.d.responseData;
                 } else {
                     return new T();
                 }
             } else {
-                throw new ResponseException(responseData?.d?.requestStatus.code, responseData?.d?.requestStatus.comment);
+                throw new ResponseException(response?.d?.requestStatus.code, response?.d?.requestStatus.comment);
             }
         }
 
@@ -79,7 +84,10 @@ namespace ObsWebSocket5 {
                         if ((int)op == (int)WebSocketOpCode.Event) {
                             var data = recvData.Data.ToObject<Event>();
                             if (data != null) {
-                                EventReceived?.Invoke(this, data.d);
+                                var d = CreateEventData(data);
+                                if (d != null) {
+                                    EventReceived?.Invoke(this, d);
+                                }
                             }
                         } else if ((int)op == (int)WebSocketOpCode.RequestResponse) {
                             var responseData = recvData.Data.ToObject<RequestResponse<JObject>>();

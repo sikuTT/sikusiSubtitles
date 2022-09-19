@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * The state of the virtualcam output has changed.
 
@@ -6,8 +7,9 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class VirtualcamStateChanged : EventData {
         /** Whether the output is active */
-        bool outputActive;
+        public bool outputActive;
         /** The specific state of the output */
-        string outputState;
+        public string outputState;
     }
+#pragma warning restore CS8618
 }

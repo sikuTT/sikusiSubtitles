@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * The audio balance value of an input has changed.
 
@@ -6,8 +7,9 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class InputAudioBalanceChanged : EventData {
         /** Name of the affected input */
-        string inputName;
+        public string inputName;
         /** New audio balance value of the input */
-        long inputAudioBalance;
+        public long inputAudioBalance;
     }
+#pragma warning restore CS8618
 }

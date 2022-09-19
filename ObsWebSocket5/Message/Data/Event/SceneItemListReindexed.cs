@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * A scene's item list has been reindexed.
 
@@ -6,8 +7,9 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class SceneItemListReindexed : EventData {
         /** Name of the scene */
-        string sceneName;
+        public string sceneName;
         /** Array of scene item objects */
-        object[] sceneItems;
+        public object[] sceneItems;
     }
+#pragma warning restore CS8618
 }

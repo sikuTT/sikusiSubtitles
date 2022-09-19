@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * The sync offset of an input has changed.
 
@@ -6,8 +7,9 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class InputAudioSyncOffsetChanged : EventData {
         /** Name of the input */
-        string inputName;
+        public string inputName;
         /** New sync offset in milliseconds */
-        long inputAudioSyncOffset;
+        public long inputAudioSyncOffset;
     }
+#pragma warning restore CS8618
 }

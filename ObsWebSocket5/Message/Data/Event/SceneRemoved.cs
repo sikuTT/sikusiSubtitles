@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * A scene has been removed.
 
@@ -6,8 +7,9 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class SceneRemoved : EventData {
         /** Name of the removed scene */
-        string sceneName;
+        public string sceneName;
         /** Whether the scene was a group */
-        bool isGroup;
+        public bool isGroup;
     }
+#pragma warning restore CS8618
 }

@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * A source's filter list has been reindexed.
 
@@ -6,8 +7,9 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class SourceFilterListReindexed : EventData {
         /** Name of the source */
-        string sourceName;
+        public string sourceName;
         /** Array of filter objects */
-        object[] filters;
+        public object[] filters;
     }
+#pragma warning restore CS8618
 }

@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * A scene item's enable state has changed.
 
@@ -6,10 +7,11 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class SceneItemEnableStateChanged : EventData {
         /** Name of the scene the item is in */
-        string sceneName;
+        public string sceneName;
         /** Numeric ID of the scene item */
-        long sceneItemId;
+        public long sceneItemId;
         /** Whether the scene item is enabled (visible) */
-        bool sceneItemEnabled;
+        public bool sceneItemEnabled;
     }
+#pragma warning restore CS8618
 }

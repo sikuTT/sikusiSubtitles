@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * The name of a scene has changed.
 
@@ -6,8 +7,9 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class SceneNameChanged : EventData {
         /** Old name of the scene */
-        string oldSceneName;
+        public string oldSceneName;
         /** New name of the scene */
-        string sceneName;
+        public string sceneName;
     }
+#pragma warning restore CS8618
 }

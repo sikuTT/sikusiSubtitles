@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * A scene item has been created.
 
@@ -6,12 +7,13 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class SceneItemCreated : EventData {
         /** Name of the scene the item was added to */
-        string sceneName;
+        public string sceneName;
         /** Name of the underlying source (input/scene) */
-        string sourceName;
+        public string sourceName;
         /** Numeric ID of the scene item */
-        long sceneItemId;
+        public long sceneItemId;
         /** Index position of the item */
-        long sceneItemIndex;
+        public long sceneItemIndex;
     }
+#pragma warning restore CS8618
 }

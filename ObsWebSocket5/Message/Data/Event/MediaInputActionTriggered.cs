@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * An action has been performed on an input.
 
@@ -6,8 +7,9 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class MediaInputActionTriggered : EventData {
         /** Name of the input */
-        string inputName;
+        public string inputName;
         /** Action performed on the input. See `ObsMediaInputAction` enum */
-        string mediaAction;
+        public string mediaAction;
     }
+#pragma warning restore CS8618
 }

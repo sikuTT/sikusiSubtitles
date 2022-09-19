@@ -1,4 +1,5 @@
 namespace ObsWebSocket5.Message.Data.Event {
+#pragma warning disable CS8618
     /**
      * A scene transition's video has completed fully.
      * 
@@ -11,6 +12,7 @@ namespace ObsWebSocket5.Message.Data.Event {
      */
     public class SceneTransitionVideoEnded : EventData {
         /** Scene transition name */
-        string transitionName;
+        public string transitionName;
     }
+#pragma warning restore CS8618
 }

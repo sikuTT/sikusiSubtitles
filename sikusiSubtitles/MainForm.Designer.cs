@@ -104,7 +104,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(52, 15);
             this.label1.TabIndex = 6;
-            this.label1.Text = "Ver. 0.3.4";
+            this.label1.Text = "Ver. 0.3.5";
             // 
             // MainForm
             // 

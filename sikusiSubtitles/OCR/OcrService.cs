@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.OCR {
     public abstract class OcrService : sikusiSubtitles.Service {
-        public event EventHandler<OcrResult>? OcrFinished;
-
         public OcrService(ServiceManager serviceManager, string name, string displayName, int index) : base(serviceManager, OcrServiceManager.ServiceName, name, displayName, index) {
         }
 
@@ -28,10 +26,6 @@ namespace sikusiSubtitles.OCR {
         protected string RemoveLineBreak(string text) {
             text = text.Replace("\r\n", " ").Replace("\r", " ").Replace("\n", " ");
             return text;
-        }
-
-        protected void InvokeOcrFinished(OcrResult result) {
-            this.OcrFinished?.Invoke(this, result);
         }
     }
 }

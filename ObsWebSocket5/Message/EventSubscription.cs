@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ObsWebSocket5.Message {
+namespace ObsWebSocket5 {
+    [Flags]
     public enum EventSubscription {
         None = 0,
         General = (1 << 0),

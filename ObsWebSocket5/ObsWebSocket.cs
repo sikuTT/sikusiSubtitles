@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ObsWebSocket5.Message;
-using ObsWebSocket5.Message.Data;
-using ObsWebSocket5.Message.Data.Response.InputSettings;
+using ObsWebSocket5.Message.Data.Request;
 using System.Diagnostics;
 using System.Net.WebSockets;
 using System.Security.Cryptography;
@@ -14,21 +13,28 @@ namespace ObsWebSocket5 {
         public JObject? Data { get; set; }
     }
 
-    public class ObsWebSocket {
+    public partial class ObsWebSocket {
         SemaphoreSlim recvSemaphore = new SemaphoreSlim(1, 1);
         Dictionary<string, JObject> receiveDataList = new Dictionary<string, JObject>();
 
         ClientWebSocket? webSocket;
         string? password;
+        EventSubscription eventSubscriptions = EventSubscription.None;
+
+        public event EventHandler<Event.D>? EventReceived;
 
         public bool IsConnected { get { return webSocket != null && webSocket.State ==WebSocketState.Open; } }
 
-        async public Task ConnectAsync(string uri) {
-            webSocket = new ClientWebSocket();
+        async public Task ConnectAsync(string uri, EventSubscription eventSubscriptions = EventSubscription.None) {
             try {
+                webSocket = new ClientWebSocket();
+                this.eventSubscriptions = eventSubscriptions;
                 await webSocket.ConnectAsync(new Uri(uri), CancellationToken.None);
                 await RecvHelloAsync();
-                Task.Run(() => ReceiveMessage());
+#pragma warning disable CS4014 // この呼び出しは待機されなかったため、現在のメソッドの実行は呼び出しの完了を待たずに続行されます
+                ReceiveMessage();
+                // Task.Run(async () => await ReceiveMessage());
+#pragma warning restore CS4014 // この呼び出しは待機されなかったため、現在のメソッドの実行は呼び出しの完了を待たずに続行されます
             } catch (Exception) {
                 if (webSocket != null) {
                     webSocket.Dispose();
@@ -38,76 +44,34 @@ namespace ObsWebSocket5 {
             }
         }
 
-        async public Task ConnectAsync(string uri, string password) {
+        async public Task ConnectAsync(string uri, string password, EventSubscription eventSubscriptions = EventSubscription.None) {
             this.password = password;
-            await ConnectAsync(uri);
+            await ConnectAsync(uri, eventSubscriptions);
         }
 
         async public Task CloseAsync() {
             if (webSocket != null) {
-                await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, null, CancellationToken.None);
-                webSocket.Dispose();
-                webSocket = null;
+                if (webSocket.State == WebSocketState.Open) {
+                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, null, CancellationToken.None);
+                    webSocket.Dispose();
+                    webSocket = null;
+                }
                 return;
             } else {
                 return;
             }
         }
 
-        async public Task<RequestResponse<GetSceneListResponse>?> GetSceneListAsync() {
-            var requestData = new GetSceneListRequest();
-            var responseData = await SendRequestAsync<GetSceneListResponse>(requestData);
-            return responseData;
-        }
-
-        async public Task<RequestResponse<GetGroupSceneItemListResponse>?> GetGroupSceneItemListAsync(string sceneName) {
-            var requestData = new GetGroupSceneItemListRequest() { sceneName = sceneName };
-            var responseData = await SendRequestAsync<GetGroupSceneItemListResponse>(requestData);
-            return responseData;
-        }
-
-        async public Task<RequestResponse<GetSceneItemListResponse>?> GetSceneItemListAsync(string sceneName) {
-            var requestData = new GetSceneItemListRequest() { sceneName = sceneName };
-            return await SendRequestAsync<GetSceneItemListResponse>(requestData);
-        }
-
-        async public Task<RequestResponse<GetInputDefaultSettingsResponse>?> GetInputDefaultSettingsAsync(string inputKind) {
-            var requestData = new GetInputDefaultSettingsRequest() { inputKind = inputKind };
-            var responseData = await SendRequestAsync<GetInputDefaultSettingsResponse>(requestData);
-            if (responseData?.d?.responseData != null) {
-                var settings = responseData.d.responseData.defaultInputSettings as JObject;
-                if (settings != null) {
-                    if (inputKind == "text_gdiplus_v2") {
-                        var data = settings.ToObject<TextGdiplusV2>();
-                        if (data != null) {
-                            responseData.d.responseData.defaultInputSettings = data;
-                        }
-                    }
+        private T GetResponseOrThrow<T>(RequestResponse<T>? response) where T : ResponseData, new() {
+            if (response?.d?.requestStatus.code == RequestStatus.Success) {
+                if (response?.d?.responseData != null) {
+                    return response.d.responseData;
+                } else {
+                    return new T();
                 }
+            } else {
+                throw new ResponseException(response?.d?.requestStatus.code, response?.d?.requestStatus.comment);
             }
-            return responseData;
-        }
-
-        async public Task<RequestResponse<GetInputSettingsResponse>?> GetInputSettingsAsync(string inputName) {
-            var requestData = new GetInputSettingsRequest() { inputName = inputName };
-            var responseData = await SendRequestAsync<GetInputSettingsResponse>(requestData);
-            if (responseData?.d?.responseData != null) {
-                var settings = responseData.d.responseData.inputSettings as JObject;
-                if (settings != null) {
-                    if (responseData.d.responseData.inputKind == "text_gdiplus_v2") {
-                        var data = settings.ToObject<TextGdiplusV2>();
-                        if (data != null) {
-                            responseData.d.responseData.inputSettings = data;
-                        }
-                    }
-                }
-            }
-            return responseData;
-        }
-
-        async public Task<RequestResponse<ResponseData>?> SetInputSettingsAsync(string inputName, TextGdiplusV2 settings) {
-            var requestData = new SetInputSettingsRequest() { inputName = inputName, inputSettings = settings };
-            return await SendRequestAsync<ResponseData>(requestData);
         }
 
         /** OBSからのメッセージを待つ */
@@ -118,6 +82,13 @@ namespace ObsWebSocket5 {
                     var op = recvData.Data["op"];
                     if (op != null) {
                         if ((int)op == (int)WebSocketOpCode.Event) {
+                            var data = recvData.Data.ToObject<Event>();
+                            if (data != null) {
+                                var d = CreateEventData(data);
+                                if (d != null) {
+                                    EventReceived?.Invoke(this, d);
+                                }
+                            }
                         } else if ((int)op == (int)WebSocketOpCode.RequestResponse) {
                             var responseData = recvData.Data.ToObject<RequestResponse<JObject>>();
                             if (responseData != null) {
@@ -148,7 +119,11 @@ namespace ObsWebSocket5 {
                 switch (data.Result.MessageType) {
                     case WebSocketMessageType.Close:
                         await CloseAsync();
-                        return data;
+                        WebSocketCloseCode? code = null;
+                        if (data.Result.CloseStatus != null) {
+                            code = (WebSocketCloseCode)data.Result.CloseStatus;
+                        }
+                        throw new WebSocketClosedException(code, data.Result.CloseStatusDescription);
                     case WebSocketMessageType.Binary:
                         await CloseAsync();
                         return data;
@@ -230,7 +205,7 @@ namespace ObsWebSocket5 {
                     string base64Secret = Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(password + hello.d.authentication.salt)));
                     identity.d.authentication = Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(base64Secret + hello.d.authentication.challenge)));
                 }
-                // identity.d.eventSubscriptions = (int)Message.EventSubscription.All;
+                identity.d.eventSubscriptions = (int)this.eventSubscriptions;
                 await SendAsync(identity);
             }
         }
@@ -239,13 +214,7 @@ namespace ObsWebSocket5 {
         async private Task RecvIdentifiedAsync() {
             if (webSocket != null) {
                 var data = await ReceiveAsync();
-                if (data?.Data != null) {
-                    return;
-                } else {
-                    throw new AuthenticationFailedException();
-                }
             }
-            throw new WebSocketException();
         }
     }
 }

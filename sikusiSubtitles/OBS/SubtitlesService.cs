@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using ObsWebSocket5.Message.Data.Response.InputSettings;
+using ObsWebSocket5.Message.Data.InputSettings;
 using sikusiSubtitles.SpeechRecognition;
 using sikusiSubtitles.Translation;
 using System;
@@ -88,7 +88,7 @@ namespace sikusiSubtitles.OBS {
                     this.speechRecognitionService.Recognized += Recognized;
 
                     var translationServices = this.ServiceManager.GetServices<TranslationService>();
-                    this.translationService = translationServices.Where(service => service.Name == TranslationEngine).First();
+                    this.translationService = translationServices.Where(service => service.Name == TranslationEngine).FirstOrDefault();
 
                     return true;
                 }
@@ -112,7 +112,7 @@ namespace sikusiSubtitles.OBS {
                 if (obsService.IsConnected) {
                     var obsSocket = this.obsService.ObsSocket;
                     var response = await obsSocket.GetInputSettingsAsync(sourceName);
-                    var settings = response?.d?.responseData?.inputSettings as TextGdiplusV2;
+                    var settings = response.inputSettings as TextGdiplusV2;
                     if (settings != null) {
                         settings.text = text;
                         await obsSocket.SetInputSettingsAsync(sourceName, settings);

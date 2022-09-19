@@ -39,31 +39,23 @@ class Recognizer {
         this.recognition.onaudioend = (e) => {
             console.log('onaudioend', e);
         }
-
-        this.recognition.onsoundstart = (e) => {
-            console.log('onsoundstart', e);
-        }
-
-        this.recognition.onsoundend = (e) => {
-            console.log('onsoundend', e);
-        }
-
-        this.recognition.onspeechstart = (e) => {
-            console.log('onspeechstart', e);
-        }
-
-        this.recognition.onspeechend = (e) => {
-            console.log('onspeechend', e);
-        }
         */
 
         this.recognition.onresult = (e) => {
             console.log('Recognizer.onresult', e);
-            console.log(e.results[0][0].transcript);
-            console.log(e.results[0].isFinal.toString());
+            console.log('length = ', e.results.length);
+            var text = '';
+            var isFinal = true;
+            for (const result of e.results) {
+                text += result[0].transcript;
+                if (result.isFinal === false)
+                    isFinal = false;
+            }
+            console.log(text);
+            console.log(isFinal);
             const elem = document.getElementById('result');
-            elem.innerText = e.results[0][0].transcript;
-            elem.setAttribute('data-is-final', e.results[0].isFinal.toString());
+            elem.innerText = text;
+            elem.setAttribute('data-is-final', isFinal.toString());
         }
 
         /*
@@ -75,6 +67,22 @@ class Recognizer {
             console.log('onerror', e);
         }
         */
+        this.recognition.onerror = (e) => {
+            console.log('Recognizer.onerror', e);
+        }
+
+        this.recognition.onsoundstart = (e) => {
+            console.log('Recognizer.onsoundstart', e);
+        }
+        this.recognition.onsoundend = (e) => {
+            console.log('Recognizer.onsoundend', e);
+        }
+        this.recognition.onspeechstart = (e) => {
+            console.log('Recognizer.onspeechstart', e);
+        }
+        this.recognition.onspeechend = (e) => {
+            console.log('Recognizer.onspeechend', e);
+        }
     }
 
     start() {

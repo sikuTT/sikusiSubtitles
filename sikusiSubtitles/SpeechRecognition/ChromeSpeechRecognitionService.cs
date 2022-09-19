@@ -75,6 +75,7 @@ namespace sikusiSubtitles.SpeechRecognition {
                     var temp = ChromeDriver;
                     if (this.ChromeDriver != null) {
                         ChromeDriver.Quit();
+                        ChromeDriver.Dispose();
                         if (temp == ChromeDriver) {
                             ChromeDriver = null;
                         }
@@ -191,6 +192,10 @@ namespace sikusiSubtitles.SpeechRecognition {
                 options.AddArgument("--no-sandbox");
                 options.AddExcludedArgument("enable-automation");
                 // options.AddAdditionalCapability("useAutomationExtension", false);
+                
+                var local = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                local += @"\sikusiku\sikusiSubtitles\ChromeProfile";
+                options.AddArgument($"--user-data-dir={local}");
 
                 this.ChromeDriver = new ChromeDriver(service, options);
                 this.ChromeDriver.Navigate().GoToUrl(url);

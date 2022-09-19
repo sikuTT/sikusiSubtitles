@@ -32,8 +32,8 @@ namespace ObsWebSocket5 {
                 await webSocket.ConnectAsync(new Uri(uri), CancellationToken.None);
                 await RecvHelloAsync();
 #pragma warning disable CS4014 // この呼び出しは待機されなかったため、現在のメソッドの実行は呼び出しの完了を待たずに続行されます
-                ReceiveMessage();
-                // Task.Run(async () => await ReceiveMessage());
+                // ReceiveMessage();
+                Task.Run(async () => await ReceiveMessage());
 #pragma warning restore CS4014 // この呼び出しは待機されなかったため、現在のメソッドの実行は呼び出しの完了を待たずに続行されます
             } catch (Exception) {
                 if (webSocket != null) {

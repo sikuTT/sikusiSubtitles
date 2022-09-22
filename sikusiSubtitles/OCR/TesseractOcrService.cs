@@ -36,11 +36,11 @@ namespace sikusiSubtitles.OCR {
             return langs;
         }
 
-        public async override Task<string?> ExecuteAsync(Bitmap bitmap, string language) {
+        public async override Task<OcrResult> ExecuteAsync(Bitmap bitmap, string language) {
             var path = GetDataPath();
             if (path == null) {
                 MessageBox.Show("言語データが取得できません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return null;
+                return new OcrResult() { Error = "言語データが取得できません。" };
             }
 
             try {
@@ -56,12 +56,13 @@ namespace sikusiSubtitles.OCR {
                 Debug.WriteLine("TesseractOcrService: " + page?.GetText());
                 if (page != null) {
                     string text = RemoveLineBreak(page.GetText());
-                    return text;
+                    return new OcrResult() { Text = text };
                 }
             } catch (Exception ex) {
                 Debug.WriteLine("TesseractOcrService.Execute: " + ex.Message);
+                return new OcrResult() { Error = ex.Message };
             }
-            return null;
+            return new OcrResult() { Error = "文字が取得できません" };
         }
 
         private Pix BitmapToImage(Bitmap bitmap) {

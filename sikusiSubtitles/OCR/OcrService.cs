@@ -11,7 +11,7 @@ namespace sikusiSubtitles.OCR {
 
         public abstract List<Tuple<string, string>> GetLanguages();
 
-        public abstract Task<string?> ExecuteAsync(Bitmap bitmap, string language);
+        public abstract Task<OcrResult> ExecuteAsync(Bitmap bitmap, string language);
 
         protected string ConcatString(string text1, string text2) {
             if (text1.Length > 0) {

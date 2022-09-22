@@ -31,7 +31,7 @@ namespace sikusiSubtitles.OCR {
             return this.languages;
         }
 
-        public async override Task<string?> ExecuteAsync(Bitmap bitmap, string language) {
+        public async override Task<OcrResult> ExecuteAsync(Bitmap bitmap, string language) {
             try {
                 ComputerVisionClient client = new ComputerVisionClient(new ApiKeyServiceClientCredentials(Key)) { Endpoint = this.Endpoint };
 
@@ -48,7 +48,7 @@ namespace sikusiSubtitles.OCR {
                 if (strList.Length > 0) {
                     operationId = strList.Last();
                 } else {
-                    return null;
+                    return new OcrResult() { Error = "OperationIDが取得できません" };
                 }
 
                 // 処理結果を取得
@@ -70,13 +70,12 @@ namespace sikusiSubtitles.OCR {
                         }
                     }
                 }
-                return resultString;
+
+                return new OcrResult() { Text = resultString };
             } catch (Exception ex) {
                 Debug.WriteLine("AzureOcrService: " + ex.Message);
+                return new OcrResult() { Error = ex.Message };
             }
-            Debug.WriteLine("End");
-
-            return null;
         }
 
         List<Tuple<string, string>> languages = new List<Tuple<string, string>>() {

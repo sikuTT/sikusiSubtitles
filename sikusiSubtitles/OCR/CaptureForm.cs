@@ -16,13 +16,15 @@ namespace sikusiSubtitles.OCR {
         private Bitmap? adjustBitmap;
         private Point? dragStart;
         private Point? dragEnd;
+        private Rectangle? captureArea;
 
         public event EventHandler<Rectangle>? AreaSelected;
 
-        public CaptureForm(IntPtr handle) {
+        public CaptureForm(IntPtr handle, Rectangle? captureArea) {
             InitializeComponent();
 
             this.FormBorderStyle = FormBorderStyle.None;
+            this.captureArea = captureArea;
             ScreenCapture(handle);
         }
 
@@ -30,13 +32,15 @@ namespace sikusiSubtitles.OCR {
             Graphics g = e.Graphics;
             if (adjustBitmap != null) {
                 g.DrawImage(adjustBitmap, new Rectangle(0, 0, adjustBitmap.Width, adjustBitmap.Height), 0, 0, adjustBitmap.Width, adjustBitmap.Height, GraphicsUnit.Pixel);
-                if (dragStart != null && dragEnd != null && originalBitmap != null) {
-                    var x = ((Point)dragStart).X;
-                    var y = ((Point)dragStart).Y;
-                    var width = ((Point)dragEnd).X - ((Point)dragStart).X;
-                    var height = ((Point)dragEnd).Y - ((Point)dragStart).Y;
-                    g.DrawImage(originalBitmap, new Rectangle(x, y, width, height), x, y, width, height, GraphicsUnit.Pixel);
+                if (dragStart != null && dragEnd != null) {
+                    CreateCaptureArea();
                 }
+
+                if (originalBitmap != null && captureArea != null) {
+                    g.DrawImage(originalBitmap, (Rectangle)captureArea, (Rectangle)captureArea, GraphicsUnit.Pixel);
+                    g.DrawRectangle(new Pen(Color.LimeGreen, 3), (Rectangle)captureArea);
+                }
+
             }
         }
 
@@ -51,10 +55,10 @@ namespace sikusiSubtitles.OCR {
             Refresh();
 
             if (this.dragStart != null && this.dragEnd != null) {
-                var width = ((Point)dragEnd).X - ((Point)dragStart).X;
-                var height = ((Point)dragEnd).Y - ((Point)dragStart).Y;
-                Rectangle rect = new Rectangle(((Point)this.dragStart).X, ((Point)this.dragStart).Y, width, height);
-                this.AreaSelected?.Invoke(this, rect);
+                CreateCaptureArea();
+                if (captureArea != null) {
+                    this.AreaSelected?.Invoke(this, (Rectangle)captureArea);
+                }
             }
             this.dragStart = this.dragEnd = null;
             Close();
@@ -110,6 +114,18 @@ namespace sikusiSubtitles.OCR {
                 g.DrawImage(img, new Rectangle(0, 0, img.Width, img.Height), 0, 0, img.Width, img.Height, GraphicsUnit.Pixel, ia);
             }
             return bmp;
+        }
+
+        private void CreateCaptureArea() {
+            if (dragStart != null && dragEnd != null) {
+                var x1 = Math.Min(((Point)dragStart).X, ((Point)dragEnd).X);
+                var y1 = Math.Min(((Point)dragStart).Y, ((Point)dragEnd).Y);
+                var x2 = Math.Max(((Point)dragStart).X, ((Point)dragEnd).X);
+                var y2 = Math.Max(((Point)dragStart).Y, ((Point)dragEnd).Y);
+                var width = x2 - x1;
+                var height = y2 - y1;
+                this.captureArea = new Rectangle(x1, y1, width, height);
+            }
         }
     }
 }

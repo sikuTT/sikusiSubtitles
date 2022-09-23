@@ -1,6 +1,7 @@
 using sikusiSubtitles.OBS;
 using sikusiSubtitles.OCR;
 using sikusiSubtitles.Shortcut;
+using sikusiSubtitles.Speech;
 using sikusiSubtitles.SpeechRecognition;
 using sikusiSubtitles.Translation;
 using System.Diagnostics;
@@ -82,11 +83,7 @@ namespace sikusiSubtitles {
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e) {
-            foreach (var control in this.splitContainer1.Panel2.Controls) {
-                var page = control as SettingPage;
-                if (page != null) page.Unload();
-            }
-            this.serviceManager.Save();
+            this.serviceManager.Finish();
             Properties.Settings.Default.Save();
         }
 
@@ -104,7 +101,7 @@ namespace sikusiSubtitles {
         private bool SelectNode(TreeNode node) {
             if (node != null) {
                 var controls = this.splitContainer1.Panel2.Controls.Find(node.Name, false);
-                var page = controls.Length > 0 ? controls[0] as SettingPage : null;
+                var page = controls.Length > 0 ? controls[0] as UserControl : null;
                 if (page != null) {
                     this.ShowChildPage(page);
                     return true;

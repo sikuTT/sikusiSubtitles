@@ -9,10 +9,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace sikusiSubtitles.OCR {
-    public partial class AzureOcrPage : SettingPage {
+    public partial class AzureOcrPage : UserControl {
+        ServiceManager serviceManager;
         AzureOcrService service;
 
-        public AzureOcrPage(ServiceManager serviceManager, AzureOcrService service) : base(serviceManager) {
+        public AzureOcrPage(ServiceManager serviceManager, AzureOcrService service) {
+            this.serviceManager = serviceManager;
             this.service = service;
 
             InitializeComponent();

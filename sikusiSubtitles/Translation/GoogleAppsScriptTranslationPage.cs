@@ -11,11 +11,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace sikusiSubtitles.Translation {
-    public partial class GoogleAppsScriptTranslationPage : SettingPage {
+    public partial class GoogleAppsScriptTranslationPage : UserControl {
+        ServiceManager serviceManager;
         GoogleAppsScriptTranslationService service;
         List<Tuple<string, string>> languages = new GoogleTranslationLanguages().Languages;
 
-        public GoogleAppsScriptTranslationPage(ServiceManager serviceManager, GoogleAppsScriptTranslationService service) : base(serviceManager) {
+        public GoogleAppsScriptTranslationPage(ServiceManager serviceManager, GoogleAppsScriptTranslationService service) {
+            this.serviceManager = serviceManager;
             this.service = service;
 
             InitializeComponent();

@@ -2,12 +2,14 @@
 using System.Diagnostics;
 
 namespace sikusiSubtitles.OCR {
-    public partial class OcrPage : SettingPage {
+    public partial class OcrPage : UserControl {
+        private ServiceManager serviceManager;
         private OcrServiceManager ocrManager;
         private List<int> processIdList = new List<int>();
         private int selectedProcessId = 0;
 
-        public OcrPage(ServiceManager serviceManager, OcrServiceManager service) : base(serviceManager) {
+        public OcrPage(ServiceManager serviceManager, OcrServiceManager service) {
+            this.serviceManager = serviceManager;
             this.ocrManager = service;
 
             InitializeComponent();

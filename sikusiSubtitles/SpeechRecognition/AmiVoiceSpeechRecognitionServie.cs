@@ -18,6 +18,10 @@ namespace sikusiSubtitles.SpeechRecognition {
         public string? Key { get; set; }
         public bool? Log { get; set; }
 
+        public override List<Tuple<string, string>> GetLanguages() {
+            return engines;
+        }
+
         public AmiVoiceSpeechRecognitionServie(ServiceManager serviceManager) : base(serviceManager, "AmiVoice", "AmiVoice", 300) {
             SettingPage = new AmiVoiceSpeechRecognitionPage(serviceManager, this);
         }
@@ -30,10 +34,6 @@ namespace sikusiSubtitles.SpeechRecognition {
         public override void Save() {
             Properties.Settings.Default.AmiVoiceKey = Encrypt(Key ?? "");
             Properties.Settings.Default.AmiVoiceLog = Log ?? true;
-        }
-
-        public override List<Tuple<string, string>> GetLanguages() {
-            return engines;
         }
 
         public override bool Start() {
@@ -101,6 +101,7 @@ namespace sikusiSubtitles.SpeechRecognition {
                         MicCapture.StopRecording();
                     }
                     MicCapture.DataAvailable -= MicDataAvailable;
+                    MicCapture = null;
                 }
             } catch (Exception ex) {
                 Debug.WriteLine(ex.Message);

@@ -10,12 +10,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace sikusiSubtitles.OBS {
-    public partial class SubtitlesPage : SettingPage {
+    public partial class SubtitlesPage : UserControl {
+        private ServiceManager serviceManager;
         private SubtitlesService service;
         private List<TranslationService> translationServices = new List<TranslationService>();
         private TranslationService? translationService;
 
-        public SubtitlesPage(ServiceManager serviceManager, SubtitlesService service) : base(serviceManager) {
+        public SubtitlesPage(ServiceManager serviceManager, SubtitlesService service) {
+            this.serviceManager = serviceManager;
             this.service = service;
 
             InitializeComponent();

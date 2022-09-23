@@ -10,10 +10,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace sikusiSubtitles.Translation {
-    public partial class DeepLTranslationPage : SettingPage {
+    public partial class DeepLTranslationPage : UserControl {
+        private ServiceManager serviceManager;
         private DeepLTranslationService service;
 
-        public DeepLTranslationPage(ServiceManager serviceManager, DeepLTranslationService service) : base (serviceManager) {
+        public DeepLTranslationPage(ServiceManager serviceManager, DeepLTranslationService service) {
+            this.serviceManager = serviceManager;
             this.service = service;
 
             InitializeComponent();

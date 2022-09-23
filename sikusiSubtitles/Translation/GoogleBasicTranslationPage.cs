@@ -13,10 +13,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace sikusiSubtitles.Translation {
-    public partial class GoogleBasicTranslationPage : SettingPage {
+    public partial class GoogleBasicTranslationPage : UserControl {
+        private ServiceManager serviceManager;
         private GoogleBasicTranslationService service;
 
-        public GoogleBasicTranslationPage(ServiceManager serviceManager, GoogleBasicTranslationService service) : base(serviceManager) {
+        public GoogleBasicTranslationPage(ServiceManager serviceManager, GoogleBasicTranslationService service) {
+            this.serviceManager = serviceManager;
             this.service = service;
 
             InitializeComponent();

@@ -11,10 +11,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace sikusiSubtitles.OCR {
-    public partial class TesseractOcrPage : SettingPage {
+    public partial class TesseractOcrPage : UserControl {
+        ServiceManager serviceManager;
         TesseractOcrService service;
 
-        public TesseractOcrPage(ServiceManager serviceManager, TesseractOcrService service) : base(serviceManager) {
+        public TesseractOcrPage(ServiceManager serviceManager, TesseractOcrService service) {
+            this.serviceManager = serviceManager;
             this.service = service;
 
             InitializeComponent();

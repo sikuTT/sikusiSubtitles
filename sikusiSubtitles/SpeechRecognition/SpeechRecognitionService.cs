@@ -8,6 +8,10 @@
         public SpeechRecognitionService(ServiceManager serviceManager, string name, string displayName, int index) : base(serviceManager, SpeechRecognitionServiceManager.ServiceName, name, displayName, index) {
         }
 
+        public override void Finish() {
+            Stop();
+        }
+
         public abstract bool Start();
         public abstract void Stop();
 

@@ -2,7 +2,8 @@
 using System.Diagnostics;
 
 namespace sikusiSubtitles.OCR {
-    public partial class OcrPage : SettingPage {
+    public partial class OcrPage : UserControl {
+        private ServiceManager serviceManager;
         private OcrServiceManager ocrManager;
         private List<OcrService> ocrServices = new List<OcrService>();
         private List<TranslationService> translationServices = new List<TranslationService>();
@@ -11,7 +12,8 @@ namespace sikusiSubtitles.OCR {
         private int selectedProcessId = 0;
         private Rectangle? captureArea;
 
-        public OcrPage(ServiceManager serviceManager, OcrServiceManager service) : base(serviceManager) {
+        public OcrPage(ServiceManager serviceManager, OcrServiceManager service) {
+            this.serviceManager = serviceManager;
             this.ocrManager = service;
 
             InitializeComponent();

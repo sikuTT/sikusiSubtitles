@@ -11,22 +11,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace sikusiSubtitles.Shortcut {
-    public partial class ShortcutPage : SettingPage {
+    public partial class ShortcutPage : UserControl {
+        ServiceManager serviceManager;
         ShortcutService service;
 
         List<int> keys = new List<int>();
 
-        public override void Unload() {
-            this.service.End();
-
-            // ショートカットイベントを取得
-            var shortcutService = this.serviceManager.GetService<ShortcutService>();
-            if (shortcutService != null) {
-                shortcutService.ShortcutRun -= ShortcutRun;
-            }
-        }
-
-        public ShortcutPage(ServiceManager serviceManager, ShortcutService service) : base(serviceManager) {
+        public ShortcutPage(ServiceManager serviceManager, ShortcutService service) {
+            this.serviceManager = serviceManager;
             this.service = service;
             service.Start();
 

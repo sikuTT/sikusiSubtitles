@@ -11,10 +11,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace sikusiSubtitles.Translation {
-    public partial class AzureTranslationPage : SettingPage {
-        public AzureTranslationService service;
+    public partial class AzureTranslationPage : UserControl {
+        private ServiceManager serviceManager;
+        private AzureTranslationService service;
 
-        public AzureTranslationPage(ServiceManager serviceManager, AzureTranslationService service) : base(serviceManager) {
+        public AzureTranslationPage(ServiceManager serviceManager, AzureTranslationService service) {
+            this.serviceManager = serviceManager;
             this.service = service;
 
             InitializeComponent();

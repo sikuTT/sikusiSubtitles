@@ -13,10 +13,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace sikusiSubtitles.SpeechRecognition {
-    public partial class AzureSpeechRecognitionPage : SettingPage {
+    public partial class AzureSpeechRecognitionPage : UserControl {
+        ServiceManager serviceManager;
         AzureSpeechRecognitionService service;
 
-        public AzureSpeechRecognitionPage(ServiceManager serviceManager, AzureSpeechRecognitionService service) : base(serviceManager) {
+        public AzureSpeechRecognitionPage(ServiceManager serviceManager, AzureSpeechRecognitionService service) {
+            this.serviceManager = serviceManager;
             this.service = service;
 
             InitializeComponent();

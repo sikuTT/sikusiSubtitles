@@ -74,7 +74,7 @@ namespace sikusiSubtitles.Shortcut {
             }
         }
 
-        public void End() {
+        public override void Finish() {
             UnhookWindowsHookEx(hookPtr);
             hookPtr = IntPtr.Zero;
         }

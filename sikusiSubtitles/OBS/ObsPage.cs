@@ -10,10 +10,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace sikusiSubtitles.OBS {
-    public partial class ObsPage : SettingPage {
+    public partial class ObsPage : UserControl {
+        private ServiceManager serviceManager;
         private ObsService service;
 
-        public ObsPage(ServiceManager serviceManager, ObsService service) : base(serviceManager) {
+        public ObsPage(ServiceManager serviceManager, ObsService service) {
+            this.serviceManager = serviceManager;
             this.service = service;
 
             InitializeComponent();

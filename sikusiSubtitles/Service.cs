@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace sikusiSubtitles {
     public abstract class Service {
         protected ServiceManager ServiceManager;
-        protected SettingPage? SettingPage = null;
+        protected UserControl? SettingPage = null;
 
         public string ServiceName { get; set; }
         public string Name { get; set; }
@@ -30,8 +30,9 @@ namespace sikusiSubtitles {
         public virtual void Save() { }
         public virtual void Load() { }
         public virtual void Init() { }
+        public virtual void Finish() { }
 
-        public virtual SettingPage? GetSettingPage() {
+        public virtual UserControl? GetSettingPage() {
             return SettingPage;
         }
 

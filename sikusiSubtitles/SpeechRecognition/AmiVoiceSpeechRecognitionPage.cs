@@ -14,22 +14,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace sikusiSubtitles.SpeechRecognition {
-    public partial class AmiVoiceSpeechRecognitionPage : SettingPage {
+    public partial class AmiVoiceSpeechRecognitionPage : UserControl {
         private AmiVoiceSpeechRecognitionServie service;
         private List<Tuple<string, string>> engines = new List<Tuple<string, string>>();
 
-        public AmiVoiceSpeechRecognitionPage(ServiceManager serviceManager, AmiVoiceSpeechRecognitionServie service) : base(serviceManager) {
+        public AmiVoiceSpeechRecognitionPage(ServiceManager serviceManager, AmiVoiceSpeechRecognitionServie service) {
             this.service = service;
 
             InitializeComponent();
-        }
-
-        public override void Unload() {
-            try {
-                this.service.Stop();
-            } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);
-            }
         }
 
         private void AmiVoiceSpeechRecognitionPage_Load(object sender, EventArgs e) {

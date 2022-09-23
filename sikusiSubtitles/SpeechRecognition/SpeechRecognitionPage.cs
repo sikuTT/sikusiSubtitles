@@ -11,7 +11,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace sikusiSubtitles.SpeechRecognition {
-    public partial class SpeechRecognitionPage : SettingPage {
+    public partial class SpeechRecognitionPage : UserControl {
+        private ServiceManager serviceManager;
         private SpeechRecognitionServiceManager service;
 
         /** 音声認識サービス一覧 */
@@ -22,7 +23,8 @@ namespace sikusiSubtitles.SpeechRecognition {
 
         private List<Tuple<string, string>> languages = new List<Tuple<string, string>>();
 
-        public SpeechRecognitionPage(ServiceManager serviceManager, SpeechRecognitionServiceManager service) : base(serviceManager) {
+        public SpeechRecognitionPage(ServiceManager serviceManager, SpeechRecognitionServiceManager service) {
+            this.serviceManager = serviceManager;
             this.service = service;
 
             var enumerator = new MMDeviceEnumerator();

@@ -14,21 +14,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace sikusiSubtitles.SpeechRecognition {
-    public partial class ChromeSpeechRecognitionPage : SettingPage {
+    public partial class ChromeSpeechRecognitionPage : UserControl {
+        private ServiceManager serviceManager;
         private ChromeSpeechRecognitionService service;
 
-        public ChromeSpeechRecognitionPage(ServiceManager serviceManager, ChromeSpeechRecognitionService service) : base(serviceManager) {
+        public ChromeSpeechRecognitionPage(ServiceManager serviceManager, ChromeSpeechRecognitionService service) {
+            this.serviceManager = serviceManager;
             this.service = service;
 
             InitializeComponent();
-        }
-
-        public override void Unload() {
-            try {
-                service.Stop();
-            } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);
-            }
         }
 
         private void ChromeSpeechRecognitionPage_Load(object sender, EventArgs e) {

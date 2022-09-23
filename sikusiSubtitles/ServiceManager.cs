@@ -113,5 +113,18 @@ namespace sikusiSubtitles {
                 service.Init();
             }
         }
+
+        /**
+         * すべてのサービスを終了する
+         */
+        public void Finish() {
+            foreach (var service in Managers) {
+                service.Finish();
+            }
+            foreach (var service in Services) {
+                service.Finish();
+            }
+            Save();
+        }
     }
 }

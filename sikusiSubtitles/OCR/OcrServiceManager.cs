@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace sikusiSubtitles.OCR {
-    public class OcrServiceManager : sikusiSubtitles.Service{
+    public class OcrServiceManager : Service{
         public static new string ServiceName = "OCR";
 
         public string OcrEngine { get; set; } = "";

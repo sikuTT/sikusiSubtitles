@@ -44,6 +44,7 @@ namespace sikusiSubtitles {
             // Speecht Service
             new SpeechServiceManager(this.serviceManager);
             new SystemSpeechService(this.serviceManager);
+            new VoiceVoxSpeechService(this.serviceManager);
 
             // Init all services
             this.serviceManager.Init();

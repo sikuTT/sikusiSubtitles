@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace sikusiSubtitles.Speech {
     public class SystemSpeechService : SpeechService {
         List<Tuple<string, string>> voices = new List<Tuple<string, string>>();
+        SpeechSynthesizer synth = new SpeechSynthesizer();
 
         public SystemSpeechService(ServiceManager serviceManager) : base(serviceManager, "SystemSpeech", "システム標準", 500) {
             var synth = new SpeechSynthesizer();
@@ -27,13 +28,23 @@ namespace sikusiSubtitles.Speech {
         }
 
         public override async Task SpeakAsync(string voice, string text) {
-            var synth = new SpeechSynthesizer();
+            try {
+                synth.SetOutputToDefaultAudioDevice();
+                synth.SelectVoice(voice);
+                await Task.Run(() => {
+                    try {
+                        synth.Speak(text);
+                    } catch (Exception ex) {
+                        Debug.WriteLine($"SystemSpeechService: {ex.Message}");
+                    }
+                });
+            } catch (Exception ex) {
+                Debug.WriteLine($"SystemSpeechService: {ex.Message}");
+            }
+        }
 
-            synth.SetOutputToDefaultAudioDevice();
-            synth.SelectVoice(voice);
-            await Task.Run(() => {
-                synth.Speak(text);
-            });
+        public override async Task CancelSpeakAsync() {
+            await Task.Run(() => synth.SpeakAsyncCancelAll());
         }
     }
 }

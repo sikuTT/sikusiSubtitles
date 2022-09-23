@@ -2,26 +2,36 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Speech.Synthesis;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace sikusiSubtitles.Speech {
-    public partial class SystemSpeechPage : UserControl {
+    public partial class VoiceVoxSpeechPage : UserControl {
         ServiceManager serviceManager;
-        SystemSpeechService service;
+        VoiceVoxSpeechService service;
 
-        public SystemSpeechPage(ServiceManager serviceManager, SystemSpeechService service) {
+        public VoiceVoxSpeechPage(ServiceManager serviceManager, VoiceVoxSpeechService service) {
             this.serviceManager = serviceManager;
             this.service = service;
 
             InitializeComponent();
+        }
 
-            service.GetVoices().ForEach(voice => {
-                this.voiceComboBox.Items.Add(voice.Item2);
+        private async void VoiceVoxSpeechPage_Load(object sender, EventArgs e) {
+            await Task.Run(() => {
+                while (service.VoiceListInitialized == false) {
+                    Thread.Sleep(100);
+                }
+
+                service.GetVoices().ForEach(voice => {
+                    this.voiceComboBox.Invoke(delegate {
+                        this.voiceComboBox.Items.Add(voice.Item2);
+                    });
+                });
             });
         }
 
@@ -48,5 +58,6 @@ namespace sikusiSubtitles.Speech {
         private async void cancelButton_Click(object sender, EventArgs e) {
             await service.CancelSpeakAsync();
         }
+
     }
 }

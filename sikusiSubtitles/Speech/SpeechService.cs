@@ -12,5 +12,6 @@ namespace sikusiSubtitles.Speech {
 
         public abstract List<Tuple<string, string>> GetVoices();
         public abstract Task SpeakAsync(string voice, string text);
+        public abstract Task CancelSpeakAsync();
     }
 }

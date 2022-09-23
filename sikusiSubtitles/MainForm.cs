@@ -41,6 +41,10 @@ namespace sikusiSubtitles {
             new ShortcutServiceManager(this.serviceManager);
             new ShortcutService(this.serviceManager);
 
+            // Speecht Service
+            new SpeechServiceManager(this.serviceManager);
+            new SystemSpeechService(this.serviceManager);
+
             // Init all services
             this.serviceManager.Init();
         }

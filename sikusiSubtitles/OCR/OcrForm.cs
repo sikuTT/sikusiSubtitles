@@ -1,5 +1,6 @@
 ﻿using sikusiSubtitles.OBS;
 using sikusiSubtitles.Shortcut;
+using sikusiSubtitles.Speech;
 using sikusiSubtitles.Translation;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,11 @@ namespace sikusiSubtitles.OCR {
         private TranslationService? translationService;
         private List<Tuple<string, string>> translationLanguages = new List<Tuple<string, string>>();
         private string? translationLanguage;
+
+        // Speak
+        private List<SpeechService> speechServices = new List<SpeechService>();
+        private SpeechService? speechService;
+        private List<Tuple<string, string>> speechVoices = new List<Tuple<string, string>>();
 
         // Shortcut
         private ShortcutService? shortcutService;
@@ -75,6 +81,12 @@ namespace sikusiSubtitles.OCR {
 
             // OBSに接続されている場合、テキストソースを取得する
             GetObsTextSourcesAsync();
+
+            // 読み上げサービス一覧
+            speechServices = this.serviceManager.GetServices<SpeechService>();
+            speechServices.ForEach(service => {
+                ocrSpeechEngineComboBox.Items.Add(service.DisplayName);
+            });
         }
 
         private void OcrForm_FormClosed(object sender, FormClosedEventArgs e) {
@@ -169,9 +181,55 @@ namespace sikusiSubtitles.OCR {
             ScreenCapture();
         }
 
+        /** OCR結果の読み上げエンジンを変更した */
+        private void ocrSpeechEngineComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            ocrSpeechVoiceComboBox.Items.Clear();
+            if (ocrSpeechEngineComboBox.SelectedIndex != -1) {
+                speechService = speechServices[ocrSpeechEngineComboBox.SelectedIndex];
+                speechVoices = speechService.GetVoices();
+                speechVoices.ForEach(voice => {
+                    ocrSpeechVoiceComboBox.Items.Add(voice.Item2);
+                });
+            }
+        }
+
+        /** OCR結果の読み上げボイスを変更した */
+        private void ocrSpeechVoiceComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            speechOcrButton.Enabled = ocrSpeechVoiceComboBox.SelectedIndex != -1 && ocrTextBox.Text.Length > 0;
+        }
+
+        /** OCR結果の読み上げボタンを押した */
+        private async void speechOcrButton_Click(object sender, EventArgs e) {
+            if (speechService != null) {
+                var voice = speechVoices[ocrSpeechVoiceComboBox.SelectedIndex];
+                try {
+                    speechOcrButton.Visible = false;
+                    speechOcrStopButton.Visible = true;
+                    await speechService.SpeakAsync(voice.Item1, ocrTextBox.SelectedText.Length > 0 ? ocrTextBox.SelectedText : ocrTextBox.Text);
+                } finally {
+                    speechOcrButton.Visible = true;
+                    speechOcrStopButton.Visible = false;
+                }
+            }
+        }
+
+        /** OCR結果の読み上げを止める */
+        private async void speechOcrStopButton_Click(object sender, EventArgs e) {
+            if (speechService != null) {
+                await speechService.CancelSpeakAsync();
+                speechOcrButton.Visible = true;
+                speechOcrStopButton.Visible = false;
+            }
+        }
+
+        /** ORC読み取り結果のテキストボックスの文字が変更された */
+        private void ocrTextBox_TextChanged(object sender, EventArgs e) {
+            speechOcrButton.Enabled = ocrSpeechVoiceComboBox.SelectedIndex != -1 && ocrTextBox.Text.Length > 0;
+        }
+
         /**
-         * 画面のキャプチャ
-         */
+            * 画面のキャプチャ
+            */
         private void ScreenCapture() {
             // キャプチャーするウィンドウの上に、キャプチャー画面を表示する。
             Process process = Process.GetProcessById(processId);
@@ -350,6 +408,15 @@ namespace sikusiSubtitles.OCR {
             } else if (shortcut.Name == "clear-ocr-translated-text") {
                 ClearObsTranslatedText();
             }
+        }
+
+        private void searchByWeblio_Click(object sender, EventArgs e) {
+            var url = $"https://ejje.weblio.jp/content/" + Uri.EscapeDataString(ocrTextBox.SelectedText.Length > 0 ? ocrTextBox.SelectedText : ocrTextBox.Text);
+            ProcessStartInfo pi = new ProcessStartInfo() {
+                FileName = url,
+                UseShellExecute = true,
+            };
+            System.Diagnostics.Process.Start(pi);
         }
     }
 }

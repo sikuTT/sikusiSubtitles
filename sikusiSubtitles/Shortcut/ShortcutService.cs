@@ -8,7 +8,15 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.Shortcut {
     public class ShortcutService : sikusiSubtitles.Service {
-        delegate IntPtr delegateHookCallback(int nCode, IntPtr wParam, IntPtr lParam);
+        private struct KBDLLHOOKSTRUCT {
+            public int vkCode;
+            public int scanCode;
+            public int flags;
+            public int time;
+            public int dwExtraInfo;
+        }
+
+        delegate IntPtr delegateHookCallback(int nCode, int wParam, ref KBDLLHOOKSTRUCT lParam);
 
         delegateHookCallback handler;
 
@@ -16,7 +24,7 @@ namespace sikusiSubtitles.Shortcut {
         static extern IntPtr SetWindowsHookEx(int idHook, delegateHookCallback lpfn, IntPtr hMod, uint dwThreadId);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+        static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, int wParam, ref KBDLLHOOKSTRUCT lParam);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -28,7 +36,13 @@ namespace sikusiSubtitles.Shortcut {
         [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         static extern short GetKeyState(int nVirtKey);
 
+        [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        static extern short GetAsyncKeyState(int nVirtKey);
+
         IntPtr hookPtr = IntPtr.Zero;
+
+        // ショートカットに使用できるキーの一覧とキーの名前
+        string?[] keyNames = new string[256];
 
         // 現在同時に入力されているキーの一覧
         List<int> keys = new List<int>();
@@ -42,6 +56,8 @@ namespace sikusiSubtitles.Shortcut {
             SettingPage = new ShortcutPage(serviceManager, this);
             handler = HookCallback;
             Shortcuts = new List<Shortcut>();
+
+            CreateKeyNames();
         }
 
         public override void Init() {
@@ -80,67 +96,49 @@ namespace sikusiSubtitles.Shortcut {
         }
 
         public string CreateShortcutText(List<int> keys) {
-            string text = "";
+            StringBuilder text = new StringBuilder();
             foreach (var key in keys) {
                 if (text.Length > 0) {
-                    text += " + ";
+                    text.Append(" + ");
                 }
-                if (key == 16) {
-                    text += "SHIFT";
-                } else if (key == 17) {
-                    text += "CTRL";
-                } else if (key == 18) {
-                    text += "ALT";
-                } else if ((key >= 48 && key <= 57)) {
-                    text += (char)key;
-                } else {
-                    text += (Keys)key;
-                }
+                text.Append(keyNames[key]);
             }
-            return text;
+            return text.ToString();
         }
 
-        private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+        private IntPtr HookCallback(int nCode, int wParam, ref KBDLLHOOKSTRUCT lParam) {
             if (nCode < 0) {
-                return CallNextHookEx(hookPtr, nCode, wParam, lParam);
+                return CallNextHookEx(hookPtr, nCode, wParam, ref lParam);
             }
 
             try {
                 var push = ((int)wParam & 0x00000001) == 0;
-                var keyCode = (short)Marshal.ReadInt32(lParam);
-                if (keyCode >= 240) {
-                    // キーを話した時のイベントがこないので処理しない
-                    return CallNextHookEx(hookPtr, nCode, wParam, lParam);
-                } else if (keyCode == 160 || keyCode == 161) {
-                    // LShiftKey, RShiftKeyはShiftKeyにする
-                    keyCode = 16;
-                } else if (keyCode == 162 || keyCode == 163) {
-                    // LControlKey, RControlKeyはControlKeyにする。
-                    keyCode = 17;
-                } else if (keyCode == 164 || keyCode == 165) {
-                    // LMenu, RMenuはMenuにする。
-                    keyCode = 18;
-                }
-                if (push) {
-                    if (!this.keys.Contains(keyCode)) {
-                        this.keys.Add(keyCode);
+                var keyCode = lParam.vkCode;
+                if (keyCode < keyNames.Length) {
+                    var keyName = keyNames[keyCode];
+                    if (keyName != null) {
+                        if (push) {
+                            if (!this.keys.Contains(keyCode)) {
+                                this.keys.Add(keyCode);
 
-                        string text = CreateShortcutText(keys);
-                        this.ShortcutRun?.Invoke(this, new Shortcut("", "", "", text));
-                    }
-                } else {
-                    if (this.keys.Contains(keyCode)) {
-                        this.keys.Remove(keyCode);
-                    }
-                }
+                                string text = CreateShortcutText(keys);
+                                this.ShortcutRun?.Invoke(this, new Shortcut("", "", "", text));
+                            }
+                        } else {
+                            if (this.keys.Contains(keyCode)) {
+                                this.keys.Remove(keyCode);
+                            }
+                        }
 
-                if (this.keys.Count > 0) {
-                    string text = CreateShortcutText(keys);
-                    foreach (var shortcut in Shortcuts) {
-                        if (text == shortcut.ShortcutKey) {
-                            this.ShortcutRun?.Invoke(this, shortcut);
-                            this.keys.Clear();
-                            break;
+                        if (this.keys.Count > 0) {
+                            string text = CreateShortcutText(keys);
+                            foreach (var shortcut in Shortcuts) {
+                                if (text == shortcut.ShortcutKey) {
+                                    this.ShortcutRun?.Invoke(this, shortcut);
+                                    this.keys.Clear();
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
@@ -148,7 +146,64 @@ namespace sikusiSubtitles.Shortcut {
                 Debug.WriteLine("ShortcutService.HookCallback: ", ex.Message);
             }
 
-            return CallNextHookEx(hookPtr, nCode, wParam, lParam);
+            return CallNextHookEx(hookPtr, nCode, wParam, ref lParam);
+        }
+
+        void CreateKeyNames() {
+            for (int i = (int)Keys.D0; i <= (int)Keys.D9; i++) {
+                keyNames[i] = (i - (int)Keys.D0).ToString();
+            }
+
+            for (int i = (int)Keys.A; i <= (int)Keys.Z; i++) {
+                keyNames[i] = ((Keys)i).ToString();
+            }
+
+            for (int i = (int)Keys.F1; i <= (int)Keys.F24; i++) {
+                keyNames[i] = ((Keys)i).ToString();
+            }
+
+            for (int i = (int)Keys.Space; i <= (int)Keys.Help; i++) {
+                keyNames[i] = ((Keys)i).ToString();
+            }
+
+            keyNames[(int)Keys.ShiftKey] = "SHIFT";
+            keyNames[(int)Keys.LShiftKey] = "SHIFT";
+            keyNames[(int)Keys.RShiftKey] = "SHIFT";
+            keyNames[(int)Keys.ControlKey] = "CTRL";
+            keyNames[(int)Keys.LControlKey] = "CTRL";
+            keyNames[(int)Keys.RControlKey] = "CTRL";
+            keyNames[(int)Keys.Menu] = "ALT";
+            keyNames[(int)Keys.LMenu] = "ALT";
+            keyNames[(int)Keys.RMenu] = "ALT";
+            keyNames[(int)Keys.LWin] = "WIN";
+            keyNames[(int)Keys.RWin] = "WIN";
+            keyNames[(int)Keys.RWin] = "WIN";
+            keyNames[(int)Keys.OemMinus] = "-";
+            keyNames[(int)Keys.Oem7] = "^";
+            keyNames[(int)Keys.Oem5] = "\\";
+            keyNames[(int)Keys.Oem3] = "@";
+            keyNames[(int)Keys.Oem4] = "[";
+            keyNames[(int)Keys.Oemplus] = ";";
+            keyNames[(int)Keys.Oem1] = ":";
+            keyNames[(int)Keys.Oem6] = "]";
+            keyNames[(int)Keys.Oemcomma] = ",";
+            keyNames[(int)Keys.OemPeriod] = ".";
+            keyNames[(int)Keys.OemQuestion] = "/";
+            keyNames[(int)Keys.Oem102] = "\\";
+
+            keyNames[(int)Keys.Back] = "Backspace";
+            keyNames[(int)Keys.Enter] = "Enter";
+            keyNames[(int)Keys.Tab] = "Tab";
+            keyNames[(int)Keys.Escape] = "Escape";
+
+            for (int i = (int)Keys.NumPad0; i <= (int)Keys.NumPad9; i++) {
+                keyNames[i] = ((Keys)i).ToString();
+            }
+            keyNames[(int)Keys.Multiply] = "NumPad*";
+            keyNames[(int)Keys.Add] = "NumPad+";
+            keyNames[(int)Keys.Subtract] = "NumPad-";
+            keyNames[(int)Keys.Decimal] = "NumPad.";
+            keyNames[(int)Keys.Divide] = "NumPad/";
         }
     }
 

@@ -23,7 +23,10 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.ocrTextBox = new System.Windows.Forms.TextBox();
+            this.ocrTextEditContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.searchByWeblio = new System.Windows.Forms.ToolStripMenuItem();
             this.translatedTextBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -46,12 +49,14 @@
             this.ocrSpeechVoiceComboBox = new System.Windows.Forms.ComboBox();
             this.speechOcrStopButton = new System.Windows.Forms.Button();
             this.speechOcrButton = new System.Windows.Forms.Button();
+            this.ocrTextEditContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // ocrTextBox
             // 
             this.ocrTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.ocrTextBox.ContextMenuStrip = this.ocrTextEditContextMenuStrip;
             this.ocrTextBox.HideSelection = false;
             this.ocrTextBox.Location = new System.Drawing.Point(14, 193);
             this.ocrTextBox.Multiline = true;
@@ -59,6 +64,20 @@
             this.ocrTextBox.Size = new System.Drawing.Size(912, 109);
             this.ocrTextBox.TabIndex = 14;
             this.ocrTextBox.TextChanged += new System.EventHandler(this.ocrTextBox_TextChanged);
+            // 
+            // ocrTextEditContextMenuStrip
+            // 
+            this.ocrTextEditContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.searchByWeblio});
+            this.ocrTextEditContextMenuStrip.Name = "ocrTextEditContextMenuStrip";
+            this.ocrTextEditContextMenuStrip.Size = new System.Drawing.Size(163, 26);
+            // 
+            // searchByWeblio
+            // 
+            this.searchByWeblio.Name = "searchByWeblio";
+            this.searchByWeblio.Size = new System.Drawing.Size(162, 22);
+            this.searchByWeblio.Text = "weblioで検索する";
+            this.searchByWeblio.Click += new System.EventHandler(this.searchByWeblio_Click);
             // 
             // translatedTextBox
             // 
@@ -328,6 +347,7 @@
             this.Text = "OcrForm";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OcrForm_FormClosed);
             this.Load += new System.EventHandler(this.OcrForm_Load);
+            this.ocrTextEditContextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -358,5 +378,8 @@
         private ComboBox ocrSpeechVoiceComboBox;
         private Button speechOcrStopButton;
         private Button speechOcrButton;
+        private ContextMenuStrip ocrTextEditContextMenuStrip;
+        private ToolStripMenuItem weblioで検索するToolStripMenuItem;
+        private ToolStripMenuItem searchByWeblio;
     }
 }

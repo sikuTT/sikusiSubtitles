@@ -409,5 +409,14 @@ namespace sikusiSubtitles.OCR {
                 ClearObsTranslatedText();
             }
         }
+
+        private void searchByWeblio_Click(object sender, EventArgs e) {
+            var url = $"https://ejje.weblio.jp/content/" + Uri.EscapeDataString(ocrTextBox.SelectedText.Length > 0 ? ocrTextBox.SelectedText : ocrTextBox.Text);
+            ProcessStartInfo pi = new ProcessStartInfo() {
+                FileName = url,
+                UseShellExecute = true,
+            };
+            System.Diagnostics.Process.Start(pi);
+        }
     }
 }

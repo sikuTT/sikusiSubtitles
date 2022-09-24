@@ -15,7 +15,7 @@ namespace sikusiSubtitles.Shortcut {
         ServiceManager serviceManager;
         ShortcutService service;
 
-        List<int> keys = new List<int>();
+        // List<int> keys = new List<int>();
 
         public ShortcutPage(ServiceManager serviceManager, ShortcutService service) {
             this.serviceManager = serviceManager;
@@ -51,18 +51,22 @@ namespace sikusiSubtitles.Shortcut {
         }
 
         private void shortcutTextBox_KeyDown(object sender, KeyEventArgs e) {
-            if (e.KeyValue < 240) {
+/*
+             if (e.KeyValue < 240) {
                 if (this.keys.Contains(e.KeyValue) == false) {
                     this.keys.Add(e.KeyValue);
                     this.shortcutTextBox.Text = service.CreateShortcutText(this.keys);
                 }
-            }
+             }
+*/
         }
 
         private void shortcutTextBox_KeyUp(object sender, KeyEventArgs e) {
+/*
             if (this.keys.Contains(e.KeyValue)) {
                 this.keys.Remove(e.KeyValue);
             }
+*/
         }
 
         private void setShortcutButton_Click(object sender, EventArgs e) {
@@ -79,7 +83,9 @@ namespace sikusiSubtitles.Shortcut {
 
         private void ShortcutRun(object? sender, Shortcut shortcut) {
             textBox1.Text = shortcut.ShortcutKey;
-
+            if (this.shortcutTextBox.Focused) {
+                this.shortcutTextBox.Text = shortcut.ShortcutKey;
+            }
         }
     }
 }

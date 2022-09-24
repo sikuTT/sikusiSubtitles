@@ -418,5 +418,21 @@ namespace sikusiSubtitles.OCR {
             };
             System.Diagnostics.Process.Start(pi);
         }
+
+        private void cutToolStripMenuItem_Click(object sender, EventArgs e) {
+            ocrTextBox.Cut();
+        }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e) {
+            ocrTextBox.Copy();
+        }
+
+        private void pasteToolStripMenuItem_Click(object sender, EventArgs e) {
+            ocrTextBox.Paste();
+        }
+
+        private void ocrTextEditContextMenuStrip_Opening(object sender, CancelEventArgs e) {
+            cutToolStripMenuItem.Enabled = copyToolStripMenuItem.Enabled = ocrTextBox.SelectionLength > 0;
+        }
     }
 }

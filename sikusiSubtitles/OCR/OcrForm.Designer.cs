@@ -27,6 +27,10 @@
             this.ocrTextBox = new System.Windows.Forms.TextBox();
             this.ocrTextEditContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.searchByWeblio = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.translatedTextBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -68,16 +72,46 @@
             // ocrTextEditContextMenuStrip
             // 
             this.ocrTextEditContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.searchByWeblio});
+            this.searchByWeblio,
+            this.toolStripMenuItem1,
+            this.cutToolStripMenuItem,
+            this.copyToolStripMenuItem,
+            this.pasteToolStripMenuItem});
             this.ocrTextEditContextMenuStrip.Name = "ocrTextEditContextMenuStrip";
-            this.ocrTextEditContextMenuStrip.Size = new System.Drawing.Size(163, 26);
+            this.ocrTextEditContextMenuStrip.Size = new System.Drawing.Size(181, 120);
             // 
             // searchByWeblio
             // 
             this.searchByWeblio.Name = "searchByWeblio";
-            this.searchByWeblio.Size = new System.Drawing.Size(162, 22);
+            this.searchByWeblio.Size = new System.Drawing.Size(180, 22);
             this.searchByWeblio.Text = "weblioで検索する";
             this.searchByWeblio.Click += new System.EventHandler(this.searchByWeblio_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
+            // 
+            // cutToolStripMenuItem
+            // 
+            this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
+            this.cutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cutToolStripMenuItem.Text = "切り取り";
+            this.cutToolStripMenuItem.Click += new System.EventHandler(this.cutToolStripMenuItem_Click);
+            // 
+            // copyToolStripMenuItem
+            // 
+            this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.copyToolStripMenuItem.Text = "コピー";
+            this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
+            // 
+            // pasteToolStripMenuItem
+            // 
+            this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
+            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pasteToolStripMenuItem.Text = "貼り付け";
+            this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
             // 
             // translatedTextBox
             // 
@@ -381,5 +415,9 @@
         private ContextMenuStrip ocrTextEditContextMenuStrip;
         private ToolStripMenuItem weblioで検索するToolStripMenuItem;
         private ToolStripMenuItem searchByWeblio;
+        private ToolStripSeparator toolStripMenuItem1;
+        private ToolStripMenuItem cutToolStripMenuItem;
+        private ToolStripMenuItem copyToolStripMenuItem;
+        private ToolStripMenuItem pasteToolStripMenuItem;
     }
 }

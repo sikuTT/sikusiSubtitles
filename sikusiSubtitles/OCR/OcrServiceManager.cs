@@ -15,6 +15,8 @@ namespace sikusiSubtitles.OCR {
         public string OcrLanguage { get; set; } = "";
         public string TranslationEngine { get; set; } = "";
         public string TranslationLanguage { get; set; } = "";
+        public string OcrSpeechEngine { get; set; } = "";
+        public string OcrSpeechVoice { get; set; } = "";
 
         private Shortcut.Shortcut OcrShortcut = new Shortcut.Shortcut("execute-ocr", "OCR", "画面から文字を取得し翻訳する", "");
         private Shortcut.Shortcut ClearObsTextShortcut = new Shortcut.Shortcut("clear-obs-text", "OCR", "OCRの翻訳結果をクリアする", "");
@@ -28,6 +30,8 @@ namespace sikusiSubtitles.OCR {
             OcrLanguage = token.Value<string>("OcrLanguage") ?? "";
             TranslationEngine = token.Value<string>("TranslationEngine") ?? "";
             TranslationLanguage = token.Value<string>("TranslationLanguage") ?? "";
+            OcrSpeechEngine = token.Value<string>("OcrSpeechEngine") ?? "";
+            OcrSpeechVoice = token.Value<string>("OcrSpeechVoice") ?? "";
             OcrShortcut.ShortcutKey = token.Value<string>("OcrShortcutKey") ?? "";
             ClearObsTextShortcut.ShortcutKey = token.Value<string>("ClearObsTextShortcutKey") ?? "";
         }
@@ -38,6 +42,8 @@ namespace sikusiSubtitles.OCR {
                 new JProperty("OcrLanguage", OcrLanguage),
                 new JProperty("TranslationEngine", TranslationEngine),
                 new JProperty("TranslationLanguage", TranslationLanguage),
+                new JProperty("OcrSpeechEngine", OcrSpeechEngine),
+                new JProperty("OcrSpeechVoice", OcrSpeechVoice),
                 new JProperty("OcrShortcutKey", OcrShortcut.ShortcutKey),
                 new JProperty("ClearObsTextShortcutKey", ClearObsTextShortcut.ShortcutKey)
             };

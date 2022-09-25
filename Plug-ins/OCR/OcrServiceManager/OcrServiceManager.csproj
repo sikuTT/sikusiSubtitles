@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Service\Service.csproj" />
+    <ProjectReference Include="..\..\OBS\ObsServiceManager\ObsServiceManager.csproj" />
+    <ProjectReference Include="..\..\Shortcut\ShortcutServiceManager\ShortcutServiceManager.csproj" />
+    <ProjectReference Include="..\..\Speech\SpeechServiceManager\SpeechServiceManager.csproj" />
+    <ProjectReference Include="..\..\Translation\TranslationServiceManager\TranslationServiceManager.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="CaptureForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="OcrForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="OcrPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+
+</Project>

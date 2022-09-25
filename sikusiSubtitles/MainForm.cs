@@ -1,50 +1,14 @@
-using sikusiSubtitles.OBS;
-using sikusiSubtitles.OCR;
-using sikusiSubtitles.Shortcut;
-using sikusiSubtitles.Speech;
-using sikusiSubtitles.SpeechRecognition;
-using sikusiSubtitles.Translation;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace sikusiSubtitles {
     public partial class MainForm : Form {
         ServiceManager serviceManager = new ServiceManager();
-        SpeechRecognitionService? speechRecognitionService;
 
         public MainForm() {
             InitializeComponent();
 
-            // OBS Service
-            new ObsServiceManager(this.serviceManager);
-            new ObsService(this.serviceManager);
-            new SubtitlesService(this.serviceManager);
-
-            // Speech Recognition Service
-            new SpeechRecognitionServiceManager(this.serviceManager);
-            new ChromeSpeechRecognitionService(this.serviceManager);
-            new AzureSpeechRecognitionService(this.serviceManager);
-            new AmiVoiceSpeechRecognitionServie(this.serviceManager);
-
-            // Translation Service
-            new TranslationServiceManager(this.serviceManager);
-            new GoogleAppsScriptTranslationService(this.serviceManager);
-            new GoogleBasicTranslationService(this.serviceManager);
-            new AzureTranslationService(this.serviceManager);
-            new DeepLTranslationService(this.serviceManager);
-
-            // OCR Service
-            new OcrServiceManager(this.serviceManager);
-            new TesseractOcrService(this.serviceManager);
-            new AzureOcrService(this.serviceManager);
-
-            // Shortcut Service
-            new ShortcutServiceManager(this.serviceManager);
-            new ShortcutService(this.serviceManager);
-
-            // Speecht Service
-            new SpeechServiceManager(this.serviceManager);
-            new SystemSpeechService(this.serviceManager);
-            new VoiceVoxSpeechService(this.serviceManager);
+            LoadPlugins();
 
             // Init all services
             this.serviceManager.Init();
@@ -124,108 +88,44 @@ namespace sikusiSubtitles {
             }
         }
 
-        private void speechRecognitionCheckBox_CheckedChanged(object sender, EventArgs e) {
-            this.SetCheckBoxButtonColor(this.speechRecognitionCheckBox);
-
-            if (this.speechRecognitionCheckBox.Checked) {
-                this.SpeechRecognitionStart();
-            } else {
-                this.SpeechRecognitionStop();
-            }
+        private string GetPluginPath() {
+            return System.Windows.Forms.Application.StartupPath + "Plug-ins";
         }
 
-        /**
-         * 音声認識を開始する
-         */
-        private void SpeechRecognitionStart() {
-            var recognitionStarted = false;
-
-            var manager = this.serviceManager.GetManager<SpeechRecognitionServiceManager>();
-            if (manager?.Device == null) {
-                MessageBox.Show("マイクを設定してください。");
-            } else {
-                var service = manager.GetEngine();
-                if (service != null) {
-                    if (service.Start()) {
-                        speechRecognitionService = service;
-                        service.Recognizing += Recognizing;
-                        service.Recognized += Recognized;
-                        recognitionStarted = true;
+        private void LoadPlugins() {
+            List<Type> typeList = new List<Type>();
+            var path = GetPluginPath();
+            foreach (var file in Directory.EnumerateFiles(path, "*.dll")) {
+                try {
+                    var asm = Assembly.LoadFrom(file);
+                    foreach (Type type in asm.GetTypes()) {
+                        var baseType = type.BaseType;
+                        while (baseType != null) {
+                            if (baseType == typeof(Service)) {
+                                typeList.Add(type);
+                            }
+                            baseType = baseType.BaseType;
+                        }
                     }
+                } catch (Exception ex) {
+                    Debug.WriteLine("MainForm: Load DLL failed: " + ex.Message);
                 }
             }
 
-            // 音声認識を開始できなかった場合、音声認識ボタンのチェックを外す。
-            if (recognitionStarted == false) {
-                this.speechRecognitionCheckBox.Checked = false;
-            }
-        }
-
-        /**
-         * 音声認識を終了する
-         */
-        private void SpeechRecognitionStop() {
-            if (speechRecognitionService != null) {
-                speechRecognitionService.Recognizing -= Recognizing;
-                speechRecognitionService.Recognized -= Recognized;
-                speechRecognitionService.Stop();
-                speechRecognitionService = null;
-            }
-        }
-
-        private void Recognizing(Object? sender, SpeechRecognitionEventArgs args) {
-            this.SetRecognitionResultText(args.Text);
-        }
-
-        private void Recognized(Object? sender, SpeechRecognitionEventArgs args) {
-            this.SetRecognitionResultText(args.Text);
-        }
-
-        async private void obsCheckBox_CheckedChanged(object sender, EventArgs e) {
-            this.SetCheckBoxButtonColor(this.obsCheckBox);
-
-            var service = serviceManager.GetService<ObsService>();
-            if (service != null) {
-                if (this.obsCheckBox.Checked) {
-                    if (await service.ConnectAsync() == false) {
-                        this.obsCheckBox.Checked = false;
+            int typeCount;
+            do {
+                typeCount = typeList.Count;
+                for (var i = 0; i < typeList.Count; i++) {
+                    try {
+                        var type = typeList[i];
+                        var service = Activator.CreateInstance(type, new object[] { serviceManager }) as Service;
+                        if (service != null) {
+                            typeList.RemoveAt(i--);
+                        }
+                    } catch (Exception) {
                     }
-                } else if (service.IsConnected) {
-                    await service.DisconnectAsync();
                 }
-            }
-        }
-
-        /**
-         * チェックボックスボタンの状態に合わせて色を変更する
-         * （デフォルトの色は分かりにくいので）
-         */
-        private void SetCheckBoxButtonColor(CheckBox checkbox) {
-            if (checkbox.Checked) {
-                checkbox.BackColor = SystemColors.Highlight;
-                checkbox.ForeColor = SystemColors.HighlightText;
-            } else {
-                checkbox.BackColor = SystemColors.ButtonHighlight;
-                checkbox.ForeColor = SystemColors.ControlText;
-            }
-        }
-
-        private void SetRecognitionResultText(string text) {
-            if (this.recognitionResultTextBox.InvokeRequired) {
-                Action act = delegate { this.recognitionResultTextBox.Text = text; };
-                this.recognitionResultTextBox.Invoke(act);
-            } else {
-                this.recognitionResultTextBox.Text = text;
-            }
-        }
-
-        private void AddRecognitionResultText(string text) {
-            if (this.recognitionResultTextBox.InvokeRequired) {
-                Action act = delegate { this.recognitionResultTextBox.Text += "\r\n" + text; };
-                this.recognitionResultTextBox.Invoke(act);
-            } else {
-                this.recognitionResultTextBox.Text += "\r\n" + text;
-            }
+            } while (typeCount != typeList.Count);
         }
     }
 }

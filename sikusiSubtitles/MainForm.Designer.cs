@@ -29,6 +29,7 @@
             this.obsCheckBox = new System.Windows.Forms.CheckBox();
             this.recognitionResultTextBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.topLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -46,7 +47,7 @@
             // 
             this.splitContainer1.Panel1.Controls.Add(this.menuView);
             this.splitContainer1.Size = new System.Drawing.Size(950, 481);
-            this.splitContainer1.SplitterDistance = 316;
+            this.splitContainer1.SplitterDistance = 322;
             this.splitContainer1.TabIndex = 2;
             this.splitContainer1.TabStop = false;
             // 
@@ -56,7 +57,7 @@
             this.menuView.Font = new System.Drawing.Font("Yu Gothic UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.menuView.Location = new System.Drawing.Point(0, 0);
             this.menuView.Name = "menuView";
-            this.menuView.Size = new System.Drawing.Size(316, 481);
+            this.menuView.Size = new System.Drawing.Size(322, 481);
             this.menuView.TabIndex = 10;
             this.menuView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.menuView_AfterSelect);
             // 
@@ -70,7 +71,6 @@
             this.speechRecognitionCheckBox.TabIndex = 1;
             this.speechRecognitionCheckBox.Text = "音声認識";
             this.speechRecognitionCheckBox.UseVisualStyleBackColor = false;
-            this.speechRecognitionCheckBox.CheckedChanged += new System.EventHandler(this.speechRecognitionCheckBox_CheckedChanged);
             // 
             // obsCheckBox
             // 
@@ -82,7 +82,6 @@
             this.obsCheckBox.TabIndex = 2;
             this.obsCheckBox.Text = "OBS接続";
             this.obsCheckBox.UseVisualStyleBackColor = false;
-            this.obsCheckBox.CheckedChanged += new System.EventHandler(this.obsCheckBox_CheckedChanged);
             // 
             // recognitionResultTextBox
             // 
@@ -106,11 +105,21 @@
             this.label1.TabIndex = 6;
             this.label1.Text = "Ver. 0.3.5";
             // 
+            // topLayoutPanel
+            // 
+            this.topLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.topLayoutPanel.Location = new System.Drawing.Point(163, 2);
+            this.topLayoutPanel.Name = "topLayoutPanel";
+            this.topLayoutPanel.Size = new System.Drawing.Size(743, 39);
+            this.topLayoutPanel.TabIndex = 13;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(974, 598);
+            this.Controls.Add(this.topLayoutPanel);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.recognitionResultTextBox);
             this.Controls.Add(this.obsCheckBox);
@@ -135,5 +144,6 @@
         private TreeView menuView;
         private TextBox recognitionResultTextBox;
         private Label label1;
+        private FlowLayoutPanel topLayoutPanel;
     }
 }

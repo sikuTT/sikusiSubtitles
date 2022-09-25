@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\ObsWebSocket5\ObsWebSocket5.csproj" />
+    <ProjectReference Include="..\..\..\Service\Service.csproj" />
+    <ProjectReference Include="..\..\SpeechRecognition\SpeechRecognitionServiceManager\SpeechRecognitionServiceManager.csproj" />
+    <ProjectReference Include="..\..\Translation\TranslationServiceManager\TranslationServiceManager.csproj" />
+  </ItemGroup>
+
+</Project>

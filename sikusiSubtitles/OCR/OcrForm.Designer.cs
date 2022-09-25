@@ -78,38 +78,38 @@
             this.copyToolStripMenuItem,
             this.pasteToolStripMenuItem});
             this.ocrTextEditContextMenuStrip.Name = "ocrTextEditContextMenuStrip";
-            this.ocrTextEditContextMenuStrip.Size = new System.Drawing.Size(181, 120);
+            this.ocrTextEditContextMenuStrip.Size = new System.Drawing.Size(163, 98);
             // 
             // searchByWeblio
             // 
             this.searchByWeblio.Name = "searchByWeblio";
-            this.searchByWeblio.Size = new System.Drawing.Size(180, 22);
+            this.searchByWeblio.Size = new System.Drawing.Size(162, 22);
             this.searchByWeblio.Text = "weblioで検索する";
             this.searchByWeblio.Click += new System.EventHandler(this.searchByWeblio_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(159, 6);
             // 
             // cutToolStripMenuItem
             // 
             this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
-            this.cutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cutToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.cutToolStripMenuItem.Text = "切り取り";
             this.cutToolStripMenuItem.Click += new System.EventHandler(this.cutToolStripMenuItem_Click);
             // 
             // copyToolStripMenuItem
             // 
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.copyToolStripMenuItem.Text = "コピー";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
             // 
             // pasteToolStripMenuItem
             // 
             this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
-            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.pasteToolStripMenuItem.Text = "貼り付け";
             this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
             // 
@@ -293,6 +293,7 @@
             // 
             // captureAreaButton
             // 
+            this.captureAreaButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.captureAreaButton.Location = new System.Drawing.Point(814, 5);
             this.captureAreaButton.Name = "captureAreaButton";
             this.captureAreaButton.Size = new System.Drawing.Size(112, 30);
@@ -307,7 +308,7 @@
             this.ocrSpeechEngineComboBox.FormattingEnabled = true;
             this.ocrSpeechEngineComboBox.Location = new System.Drawing.Point(111, 162);
             this.ocrSpeechEngineComboBox.Name = "ocrSpeechEngineComboBox";
-            this.ocrSpeechEngineComboBox.Size = new System.Drawing.Size(276, 23);
+            this.ocrSpeechEngineComboBox.Size = new System.Drawing.Size(297, 23);
             this.ocrSpeechEngineComboBox.TabIndex = 11;
             this.ocrSpeechEngineComboBox.SelectedIndexChanged += new System.EventHandler(this.ocrSpeechEngineComboBox_SelectedIndexChanged);
             // 
@@ -317,16 +318,15 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ocrSpeechVoiceComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ocrSpeechVoiceComboBox.FormattingEnabled = true;
-            this.ocrSpeechVoiceComboBox.Location = new System.Drawing.Point(393, 162);
+            this.ocrSpeechVoiceComboBox.Location = new System.Drawing.Point(414, 162);
             this.ocrSpeechVoiceComboBox.Name = "ocrSpeechVoiceComboBox";
-            this.ocrSpeechVoiceComboBox.Size = new System.Drawing.Size(449, 23);
+            this.ocrSpeechVoiceComboBox.Size = new System.Drawing.Size(428, 23);
             this.ocrSpeechVoiceComboBox.TabIndex = 12;
             this.ocrSpeechVoiceComboBox.SelectedIndexChanged += new System.EventHandler(this.ocrSpeechVoiceComboBox_SelectedIndexChanged);
             // 
             // speechOcrStopButton
             // 
-            this.speechOcrStopButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.speechOcrStopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.speechOcrStopButton.Location = new System.Drawing.Point(850, 159);
             this.speechOcrStopButton.Name = "speechOcrStopButton";
             this.speechOcrStopButton.Size = new System.Drawing.Size(75, 30);
@@ -338,8 +338,7 @@
             // 
             // speechOcrButton
             // 
-            this.speechOcrButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.speechOcrButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.speechOcrButton.Enabled = false;
             this.speechOcrButton.Location = new System.Drawing.Point(850, 158);
             this.speechOcrButton.Name = "speechOcrButton";

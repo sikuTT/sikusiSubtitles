@@ -1,4 +1,5 @@
-﻿using ObsWebSocket5;
+﻿using Newtonsoft.Json.Linq;
+using ObsWebSocket5;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,9 +10,9 @@ using System.Threading.Tasks;
 namespace sikusiSubtitles.OBS {
     public class ObsService : sikusiSubtitles.Service {
         public ObsWebSocket ObsSocket { get; }
-        public string IP { get; set; }
-        public int Port { get; set; }
-        public string Password { get; set; }
+        public string IP { get; set; } = "127.0.0.1";
+        public int Port { get; set; } = 4455;
+        public string Password { get; set; } = "";
 
         private SubtitlesService? subtitlesService;
 
@@ -23,21 +24,20 @@ namespace sikusiSubtitles.OBS {
             SettingPage = new ObsPage(serviceManager, this);
 
             this.ObsSocket = new ObsWebSocket();
-            this.IP = "127.0.0.1";
-            this.Port = 4455;
-            this.Password = "";
         }
 
-        public override void Load() {
-            IP = Properties.Settings.Default.ObsIP;
-            Port = Properties.Settings.Default.ObsPort;
-            Password = Properties.Settings.Default.ObsPassword;
+        public override void Load(JToken token) {
+            IP = token.Value<string>("IP") ?? "127.0.0.1";
+            Port = token.Value<int?>("Port") ?? 4455;
+            Password = Decrypt(token.Value<string>("Password") ?? "");
         }
 
-        public override void Save() {
-            Properties.Settings.Default.ObsIP = IP;
-            Properties.Settings.Default.ObsPort = Port;
-            Properties.Settings.Default.ObsPassword = Password;
+        public override JObject Save() {
+            return new JObject{
+                new JProperty("IP", IP),
+                new JProperty("Port", Port),
+                new JProperty("Password", Encrypt(Password))
+            };
         }
 
         async public Task<bool> ConnectAsync() {

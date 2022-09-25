@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using Newtonsoft.Json.Linq;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public class ChromeSpeechRecognitionService : SpeechRecognitionService {
-        public int Port { get; set; }
+        public int Port { get; set; } = 14949;
 
         private HttpListener? Listener;
         private ChromeDriver? ChromeDriver;
@@ -19,16 +20,18 @@ namespace sikusiSubtitles.SpeechRecognition {
         private string LastText = "";
         private bool isLastFinal = false;
 
-        public ChromeSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "Chrome", "Google Chrome", 100) {
+        public ChromeSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "ChromeSpeechRecognition", "Google Chrome", 100) {
             SettingPage = new ChromeSpeechRecognitionPage(serviceManager, this);
         }
 
-        public override void Load() {
-            Port = Properties.Settings.Default.ChromePort;
+        public override void Load(JToken token) {
+            Port = token.Value<int?>("Port") ?? 14949;
         }
 
-        public override void Save() {
-            Properties.Settings.Default.ChromePort = Port;
+        public override JObject Save() {
+            return new JObject {
+                new JProperty("Port", Port)
+            };
         }
 
         public override List<Tuple<string, string>> GetLanguages() {

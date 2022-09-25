@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -12,16 +13,18 @@ namespace sikusiSubtitles.Translation {
 
         public string Key { get; set; } = "";
 
-        public GoogleAppsScriptTranslationService(ServiceManager serviceManager) : base(serviceManager, "GoogleAppsScript", "Google Apps Script", 100) {
+        public GoogleAppsScriptTranslationService(ServiceManager serviceManager) : base(serviceManager, "GoogleAppsScriptTranslation", "Google Apps Script", 100) {
             SettingPage = new GoogleAppsScriptTranslationPage(serviceManager, this);
         }
 
-        public override void Load() {
-            Key = Decrypt(Properties.Settings.Default.GoogleAppsScriptTranslationKey);
+        public override void Load(JToken token) {
+            Key = Decrypt(token.Value<string>("Key") ?? "");
         }
 
-        public override void Save() {
-            Properties.Settings.Default.GoogleAppsScriptTranslationKey = Encrypt(Key);
+        public override JObject Save() {
+            return new JObject{
+                new JProperty("Key", Encrypt(Key))
+            };
         }
 
         public override List<Tuple<string, string>> GetLanguages() {

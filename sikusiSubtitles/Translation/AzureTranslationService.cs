@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,19 +15,21 @@ namespace sikusiSubtitles.Translation {
         private static readonly string endpoint = "https://api.cognitive.microsofttranslator.com/";
         private HttpClient HttpClient = new HttpClient();
 
-        public AzureTranslationService(ServiceManager serviceManager) : base(serviceManager, "Azure", "Azure Cognitive Services - Translator", 300) {
+        public AzureTranslationService(ServiceManager serviceManager) : base(serviceManager, "AzureTranslation", "Azure Cognitive Services - Translator", 300) {
             SettingPage = new AzureTranslationPage(serviceManager, this);
             this.languages.Sort((a, b) => a.Item2.CompareTo(b.Item2));
         }
 
-        public override void Load() {
-            Key = Decrypt(Properties.Settings.Default.AzureTranslationKey);
-            Region = Properties.Settings.Default.AzureTranslationRegion;
+        public override void Load(JToken token) {
+            Key = Decrypt(token.Value<string>("Key") ?? "");
+            Region = token.Value<string>("Region") ?? "";
         }
 
-        public override void Save() {
-            Properties.Settings.Default.AzureTranslationKey = Encrypt(Key);
-            Properties.Settings.Default.AzureTranslationRegion = Region;
+        public override JObject Save() {
+            return new JObject {
+                new JProperty("Key", Encrypt(Key)),
+                new JProperty("Region", Region)
+            };
         }
 
         public override List<Tuple<string, string>> GetLanguages() {

@@ -1,6 +1,7 @@
 ﻿using Google.Apis.Services;
 using Google.Apis.Translate.v2;
 using Google.Apis.Translate.v2.Data;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,16 +15,18 @@ namespace sikusiSubtitles.Translation {
 
         public string Key { get; set; } = "";
 
-        public GoogleBasicTranslationService(ServiceManager serviceManager) : base(serviceManager, "GoogleBasic", "Google Cloud Translation - Basic", 200) {
+        public GoogleBasicTranslationService(ServiceManager serviceManager) : base(serviceManager, "GoogleBasicTranslation", "Google Cloud Translation - Basic", 200) {
             SettingPage = new GoogleBasicTranslationPage(serviceManager, this);
         }
 
-        public override void Load() {
-            Key = Decrypt(Properties.Settings.Default.GoogleTranslationBasicKey);
+        public override void Load(JToken token) {
+            Key = Decrypt(token.Value<string>("Key") ?? "");
         }
 
-        public override void Save() {
-            Properties.Settings.Default.GoogleTranslationBasicKey = Encrypt(Key);
+        public override JObject Save() {
+            return new JObject {
+                new JProperty("Key", Encrypt(Key))
+            };
         }
 
         public override List<Tuple<string, string>> GetLanguages() {

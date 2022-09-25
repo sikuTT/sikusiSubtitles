@@ -55,7 +55,7 @@ namespace sikusiSubtitles {
                 var page = service.GetSettingPage();
                 // サービスに設定ページが存在する場合、フォームに設定ページを追加する
                 // ツリービューに設定ページを表示するメニューを作成
-                var node = new TreeNode(service.DisplayName) { Name = service.Name };
+                var node = new TreeNode(service.DisplayName) { Name = service.ServiceName };
                 this.menuView.Nodes.Add(node);
 
                 if (page != null) {

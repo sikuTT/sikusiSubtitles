@@ -71,19 +71,8 @@ namespace sikusiSubtitles.OCR {
             return Pix.LoadFromMemory(memStream.GetBuffer());
         }
 
-        private string? GetDataPath() {
-            var myAssembly = Assembly.GetEntryAssembly();
-            var path = myAssembly?.Location;
-            if (path == null)
-                return null;
-
-            int index = path.LastIndexOf('\\');
-            if (index == -1)
-                return null;
-
-            path = path.Substring(0, index);
-            path += "\\tessdata";
-            return path;
+        private string GetDataPath() {
+            return Application.StartupPath + "\\tessdata";
         }
     }
 }

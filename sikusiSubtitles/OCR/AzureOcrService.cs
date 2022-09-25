@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,14 +18,16 @@ namespace sikusiSubtitles.OCR {
             SettingPage = new AzureOcrPage(serviceManager, this);
         }
 
-        public override void Load() {
-            Key = Decrypt(Properties.Settings.Default.AzureOcrKey);
-            Endpoint= Properties.Settings.Default.AzureOcrEndpoint;
+        public override void Load(JToken token) {
+            Key = Decrypt(token.Value<string>("Key") ?? "");
+            Endpoint = token.Value<string>("Endpoint") ?? "";
         }
 
-        public override void Save() {
-            Properties.Settings.Default.AzureOcrKey = Encrypt(Key);
-            Properties.Settings.Default.AzureOcrEndpoint = Endpoint;
+        public override JObject Save() {
+            return new JObject {
+                new JProperty("Key", Encrypt(Key)),
+                new JProperty("Endpoint", Endpoint)
+            };
         }
 
         public override List<Tuple<string, string>> GetLanguages() {

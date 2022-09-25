@@ -1,4 +1,5 @@
 ﻿using DeepL;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,12 +16,14 @@ namespace sikusiSubtitles.Translation {
             this.languages.Sort((a, b) => a.Item2.CompareTo(b.Item2));
         }
 
-        public override void Load() {
-            Key = Decrypt(Properties.Settings.Default.DeepLTranslationKey);
+        public override void Load(JToken token) {
+            Key = Decrypt(token.Value<string>("Key") ?? "");
         }
 
-        public override void Save() {
-            Properties.Settings.Default.DeepLTranslationKey = Encrypt(Key);
+        public override JObject Save() {
+            return new JObject {
+                new JProperty("Key", Encrypt(Key))
+            };
         }
 
         public override List<Tuple<string, string>> GetLanguages() {

@@ -412,7 +412,6 @@
         private Button speechOcrStopButton;
         private Button speechOcrButton;
         private ContextMenuStrip ocrTextEditContextMenuStrip;
-        private ToolStripMenuItem weblioで検索するToolStripMenuItem;
         private ToolStripMenuItem searchByWeblio;
         private ToolStripSeparator toolStripMenuItem1;
         private ToolStripMenuItem cutToolStripMenuItem;

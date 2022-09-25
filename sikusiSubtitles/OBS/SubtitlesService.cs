@@ -32,48 +32,64 @@ namespace sikusiSubtitles.OBS {
 
         public string TranslationEngine { get; set; } = "";
         public string TranslationLanguageFrom { get; set; } = "";
-        public string[] TranslationLanguageTo { get; set; } = new string[TranslationMaxCount];
-        public bool[] Translation { get; set; } = new bool[TranslationMaxCount];
+        public List<string> TranslationLanguageTo { get; set; } = new List<string>() { "", "" };
+        public List<bool> Translation { get; set; } = new List<bool>() { false, false };
         public string VoiceTarget { get; set; } = "";
-        public string[] TranslationTargets { get; set; } = new string[TranslationMaxCount];
-        public bool IsClearInterval { get; set; } = false;
-        public int ClearInterval { get; set; } = 0;
-        public bool IsAdditionalTime { get; set; } = false;
-        public int AdditionalTime { get; set; } = 0;
+        public List<string> TranslationTargets { get; set; } = new List<string>() { "", "" };
+        public bool ClearInterval { get; set; } = false;
+        public int ClearIntervalTime { get; set; } = 1;
+        public bool Additional { get; set; } = false;
+        public int AdditionalTime { get; set; } = 1;
 
         public SubtitlesService(ServiceManager serviceManager) : base(serviceManager, ObsServiceManager.ServiceName, "Subtitles", "字幕", 200) {
             SettingPage = new SubtitlesPage(serviceManager, this);
         }
-        public override void Load() {
-            TranslationEngine = Properties.Settings.Default.SubtitlesTranslationEngine;
-            TranslationLanguageFrom = Properties.Settings.Default.SubtitlesTranslationLanguageFrom;
-            TranslationLanguageTo[0] = Properties.Settings.Default.SubtitlesTranslationLanguageTo1;
-            TranslationLanguageTo[1] = Properties.Settings.Default.SubtitlesTranslationLanguageTo2;
-            Translation[0] = Properties.Settings.Default.SubtitlesTranslation1;
-            Translation[1] = Properties.Settings.Default.SubtitlesTranslation2;
-            VoiceTarget = Properties.Settings.Default.SubtitlesVoiceTarget;
-            TranslationTargets[0] = Properties.Settings.Default.SubtitlesTranslationTarget1;
-            TranslationTargets[1] = Properties.Settings.Default.SubtitlesTranslationTarget2;
-            IsClearInterval = Properties.Settings.Default.SubtitlesIsClearInterval;
-            ClearInterval = Properties.Settings.Default.SubtitlesClearInterval;
-            IsAdditionalTime = Properties.Settings.Default.SubtitlesIsAdditionalTime;
-            AdditionalTime = Properties.Settings.Default.SubtitlesAdditionalTime;
+        public override void Load(JToken token) {
+            TranslationEngine = token.Value<string>("TranslationEngine") ?? "";
+            TranslationLanguageFrom = token.Value<string>("TranslationLanguageFrom") ?? "";
+            VoiceTarget = token.Value<string>("VoiceTarget") ?? "";
+            ClearInterval = token.Value<bool>("ClearInterval");
+            ClearIntervalTime = token.Value<int?>("ClearIntervalTime") ?? 1;
+            Additional = token.Value<bool>("Additional");
+            AdditionalTime = token.Value<int?>("AdditionalTime") ?? 1;
+
+            var translationTo = token.Value<JToken>("TranslationTo");
+            if (translationTo != null) {
+                var size = translationTo.Count();
+                Translation = new List<bool>(new bool[Math.Max(size, TranslationMaxCount)]);
+                TranslationLanguageTo = new List<string>(new string[Math.Max(size, TranslationMaxCount)]);
+                TranslationTargets = new List<string>(new string[Math.Max(size, TranslationMaxCount)]);
+                var i = 0;
+                foreach (var to in translationTo) {
+                    Translation[i] =to.Value<bool>("Translation");
+                    TranslationLanguageTo[i] = to.Value<string>("Language") ?? "";
+                    TranslationTargets[i] = to.Value<string>("Target") ?? "";
+                    i++;
+                }
+            }
         }
 
-        public override void Save() {
-            Properties.Settings.Default.SubtitlesTranslationEngine = TranslationEngine;
-            Properties.Settings.Default.SubtitlesTranslationLanguageFrom = TranslationLanguageFrom;
-            Properties.Settings.Default.SubtitlesTranslationLanguageTo1 = TranslationLanguageTo[0];
-            Properties.Settings.Default.SubtitlesTranslationLanguageTo2 = TranslationLanguageTo[1];
-            Properties.Settings.Default.SubtitlesTranslation1 = Translation[0];
-            Properties.Settings.Default.SubtitlesTranslation2 = Translation[1];
-            Properties.Settings.Default.SubtitlesVoiceTarget = VoiceTarget;
-            Properties.Settings.Default.SubtitlesTranslationTarget1 = TranslationTargets[0];
-            Properties.Settings.Default.SubtitlesTranslationTarget2 = TranslationTargets[1];
-            Properties.Settings.Default.SubtitlesIsClearInterval = IsClearInterval;
-            Properties.Settings.Default.SubtitlesClearInterval = (int)ClearInterval;
-            Properties.Settings.Default.SubtitlesIsAdditionalTime = IsAdditionalTime;
-            Properties.Settings.Default.SubtitlesAdditionalTime = (int)AdditionalTime;
+        public override JObject Save() {
+            var translationTo = new List<JObject>();
+            for (var i = 0; i < TranslationLanguageTo.Count; i++) {
+                var to = new JObject(
+                    new JProperty("Translation", Translation[i]),
+                    new JProperty("Language", TranslationLanguageTo[i]),
+                    new JProperty("Target", TranslationTargets[i])
+                );
+                translationTo.Add(to);
+            }
+
+            return new JObject {
+                new JProperty("TranslationEngine", TranslationEngine),
+                new JProperty("TranslationLanguageFrom", TranslationLanguageFrom),
+                new JProperty("VoiceTarget", VoiceTarget),
+                new JProperty("ClearInterval", ClearInterval),
+                new JProperty("ClearIntervalTime", ClearIntervalTime),
+                new JProperty("Additional", Additional),
+                new JProperty("AdditionalTime", AdditionalTime),
+                new JProperty("TranslationTo", translationTo)
+            };
         }
 
         public bool Start(ObsService obsService) {
@@ -135,7 +151,7 @@ namespace sikusiSubtitles.OBS {
             if (this.obsService != null && this.obsService.IsConnected) {
                 if (args.Text != "") {
                     // 字幕を表示する。
-                    await SetSubtitlesAsync(args.Text, this.VoiceTarget, true, this.ClearInterval, this.AdditionalTime);
+                    await SetSubtitlesAsync(args.Text, VoiceTarget, true, ClearInterval ? ClearIntervalTime : null, Additional ? AdditionalTime : null);
 
                     // 翻訳サービスが設定されている場合、翻訳する
                     await TranslateAsync(args.Text);
@@ -208,7 +224,7 @@ namespace sikusiSubtitles.OBS {
                     if (Translation[i] == true && TranslationTargets[i] != null && TranslationTargets[i] != "") {
                         var translation = result.Translations[j++];
                         if (translation != null && translation.Text != null) {
-                            await SetSubtitlesAsync(translation.Text, TranslationTargets[i], true, this.IsClearInterval ? this.ClearInterval : null, this.IsAdditionalTime ? this.AdditionalTime : null);
+                            await SetSubtitlesAsync(translation.Text, TranslationTargets[i], true, ClearInterval ? ClearIntervalTime : null, Additional ? AdditionalTime : null);
                         }
                     }
                 }

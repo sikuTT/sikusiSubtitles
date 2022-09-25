@@ -1,4 +1,5 @@
 ﻿using NAudio.CoreAudioApi;
+using Newtonsoft.Json.Linq;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public class SpeechRecognitionServiceManager : sikusiSubtitles.Service {
@@ -12,24 +13,28 @@ namespace sikusiSubtitles.SpeechRecognition {
             SettingPage = new SpeechRecognitionPage(serviceManager, this);
         }
 
-        public override void Load() {
+        public override void Load(JToken token) {
+            var device = token.Value<string>("Device") ?? "";
+
             // マイク設定
             var enumerator = new MMDeviceEnumerator();
             var micList = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
-            Device = micList.Where(mic => mic.ID == Properties.Settings.Default.MicID).FirstOrDefault();
+            Device = micList.Where(mic => mic.ID == device).FirstOrDefault();
             if (Device == null) {
                 Device = enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Console);
             }
 
             // 音声認識エンジン
-            Engine = Properties.Settings.Default.SpeechRecognitionEngine;
-            Language = Properties.Settings.Default.SpeechRecognitionLanguage;
+            Engine = token.Value<string>("Engine") ?? "";
+            Language = token.Value<string>("Language") ?? "";
         }
 
-        public override void Save() {
-            Properties.Settings.Default.MicID = Device?.ID ?? "";
-            Properties.Settings.Default.SpeechRecognitionEngine = Engine;
-            Properties.Settings.Default.SpeechRecognitionLanguage = Language;
+        public override JObject Save() {
+            return new JObject {
+                new JProperty("Device", Device?.ID ?? ""),
+                new JProperty("Engine", Engine),
+                new JProperty("Language", Language)
+            };
         }
 
         public SpeechRecognitionService? GetEngine() {

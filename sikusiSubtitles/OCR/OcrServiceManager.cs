@@ -1,4 +1,5 @@
-﻿using sikusiSubtitles.Shortcut;
+﻿using Newtonsoft.Json.Linq;
+using sikusiSubtitles.Shortcut;
 using sikusiSubtitles.Translation;
 using System;
 using System.Collections.Generic;
@@ -14,37 +15,45 @@ namespace sikusiSubtitles.OCR {
         public string OcrLanguage { get; set; } = "";
         public string TranslationEngine { get; set; } = "";
         public string TranslationLanguage { get; set; } = "";
+        public string OcrSpeechEngine { get; set; } = "";
+        public string OcrSpeechVoice { get; set; } = "";
 
-        private Shortcut.Shortcut ocrShortcut = new Shortcut.Shortcut("execute-ocr", "OCR", "画面から文字を取得し翻訳する", "");
-        private Shortcut.Shortcut clearOcrTranslatedTextShortcut = new Shortcut.Shortcut("clear-ocr-translated-text", "OCR", "OCRの翻訳結果をクリアする", "");
+        private Shortcut.Shortcut OcrShortcut = new Shortcut.Shortcut("execute-ocr", "OCR", "画面から文字を取得し翻訳する", "");
+        private Shortcut.Shortcut ClearObsTextShortcut = new Shortcut.Shortcut("clear-obs-text", "OCR", "OCRの翻訳結果をクリアする", "");
 
         public OcrServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, ServiceName, "OCR", 400, true) {
             SettingPage = new OcrPage(serviceManager, this);
         }
 
-        public override void Load() {
-            OcrEngine = Properties.Settings.Default.OcrEngine;
-            OcrLanguage = Properties.Settings.Default.OcrLanguage;
-            TranslationEngine = Properties.Settings.Default.OcrTranslationEngine;
-            TranslationLanguage = Properties.Settings.Default.OcrTranslationLanguage;
-            ocrShortcut.ShortcutKey = Properties.Settings.Default.OcrShortcutKey;
-            clearOcrTranslatedTextShortcut.ShortcutKey = Properties.Settings.Default.ClearOcrTraslatedTextShortcutKey;
+        public override void Load(JToken token) {
+            OcrEngine = token.Value<string>("OcrEngine") ?? "";
+            OcrLanguage = token.Value<string>("OcrLanguage") ?? "";
+            TranslationEngine = token.Value<string>("TranslationEngine") ?? "";
+            TranslationLanguage = token.Value<string>("TranslationLanguage") ?? "";
+            OcrSpeechEngine = token.Value<string>("OcrSpeechEngine") ?? "";
+            OcrSpeechVoice = token.Value<string>("OcrSpeechVoice") ?? "";
+            OcrShortcut.ShortcutKey = token.Value<string>("OcrShortcutKey") ?? "";
+            ClearObsTextShortcut.ShortcutKey = token.Value<string>("ClearObsTextShortcutKey") ?? "";
         }
 
-        public override void Save() {
-            Properties.Settings.Default.OcrEngine = OcrEngine;
-            Properties.Settings.Default.OcrLanguage = OcrLanguage;
-            Properties.Settings.Default.OcrTranslationEngine = TranslationEngine;
-            Properties.Settings.Default.OcrTranslationLanguage = TranslationLanguage;
-            Properties.Settings.Default.OcrShortcutKey = ocrShortcut.ShortcutKey;
-            Properties.Settings.Default.ClearOcrTraslatedTextShortcutKey = clearOcrTranslatedTextShortcut.ShortcutKey;
+        public override JObject Save() {
+            return new JObject {
+                new JProperty("OcrEngine", OcrEngine),
+                new JProperty("OcrLanguage", OcrLanguage),
+                new JProperty("TranslationEngine", TranslationEngine),
+                new JProperty("TranslationLanguage", TranslationLanguage),
+                new JProperty("OcrSpeechEngine", OcrSpeechEngine),
+                new JProperty("OcrSpeechVoice", OcrSpeechVoice),
+                new JProperty("OcrShortcutKey", OcrShortcut.ShortcutKey),
+                new JProperty("ClearObsTextShortcutKey", ClearObsTextShortcut.ShortcutKey)
+            };
         }
 
         public override void Init() {
             var shortcutService = this.ServiceManager.GetService<ShortcutService>();
             if (shortcutService != null) {
-                shortcutService.Shortcuts.Add(ocrShortcut);
-                shortcutService.Shortcuts.Add(clearOcrTranslatedTextShortcut);
+                shortcutService.Shortcuts.Add(OcrShortcut);
+                shortcutService.Shortcuts.Add(ClearObsTextShortcut);
             }
         }
 

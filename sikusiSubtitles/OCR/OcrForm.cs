@@ -85,7 +85,8 @@ namespace sikusiSubtitles.OCR {
             // 読み上げサービス一覧
             speechServices = this.serviceManager.GetServices<SpeechService>();
             speechServices.ForEach(service => {
-                ocrSpeechEngineComboBox.Items.Add(service.DisplayName);
+                var i = ocrSpeechEngineComboBox.Items.Add(service.DisplayName);
+                if (service.Name == ocrManager.OcrSpeechEngine) ocrSpeechEngineComboBox.SelectedIndex = i;
             });
         }
 
@@ -183,19 +184,27 @@ namespace sikusiSubtitles.OCR {
 
         /** OCR結果の読み上げエンジンを変更した */
         private void ocrSpeechEngineComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+            // ボイス一覧をエンジンの持つボイスで更新する
             ocrSpeechVoiceComboBox.Items.Clear();
             if (ocrSpeechEngineComboBox.SelectedIndex != -1) {
                 speechService = speechServices[ocrSpeechEngineComboBox.SelectedIndex];
                 speechVoices = speechService.GetVoices();
                 speechVoices.ForEach(voice => {
-                    ocrSpeechVoiceComboBox.Items.Add(voice.Item2);
+                    var i = ocrSpeechVoiceComboBox.Items.Add(voice.Item2);
+                    if (voice.Item1 == ocrManager.OcrSpeechVoice) ocrSpeechVoiceComboBox.SelectedIndex = i;
                 });
+
+                // デフォルトのエンジンを更新する
+                ocrManager.OcrSpeechEngine = speechService.Name;
             }
         }
 
         /** OCR結果の読み上げボイスを変更した */
         private void ocrSpeechVoiceComboBox_SelectedIndexChanged(object sender, EventArgs e) {
             speechOcrButton.Enabled = ocrSpeechVoiceComboBox.SelectedIndex != -1 && ocrTextBox.Text.Length > 0;
+            if (ocrSpeechVoiceComboBox.SelectedIndex != -1) {
+                ocrManager.OcrSpeechVoice = speechVoices[ocrSpeechVoiceComboBox.SelectedIndex].Item1;
+            }
         }
 
         /** OCR結果の読み上げボタンを押した */

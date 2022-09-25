@@ -1,6 +1,7 @@
 ﻿using Microsoft.CognitiveServices.Speech;
 using Microsoft.CognitiveServices.Speech.Audio;
 using NAudio.CoreAudioApi;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,18 +16,20 @@ namespace sikusiSubtitles.SpeechRecognition {
         public string Key { get; set; } = "";
         public string Region { get; set; } = "";
 
-        public AzureSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "Azure", "Azure Cognitive Service - Speech Service", 200) {
+        public AzureSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "AzureSpeechRecognition", "Azure Cognitive Service - Speech Service", 200) {
             SettingPage = new AzureSpeechRecognitionPage(serviceManager, this);
         }
 
-        public override void Load() {
-            this.Key = Properties.Settings.Default.AzureSpeechRecognitionKey;
-            this.Region = Properties.Settings.Default.AzureSpeechRecognitionRegion;
+        public override void Load(JToken token) {
+            this.Key = Decrypt(token.Value<string>("Key") ?? "");
+            this.Region = token.Value<string>("Region") ?? "";
         }
 
-        public override void Save() {
-            Properties.Settings.Default.AzureSpeechRecognitionKey = this.Key;
-            Properties.Settings.Default.AzureSpeechRecognitionRegion = this.Region;
+        public override JObject Save() {
+            return new JObject {
+                new JProperty("Key", Encrypt(Key)),
+                new JProperty("Region", Region)
+            };
         }
 
         public override List<Tuple<string, string>> GetLanguages() {

@@ -63,7 +63,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.endpointTextBox.Location = new System.Drawing.Point(82, 62);
             this.endpointTextBox.Name = "endpointTextBox";
-            this.endpointTextBox.PasswordChar = '*';
             this.endpointTextBox.Size = new System.Drawing.Size(561, 23);
             this.endpointTextBox.TabIndex = 0;
             this.endpointTextBox.TextChanged += new System.EventHandler(this.endpointTextBox_TextChanged);

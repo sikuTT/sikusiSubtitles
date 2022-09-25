@@ -41,9 +41,9 @@ namespace sikusiSubtitles.OBS {
             this.translationTextBox2.Text = service.TranslationTargets[1];
 
             // 表示時間
-            this.clearCheckBox.Checked = service.IsClearInterval;
-            this.clearIntervalNumericUpDown.Value = service.ClearInterval;
-            this.additionalCheckBox.Checked = service.IsAdditionalTime;
+            this.clearCheckBox.Checked = service.ClearInterval;
+            this.clearIntervalNumericUpDown.Value = service.ClearIntervalTime;
+            this.additionalCheckBox.Checked = service.Additional;
             this.additionalTrackBar.Value = service.AdditionalTime;
         }
 
@@ -131,15 +131,15 @@ namespace sikusiSubtitles.OBS {
 
         /** 一定時間で字幕を消す */
         private void clearCheckBox_CheckedChanged(object sender, EventArgs e) {
-            this.service.IsClearInterval = clearCheckBox.Checked;
+            this.service.ClearInterval = clearCheckBox.Checked;
         }
 
         private void clearIntervalNumericUpDown_ValueChanged(object sender, EventArgs e) {
-            this.service.ClearInterval = (int)this.clearIntervalNumericUpDown.Value;
+            this.service.ClearIntervalTime = (int)this.clearIntervalNumericUpDown.Value;
         }
 
         private void additionalCheckBox_CheckedChanged(object sender, EventArgs e) {
-            this.service.IsAdditionalTime = additionalCheckBox.Checked;
+            this.service.Additional = additionalCheckBox.Checked;
         }
 
         private void additionalTrackBar_Scroll(object sender, EventArgs e) {

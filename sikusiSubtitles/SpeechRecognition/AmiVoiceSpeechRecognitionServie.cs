@@ -2,6 +2,7 @@
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,8 +16,8 @@ namespace sikusiSubtitles.SpeechRecognition {
         private com.amivoice.wrp.Wrp? Wrp;
         private WrpListener? Listener;
 
-        public string? Key { get; set; }
-        public bool? Log { get; set; }
+        public string Key { get; set; } = "";
+        public bool Log { get; set; } = true;
 
         public override List<Tuple<string, string>> GetLanguages() {
             return engines;
@@ -26,14 +27,16 @@ namespace sikusiSubtitles.SpeechRecognition {
             SettingPage = new AmiVoiceSpeechRecognitionPage(serviceManager, this);
         }
 
-        public override void Load() {
-            Key = this.Decrypt(Properties.Settings.Default.AmiVoiceKey);
-            Log = Properties.Settings.Default.AmiVoiceLog;
+        public override void Load(JToken token) {
+            Key = Decrypt(token.Value<string>("Key") ?? "");
+            Log = token.Value<bool?>("Log") ?? true;
         }
 
-        public override void Save() {
-            Properties.Settings.Default.AmiVoiceKey = Encrypt(Key ?? "");
-            Properties.Settings.Default.AmiVoiceLog = Log ?? true;
+        public override JObject Save() {
+            return new JObject {
+                new JProperty("Key", Encrypt(Key)),
+                new JProperty("Log", Log)
+            };
         }
 
         public override bool Start() {
@@ -110,14 +113,11 @@ namespace sikusiSubtitles.SpeechRecognition {
 
         private bool ListenerStart() {
             var manager = this.ServiceManager.GetManager<SpeechRecognitionServiceManager>();
-            if (this.Key == null || this.Key == "") {
+            if (this.Key == "") {
                 MessageBox.Show("APIキーが設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             } else if (manager == null || manager.Language == "") {
                 MessageBox.Show("エンジンが設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            } else if (this.Log == null) {
-                MessageBox.Show("ログの有無が設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             Listener = new WrpListener();

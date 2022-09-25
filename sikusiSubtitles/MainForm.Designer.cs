@@ -28,10 +28,12 @@
             this.speechRecognitionCheckBox = new System.Windows.Forms.CheckBox();
             this.obsCheckBox = new System.Windows.Forms.CheckBox();
             this.recognitionResultTextBox = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.versionLabel = new System.Windows.Forms.Label();
+            this.topLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.topLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -64,7 +66,7 @@
             // 
             this.speechRecognitionCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
             this.speechRecognitionCheckBox.AutoSize = true;
-            this.speechRecognitionCheckBox.Location = new System.Drawing.Point(12, 12);
+            this.speechRecognitionCheckBox.Location = new System.Drawing.Point(72, 3);
             this.speechRecognitionCheckBox.Name = "speechRecognitionCheckBox";
             this.speechRecognitionCheckBox.Size = new System.Drawing.Size(65, 25);
             this.speechRecognitionCheckBox.TabIndex = 1;
@@ -76,7 +78,7 @@
             // 
             this.obsCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
             this.obsCheckBox.AutoSize = true;
-            this.obsCheckBox.Location = new System.Drawing.Point(83, 12);
+            this.obsCheckBox.Location = new System.Drawing.Point(3, 3);
             this.obsCheckBox.Name = "obsCheckBox";
             this.obsCheckBox.Size = new System.Drawing.Size(63, 25);
             this.obsCheckBox.TabIndex = 2;
@@ -96,25 +98,35 @@
             this.recognitionResultTextBox.Size = new System.Drawing.Size(950, 52);
             this.recognitionResultTextBox.TabIndex = 12;
             // 
-            // label1
+            // versionLabel
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(912, 17);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(52, 15);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "Ver. 0.3.5";
+            this.versionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.versionLabel.AutoSize = true;
+            this.versionLabel.Location = new System.Drawing.Point(912, 12);
+            this.versionLabel.Name = "versionLabel";
+            this.versionLabel.Size = new System.Drawing.Size(52, 15);
+            this.versionLabel.TabIndex = 6;
+            this.versionLabel.Text = "Ver. 0.3.6";
+            // 
+            // topLayoutPanel
+            // 
+            this.topLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.topLayoutPanel.Controls.Add(this.obsCheckBox);
+            this.topLayoutPanel.Controls.Add(this.speechRecognitionCheckBox);
+            this.topLayoutPanel.Location = new System.Drawing.Point(12, 4);
+            this.topLayoutPanel.Name = "topLayoutPanel";
+            this.topLayoutPanel.Size = new System.Drawing.Size(894, 37);
+            this.topLayoutPanel.TabIndex = 13;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(974, 598);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.topLayoutPanel);
+            this.Controls.Add(this.versionLabel);
             this.Controls.Add(this.recognitionResultTextBox);
-            this.Controls.Add(this.obsCheckBox);
-            this.Controls.Add(this.speechRecognitionCheckBox);
             this.Controls.Add(this.splitContainer1);
             this.Name = "MainForm";
             this.Text = "sikusiSubtitles";
@@ -123,6 +135,8 @@
             this.splitContainer1.Panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.topLayoutPanel.ResumeLayout(false);
+            this.topLayoutPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -134,6 +148,7 @@
         private SplitContainer splitContainer1;
         private TreeView menuView;
         private TextBox recognitionResultTextBox;
-        private Label label1;
+        private Label versionLabel;
+        private FlowLayoutPanel topLayoutPanel;
     }
 }

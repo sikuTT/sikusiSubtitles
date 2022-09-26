@@ -46,7 +46,7 @@ namespace sikusiSubtitles.Translation {
                 foreach (var to in toList) {
                     var translatedText = await translator.TranslateTextAsync(text, from, to);
                     Debug.WriteLine("DeepLTranslationService: " + translatedText);
-                    result.Translations.Add(new TranslationResult.Translation() { Text = translatedText.Text });
+                    result.Translations.Add(new TranslationResult.Translation() { Text = translatedText.Text, Language= to });
                 }
             } catch (Exception ex) {
                 Debug.WriteLine("DeepLTranslationService: " + ex.Message);

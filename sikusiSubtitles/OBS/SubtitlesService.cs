@@ -20,7 +20,10 @@ namespace sikusiSubtitles.OBS {
     }
 
     public class SubtitlesService : sikusiSubtitles.Service {
-        private static int TranslationMaxCount = 2;
+        public class TranslationTo {
+            public string Language = "";
+            public string Target = "";
+        }
 
         private ObsService? obsService;
         private SpeechRecognitionService? speechRecognitionService;
@@ -32,10 +35,8 @@ namespace sikusiSubtitles.OBS {
 
         public string TranslationEngine { get; set; } = "";
         public string TranslationLanguageFrom { get; set; } = "";
-        public List<string> TranslationLanguageTo { get; set; } = new List<string>() { "", "" };
-        public List<bool> Translation { get; set; } = new List<bool>() { false, false };
         public string VoiceTarget { get; set; } = "";
-        public List<string> TranslationTargets { get; set; } = new List<string>() { "", "" };
+        public List<TranslationTo> TranslationToList { get; set; } = new List<TranslationTo>();
         public bool ClearInterval { get; set; } = false;
         public int ClearIntervalTime { get; set; } = 1;
         public bool Additional { get; set; } = false;
@@ -53,32 +54,27 @@ namespace sikusiSubtitles.OBS {
             Additional = token.Value<bool>("Additional");
             AdditionalTime = token.Value<int?>("AdditionalTime") ?? 1;
 
-            var translationTo = token.Value<JToken>("TranslationTo");
-            if (translationTo != null) {
-                var size = translationTo.Count();
-                Translation = new List<bool>(new bool[Math.Max(size, TranslationMaxCount)]);
-                TranslationLanguageTo = new List<string>(new string[Math.Max(size, TranslationMaxCount)]);
-                TranslationTargets = new List<string>(new string[Math.Max(size, TranslationMaxCount)]);
-                var i = 0;
-                foreach (var to in translationTo) {
-                    Translation[i] =to.Value<bool>("Translation");
-                    TranslationLanguageTo[i] = to.Value<string>("Language") ?? "";
-                    TranslationTargets[i] = to.Value<string>("Target") ?? "";
-                    i++;
+            TranslationToList = new List<TranslationTo>();
+            var toList = token.Value<JToken>("TranslationToList");
+            if (toList != null) {
+                foreach (var to in toList) {
+                    TranslationToList.Add(new TranslationTo(){
+                        Language = to.Value<string>("Language") ?? "",
+                        Target = to.Value<string>("Target") ?? "",
+                    });
                 }
             }
         }
 
         public override JObject Save() {
-            var translationTo = new List<JObject>();
-            for (var i = 0; i < TranslationLanguageTo.Count; i++) {
-                var to = new JObject(
-                    new JProperty("Translation", Translation[i]),
-                    new JProperty("Language", TranslationLanguageTo[i]),
-                    new JProperty("Target", TranslationTargets[i])
+            var toList = new List<JObject>();
+            TranslationToList.ForEach(to => {
+                var obj = new JObject(
+                    new JProperty("Language", to.Language),
+                    new JProperty("Target", to.Target)
                 );
-                translationTo.Add(to);
-            }
+                toList.Add(obj);
+            });
 
             return new JObject {
                 new JProperty("TranslationEngine", TranslationEngine),
@@ -88,7 +84,7 @@ namespace sikusiSubtitles.OBS {
                 new JProperty("ClearIntervalTime", ClearIntervalTime),
                 new JProperty("Additional", Additional),
                 new JProperty("AdditionalTime", AdditionalTime),
-                new JProperty("TranslationTo", translationTo)
+                new JProperty("TranslationToList", toList)
             };
         }
 
@@ -214,18 +210,15 @@ namespace sikusiSubtitles.OBS {
         private async Task TranslateAsync(string text) {
             if (this.translationService != null) {
                 var toList = new List<string>();
-                for (var i = 0; i < TranslationMaxCount; i++) {
-                    if (Translation[i] == true && TranslationLanguageTo[i] != null && TranslationLanguageTo[i] != "") {
-                        toList.Add(TranslationLanguageTo[i]);
-                    }
-                }
+                TranslationToList.ForEach(to => {
+                    if (to.Language != "") toList.Add(to.Language);
+                });
+
                 var result = await this.translationService.TranslateAsync(text, this.TranslationLanguageFrom, toList.ToArray());
-                for (int i = 0, j = 0 ; i < TranslationMaxCount && j  < result.Translations.Count; i++) {
-                    if (Translation[i] == true && TranslationTargets[i] != null && TranslationTargets[i] != "") {
-                        var translation = result.Translations[j++];
-                        if (translation != null && translation.Text != null) {
-                            await SetSubtitlesAsync(translation.Text, TranslationTargets[i], true, ClearInterval ? ClearIntervalTime : null, Additional ? AdditionalTime : null);
-                        }
+                foreach (var translation in result.Translations) {
+                    var translationTo = TranslationToList.Find(to => to.Language == translation.Language);
+                    if (translationTo != null && translationTo.Target != "") {
+                        await SetSubtitlesAsync(translation?.Text ?? "", translationTo.Target, true, ClearInterval ? ClearIntervalTime : null, Additional ? AdditionalTime : null);
                     }
                 }
             }

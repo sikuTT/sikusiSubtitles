@@ -55,7 +55,7 @@ namespace sikusiSubtitles.Translation {
                     foreach (var translation in response.Translations) {
                         result.DetectLanguage = translation.DetectedSourceLanguage;
                         var translatedText = translation.TranslatedText.Replace("&#39;", "'").Replace("&gt;", ">").Replace("&lt;", "<").Replace("&quot;", "\"").Replace("&amp;", "&");
-                        result.Translations.Add(new TranslationResult.Translation() { Text = translatedText });
+                        result.Translations.Add(new TranslationResult.Translation() { Text = translatedText, Language = to });
                         Debug.WriteLine("GoogleBasicTranslationService: " + translatedText);
                     }
                 }

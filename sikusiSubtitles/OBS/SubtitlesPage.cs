@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace sikusiSubtitles.OBS {
         private SubtitlesService service;
         private List<TranslationService> translationServices = new List<TranslationService>();
         private TranslationService? translationService;
+        private List<Tuple<string, string>> translationLanguages = new List<Tuple<string, string>>();
 
         public SubtitlesPage(ServiceManager serviceManager, SubtitlesService service) {
             this.serviceManager = serviceManager;
@@ -32,13 +34,15 @@ namespace sikusiSubtitles.OBS {
             });
 
             // 翻訳先
-            this.translationCheckBox1.Checked = service.Translation[0];
-            this.translationCheckBox2.Checked = service.Translation[1];
+            service.TranslationToList.ForEach(to => {
+                var i = translationToGridView.Rows.Add();
+                // translationToGridView.Rows[i].Cells[0];
+                translationToGridView.Rows[i].Cells[1].Value = to.Target;
+            });
+            UpdateAllTranslationToLanguages();
 
             // 字幕表示先
             this.voiceTextBox.Text = service.VoiceTarget;
-            this.translationTextBox1.Text = service.TranslationTargets[0];
-            this.translationTextBox2.Text = service.TranslationTargets[1];
 
             // 表示時間
             this.clearCheckBox.Checked = service.ClearInterval;
@@ -54,20 +58,13 @@ namespace sikusiSubtitles.OBS {
                 service.TranslationEngine = translationService.Name;
 
                 // 翻訳元言語、翻訳先言語を選択されたエンジンがサポートする言語一覧にする
-                var languages = translationService.GetLanguages();
                 translationFromComboBox.Items.Clear();
-                translationToComboBox1.Items.Clear();
-                translationToComboBox2.Items.Clear();
-                languages.ForEach(lang => {
+                translationLanguages = translationService.GetLanguages();
+                translationLanguages.ForEach(lang => {
                     var i = translationFromComboBox.Items.Add(lang.Item2);
                     if (lang.Item1 == service.TranslationLanguageFrom) translationFromComboBox.SelectedIndex = i;
-
-                    i = translationToComboBox1.Items.Add(lang.Item2);
-                    if (lang.Item1 == service.TranslationLanguageTo[0]) translationToComboBox1.SelectedIndex = i;
-
-                    i = translationToComboBox2.Items.Add(lang.Item2);
-                    if (lang.Item1 == service.TranslationLanguageTo[1]) translationToComboBox2.SelectedIndex = i;
                 });
+                UpdateAllTranslationToLanguages();
             } else {
                 service.TranslationEngine = "";
             }
@@ -78,38 +75,7 @@ namespace sikusiSubtitles.OBS {
         private void translationFromComboBox_SelectedIndexChanged(object sender, EventArgs e) {
             if (translationFromComboBox.SelectedIndex != -1) {
                 if (translationService != null) {
-                    var languages = translationService.GetLanguages();
-                    service.TranslationLanguageFrom = languages[translationFromComboBox.SelectedIndex].Item1;
-                }
-            }
-        }
-
-        /** 翻訳先1を翻訳する・しないの切り替え */
-        private void translationCheckBox1_CheckedChanged(object sender, EventArgs e) {
-            service.Translation[0] = translationCheckBox1.Checked;
-        }
-
-        /** 翻訳先言語1が変更された */
-        private void translationToComboBox1_SelectedIndexChanged(object sender, EventArgs e) {
-            if (translationToComboBox1.SelectedIndex != -1) {
-                if (translationService != null) {
-                    var languages = translationService.GetLanguages();
-                    service.TranslationLanguageTo[0] = languages[translationToComboBox1.SelectedIndex].Item1;
-                }
-            }
-        }
-
-        /** 翻訳先2を翻訳する・しないの切り替え */
-        private void translationCheckBox2_CheckedChanged(object sender, EventArgs e) {
-            service.Translation[1] = translationCheckBox2.Checked;
-        }
-
-        /** 翻訳先言語2が変更された */
-        private void translationToComboBox2_SelectedIndexChanged(object sender, EventArgs e) {
-            if (translationToComboBox2.SelectedIndex != -1) {
-                if (translationService != null) {
-                    var languages = translationService.GetLanguages();
-                    service.TranslationLanguageTo[1] = languages[translationToComboBox2.SelectedIndex].Item1;
+                    service.TranslationLanguageFrom = translationLanguages[translationFromComboBox.SelectedIndex].Item1;
                 }
             }
         }
@@ -117,16 +83,6 @@ namespace sikusiSubtitles.OBS {
         /** 音声の字幕表示先を設定 */
         private void voiceTextBox_TextChanged(object sender, EventArgs e) {
             this.service.VoiceTarget = voiceTextBox.Text;
-        }
-
-        /** 翻訳1の字幕表示先を設定 */
-        private void translationTextBox1_TextChanged(object sender, EventArgs e) {
-            this.service.TranslationTargets[0] = translationTextBox1.Text;
-        }
-
-        /** 翻訳2の字幕表示先を設定 */
-        private void translationTextBox2_TextChanged(object sender, EventArgs e) {
-            this.service.TranslationTargets[1] = translationTextBox2.Text;
         }
 
         /** 一定時間で字幕を消す */
@@ -144,6 +100,66 @@ namespace sikusiSubtitles.OBS {
 
         private void additionalTrackBar_Scroll(object sender, EventArgs e) {
             this.service.AdditionalTime = this.additionalTrackBar.Value;
+        }
+
+        /** 翻訳先を追加 */
+        private void translateTargetAddButton_Click(object sender, EventArgs e) {
+            this.service.TranslationToList.Add(new SubtitlesService.TranslationTo());
+            var i = this.translationToGridView.Rows.Add();
+            if (translationService != null) {
+                var cell = translationToGridView.Rows[i].Cells[0] as DataGridViewComboBoxCell;
+                if (cell != null) {
+                    var languages = translationService.GetLanguages();
+                    languages.ForEach(lang => {
+                        var i = cell.Items.Add(lang.Item2);
+                    });
+                }
+            }
+        }
+
+        /** 翻訳先を削除 */
+        private void translateTargetRemove_Click(object sender, EventArgs e) {
+            foreach (DataGridViewRow item in this.translationToGridView.SelectedRows) {
+                this.service.TranslationToList.RemoveAt(item.Index);
+                translationToGridView.Rows.RemoveAt(item.Index);
+            }
+            foreach (DataGridViewCell cell in this.translationToGridView.SelectedCells) {
+                this.service.TranslationToList.RemoveAt(cell.RowIndex);
+                translationToGridView.Rows.RemoveAt(cell.RowIndex);
+            }
+        }
+
+        private void translationToDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e) {
+            if (e.RowIndex >= 0) {
+                if (e.ColumnIndex == 0) {
+                    var str = this.translationToGridView[0, e.RowIndex].Value as string;
+                    if (str != null) {
+                        var lang = translationLanguages.Find(lang => lang.Item2 == str);
+                        if (lang != null) this.service.TranslationToList[e.RowIndex].Language = lang.Item1;
+                    }
+                } else {
+                    var str = this.translationToGridView[1, e.RowIndex].Value as string;
+                    if (str != null) this.service.TranslationToList[e.RowIndex].Target = str;
+                }
+            }
+        }
+
+        private void UpdateAllTranslationToLanguages() {
+            var i = 0;
+            foreach (DataGridViewRow row in translationToGridView.Rows) {
+                var combobox = row.Cells[0] as DataGridViewComboBoxCell;
+                if (combobox != null) {
+                    combobox.Value = "";
+                    combobox.Items.Clear();
+                    translationLanguages.ForEach(lang => {
+                        combobox.Items.Add(lang.Item2);
+                        if (lang.Item1 == service.TranslationToList[i].Language) {
+                            combobox.Value = lang.Item2;
+                        }
+                    });
+                }
+                i++;
+            }
         }
     }
 }

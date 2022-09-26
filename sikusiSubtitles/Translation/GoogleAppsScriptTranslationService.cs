@@ -53,7 +53,7 @@ namespace sikusiSubtitles.Translation {
                     request.RequestUri = new Uri(url);
                     HttpResponseMessage response = await this.HttpClient.SendAsync(request).ConfigureAwait(false);
                     string responseText = await response.Content.ReadAsStringAsync();
-                    result.Translations.Add(new TranslationResult.Translation() { Text = responseText });
+                    result.Translations.Add(new TranslationResult.Translation() { Text = responseText, Language = to });
                     Debug.WriteLine("GoogleAppsScriptTranslationService: " + responseText);
                 }
             } catch (Exception ex) {

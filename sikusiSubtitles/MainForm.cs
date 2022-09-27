@@ -85,6 +85,7 @@ namespace sikusiSubtitles {
             });
 
             this.menuView.ExpandAll();
+            if (menuView.Nodes.Count > 0) menuView.SelectedNode = menuView.Nodes[0];
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e) {

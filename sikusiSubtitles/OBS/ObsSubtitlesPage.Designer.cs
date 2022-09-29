@@ -24,13 +24,11 @@
         /// </summary>
         private void InitializeComponent() {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.translateTargetRemove = new System.Windows.Forms.Button();
             this.voiceTextBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.translateTargetAddButton = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
             this.translationToGridView = new System.Windows.Forms.DataGridView();
-            this.TranslationToLanguage = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.TranslationToLanguage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TranslationToTarget = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
@@ -41,28 +39,16 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.translateTargetRemove);
             this.groupBox1.Controls.Add(this.voiceTextBox);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.translateTargetAddButton);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.translationToGridView);
             this.groupBox1.Location = new System.Drawing.Point(10, 60);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(655, 277);
+            this.groupBox1.Size = new System.Drawing.Size(655, 252);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "字幕表示先";
-            // 
-            // translateTargetRemove
-            // 
-            this.translateTargetRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.translateTargetRemove.Location = new System.Drawing.Point(574, 244);
-            this.translateTargetRemove.Name = "translateTargetRemove";
-            this.translateTargetRemove.Size = new System.Drawing.Size(75, 23);
-            this.translateTargetRemove.TabIndex = 10;
-            this.translateTargetRemove.Text = "削除";
-            this.translateTargetRemove.UseVisualStyleBackColor = true;
             // 
             // voiceTextBox
             // 
@@ -82,16 +68,6 @@
             this.label2.Size = new System.Drawing.Size(31, 15);
             this.label2.TabIndex = 0;
             this.label2.Text = "音声";
-            // 
-            // translateTargetAddButton
-            // 
-            this.translateTargetAddButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.translateTargetAddButton.Location = new System.Drawing.Point(493, 244);
-            this.translateTargetAddButton.Name = "translateTargetAddButton";
-            this.translateTargetAddButton.Size = new System.Drawing.Size(75, 23);
-            this.translateTargetAddButton.TabIndex = 9;
-            this.translateTargetAddButton.Text = "追加";
-            this.translateTargetAddButton.UseVisualStyleBackColor = true;
             // 
             // label10
             // 
@@ -126,6 +102,7 @@
             // 
             this.TranslationToLanguage.HeaderText = "翻訳先言語";
             this.TranslationToLanguage.Name = "TranslationToLanguage";
+            this.TranslationToLanguage.ReadOnly = true;
             this.TranslationToLanguage.Width = 180;
             // 
             // TranslationToTarget
@@ -171,9 +148,7 @@
         private Label label1;
         private Label label10;
         private DataGridView translationToGridView;
-        private DataGridViewComboBoxColumn TranslationToLanguage;
+        private DataGridViewTextBoxColumn TranslationToLanguage;
         private DataGridViewTextBoxColumn TranslationToTarget;
-        private Button translateTargetRemove;
-        private Button translateTargetAddButton;
     }
 }

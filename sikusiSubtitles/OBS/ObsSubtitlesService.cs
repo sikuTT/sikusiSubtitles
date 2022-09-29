@@ -36,11 +36,24 @@ namespace sikusiSubtitles.OBS {
         }
 
         public override void Load(JToken token) {
+            VoiceTarget = token.Value<string>("VoiceTarget") ?? "";
+            var targetList = token.Value<JArray>("TranslateTargetList");
+            if (targetList != null) {
+                foreach (var target in targetList) {
+                    TranslateTargetList.Add(new TranslateTarget() {
+                        Language = target.Value<string>("Language") ?? "",
+                        Target = target.Value<string>("Target") ?? "",
+                    });
+                }
+            }
         }
 
-//        public override JObject Save() {
-
-//        }
+        public override JObject Save() {
+            return new JObject {
+                new JProperty("VoiceTarget", VoiceTarget),
+                new JProperty("TranslateTargetList", JArray.FromObject(TranslateTargetList)),
+            };
+        }
 
         public bool Start(ObsService obsService) {
             return false;

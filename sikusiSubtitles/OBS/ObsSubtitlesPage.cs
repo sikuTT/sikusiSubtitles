@@ -31,9 +31,17 @@ namespace sikusiSubtitles.OBS {
 
         /** 音声の字幕表示先を設定 */
         private void voiceTextBox_TextChanged(object sender, EventArgs e) {
+            service.VoiceTarget = voiceTextBox.Text;
         }
 
+        /** 翻訳結果の字幕表示先を設定 */
         private void translationToDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e) {
+            if(e.RowIndex >= 0 && e.ColumnIndex == 1) {
+                var text = translationToGridView[e.ColumnIndex, e.RowIndex].Value.ToString();
+                if (text != null) {
+                    service.TranslateTargetList[e.RowIndex].Target = text;
+                }
+            }
         }
 
         private void ObsSubtitlesPage_VisibleChanged(object sender, EventArgs e) {
@@ -44,30 +52,39 @@ namespace sikusiSubtitles.OBS {
 
         private void SetTranslationTarget() {
             if (subtitlesService != null) {
-                for (var i = 0; i < subtitlesService.TranslationLanguageToList.Count; i++) {
-                    if (service.TranslateTargetList.Count < i + 1) {
-                        service.TranslateTargetList.Add(new TranslateTarget());
-                    }
-                    service.TranslateTargetList[i].Language = subtitlesService.TranslationLanguageToList[i];
+                var translationService = serviceManager.GetServices<TranslationService>().Find(service => service.Name == subtitlesService.TranslationEngine);
+                if (translationService != null) {
+                    var languages = translationService.GetLanguages();
 
-                    if (translationToGridView.Rows.Count < i + 1) {
-                        translationToGridView.Rows.Add();
-                    }
-                    translationToGridView.Rows[i].Cells[0].Value = subtitlesService.TranslationLanguageToList[i];
-                    translationToGridView.Rows[i].Cells[1].Value = service.TranslateTargetList[i].Target;
-                }
+                    for (var i = 0; i < subtitlesService.TranslationLanguageToList.Count; i++) {
+                        if (service.TranslateTargetList.Count < i + 1) {
+                            service.TranslateTargetList.Add(new TranslateTarget());
+                        }
+                        service.TranslateTargetList[i].Language = subtitlesService.TranslationLanguageToList[i];
 
-                if (subtitlesService.TranslationLanguageToList.Count < service.TranslateTargetList.Count) {
-                    for (var i = service.TranslateTargetList.Count; i > subtitlesService.TranslationLanguageToList.Count; i--) {
-                        service.TranslateTargetList.RemoveAt(i - 1);
-                    }
-                }
+                        if (translationToGridView.Rows.Count < i + 1) {
+                            translationToGridView.Rows.Add();
+                        }
 
-                if (subtitlesService.TranslationLanguageToList.Count < translationToGridView.Rows.Count) {
-                    for (var i = translationToGridView.Rows.Count; i > subtitlesService.TranslationLanguageToList.Count; i--) {
-                        translationToGridView.Rows.RemoveAt(i - 1);
+                        var language = languages.Find(lang => lang.Item1 == service.TranslateTargetList[i].Language);
+                        if (language != null) {
+                            translationToGridView.Rows[i].Cells[0].Value = language.Item2;
+                        }
+                        translationToGridView.Rows[i].Cells[1].Value = service.TranslateTargetList[i].Target;
                     }
 
+                    if (subtitlesService.TranslationLanguageToList.Count < service.TranslateTargetList.Count) {
+                        for (var i = service.TranslateTargetList.Count; i > subtitlesService.TranslationLanguageToList.Count; i--) {
+                            service.TranslateTargetList.RemoveAt(i - 1);
+                        }
+                    }
+
+                    if (subtitlesService.TranslationLanguageToList.Count < translationToGridView.Rows.Count) {
+                        for (var i = translationToGridView.Rows.Count; i > subtitlesService.TranslationLanguageToList.Count; i--) {
+                            translationToGridView.Rows.RemoveAt(i - 1);
+                        }
+
+                    }
                 }
             }
         }

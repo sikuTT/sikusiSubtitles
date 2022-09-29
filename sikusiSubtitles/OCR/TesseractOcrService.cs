@@ -11,7 +11,11 @@ using Tesseract;
 namespace sikusiSubtitles.OCR {
     public class TesseractOcrService : OcrService {
         public TesseractOcrService(ServiceManager serviceManager) : base(serviceManager, "Tesseract", "Tesseract", 100) {
-            SettingPage = new TesseractOcrPage(serviceManager, this);
+        }
+
+        public override UserControl? GetSettingPage()
+        {
+            return new TesseractOcrPage(ServiceManager, this);
         }
 
         public override List<Tuple<string, string>> GetLanguages() {

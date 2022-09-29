@@ -21,9 +21,11 @@ namespace sikusiSubtitles.OBS {
         }
 
         public ObsService(ServiceManager serviceManager) : base(serviceManager, ObsServiceManager.ServiceName, "OBS", "OBS", 100) {
-            SettingPage = new ObsPage(serviceManager, this);
-
             this.ObsSocket = new ObsWebSocket();
+        }
+
+        public override UserControl? GetSettingPage() {
+            return new ObsPage(ServiceManager, this);
         }
 
         public override void Load(JToken token) {

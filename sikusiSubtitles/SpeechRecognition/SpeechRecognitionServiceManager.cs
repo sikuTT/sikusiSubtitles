@@ -10,7 +10,11 @@ namespace sikusiSubtitles.SpeechRecognition {
         public string Language { get; set; } = "";
 
         public SpeechRecognitionServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, ServiceName, "音声認識", 200, true) {
-            SettingPage = new SpeechRecognitionPage(serviceManager, this);
+        }
+
+        public override UserControl? GetSettingPage()
+        {
+            return new SpeechRecognitionPage(ServiceManager, this);
         }
 
         public override void Load(JToken token) {

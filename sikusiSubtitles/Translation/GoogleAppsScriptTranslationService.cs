@@ -14,7 +14,11 @@ namespace sikusiSubtitles.Translation {
         public string Key { get; set; } = "";
 
         public GoogleAppsScriptTranslationService(ServiceManager serviceManager) : base(serviceManager, "GoogleAppsScriptTranslation", "Google Apps Script", 100) {
-            SettingPage = new GoogleAppsScriptTranslationPage(serviceManager, this);
+        }
+
+        public override UserControl? GetSettingPage()
+        {
+            return new GoogleAppsScriptTranslationPage(ServiceManager, this);
         }
 
         public override void Load(JToken token) {

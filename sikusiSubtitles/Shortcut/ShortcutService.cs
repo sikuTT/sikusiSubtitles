@@ -53,11 +53,15 @@ namespace sikusiSubtitles.Shortcut {
         public event EventHandler<Shortcut>? ShortcutRun;
 
         public ShortcutService(ServiceManager serviceManager) : base(serviceManager, ShortcutServiceManager.ServiceName, "Shortcut", "ショートカット", 500) {
-            SettingPage = new ShortcutPage(serviceManager, this);
             handler = HookCallback;
             Shortcuts = new List<Shortcut>();
 
             CreateKeyNames();
+        }
+
+        public override UserControl? GetSettingPage()
+        {
+            return new ShortcutPage(ServiceManager, this);
         }
 
         public override void Init() {

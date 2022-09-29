@@ -24,7 +24,11 @@ namespace sikusiSubtitles.SpeechRecognition {
         }
 
         public AmiVoiceSpeechRecognitionServie(ServiceManager serviceManager) : base(serviceManager, "AmiVoice", "AmiVoice", 300) {
-            SettingPage = new AmiVoiceSpeechRecognitionPage(serviceManager, this);
+        }
+
+        public override UserControl? GetSettingPage()
+        {
+            return new AmiVoiceSpeechRecognitionPage(ServiceManager, this);
         }
 
         public override void Load(JToken token) {

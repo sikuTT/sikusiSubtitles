@@ -21,7 +21,7 @@ namespace sikusiSubtitles.OCR {
         private Shortcut.Shortcut OcrShortcut = new Shortcut.Shortcut("execute-ocr", "OCR", "画面から文字を取得し翻訳する", "");
         private Shortcut.Shortcut ClearObsTextShortcut = new Shortcut.Shortcut("clear-obs-text", "OCR", "OCRの翻訳結果をクリアする", "");
 
-        public OcrServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, ServiceName, "OCR", 400, true) {
+        public OcrServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, ServiceName, "OCR", 500, true) {
         }
 
         public override UserControl? GetSettingPage()

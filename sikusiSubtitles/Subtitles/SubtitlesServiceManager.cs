@@ -9,7 +9,7 @@ namespace sikusiSubtitles.Subtitles {
     public class SubtitlesServiceManager : sikusiSubtitles.Service {
         public static new string ServiceName = "Subtitles";
 
-        public SubtitlesServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, "SubtitlesServiceManager", "字幕", 100, true) {
+        public SubtitlesServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, "SubtitlesServiceManager", "字幕", 200, true) {
         }
     }
 }

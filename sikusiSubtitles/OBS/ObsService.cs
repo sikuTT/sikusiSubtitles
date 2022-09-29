@@ -14,7 +14,7 @@ namespace sikusiSubtitles.OBS {
         public int Port { get; set; } = 4455;
         public string Password { get; set; } = "";
 
-        private SubtitlesService? subtitlesService;
+        private ObsSubtitlesService? obsSubtitlesService;
 
         public bool IsConnected {
             get { return ObsSocket.IsConnected; }
@@ -71,16 +71,16 @@ namespace sikusiSubtitles.OBS {
         }
 
         private void SubtitlesStart() {
-            subtitlesService = this.ServiceManager.GetService<SubtitlesService>();
-            if (subtitlesService  != null) {
-                subtitlesService.Start(this);
+            obsSubtitlesService = this.ServiceManager.GetService<ObsSubtitlesService>();
+            if (obsSubtitlesService != null) {
+                obsSubtitlesService.Start(this);
             }
         }
 
         private void SubtitlesStop() {
-            if (subtitlesService != null) {
-                subtitlesService.Stop();
-                subtitlesService = null;
+            if (obsSubtitlesService != null) {
+                obsSubtitlesService.Stop();
+                obsSubtitlesService = null;
             }
         }
     }

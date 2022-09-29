@@ -19,7 +19,7 @@ namespace sikusiSubtitles.OBS {
         public bool Recognized { get; set; }
     }
 
-    public class SubtitlesService : sikusiSubtitles.Service {
+    public class ObsSubtitlesService : sikusiSubtitles.Service {
         public class TranslationTo {
             public string Language = "";
             public string Target = "";
@@ -42,8 +42,8 @@ namespace sikusiSubtitles.OBS {
         public bool Additional { get; set; } = false;
         public int AdditionalTime { get; set; } = 1;
 
-        public SubtitlesService(ServiceManager serviceManager) : base(serviceManager, ObsServiceManager.ServiceName, "Subtitles", "字幕", 200) {
-            SettingPage = new SubtitlesPage(serviceManager, this);
+        public ObsSubtitlesService(ServiceManager serviceManager) : base(serviceManager, ObsServiceManager.ServiceName, "ObsSubtitles", "字幕", 200) {
+            SettingPage = new ObsSubtitlesPage(serviceManager, this);
         }
         public override void Load(JToken token) {
             TranslationEngine = token.Value<string>("TranslationEngine") ?? "";

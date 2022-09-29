@@ -3,6 +3,7 @@ using sikusiSubtitles.OCR;
 using sikusiSubtitles.Shortcut;
 using sikusiSubtitles.Speech;
 using sikusiSubtitles.SpeechRecognition;
+using sikusiSubtitles.Subtitles;
 using sikusiSubtitles.Translation;
 using System.Diagnostics;
 
@@ -14,16 +15,20 @@ namespace sikusiSubtitles {
         public MainForm() {
             InitializeComponent();
 
-            // OBS Service
-            new ObsServiceManager(this.serviceManager);
-            new ObsService(this.serviceManager);
-            new SubtitlesService(this.serviceManager);
-
             // Speech Recognition Service
             new SpeechRecognitionServiceManager(this.serviceManager);
             new ChromeSpeechRecognitionService(this.serviceManager);
             new AzureSpeechRecognitionService(this.serviceManager);
             new AmiVoiceSpeechRecognitionServie(this.serviceManager);
+
+            // Subtitles Service
+            new SubtitlesServiceManager(this.serviceManager);
+            new SubtitlesService(this.serviceManager);
+
+            // OBS Service
+            new ObsServiceManager(this.serviceManager);
+            new ObsService(this.serviceManager);
+            new ObsSubtitlesService(this.serviceManager);
 
             // Translation Service
             new TranslationServiceManager(this.serviceManager);

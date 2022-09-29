@@ -11,21 +11,21 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace sikusiSubtitles.OBS {
-    public partial class SubtitlesPage : UserControl {
+    public partial class ObsSubtitlesPage : UserControl {
         private ServiceManager serviceManager;
-        private SubtitlesService service;
+        private ObsSubtitlesService service;
         private List<TranslationService> translationServices = new List<TranslationService>();
         private TranslationService? translationService;
         private List<Tuple<string, string>> translationLanguages = new List<Tuple<string, string>>();
 
-        public SubtitlesPage(ServiceManager serviceManager, SubtitlesService service) {
+        public ObsSubtitlesPage(ServiceManager serviceManager, ObsSubtitlesService service) {
             this.serviceManager = serviceManager;
             this.service = service;
 
             InitializeComponent();
         }
 
-        private void SubtitlesPage_Load(object sender, EventArgs e) {
+        private void ObsSubtitlesPage_Load(object sender, EventArgs e) {
             // 翻訳サービス一覧
             translationServices = serviceManager.GetServices<TranslationService>();
             translationServices.ForEach(service => {
@@ -104,7 +104,7 @@ namespace sikusiSubtitles.OBS {
 
         /** 翻訳先を追加 */
         private void translateTargetAddButton_Click(object sender, EventArgs e) {
-            this.service.TranslationToList.Add(new SubtitlesService.TranslationTo());
+            this.service.TranslationToList.Add(new ObsSubtitlesService.TranslationTo());
             var i = this.translationToGridView.Rows.Add();
             if (translationService != null) {
                 var cell = translationToGridView.Rows[i].Cells[0] as DataGridViewComboBoxCell;

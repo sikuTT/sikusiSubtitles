@@ -34,6 +34,20 @@ namespace sikusiSubtitles {
 
         public virtual UserControl? GetSettingPage() { return null; }
 
+        /**
+         * チェックボックスボタンの状態に合わせて色を変更する
+         * （デフォルトの色は分かりにくいので）
+         */
+        protected void SetCheckBoxButtonColor(CheckBox checkbox) {
+            if (checkbox.Checked) {
+                checkbox.BackColor = SystemColors.Highlight;
+                checkbox.ForeColor = SystemColors.HighlightText;
+            } else {
+                checkbox.BackColor = SystemColors.ButtonHighlight;
+                checkbox.ForeColor = SystemColors.ControlText;
+            }
+        }
+
         protected string Encrypt(string text) {
             if (text == "")
                 return "";

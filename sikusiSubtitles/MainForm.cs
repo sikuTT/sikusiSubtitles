@@ -10,7 +10,6 @@ using System.Diagnostics;
 namespace sikusiSubtitles {
     public partial class MainForm : Form {
         ServiceManager serviceManager = new ServiceManager();
-        SpeechRecognitionService? speechRecognitionService;
 
         public MainForm() {
             InitializeComponent();
@@ -56,15 +55,19 @@ namespace sikusiSubtitles {
         }
 
         private void Form1_Load(object sender, EventArgs e) {
+            foreach (var control in serviceManager.TopFlowControls) {
+                topLayoutPanel.Controls.Add(control);
+            }
+
             this.serviceManager.Managers.ForEach(service => {
                 var page = service.GetSettingPage();
-                // ƒT[ƒrƒX‚Éİ’èƒy[ƒW‚ª‘¶İ‚·‚éê‡AƒtƒH[ƒ€‚Éİ’èƒy[ƒW‚ğ’Ç‰Á‚·‚é
-                // ƒcƒŠ[ƒrƒ…[‚Éİ’èƒy[ƒW‚ğ•\¦‚·‚éƒƒjƒ…[‚ğì¬
+                // ã‚µãƒ¼ãƒ“ã‚¹ã«è¨­å®šãƒšãƒ¼ã‚¸ãŒå­˜åœ¨ã™ã‚‹å ´åˆã€ãƒ•ã‚©ãƒ¼ãƒ ã«è¨­å®šãƒšãƒ¼ã‚¸ã‚’è¿½åŠ ã™ã‚‹
+                // ãƒ„ãƒªãƒ¼ãƒ“ãƒ¥ãƒ¼ã«è¨­å®šãƒšãƒ¼ã‚¸ã‚’è¡¨ç¤ºã™ã‚‹ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’ä½œæˆ
                 var node = new TreeNode(service.DisplayName) { Name = service.ServiceName };
                 this.menuView.Nodes.Add(node);
 
                 if (page != null) {
-                    // İ’èƒy[ƒW‚ğì¬‚·‚é
+                    // è¨­å®šãƒšãƒ¼ã‚¸ã‚’ä½œæˆã™ã‚‹
                     page.Name = service.Name;
                     page.Dock = DockStyle.Fill;
                     this.splitContainer1.Panel2.Controls.Add(page);
@@ -73,16 +76,16 @@ namespace sikusiSubtitles {
 
             this.serviceManager.Services.ForEach(service => {
                 var page = service.GetSettingPage();
-                // ƒT[ƒrƒX‚Éİ’èƒy[ƒW‚ª‘¶İ‚·‚éê‡AƒtƒH[ƒ€‚Éİ’èƒy[ƒW‚ğ’Ç‰Á‚·‚é
+                // ã‚µãƒ¼ãƒ“ã‚¹ã«è¨­å®šãƒšãƒ¼ã‚¸ãŒå­˜åœ¨ã™ã‚‹å ´åˆã€ãƒ•ã‚©ãƒ¼ãƒ ã«è¨­å®šãƒšãƒ¼ã‚¸ã‚’è¿½åŠ ã™ã‚‹
                 if (page != null) {
-                    // e‚Ìƒƒjƒ…[‚ğæ“¾
+                    // è¦ªã®ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’å–å¾—
                     var parentNodes = menuView.Nodes.Find(service.ServiceName, false);
                     if (parentNodes.Length > 0 && parentNodes[0].Name != service.Name) {
                         var node = new TreeNode(service.DisplayName) { Name = service.Name };
                         parentNodes[0].Nodes.Add(node);
                     }
 
-                    // İ’èƒy[ƒW‚ğì¬‚·‚é
+                    // è¨­å®šãƒšãƒ¼ã‚¸ã‚’ä½œæˆã™ã‚‹
                     page.Name = service.Name;
                     page.Dock = DockStyle.Fill;
                     this.splitContainer1.Panel2.Controls.Add(page);
@@ -130,63 +133,6 @@ namespace sikusiSubtitles {
             }
         }
 
-        private void speechRecognitionCheckBox_CheckedChanged(object sender, EventArgs e) {
-            this.SetCheckBoxButtonColor(this.speechRecognitionCheckBox);
-
-            if (this.speechRecognitionCheckBox.Checked) {
-                this.SpeechRecognitionStart();
-            } else {
-                this.SpeechRecognitionStop();
-            }
-        }
-
-        /**
-         * ‰¹º”F¯‚ğŠJn‚·‚é
-         */
-        private void SpeechRecognitionStart() {
-            var recognitionStarted = false;
-
-            var manager = this.serviceManager.GetManager<SpeechRecognitionServiceManager>();
-            if (manager?.Device == null) {
-                MessageBox.Show("ƒ}ƒCƒN‚ğİ’è‚µ‚Ä‚­‚¾‚³‚¢B");
-            } else {
-                var service = manager.GetEngine();
-                if (service != null) {
-                    if (service.Start()) {
-                        speechRecognitionService = service;
-                        service.Recognizing += Recognizing;
-                        service.Recognized += Recognized;
-                        recognitionStarted = true;
-                    }
-                }
-            }
-
-            // ‰¹º”F¯‚ğŠJn‚Å‚«‚È‚©‚Á‚½ê‡A‰¹º”F¯ƒ{ƒ^ƒ“‚Ìƒ`ƒFƒbƒN‚ğŠO‚·B
-            if (recognitionStarted == false) {
-                this.speechRecognitionCheckBox.Checked = false;
-            }
-        }
-
-        /**
-         * ‰¹º”F¯‚ğI—¹‚·‚é
-         */
-        private void SpeechRecognitionStop() {
-            if (speechRecognitionService != null) {
-                speechRecognitionService.Recognizing -= Recognizing;
-                speechRecognitionService.Recognized -= Recognized;
-                speechRecognitionService.Stop();
-                speechRecognitionService = null;
-            }
-        }
-
-        private void Recognizing(Object? sender, SpeechRecognitionEventArgs args) {
-            this.SetRecognitionResultText(args.Text);
-        }
-
-        private void Recognized(Object? sender, SpeechRecognitionEventArgs args) {
-            this.SetRecognitionResultText(args.Text);
-        }
-
         async private void obsCheckBox_CheckedChanged(object sender, EventArgs e) {
             this.SetCheckBoxButtonColor(this.obsCheckBox);
 
@@ -203,8 +149,8 @@ namespace sikusiSubtitles {
         }
 
         /**
-         * ƒ`ƒFƒbƒNƒ{ƒbƒNƒXƒ{ƒ^ƒ“‚Ìó‘Ô‚É‡‚í‚¹‚ÄF‚ğ•ÏX‚·‚é
-         * iƒfƒtƒHƒ‹ƒg‚ÌF‚Í•ª‚©‚è‚É‚­‚¢‚Ì‚Åj
+         * ãƒã‚§ãƒƒã‚¯ãƒœãƒƒã‚¯ã‚¹ãƒœã‚¿ãƒ³ã®çŠ¶æ…‹ã«åˆã‚ã›ã¦è‰²ã‚’å¤‰æ›´ã™ã‚‹
+         * ï¼ˆãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®è‰²ã¯åˆ†ã‹ã‚Šã«ãã„ã®ã§ï¼‰
          */
         private void SetCheckBoxButtonColor(CheckBox checkbox) {
             if (checkbox.Checked) {
@@ -213,24 +159,6 @@ namespace sikusiSubtitles {
             } else {
                 checkbox.BackColor = SystemColors.ButtonHighlight;
                 checkbox.ForeColor = SystemColors.ControlText;
-            }
-        }
-
-        private void SetRecognitionResultText(string text) {
-            if (this.recognitionResultTextBox.InvokeRequired) {
-                Action act = delegate { this.recognitionResultTextBox.Text = text; };
-                this.recognitionResultTextBox.Invoke(act);
-            } else {
-                this.recognitionResultTextBox.Text = text;
-            }
-        }
-
-        private void AddRecognitionResultText(string text) {
-            if (this.recognitionResultTextBox.InvokeRequired) {
-                Action act = delegate { this.recognitionResultTextBox.Text += "\r\n" + text; };
-                this.recognitionResultTextBox.Invoke(act);
-            } else {
-                this.recognitionResultTextBox.Text += "\r\n" + text;
             }
         }
     }

@@ -25,7 +25,6 @@
         private void InitializeComponent() {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.menuView = new System.Windows.Forms.TreeView();
-            this.speechRecognitionCheckBox = new System.Windows.Forms.CheckBox();
             this.obsCheckBox = new System.Windows.Forms.CheckBox();
             this.recognitionResultTextBox = new System.Windows.Forms.TextBox();
             this.versionLabel = new System.Windows.Forms.Label();
@@ -62,23 +61,11 @@
             this.menuView.TabIndex = 10;
             this.menuView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.menuView_AfterSelect);
             // 
-            // speechRecognitionCheckBox
-            // 
-            this.speechRecognitionCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
-            this.speechRecognitionCheckBox.AutoSize = true;
-            this.speechRecognitionCheckBox.Location = new System.Drawing.Point(3, 3);
-            this.speechRecognitionCheckBox.Name = "speechRecognitionCheckBox";
-            this.speechRecognitionCheckBox.Size = new System.Drawing.Size(65, 25);
-            this.speechRecognitionCheckBox.TabIndex = 1;
-            this.speechRecognitionCheckBox.Text = "音声認識";
-            this.speechRecognitionCheckBox.UseVisualStyleBackColor = false;
-            this.speechRecognitionCheckBox.CheckedChanged += new System.EventHandler(this.speechRecognitionCheckBox_CheckedChanged);
-            // 
             // obsCheckBox
             // 
             this.obsCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
             this.obsCheckBox.AutoSize = true;
-            this.obsCheckBox.Location = new System.Drawing.Point(74, 3);
+            this.obsCheckBox.Location = new System.Drawing.Point(3, 3);
             this.obsCheckBox.Name = "obsCheckBox";
             this.obsCheckBox.Size = new System.Drawing.Size(63, 25);
             this.obsCheckBox.TabIndex = 2;
@@ -112,7 +99,6 @@
             // 
             this.topLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.topLayoutPanel.Controls.Add(this.speechRecognitionCheckBox);
             this.topLayoutPanel.Controls.Add(this.obsCheckBox);
             this.topLayoutPanel.Location = new System.Drawing.Point(12, 4);
             this.topLayoutPanel.Name = "topLayoutPanel";
@@ -143,7 +129,6 @@
         }
 
         #endregion
-        private CheckBox speechRecognitionCheckBox;
         private CheckBox obsCheckBox;
         private SplitContainer splitContainer1;
         private TreeView menuView;

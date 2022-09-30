@@ -41,7 +41,7 @@ namespace sikusiSubtitles.OBS {
             if(e.RowIndex >= 0 && e.ColumnIndex == 1) {
                 var text = translationToGridView[e.ColumnIndex, e.RowIndex].Value.ToString();
                 if (text != null) {
-                    service.TranslateTargetList[e.RowIndex].Target = text;
+                    service.TranslateTargetList[e.RowIndex] = text;
                 }
             }
         }
@@ -60,19 +60,18 @@ namespace sikusiSubtitles.OBS {
 
                     for (var i = 0; i < subtitlesService.TranslationLanguageToList.Count; i++) {
                         if (service.TranslateTargetList.Count < i + 1) {
-                            service.TranslateTargetList.Add(new TranslateTarget());
+                            service.TranslateTargetList.Add("");
                         }
-                        service.TranslateTargetList[i].Language = subtitlesService.TranslationLanguageToList[i];
 
                         if (translationToGridView.Rows.Count < i + 1) {
                             translationToGridView.Rows.Add();
                         }
 
-                        var language = languages.Find(lang => lang.Item1 == service.TranslateTargetList[i].Language);
+                        var language = languages.Find(lang => lang.Item1 == subtitlesService.TranslationLanguageToList[i]);
                         if (language != null) {
                             translationToGridView.Rows[i].Cells[0].Value = language.Item2;
                         }
-                        translationToGridView.Rows[i].Cells[1].Value = service.TranslateTargetList[i].Target;
+                        translationToGridView.Rows[i].Cells[1].Value = service.TranslateTargetList[i];
                     }
 
                     if (subtitlesService.TranslationLanguageToList.Count < service.TranslateTargetList.Count) {

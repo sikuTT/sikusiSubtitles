@@ -96,7 +96,7 @@ namespace sikusiSubtitles.Subtitles {
 
             var service = ServiceManager.GetServices<TranslationService>().Find(service => service.Name == TranslationEngine);
             if (service != null) {
-                var result = await service.TranslateAsync(args.Text, TranslationLanguageFrom, TranslationLanguageToList.ToArray());
+                var result = await service.TranslateAsync(args.Text, TranslationLanguageFrom, TranslationLanguageToList.Where(lang => lang != "").ToArray());
                 if (result != null && result.Error == false) {
                     result.Translations.ForEach(translation => {
                         var translationText = subtitlesText.TranslationTexts.Find(text => text.Language == translation.Language);

@@ -11,14 +11,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace sikusiSubtitles.OBS {
-    public class TranslateTarget {
-        public string Language { get; set; } = "";
-        public string Target { get; set; } = "";
-    }
-
     public class ObsSubtitlesService : sikusiSubtitles.Service {
         public string VoiceTarget { get; set; } = "";
-        public List<TranslateTarget> TranslateTargetList { get; set; } = new List<TranslateTarget>();
+        public List<string> TranslateTargetList { get; set; } = new List<string>();
 
         public ObsSubtitlesService(ServiceManager serviceManager) : base(serviceManager, ObsServiceManager.ServiceName, "ObsSubtitles", "字幕", 200) {
         }
@@ -49,11 +44,8 @@ namespace sikusiSubtitles.OBS {
             VoiceTarget = token.Value<string>("VoiceTarget") ?? "";
             var targetList = token.Value<JArray>("TranslateTargetList");
             if (targetList != null) {
-                foreach (var target in targetList) {
-                    TranslateTargetList.Add(new TranslateTarget() {
-                        Language = target.Value<string>("Language") ?? "",
-                        Target = target.Value<string>("Target") ?? "",
-                    });
+                foreach (var to in targetList) {
+                    TranslateTargetList.Add(to.ToString());
                 }
             }
         }
@@ -61,7 +53,7 @@ namespace sikusiSubtitles.OBS {
         public override JObject Save() {
             return new JObject {
                 new JProperty("VoiceTarget", VoiceTarget),
-                new JProperty("TranslateTargetList", JArray.FromObject(TranslateTargetList)),
+                new JProperty("TranslateTargetList", TranslateTargetList),
             };
         }
 
@@ -80,11 +72,13 @@ namespace sikusiSubtitles.OBS {
         }
 
         private async void SubtitlesChanged(Object? sender, List<SubtitlesText> subtitlesTexts) {
-            if (obsService != null && obsService?.IsConnected == true) {
+            if (subtitlesService != null && obsService != null && obsService?.IsConnected == true) {
                 Dictionary<string, StringBuilder> texts = new Dictionary<string, StringBuilder>();
                 texts.Add("", new StringBuilder());
-                foreach (var target in TranslateTargetList) {
-                    texts.Add(target.Language, new StringBuilder());
+                foreach (var to in subtitlesService.TranslationLanguageToList) {
+                    if (to != "") {
+                        texts.Add(to, new StringBuilder());
+                    }
                 }
 
                 foreach (SubtitlesText subtitleText in subtitlesTexts) {
@@ -97,12 +91,14 @@ namespace sikusiSubtitles.OBS {
                     }
 
                     foreach (var translationText in subtitleText.TranslationTexts) {
-                        var text = texts.GetValueOrDefault(translationText.Language);
-                        if (text == null) {
-                            texts[translationText.Language] = text = new StringBuilder();
+                        if (translationText.Language != "") {
+                            var text = texts.GetValueOrDefault(translationText.Language);
+                            if (text == null) {
+                                texts[translationText.Language] = text = new StringBuilder();
+                            }
+                            if (text.Length > 0) text.Append(' ');
+                            text.Append(translationText.Text);
                         }
-                        if (text.Length > 0) text.Append(' ');
-                        text.Append(translationText.Text);
                     }
                 }
 
@@ -112,9 +108,9 @@ namespace sikusiSubtitles.OBS {
                         if(text.Key == "") {
                             sourceName = VoiceTarget;
                         } else {
-                            var target = TranslateTargetList.Find(target => target.Language == text.Key);
-                            if (target != null) {
-                                sourceName = target.Target;
+                            var i = subtitlesService.TranslationLanguageToList.FindIndex(to => to == text.Key);
+                            if (i != -1 && i < TranslateTargetList.Count) {
+                                sourceName = TranslateTargetList[i];
                             }
                         }
                         if (sourceName != null) {

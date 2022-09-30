@@ -170,6 +170,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.translationEngineComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.translationEngineComboBox.FormattingEnabled = true;
+            this.translationEngineComboBox.Items.AddRange(new object[] {
+            "翻訳しない"});
             this.translationEngineComboBox.Location = new System.Drawing.Point(105, 32);
             this.translationEngineComboBox.Name = "translationEngineComboBox";
             this.translationEngineComboBox.Size = new System.Drawing.Size(596, 23);

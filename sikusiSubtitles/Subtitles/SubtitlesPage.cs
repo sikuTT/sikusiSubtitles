@@ -49,8 +49,11 @@ namespace sikusiSubtitles.Subtitles {
         /** 翻訳エンジンの変更 */
         private void translationEngineComboBox_SelectedIndexChanged(object sender, EventArgs e) {
             translationFromComboBox.Items.Clear();
-            if (translationEngineComboBox.SelectedIndex != -1) {
-                translationService = translationServices[translationEngineComboBox.SelectedIndex];
+            if (translationEngineComboBox.SelectedIndex == 0) {
+                translationService = null;
+                service.TranslationEngine = "";
+            } else if (translationEngineComboBox.SelectedIndex > 0) {
+                translationService = translationServices[translationEngineComboBox.SelectedIndex - 1];
                 service.TranslationEngine = translationService.Name;
 
                 translationLanguages = translationService.GetLanguages();

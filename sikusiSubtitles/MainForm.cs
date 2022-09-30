@@ -132,34 +132,5 @@ namespace sikusiSubtitles {
                 }
             }
         }
-
-        async private void obsCheckBox_CheckedChanged(object sender, EventArgs e) {
-            this.SetCheckBoxButtonColor(this.obsCheckBox);
-
-            var service = serviceManager.GetService<ObsService>();
-            if (service != null) {
-                if (this.obsCheckBox.Checked) {
-                    if (await service.ConnectAsync() == false) {
-                        this.obsCheckBox.Checked = false;
-                    }
-                } else if (service.IsConnected) {
-                    await service.DisconnectAsync();
-                }
-            }
-        }
-
-        /**
-         * チェックボックスボタンの状態に合わせて色を変更する
-         * （デフォルトの色は分かりにくいので）
-         */
-        private void SetCheckBoxButtonColor(CheckBox checkbox) {
-            if (checkbox.Checked) {
-                checkbox.BackColor = SystemColors.Highlight;
-                checkbox.ForeColor = SystemColors.HighlightText;
-            } else {
-                checkbox.BackColor = SystemColors.ButtonHighlight;
-                checkbox.ForeColor = SystemColors.ControlText;
-            }
-        }
     }
 }

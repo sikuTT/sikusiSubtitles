@@ -9,12 +9,15 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.OBS {
     public class ObsService : sikusiSubtitles.Service {
+        // Events
+        public event EventHandler<bool>? ConnectionChanged;
+
         public ObsWebSocket ObsSocket { get; }
         public string IP { get; set; } = "127.0.0.1";
         public int Port { get; set; } = 4455;
         public string Password { get; set; } = "";
 
-        private ObsSubtitlesService? obsSubtitlesService;
+        private CheckBox obsCheckBox;
 
         public bool IsConnected {
             get { return ObsSocket.IsConnected; }
@@ -22,6 +25,14 @@ namespace sikusiSubtitles.OBS {
 
         public ObsService(ServiceManager serviceManager) : base(serviceManager, ObsServiceManager.ServiceName, "OBS", "OBS", 100) {
             this.ObsSocket = new ObsWebSocket();
+
+            obsCheckBox = new CheckBox();
+            obsCheckBox.Appearance = Appearance.Button;
+            obsCheckBox.Text = "OBS接続";
+            obsCheckBox.TextAlign = ContentAlignment.MiddleCenter;
+            obsCheckBox.Width = 70;
+            obsCheckBox.CheckedChanged += obsCheckBox_CheckedChanged;
+            serviceManager.AddTopFlowControl(obsCheckBox, 200);
         }
 
         public override UserControl? GetSettingPage() {
@@ -51,6 +62,7 @@ namespace sikusiSubtitles.OBS {
             var url = String.Format("ws://{0}:{1}/", IP, Port);
             try {
                 await ObsSocket.ConnectAsync(url, this.Password);
+                ConnectionChanged?.Invoke(this, true);
             } catch (WebSocketClosedException) {
                 MessageBox.Show("認証に失敗しました。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
@@ -59,30 +71,24 @@ namespace sikusiSubtitles.OBS {
                 return false;
             }
 
-            // 字幕開始
-            SubtitlesStart();
-
             return ObsSocket.IsConnected;
         }
 
         async public Task DisconnectAsync() {
-            // 字幕終了
-            SubtitlesStop();
-
             await ObsSocket.CloseAsync();
+                ConnectionChanged?.Invoke(this, false);
         }
 
-        private void SubtitlesStart() {
-            obsSubtitlesService = this.ServiceManager.GetService<ObsSubtitlesService>();
-            if (obsSubtitlesService != null) {
-                obsSubtitlesService.Start(this);
-            }
-        }
+        /** OBSへの接続ボタン */
+        private async void obsCheckBox_CheckedChanged(object? sender, EventArgs e) {
+            this.SetCheckBoxButtonColor(this.obsCheckBox);
 
-        private void SubtitlesStop() {
-            if (obsSubtitlesService != null) {
-                obsSubtitlesService.Stop();
-                obsSubtitlesService = null;
+            if (this.obsCheckBox.Checked) {
+                if (await ConnectAsync() == false) {
+                    this.obsCheckBox.Checked = false;
+                }
+            } else if (IsConnected) {
+                await DisconnectAsync();
             }
         }
     }

@@ -26,6 +26,8 @@ namespace sikusiSubtitles.OBS {
 
         private void ObsSubtitlesPage_Load(object sender, EventArgs e) {
             subtitlesService = serviceManager.GetService<SubtitlesService>();
+
+            voiceTextBox.Text = service.VoiceTarget;
             SetTranslationTarget();
         }
 

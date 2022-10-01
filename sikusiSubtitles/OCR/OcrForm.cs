@@ -260,6 +260,7 @@ namespace sikusiSubtitles.OCR {
         private void AreaSelected(Object? sender, Rectangle rect) {
             this.ocrButton.Enabled = true;
             this.captureArea = rect;
+            Ocr();
         }
 
         private Bitmap? CaptureWindow() {

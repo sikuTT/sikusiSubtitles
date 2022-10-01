@@ -53,17 +53,45 @@ namespace sikusiSubtitles.OCR {
         }
 
         /**
+         * このページの表示状態が変わった
+         *
+         * このページが表示された場合、ウィンドウ一覧を更新する。
+         * このページが表示されている間のみ、一定間隔でウィンドウ一覧を更新するタイマーを作成する。
+         */
+        private void OcrPage_VisibleChanged(object sender, EventArgs e) {
+            if (Visible == true) {
+                this.UpdateWindowList();
+            }
+            refreshTimer.Enabled = Visible;
+        }
+
+        /** 一定間隔でウィンドウ一覧を更新する */
+        private void refreshTimer_Tick(object sender, EventArgs e) {
+            this.UpdateWindowList();
+        }
+
+        /**
          * ウィンドウ一覧の更新
          */
         private void UpdateWindowList() {
+            // ウィンドウ一覧をクリア
             this.windowListView.Items.Clear();
-            var processList = Process.GetProcesses();
             this.processIdList = new List<int>();
+
+            // プロセス一覧を取得する
+            var processList = Process.GetProcesses();
             foreach (var process in processList) {
                 if (process.Id != Process.GetCurrentProcess().Id && process.MainWindowTitle != "") {
+                    // プロセスを追加1
                     this.processIdList.Add(process.Id);
+                    // プロセスのメインウィンドウを一覧に追加
                     var item = new ListViewItem(new String[] { process.MainWindowTitle, process.ProcessName });
                     this.windowListView.Items.Add(item);
+
+                    // プロセスが選択中のプロセスだった場合、再選択
+                    if (process.Id == this.selectedProcessId) {
+                        item.Selected = true;
+                    }
                 }
             }
         }

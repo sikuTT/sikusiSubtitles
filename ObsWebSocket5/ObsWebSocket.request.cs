@@ -212,7 +212,7 @@ namespace ObsWebSocket5 {
                 if (responseData?.d?.responseData?.inputKind == "text_gdiplus_v2") {
                     inputSettings = obj.ToObject<TextGdiplusV2>();
                 }
-                if (inputSettings != null) {
+                if (responseData?.d?.responseData != null && inputSettings != null) {
                     responseData.d.responseData.inputSettings = inputSettings;
                 }
             }

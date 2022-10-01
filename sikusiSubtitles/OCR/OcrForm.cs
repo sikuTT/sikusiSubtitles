@@ -38,7 +38,7 @@ namespace sikusiSubtitles.OCR {
 
         // Shortcut
         private ShortcutService? shortcutService;
-        private string ocrShortcutKey;
+        private string ocrShortcutKey = "";
 
         // Capture
         private CaptureForm? captureForm;

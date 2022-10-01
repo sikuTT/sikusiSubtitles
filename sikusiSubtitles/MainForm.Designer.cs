@@ -25,9 +25,9 @@
         private void InitializeComponent() {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.menuView = new System.Windows.Forms.TreeView();
-            this.recognitionResultTextBox = new System.Windows.Forms.TextBox();
             this.versionLabel = new System.Windows.Forms.Label();
             this.topLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.recognitionResultTextBox = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -56,8 +56,27 @@
             this.menuView.Location = new System.Drawing.Point(0, 0);
             this.menuView.Name = "menuView";
             this.menuView.Size = new System.Drawing.Size(316, 481);
-            this.menuView.TabIndex = 10;
+            this.menuView.TabIndex = 1;
             this.menuView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.menuView_AfterSelect);
+            // 
+            // versionLabel
+            // 
+            this.versionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.versionLabel.AutoSize = true;
+            this.versionLabel.Location = new System.Drawing.Point(912, 12);
+            this.versionLabel.Name = "versionLabel";
+            this.versionLabel.Size = new System.Drawing.Size(52, 15);
+            this.versionLabel.TabIndex = 6;
+            this.versionLabel.Text = "Ver. 0.4.0";
+            // 
+            // topLayoutPanel
+            // 
+            this.topLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.topLayoutPanel.Location = new System.Drawing.Point(12, 4);
+            this.topLayoutPanel.Name = "topLayoutPanel";
+            this.topLayoutPanel.Size = new System.Drawing.Size(894, 37);
+            this.topLayoutPanel.TabIndex = 0;
             // 
             // recognitionResultTextBox
             // 
@@ -69,26 +88,7 @@
             this.recognitionResultTextBox.Name = "recognitionResultTextBox";
             this.recognitionResultTextBox.ReadOnly = true;
             this.recognitionResultTextBox.Size = new System.Drawing.Size(950, 52);
-            this.recognitionResultTextBox.TabIndex = 12;
-            // 
-            // versionLabel
-            // 
-            this.versionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.versionLabel.AutoSize = true;
-            this.versionLabel.Location = new System.Drawing.Point(912, 12);
-            this.versionLabel.Name = "versionLabel";
-            this.versionLabel.Size = new System.Drawing.Size(52, 15);
-            this.versionLabel.TabIndex = 6;
-            this.versionLabel.Text = "Ver. 0.3.6";
-            // 
-            // topLayoutPanel
-            // 
-            this.topLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.topLayoutPanel.Location = new System.Drawing.Point(12, 4);
-            this.topLayoutPanel.Name = "topLayoutPanel";
-            this.topLayoutPanel.Size = new System.Drawing.Size(894, 37);
-            this.topLayoutPanel.TabIndex = 13;
+            this.recognitionResultTextBox.TabIndex = 3;
             // 
             // MainForm
             // 
@@ -114,8 +114,8 @@
         #endregion
         private SplitContainer splitContainer1;
         private TreeView menuView;
-        private TextBox recognitionResultTextBox;
         private Label versionLabel;
         private FlowLayoutPanel topLayoutPanel;
+        private TextBox recognitionResultTextBox;
     }
 }

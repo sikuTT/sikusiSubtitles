@@ -94,6 +94,12 @@ namespace sikusiSubtitles {
 
             this.menuView.ExpandAll();
             if (menuView.Nodes.Count > 0) menuView.SelectedNode = menuView.Nodes[0];
+
+            // 音声認識した内容をフォームに表示するために監視する
+            var speechRecognitionServiceManager = serviceManager.GetService<SpeechRecognitionServiceManager>();
+            if (speechRecognitionServiceManager != null) {
+                speechRecognitionServiceManager.Recognized += SpeechRecognizedHandler;
+            }
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e) {
@@ -130,6 +136,15 @@ namespace sikusiSubtitles {
                 if (page != null) {
                     page.Visible = view == control;
                 }
+            }
+        }
+
+        private void SpeechRecognizedHandler(object? sender, SpeechRecognitionEventArgs args) {
+            if (this.recognitionResultTextBox.InvokeRequired) {
+                Action act = delegate { this.recognitionResultTextBox.Text = args.Text; };
+                this.recognitionResultTextBox.Invoke(act);
+            } else {
+                this.recognitionResultTextBox.Text = args.Text;
             }
         }
     }

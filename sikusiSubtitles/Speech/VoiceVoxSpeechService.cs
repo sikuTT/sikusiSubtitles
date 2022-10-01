@@ -32,7 +32,7 @@ namespace sikusiSubtitles.Speech {
         public bool VoiceListInitialized { get; set; } = false;
 
         public VoiceVoxSpeechService(ServiceManager serviceManager) : base(serviceManager, "VOICEVOX", "VOICEVOX", 500) {
-            GetSpeakers();
+            Task task = GetSpeakers();
         }
 
         public override UserControl? GetSettingPage() {

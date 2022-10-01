@@ -48,7 +48,7 @@ namespace sikusiSubtitles.Translation {
 
                 foreach (var to in toList) {
                     var url = "https://script.google.com/macros/s/";
-                    url += this.Key + "/exec?text=" + text;
+                    url += this.Key + "/exec?text=" + Uri.EscapeDataString(text);
                     if (from != null)
                         url += "&source=" + from;
                     url += "&target=" + to;

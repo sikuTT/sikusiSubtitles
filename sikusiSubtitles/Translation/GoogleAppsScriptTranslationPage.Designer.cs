@@ -81,13 +81,13 @@
             // 
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(10, 174);
+            this.textBox1.Location = new System.Drawing.Point(10, 203);
             this.textBox1.MinimumSize = new System.Drawing.Size(0, 140);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(810, 165);
+            this.textBox1.Size = new System.Drawing.Size(810, 171);
             this.textBox1.TabIndex = 7;
             this.textBox1.Text = resources.GetString("textBox1.Text");
             this.textBox1.WordWrap = false;
@@ -97,14 +97,14 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(10, 156);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(263, 15);
+            this.label3.Size = new System.Drawing.Size(384, 15);
             this.label3.TabIndex = 18;
-            this.label3.Text = "Google Apps Scriptで以下のスクリプトを作成します。";
+            this.label3.Text = "Google Apps Scriptで以下のスクリプトを作成しウェブアプリとしてデプロイします。";
             // 
             // linkLabel1
             // 
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(279, 156);
+            this.linkLabel1.Location = new System.Drawing.Point(10, 176);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(177, 15);
             this.linkLabel1.TabIndex = 19;
@@ -123,7 +123,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label1);
             this.Name = "GoogleAppsScriptTranslationPage";
-            this.Size = new System.Drawing.Size(823, 383);
+            this.Size = new System.Drawing.Size(823, 411);
             this.Load += new System.EventHandler(this.GoogleAppsScriptTranslationPage_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

@@ -12,8 +12,12 @@ namespace sikusiSubtitles.Translation {
         public string Key { get; set; } = "";
 
         public DeepLTranslationService(ServiceManager serviceManager) : base(serviceManager, "DeepL", "DeepL", 400) {
-            SettingPage = new DeepLTranslationPage(serviceManager, this);
             this.languages.Sort((a, b) => a.Item2.CompareTo(b.Item2));
+        }
+
+        public override UserControl? GetSettingPage()
+        {
+            return new DeepLTranslationPage(ServiceManager, this);
         }
 
         public override void Load(JToken token) {

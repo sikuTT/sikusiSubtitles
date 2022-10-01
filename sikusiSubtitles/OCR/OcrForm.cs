@@ -340,7 +340,7 @@ namespace sikusiSubtitles.OCR {
 
                     // OBSに接続済みで、翻訳結果表示先が指定されている場合、OBS上に翻訳結果を表示する。
                     var obsService = this.serviceManager.GetService<ObsService>();
-                    var subtitlesService = this.serviceManager.GetService<SubtitlesService>();
+                    var subtitlesService = this.serviceManager.GetService<ObsSubtitlesService>();
                     if (obsService != null && obsService.ObsSocket.IsConnected && subtitlesService != null && obsTextSourceComboBox.SelectedItem != null) {
                         var sourceName = obsTextSourceComboBox.SelectedItem.ToString();
                         if (sourceName != null) {
@@ -399,7 +399,7 @@ namespace sikusiSubtitles.OCR {
 
         private async void ClearObsTranslatedText() {
             var obsService = this.serviceManager.GetService<ObsService>();
-            var subtitlesService = this.serviceManager.GetService<SubtitlesService>();
+            var subtitlesService = this.serviceManager.GetService<ObsSubtitlesService>();
             if (obsService?.IsConnected == true && subtitlesService != null && obsTextSourceComboBox.SelectedItem != null) {
                 var sourceName = obsTextSourceComboBox.SelectedItem.ToString();
                 if (sourceName != null) {

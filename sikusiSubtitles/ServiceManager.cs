@@ -8,10 +8,26 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles {
     public class ServiceManager {
+        class OrderedControl {
+            public Control Control { get; set; }
+            public int Index { get; set; }
+
+            public OrderedControl(Control control, int index) {
+                this.Control = control;
+                this.Index = index;
+            }
+        }
+
         public List<Service> Managers { get; set; }
         public List<Service> Services { get; set; }
+        public List<Control> TopFlowControls {
+            get {
+                return this.topFlowControls.Select(oc => oc.Control).ToList();
+            }
+        }
 
         private string SaveFilePath;
+        private List<OrderedControl> topFlowControls = new List<OrderedControl>();
 
         private Dictionary<string, Service> activeServices = new Dictionary<string, Service>();
 
@@ -57,13 +73,18 @@ namespace sikusiSubtitles {
         }
 
         public Type? GetService<Type>() where Type : Service {
-            foreach (var service in Services) {
-                var type = service as Type;
-                if (type != null) {
-                    return type;
+            var manager = GetManager<Type>();
+            if (manager != null) {
+                return manager;
+            } else {
+                foreach (var service in Services) {
+                    var type = service as Type;
+                    if (type != null) {
+                        return type;
+                    }
                 }
+                return null;
             }
-            return null;
         }
 
         public Type? GetManager<Type>() where Type : Service {
@@ -80,12 +101,9 @@ namespace sikusiSubtitles {
          * サービスの順番をindex順にする
          */
         public void Sort() {
-            Managers.Sort((a, b) => {
-                return a.Index - b.Index;
-            });
-            Services.Sort((a, b) => {
-                return a.Index - b.Index;
-            });
+            Managers.Sort((a, b) => a.Index - b.Index);
+            Services.Sort((a, b) => a.Index - b.Index);
+            topFlowControls.Sort((a, b) => a.Index - b.Index);
         }
 
         // 設定の読み込み
@@ -143,6 +161,10 @@ namespace sikusiSubtitles {
                 service.Finish();
             }
             Save();
+        }
+
+        public void AddTopFlowControl(Control control, int index) {
+            topFlowControls.Add(new OrderedControl(control, index));
         }
     }
 }

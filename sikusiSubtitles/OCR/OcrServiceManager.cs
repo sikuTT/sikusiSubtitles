@@ -21,11 +21,16 @@ namespace sikusiSubtitles.OCR {
         private Shortcut.Shortcut OcrShortcut = new Shortcut.Shortcut("execute-ocr", "OCR", "画面から文字を取得し翻訳する", "");
         private Shortcut.Shortcut ClearObsTextShortcut = new Shortcut.Shortcut("clear-obs-text", "OCR", "OCRの翻訳結果をクリアする", "");
 
-        public OcrServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, ServiceName, "OCR", 400, true) {
-            SettingPage = new OcrPage(serviceManager, this);
+        public OcrServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, ServiceName, "OCR", 500, true) {
+        }
+
+        public override UserControl? GetSettingPage()
+        {
+            return new OcrPage(ServiceManager, this);
         }
 
         public override void Load(JToken token) {
+
             OcrEngine = token.Value<string>("OcrEngine") ?? "";
             OcrLanguage = token.Value<string>("OcrLanguage") ?? "";
             TranslationEngine = token.Value<string>("TranslationEngine") ?? "";

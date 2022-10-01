@@ -21,9 +21,12 @@ namespace sikusiSubtitles.SpeechRecognition {
         private bool isLastFinal = false;
 
         public ChromeSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "ChromeSpeechRecognition", "Google Chrome", 100) {
-            SettingPage = new ChromeSpeechRecognitionPage(serviceManager, this);
         }
 
+        public override UserControl? GetSettingPage()
+        {
+            return new ChromeSpeechRecognitionPage(ServiceManager, this);
+        }
         public override void Load(JToken token) {
             Port = token.Value<int?>("Port") ?? 14949;
         }

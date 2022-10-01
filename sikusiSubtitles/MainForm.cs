@@ -3,27 +3,31 @@ using sikusiSubtitles.OCR;
 using sikusiSubtitles.Shortcut;
 using sikusiSubtitles.Speech;
 using sikusiSubtitles.SpeechRecognition;
+using sikusiSubtitles.Subtitles;
 using sikusiSubtitles.Translation;
 using System.Diagnostics;
 
 namespace sikusiSubtitles {
     public partial class MainForm : Form {
         ServiceManager serviceManager = new ServiceManager();
-        SpeechRecognitionService? speechRecognitionService;
 
         public MainForm() {
             InitializeComponent();
-
-            // OBS Service
-            new ObsServiceManager(this.serviceManager);
-            new ObsService(this.serviceManager);
-            new SubtitlesService(this.serviceManager);
 
             // Speech Recognition Service
             new SpeechRecognitionServiceManager(this.serviceManager);
             new ChromeSpeechRecognitionService(this.serviceManager);
             new AzureSpeechRecognitionService(this.serviceManager);
             new AmiVoiceSpeechRecognitionServie(this.serviceManager);
+
+            // Subtitles Service
+            new SubtitlesServiceManager(this.serviceManager);
+            new SubtitlesService(this.serviceManager);
+
+            // OBS Service
+            new ObsServiceManager(this.serviceManager);
+            new ObsService(this.serviceManager);
+            new ObsSubtitlesService(this.serviceManager);
 
             // Translation Service
             new TranslationServiceManager(this.serviceManager);
@@ -51,15 +55,19 @@ namespace sikusiSubtitles {
         }
 
         private void Form1_Load(object sender, EventArgs e) {
+            foreach (var control in serviceManager.TopFlowControls) {
+                topLayoutPanel.Controls.Add(control);
+            }
+
             this.serviceManager.Managers.ForEach(service => {
                 var page = service.GetSettingPage();
-                // ÉTÅ[ÉrÉXÇ…ê›íËÉyÅ[ÉWÇ™ë∂ç›Ç∑ÇÈèÍçáÅAÉtÉHÅ[ÉÄÇ…ê›íËÉyÅ[ÉWÇí«â¡Ç∑ÇÈ
-                // ÉcÉäÅ[ÉrÉÖÅ[Ç…ê›íËÉyÅ[ÉWÇï\é¶Ç∑ÇÈÉÅÉjÉÖÅ[ÇçÏê¨
+                // „Çµ„Éº„Éì„Çπ„Å´Ë®≠ÂÆö„Éö„Éº„Ç∏„ÅåÂ≠òÂú®„Åô„ÇãÂ†¥Âêà„ÄÅ„Éï„Ç©„Éº„É†„Å´Ë®≠ÂÆö„Éö„Éº„Ç∏„ÇíËøΩÂä†„Åô„Çã
+                // „ÉÑ„É™„Éº„Éì„É•„Éº„Å´Ë®≠ÂÆö„Éö„Éº„Ç∏„ÇíË°®Á§∫„Åô„Çã„É°„Éã„É•„Éº„Çí‰ΩúÊàê
                 var node = new TreeNode(service.DisplayName) { Name = service.ServiceName };
                 this.menuView.Nodes.Add(node);
 
                 if (page != null) {
-                    // ê›íËÉyÅ[ÉWÇçÏê¨Ç∑ÇÈ
+                    // Ë®≠ÂÆö„Éö„Éº„Ç∏„Çí‰ΩúÊàê„Åô„Çã
                     page.Name = service.Name;
                     page.Dock = DockStyle.Fill;
                     this.splitContainer1.Panel2.Controls.Add(page);
@@ -68,16 +76,16 @@ namespace sikusiSubtitles {
 
             this.serviceManager.Services.ForEach(service => {
                 var page = service.GetSettingPage();
-                // ÉTÅ[ÉrÉXÇ…ê›íËÉyÅ[ÉWÇ™ë∂ç›Ç∑ÇÈèÍçáÅAÉtÉHÅ[ÉÄÇ…ê›íËÉyÅ[ÉWÇí«â¡Ç∑ÇÈ
+                // „Çµ„Éº„Éì„Çπ„Å´Ë®≠ÂÆö„Éö„Éº„Ç∏„ÅåÂ≠òÂú®„Åô„ÇãÂ†¥Âêà„ÄÅ„Éï„Ç©„Éº„É†„Å´Ë®≠ÂÆö„Éö„Éº„Ç∏„ÇíËøΩÂä†„Åô„Çã
                 if (page != null) {
-                    // êeÇÃÉÅÉjÉÖÅ[ÇéÊìæ
+                    // Ë¶™„ÅÆ„É°„Éã„É•„Éº„ÇíÂèñÂæó
                     var parentNodes = menuView.Nodes.Find(service.ServiceName, false);
                     if (parentNodes.Length > 0 && parentNodes[0].Name != service.Name) {
                         var node = new TreeNode(service.DisplayName) { Name = service.Name };
                         parentNodes[0].Nodes.Add(node);
                     }
 
-                    // ê›íËÉyÅ[ÉWÇçÏê¨Ç∑ÇÈ
+                    // Ë®≠ÂÆö„Éö„Éº„Ç∏„Çí‰ΩúÊàê„Åô„Çã
                     page.Name = service.Name;
                     page.Dock = DockStyle.Fill;
                     this.splitContainer1.Panel2.Controls.Add(page);
@@ -122,110 +130,6 @@ namespace sikusiSubtitles {
                 if (page != null) {
                     page.Visible = view == control;
                 }
-            }
-        }
-
-        private void speechRecognitionCheckBox_CheckedChanged(object sender, EventArgs e) {
-            this.SetCheckBoxButtonColor(this.speechRecognitionCheckBox);
-
-            if (this.speechRecognitionCheckBox.Checked) {
-                this.SpeechRecognitionStart();
-            } else {
-                this.SpeechRecognitionStop();
-            }
-        }
-
-        /**
-         * âπê∫îFéØÇäJénÇ∑ÇÈ
-         */
-        private void SpeechRecognitionStart() {
-            var recognitionStarted = false;
-
-            var manager = this.serviceManager.GetManager<SpeechRecognitionServiceManager>();
-            if (manager?.Device == null) {
-                MessageBox.Show("É}ÉCÉNÇê›íËÇµÇƒÇ≠ÇæÇ≥Ç¢ÅB");
-            } else {
-                var service = manager.GetEngine();
-                if (service != null) {
-                    if (service.Start()) {
-                        speechRecognitionService = service;
-                        service.Recognizing += Recognizing;
-                        service.Recognized += Recognized;
-                        recognitionStarted = true;
-                    }
-                }
-            }
-
-            // âπê∫îFéØÇäJénÇ≈Ç´Ç»Ç©Ç¡ÇΩèÍçáÅAâπê∫îFéØÉ{É^ÉìÇÃÉ`ÉFÉbÉNÇäOÇ∑ÅB
-            if (recognitionStarted == false) {
-                this.speechRecognitionCheckBox.Checked = false;
-            }
-        }
-
-        /**
-         * âπê∫îFéØÇèIóπÇ∑ÇÈ
-         */
-        private void SpeechRecognitionStop() {
-            if (speechRecognitionService != null) {
-                speechRecognitionService.Recognizing -= Recognizing;
-                speechRecognitionService.Recognized -= Recognized;
-                speechRecognitionService.Stop();
-                speechRecognitionService = null;
-            }
-        }
-
-        private void Recognizing(Object? sender, SpeechRecognitionEventArgs args) {
-            this.SetRecognitionResultText(args.Text);
-        }
-
-        private void Recognized(Object? sender, SpeechRecognitionEventArgs args) {
-            this.SetRecognitionResultText(args.Text);
-        }
-
-        async private void obsCheckBox_CheckedChanged(object sender, EventArgs e) {
-            this.SetCheckBoxButtonColor(this.obsCheckBox);
-
-            var service = serviceManager.GetService<ObsService>();
-            if (service != null) {
-                if (this.obsCheckBox.Checked) {
-                    if (await service.ConnectAsync() == false) {
-                        this.obsCheckBox.Checked = false;
-                    }
-                } else if (service.IsConnected) {
-                    await service.DisconnectAsync();
-                }
-            }
-        }
-
-        /**
-         * É`ÉFÉbÉNÉ{ÉbÉNÉXÉ{É^ÉìÇÃèÛë‘Ç…çáÇÌÇπÇƒêFÇïœçXÇ∑ÇÈ
-         * ÅiÉfÉtÉHÉãÉgÇÃêFÇÕï™Ç©ÇËÇ…Ç≠Ç¢ÇÃÇ≈Åj
-         */
-        private void SetCheckBoxButtonColor(CheckBox checkbox) {
-            if (checkbox.Checked) {
-                checkbox.BackColor = SystemColors.Highlight;
-                checkbox.ForeColor = SystemColors.HighlightText;
-            } else {
-                checkbox.BackColor = SystemColors.ButtonHighlight;
-                checkbox.ForeColor = SystemColors.ControlText;
-            }
-        }
-
-        private void SetRecognitionResultText(string text) {
-            if (this.recognitionResultTextBox.InvokeRequired) {
-                Action act = delegate { this.recognitionResultTextBox.Text = text; };
-                this.recognitionResultTextBox.Invoke(act);
-            } else {
-                this.recognitionResultTextBox.Text = text;
-            }
-        }
-
-        private void AddRecognitionResultText(string text) {
-            if (this.recognitionResultTextBox.InvokeRequired) {
-                Action act = delegate { this.recognitionResultTextBox.Text += "\r\n" + text; };
-                this.recognitionResultTextBox.Invoke(act);
-            } else {
-                this.recognitionResultTextBox.Text += "\r\n" + text;
             }
         }
     }

@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 namespace sikusiSubtitles {
     public abstract class Service {
         protected ServiceManager ServiceManager;
-        protected UserControl? SettingPage = null;
 
         public string ServiceName { get; set; }
         public string Name { get; set; }
@@ -33,8 +32,20 @@ namespace sikusiSubtitles {
         public virtual void Init() { }
         public virtual void Finish() { }
 
-        public virtual UserControl? GetSettingPage() {
-            return SettingPage;
+        public virtual UserControl? GetSettingPage() { return null; }
+
+        /**
+         * チェックボックスボタンの状態に合わせて色を変更する
+         * （デフォルトの色は分かりにくいので）
+         */
+        protected void SetCheckBoxButtonColor(CheckBox checkbox) {
+            if (checkbox.Checked) {
+                checkbox.BackColor = SystemColors.Highlight;
+                checkbox.ForeColor = SystemColors.HighlightText;
+            } else {
+                checkbox.BackColor = SystemColors.ButtonHighlight;
+                checkbox.ForeColor = SystemColors.ControlText;
+            }
         }
 
         protected string Encrypt(string text) {

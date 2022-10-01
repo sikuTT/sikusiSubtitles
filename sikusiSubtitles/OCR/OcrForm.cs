@@ -38,6 +38,7 @@ namespace sikusiSubtitles.OCR {
 
         // Shortcut
         private ShortcutService? shortcutService;
+        private string ocrShortcutKey;
 
         // Capture
         private CaptureForm? captureForm;
@@ -88,6 +89,10 @@ namespace sikusiSubtitles.OCR {
                 var i = ocrSpeechEngineComboBox.Items.Add(service.DisplayName);
                 if (service.Name == ocrManager.OcrSpeechEngine) ocrSpeechEngineComboBox.SelectedIndex = i;
             });
+
+            // ショートカットの設定
+            ocrShortcutKey = ocrManager.OcrShortcut.ShortcutKey;
+            ocrShortcutKeyTextBox.Text = ocrShortcutKey;
         }
 
         private void OcrForm_FormClosed(object sender, FormClosedEventArgs e) {
@@ -413,10 +418,14 @@ namespace sikusiSubtitles.OCR {
          * ショートカットが実行された
          */
         private void ShortcutRun(object? sender, Shortcut.Shortcut shortcut) {
-            if (shortcut.Name == "execute-ocr" && this.ocrButton.Enabled == true) {
-                Ocr();
-            } else if (shortcut.Name == "clear-ocr-translated-text") {
-                ClearObsTranslatedText();
+            if (ocrShortcutKeyTextBox.Focused == true) {
+                ocrShortcutKeyTextBox.Text = ocrShortcutKey = shortcut.ShortcutKey;
+            } else {
+                if (ocrButton.Enabled == true && shortcut.ShortcutKey == ocrShortcutKey) {
+                    Ocr();
+                } else if  (shortcut.Name == "clear-ocr-translated-text") {
+                    ClearObsTranslatedText();
+                }
             }
         }
 
@@ -443,6 +452,10 @@ namespace sikusiSubtitles.OCR {
 
         private void ocrTextEditContextMenuStrip_Opening(object sender, CancelEventArgs e) {
             cutToolStripMenuItem.Enabled = copyToolStripMenuItem.Enabled = ocrTextBox.SelectionLength > 0;
+        }
+
+        private void resetShortcutButton_Click(object sender, EventArgs e) {
+            ocrShortcutKeyTextBox.Text = ocrShortcutKey = ocrManager.OcrShortcut.ShortcutKey;
         }
     }
 }

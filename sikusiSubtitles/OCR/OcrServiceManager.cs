@@ -17,9 +17,11 @@ namespace sikusiSubtitles.OCR {
         public string TranslationLanguage { get; set; } = "";
         public string OcrSpeechEngine { get; set; } = "";
         public string OcrSpeechVoice { get; set; } = "";
+        public Shortcut.Shortcut OcrShortcut { get { return ocrShortcut; } }
+        public Shortcut.Shortcut ClearObsTextShortcut { get { return clearObsTextShortcut; } }
 
-        private Shortcut.Shortcut OcrShortcut = new Shortcut.Shortcut("execute-ocr", "OCR", "画面から文字を取得し翻訳する", "");
-        private Shortcut.Shortcut ClearObsTextShortcut = new Shortcut.Shortcut("clear-obs-text", "OCR", "OCRの翻訳結果をクリアする", "");
+        private Shortcut.Shortcut ocrShortcut = new Shortcut.Shortcut("execute-ocr", "OCR", "画面から文字を取得し翻訳する", "");
+        private Shortcut.Shortcut clearObsTextShortcut = new Shortcut.Shortcut("clear-obs-text", "OCR", "OCRの翻訳結果をクリアする", "");
 
         public OcrServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, ServiceName, "OCR", 500, true) {
         }
@@ -37,8 +39,8 @@ namespace sikusiSubtitles.OCR {
             TranslationLanguage = token.Value<string>("TranslationLanguage") ?? "";
             OcrSpeechEngine = token.Value<string>("OcrSpeechEngine") ?? "";
             OcrSpeechVoice = token.Value<string>("OcrSpeechVoice") ?? "";
-            OcrShortcut.ShortcutKey = token.Value<string>("OcrShortcutKey") ?? "";
-            ClearObsTextShortcut.ShortcutKey = token.Value<string>("ClearObsTextShortcutKey") ?? "";
+            ocrShortcut.ShortcutKey = token.Value<string>("OcrShortcutKey") ?? "";
+            clearObsTextShortcut.ShortcutKey = token.Value<string>("ClearObsTextShortcutKey") ?? "";
         }
 
         public override JObject Save() {
@@ -49,16 +51,16 @@ namespace sikusiSubtitles.OCR {
                 new JProperty("TranslationLanguage", TranslationLanguage),
                 new JProperty("OcrSpeechEngine", OcrSpeechEngine),
                 new JProperty("OcrSpeechVoice", OcrSpeechVoice),
-                new JProperty("OcrShortcutKey", OcrShortcut.ShortcutKey),
-                new JProperty("ClearObsTextShortcutKey", ClearObsTextShortcut.ShortcutKey)
+                new JProperty("OcrShortcutKey", ocrShortcut.ShortcutKey),
+                new JProperty("ClearObsTextShortcutKey", clearObsTextShortcut.ShortcutKey)
             };
         }
 
         public override void Init() {
             var shortcutService = this.ServiceManager.GetService<ShortcutService>();
             if (shortcutService != null) {
-                shortcutService.Shortcuts.Add(OcrShortcut);
-                shortcutService.Shortcuts.Add(ClearObsTextShortcut);
+                shortcutService.Shortcuts.Add(ocrShortcut);
+                shortcutService.Shortcuts.Add(clearObsTextShortcut);
             }
         }
 

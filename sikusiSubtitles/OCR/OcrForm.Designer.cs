@@ -53,6 +53,9 @@
             this.ocrSpeechVoiceComboBox = new System.Windows.Forms.ComboBox();
             this.speechOcrStopButton = new System.Windows.Forms.Button();
             this.speechOcrButton = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.ocrShortcutKeyTextBox = new System.Windows.Forms.TextBox();
+            this.resetShortcutButton = new System.Windows.Forms.Button();
             this.ocrTextEditContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -122,7 +125,7 @@
             this.translatedTextBox.Multiline = true;
             this.translatedTextBox.Name = "translatedTextBox";
             this.translatedTextBox.ReadOnly = true;
-            this.translatedTextBox.Size = new System.Drawing.Size(912, 105);
+            this.translatedTextBox.Size = new System.Drawing.Size(912, 117);
             this.translatedTextBox.TabIndex = 18;
             // 
             // label1
@@ -348,11 +351,46 @@
             this.speechOcrButton.UseVisualStyleBackColor = true;
             this.speechOcrButton.Click += new System.EventHandler(this.speechOcrButton_Click);
             // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(14, 450);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(65, 15);
+            this.label4.TabIndex = 20;
+            this.label4.Text = "ショートカット";
+            // 
+            // ocrShortcutKeyTextBox
+            // 
+            this.ocrShortcutKeyTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ocrShortcutKeyTextBox.BackColor = System.Drawing.SystemColors.Window;
+            this.ocrShortcutKeyTextBox.Location = new System.Drawing.Point(85, 447);
+            this.ocrShortcutKeyTextBox.Name = "ocrShortcutKeyTextBox";
+            this.ocrShortcutKeyTextBox.ReadOnly = true;
+            this.ocrShortcutKeyTextBox.Size = new System.Drawing.Size(703, 23);
+            this.ocrShortcutKeyTextBox.TabIndex = 21;
+            // 
+            // resetShortcutButton
+            // 
+            this.resetShortcutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.resetShortcutButton.Location = new System.Drawing.Point(794, 446);
+            this.resetShortcutButton.Name = "resetShortcutButton";
+            this.resetShortcutButton.Size = new System.Drawing.Size(132, 23);
+            this.resetShortcutButton.TabIndex = 22;
+            this.resetShortcutButton.Text = "デフォルト設定に戻す";
+            this.resetShortcutButton.UseVisualStyleBackColor = true;
+            this.resetShortcutButton.Click += new System.EventHandler(this.resetShortcutButton_Click);
+            // 
             // OcrForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(936, 440);
+            this.ClientSize = new System.Drawing.Size(936, 474);
+            this.Controls.Add(this.resetShortcutButton);
+            this.Controls.Add(this.ocrShortcutKeyTextBox);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.speechOcrButton);
             this.Controls.Add(this.speechOcrStopButton);
             this.Controls.Add(this.ocrSpeechVoiceComboBox);
@@ -417,5 +455,8 @@
         private ToolStripMenuItem cutToolStripMenuItem;
         private ToolStripMenuItem copyToolStripMenuItem;
         private ToolStripMenuItem pasteToolStripMenuItem;
+        private Label label4;
+        private TextBox ocrShortcutKeyTextBox;
+        private Button resetShortcutButton;
     }
 }

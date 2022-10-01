@@ -111,6 +111,7 @@ namespace sikusiSubtitles.Shortcut {
         }
 
         private IntPtr HookCallback(int nCode, int wParam, ref KBDLLHOOKSTRUCT lParam) {
+
             if (nCode < 0) {
                 return CallNextHookEx(hookPtr, nCode, wParam, ref lParam);
             }
@@ -125,23 +126,22 @@ namespace sikusiSubtitles.Shortcut {
                             if (!this.keys.Contains(keyCode)) {
                                 this.keys.Add(keyCode);
 
+                                bool shortcutInvoked = false;
                                 string text = CreateShortcutText(keys);
-                                this.ShortcutRun?.Invoke(this, new Shortcut("", "", "", text));
+                                foreach (var shortcut in Shortcuts) {
+                                    if (text == shortcut.ShortcutKey) {
+                                        this.ShortcutRun?.Invoke(this, shortcut);
+                                        shortcutInvoked = true;
+                                        break;
+                                    }
+                                }
+                                if (shortcutInvoked == false) {
+                                    this.ShortcutRun?.Invoke(this, new Shortcut("", "", "", text));
+                                }
                             }
                         } else {
                             if (this.keys.Contains(keyCode)) {
                                 this.keys.Remove(keyCode);
-                            }
-                        }
-
-                        if (this.keys.Count > 0) {
-                            string text = CreateShortcutText(keys);
-                            foreach (var shortcut in Shortcuts) {
-                                if (text == shortcut.ShortcutKey) {
-                                    this.ShortcutRun?.Invoke(this, shortcut);
-                                    this.keys.Clear();
-                                    break;
-                                }
                             }
                         }
                     }

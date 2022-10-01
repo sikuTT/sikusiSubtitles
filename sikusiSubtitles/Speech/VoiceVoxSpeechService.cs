@@ -69,8 +69,10 @@ namespace sikusiSubtitles.Speech {
             });
         }
 
-        private async void GetSpeakers() {
+        public async Task GetSpeakers() {
             try {
+                this.voices.Clear();
+
                 // Build the request.
                 using var request = new HttpRequestMessage();
                 request.Method = HttpMethod.Get;

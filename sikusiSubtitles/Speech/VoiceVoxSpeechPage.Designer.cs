@@ -30,6 +30,7 @@
             this.voiceComboBox = new System.Windows.Forms.ComboBox();
             this.speakButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.refreshButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label2
@@ -79,7 +80,7 @@
             this.voiceComboBox.FormattingEnabled = true;
             this.voiceComboBox.Location = new System.Drawing.Point(40, 65);
             this.voiceComboBox.Name = "voiceComboBox";
-            this.voiceComboBox.Size = new System.Drawing.Size(382, 23);
+            this.voiceComboBox.Size = new System.Drawing.Size(298, 23);
             this.voiceComboBox.TabIndex = 9;
             this.voiceComboBox.SelectedIndexChanged += new System.EventHandler(this.voiceComboBox_SelectedIndexChanged);
             // 
@@ -107,10 +108,22 @@
             this.cancelButton.Visible = false;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
+            // refreshButton
+            // 
+            this.refreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.refreshButton.Location = new System.Drawing.Point(344, 65);
+            this.refreshButton.Name = "refreshButton";
+            this.refreshButton.Size = new System.Drawing.Size(75, 23);
+            this.refreshButton.TabIndex = 15;
+            this.refreshButton.Text = "更新";
+            this.refreshButton.UseVisualStyleBackColor = true;
+            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
+            // 
             // VoiceVoxSpeechPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.refreshButton);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.speakButton);
             this.Controls.Add(this.textBox1);
@@ -135,5 +148,6 @@
         private ComboBox voiceComboBox;
         private Button speakButton;
         private Button cancelButton;
+        private Button refreshButton;
     }
 }

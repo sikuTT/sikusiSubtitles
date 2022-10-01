@@ -26,13 +26,13 @@ namespace sikusiSubtitles.Speech {
                 while (service.VoiceListInitialized == false) {
                     Thread.Sleep(100);
                 }
-
-                service.GetVoices().ForEach(voice => {
-                    this.voiceComboBox.Invoke(delegate {
-                        this.voiceComboBox.Items.Add(voice.Item2);
-                    });
-                });
             });
+            voiceComboBox.Items.Clear();
+            service.GetVoices().ForEach(voice => this.voiceComboBox.Items.Add(voice.Item2));
+        }
+
+        private async void refreshButton_Click(object sender, EventArgs e) {
+            await VoiceRefresh(true);
         }
 
         private void voiceComboBox_SelectedIndexChanged(object sender, EventArgs e) {
@@ -59,5 +59,10 @@ namespace sikusiSubtitles.Speech {
             await service.CancelSpeakAsync();
         }
 
+        private async Task VoiceRefresh(bool refreshService = false) {
+            await service.GetSpeakers();
+            voiceComboBox.Items.Clear();
+            service.GetVoices().ForEach(voice => this.voiceComboBox.Items.Add(voice.Item2));
+        }
     }
 }

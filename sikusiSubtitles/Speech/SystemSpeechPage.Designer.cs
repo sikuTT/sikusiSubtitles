@@ -99,7 +99,7 @@
             // 
             this.speakButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.speakButton.Enabled = false;
-            this.speakButton.Location = new System.Drawing.Point(351, 268);
+            this.speakButton.Location = new System.Drawing.Point(351, 265);
             this.speakButton.Name = "speakButton";
             this.speakButton.Size = new System.Drawing.Size(75, 23);
             this.speakButton.TabIndex = 9;

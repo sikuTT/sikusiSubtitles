@@ -31,6 +31,7 @@
             this.processNameColumnHeader = new System.Windows.Forms.ColumnHeader();
             this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.ocrButton = new System.Windows.Forms.Button();
+            this.refreshTimer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -95,6 +96,11 @@
             this.ocrButton.UseVisualStyleBackColor = true;
             this.ocrButton.Click += new System.EventHandler(this.ocrButton_Click);
             // 
+            // refreshTimer
+            // 
+            this.refreshTimer.Interval = 10000;
+            this.refreshTimer.Tick += new System.EventHandler(this.refreshTimer_Tick);
+            // 
             // OcrPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -107,6 +113,7 @@
             this.Name = "OcrPage";
             this.Size = new System.Drawing.Size(700, 436);
             this.Load += new System.EventHandler(this.OcrPage_Load);
+            this.VisibleChanged += new System.EventHandler(this.OcrPage_VisibleChanged);
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -122,5 +129,6 @@
         private ColumnHeader processNameColumnHeader;
         private BindingSource bindingSource1;
         private Button ocrButton;
+        private System.Windows.Forms.Timer refreshTimer;
     }
 }

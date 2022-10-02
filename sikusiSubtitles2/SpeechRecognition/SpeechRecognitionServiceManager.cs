@@ -16,8 +16,8 @@ namespace sikusiSubtitles.SpeechRecognition {
 
         // Properties
         public MMDevice? Device { get; set; }
-        public string Engine { get; set; } = "ChromeSpeechRecognition";
-        public string Language { get; set; } = "ja-JP";
+        public string Engine { get; set; } = "";
+        public string Language { get; set; } = "";
 
         private ToggleButton speechRecognitionButton;
         SpeechRecognitionService? speechRecognitionService;
@@ -32,7 +32,7 @@ namespace sikusiSubtitles.SpeechRecognition {
             serviceManager.AddTopFlowControl(speechRecognitionButton, 100);
         }
 
-        public override UserControl? GetSettingPage()
+        public override Page? GetSettingPage()
         {
             return new SpeechRecognitionPage(ServiceManager, this);
         }
@@ -62,7 +62,7 @@ namespace sikusiSubtitles.SpeechRecognition {
         }
 
         public SpeechRecognitionService? GetEngine() {
-            return this.ServiceManager.GetServices<SpeechRecognitionService>(ServiceName).Where(service => service.Name == Engine).FirstOrDefault();
+            return this.ServiceManager.GetServices<SpeechRecognitionService>(ServiceName).Where(service => service.Name == Engine).First();
         }
 
         /** 音声認識の開始 */
@@ -92,10 +92,7 @@ namespace sikusiSubtitles.SpeechRecognition {
                             speechRecognitionService = service;
                             service.Recognizing += RecognizingHandler;
                             service.Recognized += RecognizedHandler;
-                            service.ServiceStopped += ServiceStoppedHandler;
                         }
-                    } else {
-                        MessageBox.Show("使用する音声認識サービスを指定してください。");
                     }
                 }
 
@@ -112,16 +109,9 @@ namespace sikusiSubtitles.SpeechRecognition {
          * 音声認識を終了する
          */
         private void SpeechRecognitionStop() {
-            if (speechRecognitionCheckBox.InvokeRequired) {
-                Action act = delegate () { speechRecognitionCheckBox.Checked = false; };
-                speechRecognitionCheckBox.Invoke(act);
-            } else {
-                speechRecognitionCheckBox.Checked = false;
-            }
             if (speechRecognitionService != null) {
-                speechRecognitionService.Recognizing -= RecognizingHandler;
-                speechRecognitionService.Recognized -= RecognizedHandler;
-                speechRecognitionService.ServiceStopped -= ServiceStoppedHandler;
+                speechRecognitionService.Recognizing -= Recognizing;
+                speechRecognitionService.Recognized -= Recognized;
                 speechRecognitionService.Stop();
                 speechRecognitionService = null;
             }
@@ -135,8 +125,5 @@ namespace sikusiSubtitles.SpeechRecognition {
             this.Recognized?.Invoke(sender, args);
         }
 
-        private void ServiceStoppedHandler(Object? sender, object? args) {
-            SpeechRecognitionStop();
-        }
     }
 }

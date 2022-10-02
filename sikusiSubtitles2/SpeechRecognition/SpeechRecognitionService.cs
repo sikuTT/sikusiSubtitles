@@ -19,11 +19,11 @@ namespace sikusiSubtitles.SpeechRecognition {
         public abstract void Stop();
 
         protected void InvokeRecognizing(string text) {
-            this.Recognizing?.Invoke(this, new SpeechRecognitionEventArgs(text, false));
+            this.Recognizing?.Invoke(this, new SpeechRecognitionEventArgs(text));
         }
 
         protected void InvokeRecognized(string text) {
-            this.Recognized?.Invoke(this, new SpeechRecognitionEventArgs(text, true));
+            this.Recognized?.Invoke(this, new SpeechRecognitionEventArgs(text));
         }
     }
 }

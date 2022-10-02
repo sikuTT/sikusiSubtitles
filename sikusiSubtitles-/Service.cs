@@ -1,15 +1,14 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
+using System.Threading.Tasks;
 
 namespace sikusiSubtitles {
     public abstract class Service {
         protected ServiceManager ServiceManager;
-
-        public event EventHandler<object?>? ServiceStopped;
 
         public string ServiceName { get; set; }
         public string Name { get; set; }
@@ -35,21 +34,17 @@ namespace sikusiSubtitles {
 
         public virtual UserControl? GetSettingPage() { return null; }
 
-        public void InvokeServiceStopped(object? args) {
-            ServiceStopped?.Invoke(this, args);
-        }
-
         /**
          * チェックボックスボタンの状態に合わせて色を変更する
          * （デフォルトの色は分かりにくいので）
          */
-        protected void SetCheckBoxButtonColor(ToggleButton checkbox) {
-            if (checkbox.IsChecked == true) {
-                // checkbox.BackColor = SystemColors.Highlight;
-                // checkbox.ForeColor = SystemColors.HighlightText;
+        protected void SetCheckBoxButtonColor(CheckBox checkbox) {
+            if (checkbox.Checked) {
+                checkbox.BackColor = SystemColors.Highlight;
+                checkbox.ForeColor = SystemColors.HighlightText;
             } else {
-                // checkbox.BackColor = SystemColors.ButtonHighlight;
-                // checkbox.ForeColor = SystemColors.ControlText;
+                checkbox.BackColor = SystemColors.ButtonHighlight;
+                checkbox.ForeColor = SystemColors.ControlText;
             }
         }
 

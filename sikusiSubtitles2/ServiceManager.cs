@@ -38,13 +38,7 @@ namespace sikusiSubtitles {
 
             // Save file
             SaveFilePath = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            SaveFilePath += @"\sikusiku\sikusiSubtitles\";
-            try {
-                Directory.CreateDirectory(SaveFilePath);
-                SaveFilePath += "settings.json";
-            } catch (Exception ex) {
-                Debug.WriteLine("ServiceManager: Create settings folder failed: " + ex.Message);
-            }
+            SaveFilePath += @"\sikusiku\sikusiSubtitles\settings.json";
         }
 
         public void AddService(Service service) {
@@ -114,45 +108,33 @@ namespace sikusiSubtitles {
         }
 
         // 設定の読み込み
-        public JObject? Load() {
+        public void Load() {
             try {
                 JObject jobj = JObject.Parse(File.ReadAllText(SaveFilePath));
-                var servicesObj = jobj.GetValue("Services")?.ToObject<JObject>();
-                if (servicesObj != null) {
-                    foreach (var obj in servicesObj) {
-                        var manager = Managers.Find(service => service.Name == obj.Key);
-                        if (manager != null && obj.Value != null) manager.Load(obj.Value);
+                foreach (var obj in jobj) {
+                    var manager = Managers.Find(service => service.Name == obj.Key);
+                    if (manager != null && obj.Value != null) manager.Load(obj.Value);
 
-                        var service = Services.Find(service => service.Name == obj.Key);
-                        if (service != null && obj.Value != null) service.Load(obj.Value);
-                    }
+                    var service = Services.Find(service => service.Name == obj.Key);
+                    if (service != null && obj.Value != null) service.Load(obj.Value);
                 }
-                return jobj.GetValue("MainWindow")?.ToObject<JObject>();
             } catch (Exception ex) {
                 Debug.WriteLine("ServiceManager: Load settings failed: " + ex.Message);
             }
-            return null;
         }
 
         // 設定の保存
-        public void Save(JObject mainWindowObj) {
-            try {
-                JObject saveObj = new JObject();
-                JObject servicesObj = new JObject();
-                saveObj.Add(new JProperty("Services", servicesObj));
-                saveObj.Add(new JProperty("MainWindow", mainWindowObj));
-                foreach (var service in Managers) {
-                    var obj = service.Save();
-                    if (obj != null) servicesObj.Add(new JProperty(service.Name, obj));
-                }
-                foreach (var service in Services) {
-                    var obj = service.Save();
-                    if (obj != null) servicesObj.Add(new JProperty(service.Name, obj));
-                }
-                File.WriteAllText(SaveFilePath, saveObj.ToString());
-            } catch (Exception ex) {
-                Debug.WriteLine("ServiceManager: Save settings failed: " + ex.Message);
+        public void Save() {
+            JObject saveObj = new JObject();
+            foreach (var service in Managers) {
+                var obj = service.Save();
+                if (obj != null) saveObj.Add(new JProperty(service.Name, obj));
             }
+            foreach (var service in Services) {
+                var obj = service.Save();
+                if (obj != null) saveObj.Add(new JProperty(service.Name, obj));
+            }
+            File.WriteAllText(SaveFilePath, saveObj.ToString());
         }
 
         /**
@@ -160,6 +142,7 @@ namespace sikusiSubtitles {
          */
         public void Init() {
             Sort();
+            Load();
             foreach (var service in Managers) {
                 service.Init();
             }
@@ -178,6 +161,7 @@ namespace sikusiSubtitles {
             foreach (var service in Services) {
                 service.Finish();
             }
+            Save();
         }
 
         public void AddTopFlowControl(Control control, int index) {

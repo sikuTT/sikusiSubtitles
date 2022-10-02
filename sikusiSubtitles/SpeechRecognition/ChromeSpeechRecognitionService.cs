@@ -2,11 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public class ChromeSpeechRecognitionService : SpeechRecognitionService {
@@ -42,7 +44,7 @@ namespace sikusiSubtitles.SpeechRecognition {
         public override bool Start() {
             var manager = this.ServiceManager.GetManager<SpeechRecognitionServiceManager>();
             if (manager == null || manager.Language == "") {
-                MessageBox.Show("言語を選択してください。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("言語を選択してください。", null, MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
 
@@ -66,10 +68,14 @@ namespace sikusiSubtitles.SpeechRecognition {
 
         public override void Stop() {
             try {
-                if (webServer != null) {
-                    webServer.Stop();
-                    webServer = null;
-                }
+                Listener = new HttpListener();
+                Listener.Prefixes.Add(uri);
+                Listener.Start();
+                IAsyncResult result = Listener.BeginGetContext(new AsyncCallback(ListenerCallback), Listener);
+            } catch (HttpListenerException ex) {
+                Debug.WriteLine(ex.Message);
+                MessageBox.Show("WEBサーバーを開始できませんでした。", null, MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
             } catch (Exception ex) {
                 Debug.WriteLine("ChromeSpeechRecognitionService.Stop: " + ex.Message);
             }

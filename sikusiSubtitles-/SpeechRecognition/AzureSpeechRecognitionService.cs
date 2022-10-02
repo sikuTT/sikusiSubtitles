@@ -8,8 +8,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public class AzureSpeechRecognitionService : SpeechRecognitionService {
@@ -18,7 +16,7 @@ namespace sikusiSubtitles.SpeechRecognition {
         public string Key { get; set; } = "";
         public string Region { get; set; } = "";
 
-        public AzureSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "AzureSpeechRecognition", "Azure Cognitive Service - Speech To Text", 200) {
+        public AzureSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "AzureSpeechRecognition", "Azure Cognitive Service - Speech Service", 200) {
         }
 
         public override UserControl? GetSettingPage()
@@ -44,10 +42,10 @@ namespace sikusiSubtitles.SpeechRecognition {
 
         public override bool Start() {
             if (Key == "") {
-                MessageBox.Show("APIキーが設定されていません。", null, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("APIキーが設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             } else if (Region == "") {
-                MessageBox.Show("地域が設定されていません。", null, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("地域が設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 

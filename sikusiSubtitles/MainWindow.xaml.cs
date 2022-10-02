@@ -1,4 +1,5 @@
 ﻿using sikusiSubtitles.SpeechRecognition;
+using sikusiSubtitles.Translation;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -30,6 +31,10 @@ namespace sikusiSubtitles {
             new ChromeSpeechRecognitionService(serviceManager);
             new AzureSpeechRecognitionService(serviceManager);
             new AmiVoiceSpeechRecognitionService(serviceManager);
+
+            // Translation Service
+            // new TranslationServiceManager(serviceManager);
+            // new GoogleAppsScriptTranslationService(serviceManager);
 
             // ServiceManager
             serviceManager.Init();
@@ -68,8 +73,9 @@ namespace sikusiSubtitles {
                 item.Header = service.DisplayName;
                 foreach (var parentItem in menuTreeView.Items) {
                     var parentTreeViewItem = parentItem as TreeViewItem;
-                    if (parentTreeViewItem != null) {
+                    if (parentTreeViewItem != null && parentTreeViewItem.Name == service.ServiceName) {
                         parentTreeViewItem.Items.Add(item);
+                        break;
                     }
                 }
             }

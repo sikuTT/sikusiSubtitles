@@ -27,7 +27,7 @@
                 </TreeView.ItemContainerStyle>
             </TreeView>
             <GridSplitter Grid.Column="1" Width="3" HorizontalAlignment="Stretch" ></GridSplitter>
-            <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="10,0,0,0">
+            <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10,0,0,0">
                 <Grid x:Name="settingsGrid"></Grid>
             </ScrollViewer>
         </Grid>

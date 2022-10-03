@@ -90,6 +90,9 @@ namespace sikusiSubtitles.OCR {
                 if (service.Name == ocrManager.OcrSpeechEngine) ocrSpeechEngineComboBox.SelectedIndex = i;
             });
 
+            // OCR時に取得した文章を読み上げる設定
+            speechCheckBox.Checked = ocrManager.SpeechWhenOcrRun;
+
             // ショートカットの設定
             ocrShortcutKey = ocrManager.OcrShortcut.ShortcutKey;
             ocrShortcutKeyTextBox.Text = ocrShortcutKey;
@@ -214,17 +217,7 @@ namespace sikusiSubtitles.OCR {
 
         /** OCR結果の読み上げボタンを押した */
         private async void speechOcrButton_Click(object sender, EventArgs e) {
-            if (speechService != null) {
-                var voice = speechVoices[ocrSpeechVoiceComboBox.SelectedIndex];
-                try {
-                    speechOcrButton.Visible = false;
-                    speechOcrStopButton.Visible = true;
-                    await speechService.SpeakAsync(voice.Item1, ocrTextBox.SelectedText.Length > 0 ? ocrTextBox.SelectedText : ocrTextBox.Text);
-                } finally {
-                    speechOcrButton.Visible = true;
-                    speechOcrStopButton.Visible = false;
-                }
-            }
+            await Speech();
         }
 
         /** OCR結果の読み上げを止める */
@@ -307,8 +300,11 @@ namespace sikusiSubtitles.OCR {
                         if (result.Text != null) {
                             this.ocrTextBox.Text = result.Text;
 
-                            // 文字が取得できた場合、翻訳をする
+                            // 文字が取得できた場合、読み上げと翻訳をする
                             if (result.Text.Length > 0) {
+                                if (ocrManager.SpeechWhenOcrRun) {
+                                    Task task = Speech();
+                                }
                                 this.Translate();
                             }
                         } else {
@@ -414,6 +410,10 @@ namespace sikusiSubtitles.OCR {
             }
         }
 
+        private void speechCheckBox_CheckedChanged(object sender, EventArgs e) {
+            ocrManager.SpeechWhenOcrRun = speechCheckBox.Checked;
+        }
+
         /**
          * ショートカットが実行された
          */
@@ -456,6 +456,21 @@ namespace sikusiSubtitles.OCR {
 
         private void resetShortcutButton_Click(object sender, EventArgs e) {
             ocrShortcutKeyTextBox.Text = ocrShortcutKey = ocrManager.OcrShortcut.ShortcutKey;
+        }
+
+        // OCRで取得した文章を読み上げる
+        private async Task Speech() {
+            if (speechService != null) {
+                var voice = speechVoices[ocrSpeechVoiceComboBox.SelectedIndex];
+                try {
+                    speechOcrButton.Visible = false;
+                    speechOcrStopButton.Visible = true;
+                    await speechService.SpeakAsync(voice.Item1, ocrTextBox.SelectedText.Length > 0 ? ocrTextBox.SelectedText : ocrTextBox.Text);
+                } finally {
+                    speechOcrButton.Visible = true;
+                    speechOcrStopButton.Visible = false;
+                }
+            }
         }
     }
 }

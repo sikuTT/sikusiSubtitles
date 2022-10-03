@@ -15,6 +15,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Subtitles\times.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DeepL.net" Version="1.5.0" />
+    <PackageReference Include="Google.Cloud.Translation.V2" Version="3.1.0" />
     <PackageReference Include="Microsoft.Azure.CognitiveServices.Vision.ComputerVision" Version="7.0.1" />
     <PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.23.0" />
     <PackageReference Include="NAudio" Version="2.1.0" />
@@ -26,6 +32,10 @@
   <ItemGroup>
     <ProjectReference Include="..\AmiVoiceWrp\AmiVoiceWrp.csproj" />
     <ProjectReference Include="..\ObsWebSocket5\ObsWebSocket5.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Subtitles\times.png" />
   </ItemGroup>
 
 </Project>

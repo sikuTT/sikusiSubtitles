@@ -1,4 +1,5 @@
 ﻿using sikusiSubtitles.SpeechRecognition;
+using sikusiSubtitles.Subtitles;
 using sikusiSubtitles.Translation;
 using System;
 using System.Collections.Generic;
@@ -32,45 +33,51 @@ namespace sikusiSubtitles {
             new AzureSpeechRecognitionService(serviceManager);
             new AmiVoiceSpeechRecognitionService(serviceManager);
 
+            // Subtitles Service
+            new SubtitlesServiceManager(serviceManager);
+            new SubtitlesService(serviceManager);
+
             // Translation Service
             new TranslationServiceManager(serviceManager);
             new GoogleAppsScriptTranslationService(serviceManager);
+            new GoogleBasicTranslationService(serviceManager);
+            new AzureTranslationService(serviceManager);
+            new DeepLTranslationService(serviceManager);
 
             // ServiceManager
             serviceManager.Init();
 
+            InitializeUI();
+        }
+
+        private void menuTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
+            var item = e.NewValue as TreeViewItem;
+            if (item != null) {
+                SelectTreeViewItem(item.Name);
+            }
+        }
+
+        private void menuTreeViewItem_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e) {
+            e.Handled = true;
+        }
+
+
+        private void InitializeUI() {
             // Controls
             foreach (var control in serviceManager.TopFlowControls) {
                 this.topPanel.Children.Add(control);
             }
 
-            var addPage = (Service service) => {
-                var page = service.GetSettingPage();
-                if (page != null) {
-                    page.Name = service.Name;
-                    Grid.SetRow(page, 0);
-                    Grid.SetColumn(page, 0);
-                    page.Visibility = Visibility.Collapsed;
-                    settingsGrid.Children.Add(page);
-                }
-            };
-
             foreach (var manager in serviceManager.Managers) {
-                addPage(manager);
-
-                var item = new TreeViewItem();
-                item.Name = manager.Name;
-                item.Header = manager.DisplayName;
+                AddPage(manager);
+                var item = new TreeViewItem() { Name = manager.Name, Header = manager.DisplayName, IsExpanded = true };
                 menuTreeView.Items.Add(item);
-                item.IsExpanded = true;
             }
 
             foreach (var service in serviceManager.Services) {
-                addPage(service);
+                AddPage(service);
+                var item = new TreeViewItem() { Name = service.Name, Header = service.DisplayName, IsExpanded = true };
 
-                var item = new TreeViewItem();
-                item.Name = service.Name;
-                item.Header = service.DisplayName;
                 foreach (var parentItem in menuTreeView.Items) {
                     var parentTreeViewItem = parentItem as TreeViewItem;
                     if (parentTreeViewItem != null && parentTreeViewItem.Name == service.ServiceName) {
@@ -88,28 +95,32 @@ namespace sikusiSubtitles {
             }
         }
 
-        private void menuTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
-            var item = e.NewValue as TreeViewItem;
-            if (item != null) {
-                UserControl? newPage = null;
-                foreach (var page in settingsGrid.Children) {
-                    var settingsPage = page as UserControl;
-                    if (settingsPage != null) {
-                        settingsPage.Visibility = Visibility.Collapsed;
-                        if (settingsPage.Name == item.Name) {
-                            newPage = settingsPage;
-                        }
-                    }
-                }
-
-                if (newPage != null) {
-                    newPage.Visibility = Visibility.Visible;
-                }
+        private void AddPage(Service service) {
+            var page = service.GetSettingPage();
+            if (page != null) {
+                page.Name = service.Name;
+                Grid.SetRow(page, 0);
+                Grid.SetColumn(page, 0);
+                page.Visibility = Visibility.Collapsed;
+                settingsGrid.Children.Add(page);
             }
         }
 
-        private void menuTreeViewItem_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e) {
-            e.Handled = true;
+        private void SelectTreeViewItem(string name) {
+            UserControl? newPage = null;
+            foreach (var page in settingsGrid.Children) {
+                var settingsPage = page as UserControl;
+                if (settingsPage != null) {
+                    settingsPage.Visibility = Visibility.Collapsed;
+                    if (settingsPage.Name == name) {
+                        newPage = settingsPage;
+                    }
+                }
+            }
+
+            if (newPage != null) {
+                newPage.Visibility = Visibility.Visible;
+            }
         }
     }
 }

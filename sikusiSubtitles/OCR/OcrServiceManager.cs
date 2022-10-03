@@ -17,6 +17,7 @@ namespace sikusiSubtitles.OCR {
         public string TranslationLanguage { get; set; } = "";
         public string OcrSpeechEngine { get; set; } = "";
         public string OcrSpeechVoice { get; set; } = "";
+        public bool SpeechWhenOcrRun { get; set; } = false;
         public Shortcut.Shortcut OcrShortcut { get { return ocrShortcut; } }
         public Shortcut.Shortcut ClearObsTextShortcut { get { return clearObsTextShortcut; } }
 
@@ -39,6 +40,7 @@ namespace sikusiSubtitles.OCR {
             TranslationLanguage = token.Value<string>("TranslationLanguage") ?? "";
             OcrSpeechEngine = token.Value<string>("OcrSpeechEngine") ?? "";
             OcrSpeechVoice = token.Value<string>("OcrSpeechVoice") ?? "";
+            SpeechWhenOcrRun= token.Value<bool>("SpeechWhenOcrRun");
             ocrShortcut.ShortcutKey = token.Value<string>("OcrShortcutKey") ?? "";
             clearObsTextShortcut.ShortcutKey = token.Value<string>("ClearObsTextShortcutKey") ?? "";
         }
@@ -51,6 +53,7 @@ namespace sikusiSubtitles.OCR {
                 new JProperty("TranslationLanguage", TranslationLanguage),
                 new JProperty("OcrSpeechEngine", OcrSpeechEngine),
                 new JProperty("OcrSpeechVoice", OcrSpeechVoice),
+                new JProperty("SpeechWhenOcrRun", SpeechWhenOcrRun),
                 new JProperty("OcrShortcutKey", ocrShortcut.ShortcutKey),
                 new JProperty("ClearObsTextShortcutKey", clearObsTextShortcut.ShortcutKey)
             };

@@ -59,7 +59,7 @@ namespace sikusiSubtitles.OBS {
 
         async public Task SetTextAsync(string sourceName, string text) {
             if (obsService != null && sourceName != "") {
-                var voiceSettings = await obsService.ObsSocket.GetInputSettingsAsync(VoiceTarget);
+                var voiceSettings = await obsService.ObsSocket.GetInputSettingsAsync(sourceName);
                 var voiceTextSource = voiceSettings?.inputSettings as TextGdiplusV2;
                 if (voiceTextSource != null) {
                     voiceTextSource.text = text;

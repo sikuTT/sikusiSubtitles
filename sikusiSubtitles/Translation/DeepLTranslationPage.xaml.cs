@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,15 +13,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace sikusiSubtitles.SpeechRecognition {
+namespace sikusiSubtitles.Translation {
     /// <summary>
-    /// ChromeSpeechRecognitionPage.xaml の相互作用ロジック
+    /// DeepLTranslationPage.xaml の相互作用ロジック
     /// </summary>
-    public partial class ChromeSpeechRecognitionPage : UserControl {
+    public partial class DeepLTranslationPage : UserControl {
         ServiceManager serviceManager;
-        ChromeSpeechRecognitionService service;
+        DeepLTranslationService service;
 
-        public ChromeSpeechRecognitionPage(ServiceManager serviceManager, ChromeSpeechRecognitionService service) {
+        public DeepLTranslationPage(ServiceManager serviceManager, DeepLTranslationService service) {
             this.serviceManager = serviceManager;
             this.service = service;
 

@@ -33,8 +33,8 @@ namespace sikusiSubtitles {
             new AmiVoiceSpeechRecognitionService(serviceManager);
 
             // Translation Service
-            // new TranslationServiceManager(serviceManager);
-            // new GoogleAppsScriptTranslationService(serviceManager);
+            new TranslationServiceManager(serviceManager);
+            new GoogleAppsScriptTranslationService(serviceManager);
 
             // ServiceManager
             serviceManager.Init();

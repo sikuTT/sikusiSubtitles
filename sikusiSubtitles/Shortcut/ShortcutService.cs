@@ -52,6 +52,9 @@ namespace sikusiSubtitles.Shortcut {
 
         public event EventHandler<Shortcut>? ShortcutRun;
 
+        // 
+        DateTime dateTime = DateTime.Now;
+
         public ShortcutService(ServiceManager serviceManager) : base(serviceManager, ShortcutServiceManager.ServiceName, "Shortcut", "ショートカット", 500) {
             handler = HookCallback;
             Shortcuts = new List<Shortcut>();
@@ -111,12 +114,17 @@ namespace sikusiSubtitles.Shortcut {
         }
 
         private IntPtr HookCallback(int nCode, int wParam, ref KBDLLHOOKSTRUCT lParam) {
-
             if (nCode < 0) {
                 return CallNextHookEx(hookPtr, nCode, wParam, ref lParam);
             }
 
             try {
+                // キーの入力判定が残るときがあるので、一定時間入力がなければクリアしてごまかす
+                TimeSpan span = DateTime.Now - dateTime;
+                if (span.TotalSeconds > 2) keys.Clear();
+                dateTime = DateTime.Now;
+
+
                 var push = ((int)wParam & 0x00000001) == 0;
                 var keyCode = lParam.vkCode;
                 if (keyCode < keyNames.Length) {

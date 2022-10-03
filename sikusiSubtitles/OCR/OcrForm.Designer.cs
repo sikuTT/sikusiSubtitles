@@ -26,7 +26,8 @@
             this.components = new System.ComponentModel.Container();
             this.ocrTextBox = new System.Windows.Forms.TextBox();
             this.ocrTextEditContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.searchByWeblio = new System.Windows.Forms.ToolStripMenuItem();
+            this.searchByWeblioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.searchByGoogleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,6 +59,8 @@
             this.resetShortcutButton = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.speechCheckBox = new System.Windows.Forms.CheckBox();
+            this.speechToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.ocrTextEditContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -77,44 +80,54 @@
             // ocrTextEditContextMenuStrip
             // 
             this.ocrTextEditContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.searchByWeblio,
+            this.searchByWeblioToolStripMenuItem,
+            this.searchByGoogleToolStripMenuItem,
             this.toolStripMenuItem1,
+            this.speechToolStripMenuItem,
+            this.toolStripMenuItem2,
             this.cutToolStripMenuItem,
             this.copyToolStripMenuItem,
             this.pasteToolStripMenuItem});
             this.ocrTextEditContextMenuStrip.Name = "ocrTextEditContextMenuStrip";
-            this.ocrTextEditContextMenuStrip.Size = new System.Drawing.Size(163, 98);
+            this.ocrTextEditContextMenuStrip.Size = new System.Drawing.Size(181, 170);
             // 
-            // searchByWeblio
+            // searchByWeblioToolStripMenuItem
             // 
-            this.searchByWeblio.Name = "searchByWeblio";
-            this.searchByWeblio.Size = new System.Drawing.Size(162, 22);
-            this.searchByWeblio.Text = "weblioで検索する";
-            this.searchByWeblio.Click += new System.EventHandler(this.searchByWeblio_Click);
+            this.searchByWeblioToolStripMenuItem.Name = "searchByWeblioToolStripMenuItem";
+            this.searchByWeblioToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.searchByWeblioToolStripMenuItem.Text = "weblioで検索する";
+            this.searchByWeblioToolStripMenuItem.Click += new System.EventHandler(this.searchByWeblio_Click);
+            // 
+            // searchByGoogleToolStripMenuItem
+            // 
+            this.searchByGoogleToolStripMenuItem.Name = "searchByGoogleToolStripMenuItem";
+            this.searchByGoogleToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.searchByGoogleToolStripMenuItem.Text = "Googleで検索する";
+            this.searchByGoogleToolStripMenuItem.Click += new System.EventHandler(this.searchByGoogle_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(159, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
             // 
             // cutToolStripMenuItem
             // 
             this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
-            this.cutToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.cutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.cutToolStripMenuItem.Text = "切り取り";
             this.cutToolStripMenuItem.Click += new System.EventHandler(this.cutToolStripMenuItem_Click);
             // 
             // copyToolStripMenuItem
             // 
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.copyToolStripMenuItem.Text = "コピー";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
             // 
             // pasteToolStripMenuItem
             // 
             this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
-            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.pasteToolStripMenuItem.Text = "貼り付け";
             this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
             // 
@@ -405,6 +418,18 @@
             this.speechCheckBox.UseVisualStyleBackColor = true;
             this.speechCheckBox.CheckedChanged += new System.EventHandler(this.speechCheckBox_CheckedChanged);
             // 
+            // speechToolStripMenuItem
+            // 
+            this.speechToolStripMenuItem.Name = "speechToolStripMenuItem";
+            this.speechToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.speechToolStripMenuItem.Text = "読み上げる";
+            this.speechToolStripMenuItem.Click += new System.EventHandler(this.speechToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(177, 6);
+            // 
             // OcrForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -474,7 +499,7 @@
         private Button speechOcrStopButton;
         private Button speechOcrButton;
         private ContextMenuStrip ocrTextEditContextMenuStrip;
-        private ToolStripMenuItem searchByWeblio;
+        private ToolStripMenuItem searchByWeblioToolStripMenuItem;
         private ToolStripSeparator toolStripMenuItem1;
         private ToolStripMenuItem cutToolStripMenuItem;
         private ToolStripMenuItem copyToolStripMenuItem;
@@ -484,5 +509,8 @@
         private Button resetShortcutButton;
         private Label label7;
         private CheckBox speechCheckBox;
+        private ToolStripMenuItem searchByGoogleToolStripMenuItem;
+        private ToolStripMenuItem speechToolStripMenuItem;
+        private ToolStripSeparator toolStripMenuItem2;
     }
 }

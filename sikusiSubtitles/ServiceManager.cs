@@ -37,7 +37,13 @@ namespace sikusiSubtitles {
 
             // Save file
             SaveFilePath = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            SaveFilePath += @"\sikusiku\sikusiSubtitles\settings.json";
+            SaveFilePath += @"\sikusiku\sikusiSubtitles\";
+            try {
+                Directory.CreateDirectory(SaveFilePath);
+                SaveFilePath += "settings.json";
+            } catch (Exception ex) {
+                Debug.WriteLine("ServiceManager: Create settings folder failed: " + ex.Message);
+            }
         }
 
         public void AddService(Service service) {
@@ -124,16 +130,20 @@ namespace sikusiSubtitles {
 
         // 設定の保存
         public void Save() {
-            JObject saveObj = new JObject();
-            foreach (var service in Managers) {
-                var obj = service.Save();
-                if (obj != null) saveObj.Add(new JProperty(service.Name, obj));
+            try {
+                JObject saveObj = new JObject();
+                foreach (var service in Managers) {
+                    var obj = service.Save();
+                    if (obj != null) saveObj.Add(new JProperty(service.Name, obj));
+                }
+                foreach (var service in Services) {
+                    var obj = service.Save();
+                    if (obj != null) saveObj.Add(new JProperty(service.Name, obj));
+                }
+                File.WriteAllText(SaveFilePath, saveObj.ToString());
+            } catch (Exception ex) {
+                Debug.WriteLine("ServiceManager: Save settings failed: " + ex.Message);
             }
-            foreach (var service in Services) {
-                var obj = service.Save();
-                if (obj != null) saveObj.Add(new JProperty(service.Name, obj));
-            }
-            File.WriteAllText(SaveFilePath, saveObj.ToString());
         }
 
         /**

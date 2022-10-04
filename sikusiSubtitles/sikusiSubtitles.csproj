@@ -38,4 +38,10 @@
     <Resource Include="Subtitles\times.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Page Update="Style.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+  </ItemGroup>
+
 </Project>

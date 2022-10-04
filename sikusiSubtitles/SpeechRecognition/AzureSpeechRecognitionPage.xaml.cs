@@ -18,14 +18,26 @@ namespace sikusiSubtitles.SpeechRecognition {
     /// AzureSpeechRecognitionPage.xaml の相互作用ロジック
     /// </summary>
     public partial class AzureSpeechRecognitionPage : UserControl {
-        ServiceManager serviceManager;
-        AzureSpeechRecognitionService service;
+        readonly ServiceManager serviceManager;
+        readonly AzureSpeechRecognitionService service;
 
         public AzureSpeechRecognitionPage(ServiceManager serviceManager, AzureSpeechRecognitionService service) {
             this.serviceManager = serviceManager;
             this.service = service;
 
             InitializeComponent();
+
+            // コントロールの初期値
+            keyPasswordBox.Password = service.Key;
+            regionTextBox.Text = service.Region;
+        }
+
+        private void keyPasswordBox_PasswordChanged(object sender, RoutedEventArgs e) {
+            service.Key = keyPasswordBox.Password;
+        }
+
+        private void regionTextBox_TextInput(object sender, TextCompositionEventArgs e) {
+            service.Region = regionTextBox.Text;
         }
     }
 }

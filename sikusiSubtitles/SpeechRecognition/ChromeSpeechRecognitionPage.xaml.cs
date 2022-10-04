@@ -27,6 +27,13 @@ namespace sikusiSubtitles.SpeechRecognition {
             this.service = service;
 
             InitializeComponent();
+
+            // コントロールの初期値
+            portNumericEditBox.Value = service.Port;
+        }
+
+        private void portNumericEditBox_TextInput(object sender, TextCompositionEventArgs e) {
+            service.Port = portNumericEditBox.Value;
         }
     }
 }

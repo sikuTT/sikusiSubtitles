@@ -6,26 +6,36 @@
              xmlns:local="clr-namespace:sikusiSubtitles.SpeechRecognition"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Style.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <StackPanel>
-        <TextBlock Text="音声認識 - AmiVoice" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="30" FontWeight="Bold" TextWrapping="Wrap" Margin="0,0,0,10"/>
-        <GroupBox Header="認証情報" Padding="10" Margin="0,0,0,10">
+        <TextBlock Text="音声認識 - AmiVoice" Style="{StaticResource Header}"/>
+        <GroupBox Header="認証情報">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="60"></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Label Content="キー"></Label>
-                <PasswordBox Grid.Column="1" VerticalContentAlignment="Center"></PasswordBox>
+                <PasswordBox x:Name="keyPasswordBox" Grid.Column="1" PasswordChanged="keyPasswordBox_PasswordChanged"/>
             </Grid>
         </GroupBox>
-        <GroupBox Header="エンジン" Padding="10">
+        <GroupBox Header="エンジン">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="60"></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Label Content="ログ保存"></Label>
-                <ComboBox Grid.Column="1"></ComboBox>
+                <ComboBox x:Name="logComboBox" Grid.Column="1" SelectionChanged="logComboBox_SelectionChanged">
+                    <Label>あり</Label>
+                    <Label>なし</Label>
+                </ComboBox>
             </Grid>
         </GroupBox>
     </StackPanel>

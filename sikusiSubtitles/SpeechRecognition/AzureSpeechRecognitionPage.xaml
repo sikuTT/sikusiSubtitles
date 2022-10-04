@@ -6,9 +6,20 @@
              xmlns:local="clr-namespace:sikusiSubtitles.SpeechRecognition"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Style.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type PasswordBox}" BasedOn="{StaticResource List}">
+            </Style>
+            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource List}">
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <StackPanel>
-        <TextBlock Text="音声認識 - Azure Cognitive Services - Speech to Text" FontSize="30" FontWeight="Bold" TextWrapping="Wrap" Margin="0,0,0,10"/>
-        <GroupBox Padding="10">
+        <TextBlock Text="音声認識 - Azure Cognitive Services - Speech to Text" Style="{StaticResource Header}"/>
+        <GroupBox Header="認証情報">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="68"></ColumnDefinition>
@@ -19,9 +30,9 @@
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
                 <Label Content="キー" VerticalAlignment="Center"></Label>
-                <PasswordBox Grid.Column="1" Margin="0,6,0,6" Height="25" VerticalContentAlignment="Center"></PasswordBox>
-                <Label Content="場所/地域" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"></Label>
-                <TextBox Grid.Row="1" Grid.Column="1" Margin="0,6,0,6" Height="25" VerticalContentAlignment="Center"></TextBox>
+                <PasswordBox x:Name="keyPasswordBox" Grid.Column="1" PasswordChanged="keyPasswordBox_PasswordChanged"></PasswordBox>
+                <Label Content="場所/地域" Grid.Column="0" Grid.Row="1"></Label>
+                <TextBox x:Name="regionTextBox" Grid.Row="1" Grid.Column="1" TextInput="regionTextBox_TextInput"></TextBox>
             </Grid>
         </GroupBox>
     </StackPanel>

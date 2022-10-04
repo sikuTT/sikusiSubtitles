@@ -26,6 +26,22 @@ namespace sikusiSubtitles.SpeechRecognition {
             this.service = service;
 
             InitializeComponent();
+
+            // キー
+            keyPasswordBox.Password = service.Key;
+
+            // ログ保存
+            logComboBox.SelectedIndex = service.Log ? 0 : 1;
+        }
+
+        /** パスワードが変更された */
+        private void keyPasswordBox_PasswordChanged(object sender, RoutedEventArgs e) {
+            service.Key = keyPasswordBox.Password;
+        }
+
+        /** ログ保存が変更された */
+        private void logComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            service.Log = logComboBox.SelectedIndex == 0;
         }
     }
 }

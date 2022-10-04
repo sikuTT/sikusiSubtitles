@@ -6,42 +6,48 @@
              xmlns:local="clr-namespace:sikusiSubtitles.SpeechRecognition"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <StackPanel>
-            <Label Content="音声認識" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="30" FontWeight="Bold" Margin="0,0,0,10"/>
-            <GroupBox Header="使用するマイク" Padding="10" Margin="0,0,0,10">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="60"></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <Label Content="マイク"></Label>
-                    <ComboBox Grid.Column="1" VerticalAlignment="Center"></ComboBox>
-                    <TextBlock Grid.Row="1" Grid.Column="1" TextWrapping="Wrap">
-                        ※Chrome使用時はここではマイク設定は出来ません。Chrome上で使用するマイクを設定してください。
-                    </TextBlock>
-                </Grid>
-            </GroupBox>
-            <GroupBox Header="使用する音声認識サービス" Padding="10">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="60"></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <Label Content="サービス"></Label>
-                    <ComboBox Grid.Column="1" VerticalAlignment="Center"></ComboBox>
-                    <Label Content="言語" Grid.Row="1"></Label>
-                    <ComboBox Grid.Column="1" Grid.Row="1" VerticalAlignment="Center"></ComboBox>
-                </Grid>
-            </GroupBox>
-        </StackPanel>
-    </Grid>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Style.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="ComboBox" BasedOn="{StaticResource List}"></Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <StackPanel>
+        <TextBlock Text="音声認識" Style="{StaticResource Header}"/>
+        <GroupBox Header="使用するマイク">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Label Content="マイク" VerticalAlignment="Center"></Label>
+                <ComboBox x:Name="micComboBox" Grid.Column="1" SelectionChanged="micComboBox_SelectionChanged"></ComboBox>
+                <TextBlock Grid.Row="1" Grid.Column="1" TextWrapping="Wrap">
+                    ※Chrome使用時はここではマイク設定は出来ません。Chrome上で使用するマイクを設定してください。
+                </TextBlock>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="使用する音声認識サービス">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Label Content="サービス" VerticalAlignment="Center"></Label>
+                <ComboBox x:Name="speechRecognitionServiceComboBox" Grid.Column="1" SelectionChanged="speechRecognitionServiceComboBox_SelectionChanged"></ComboBox>
+                <Label Content="言語" Grid.Row="1" VerticalAlignment="Center"></Label>
+                <ComboBox x:Name="languageComboBox" Grid.Column="1" Grid.Row="1" SelectionChanged="languageComboBox_SelectionChanged"></ComboBox>
+            </Grid>
+        </GroupBox>
+    </StackPanel>
 </UserControl>

@@ -49,6 +49,11 @@ namespace sikusiSubtitles {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(NumericEditBox), new FrameworkPropertyMetadata(typeof(NumericEditBox)));
         }
 
+        public int Value {
+            get { return int.Parse(Text); }
+            set { Text = value.ToString(); }
+        }
+
         protected override void OnPreviewTextInput(TextCompositionEventArgs e) {
             base.OnPreviewTextInput(e);
 

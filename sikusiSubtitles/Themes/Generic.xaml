@@ -18,4 +18,5 @@
         </Setter>
 -->
     </Style>
+    <Style TargetType="{x:Type Control}" x:Key="Test"></Style>
 </ResourceDictionary>

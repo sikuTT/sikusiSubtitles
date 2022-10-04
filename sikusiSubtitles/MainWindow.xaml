@@ -5,14 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:sikusiSubtitles"
         mc:Ignorable="d"
-        Title="sikusiSubtitles" Height="450" Width="800">
+        Title="sikusiSubtitles" Height="450" Width="800" Closed="Window_Closed">
     <Grid Margin="10,0,10,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
             <RowDefinition Height="*" />
             <RowDefinition Height="80" />
         </Grid.RowDefinitions>
-        <StackPanel x:Name="topPanel" Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+        <StackPanel x:Name="topPanel" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left"/>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="300" MinWidth="50" />

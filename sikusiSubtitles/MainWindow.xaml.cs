@@ -50,18 +50,6 @@ namespace sikusiSubtitles {
             InitializeUI();
         }
 
-        private void menuTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
-            var item = e.NewValue as TreeViewItem;
-            if (item != null) {
-                SelectTreeViewItem(item.Name);
-            }
-        }
-
-        private void menuTreeViewItem_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e) {
-            e.Handled = true;
-        }
-
-
         private void InitializeUI() {
             // Controls
             foreach (var control in serviceManager.TopFlowControls) {
@@ -94,6 +82,22 @@ namespace sikusiSubtitles {
                 }
             }
         }
+
+        private void Window_Closed(object sender, EventArgs e) {
+
+        }
+
+        private void menuTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
+            var item = e.NewValue as TreeViewItem;
+            if (item != null) {
+                SelectTreeViewItem(item.Name);
+            }
+        }
+
+        private void menuTreeViewItem_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e) {
+            e.Handled = true;
+        }
+
 
         private void AddPage(Service service) {
             var page = service.GetSettingPage();

@@ -6,22 +6,28 @@
              xmlns:local="clr-namespace:sikusiSubtitles.Subtitles"
              xmlns:sikusiSubtitles="clr-namespace:sikusiSubtitles" x:Class="sikusiSubtitles.Subtitles.SubtitlesPage"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
+    <UserControl.DataContext>
+        <local:ViewModel/>
+    </UserControl.DataContext>
     <UserControl.Resources>
-        <Style TargetType="ComboBox">
-            <Setter Property="Margin" Value="0,6,0,6"></Setter>
-            <Setter Property="Height" Value="25"></Setter>
-        </Style>
-        <Style TargetType="Button" x:Key="Times">
-            <Setter Property="Width" Value="23"></Setter>
-            <Setter Property="Height" Value="23"></Setter>
-            <Setter Property="Padding" Value="2"></Setter>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Style.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="ComboBox" BasedOn="{StaticResource List}">
+            </Style>
+            <Style TargetType="Button" x:Key="Times">
+                <Setter Property="Width" Value="23"></Setter>
+                <Setter Property="Height" Value="23"></Setter>
+                <Setter Property="Padding" Value="2"></Setter>
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel>
-        <TextBlock Text="字幕" FontSize="30" FontWeight="Bold" TextWrapping="Wrap"/>
-        <GroupBox Header="翻訳" Padding="10" Margin="0,10,0,0">
-            <Grid Margin="0,2,0,2">
+        <TextBlock Text="字幕" Style="{StaticResource Header}"/>
+        <GroupBox Header="翻訳">
+            <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
@@ -31,33 +37,45 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="77"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="26"/>
                 </Grid.ColumnDefinitions>
                 <Label Content="翻訳サービス" VerticalAlignment="Center"/>
-                <ComboBox Grid.Column="1" Grid.ColumnSpan="2"></ComboBox>
+                <ComboBox x:Name="translationServiceComboBox" Grid.Column="1" SelectionChanged="translationServiceComboBox_SelectionChanged"></ComboBox>
                 <Label Content="翻訳元言語" Grid.Row="1" VerticalAlignment="Center"/>
-                <ComboBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"></ComboBox>
-                <Label Content="翻訳先言語" Grid.Row="2" VerticalAlignment="Top" Margin="0,6,0,0"/>
-                <ComboBox Grid.Row="2" Grid.Column="1"></ComboBox>
-                <Button Grid.Column="2" Grid.Row="2" Style="{StaticResource Times}">
-                    <Image Source="/Subtitles/times.png" ></Image>
-                </Button>
+                <ComboBox x:Name="translationLanguageFromComboBox" Grid.Row="1" Grid.Column="1" SelectionChanged="translationLanguageFromComboBox_SelectionChanged"></ComboBox>
+                <Label Content="翻訳先言語" Grid.Row="2" VerticalAlignment="Top" Margin="0,7,0,0"/>
+                <ListBox x:Name="listBox" Grid.Row="2" Grid.Column="1" ItemsSource="{Binding TranslationLanguageList}" HorizontalContentAlignment="Stretch">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <ComboBox x:Name="translationLanguageToComboBox" ItemsSource="{Binding LanguageList}" DisplayMemberPath="Language" SelectedValuePath="Code" SelectedValue="{Binding SelectedCode}" SelectionChanged="translationLanguageToComboBox_SelectionChanged">
+                                </ComboBox>
+                                <Button x:Name="deleteTranslationLanguageToButton" Grid.Column="1" Width="25" Height="25" Margin="6,0,0,0" Click="deleteTranslationLanguageToButton_Click">
+                                    <Image Source="/Subtitles/times.png"></Image>
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
                 <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="0" Grid.ColumnSpan="3">
-                    <Button Width="49">追加</Button>
+                    <Button x:Name="addTranslateToLanguageButton" Width="50" Margin="0,6,0,0" Height="25" Click="addTranslateToLanguageButton_Click">追加</Button>
                 </StackPanel>
             </Grid>
         </GroupBox>
-        <GroupBox Header="表示時間" Padding="10" Margin="0,10,0,0">
+        <GroupBox Header="表示時間">
             <StackPanel>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <CheckBox Content="一定時間で字幕を消す"/>
+                    <CheckBox x:Name="clearIntervalCheckBox" Content="一定時間で字幕を消す" Checked="clearIntervalCheckBox_Checked" Unchecked="clearIntervalCheckBox_Unchecked"/>
                     <StackPanel Grid.Row="1" Orientation="Horizontal">
                         <Label Content="消すまでの時間"/>
-                        <sikusiSubtitles:NumericEditBox VerticalContentAlignment="Center" Width="81"/>
+                        <sikusiSubtitles:NumericEditBox x:Name="clearIntervalNumericEditBox" Width="81" TextInput="clearIntervalNumericEditBox_TextInput"/>
                         <Label Content="秒"/>
                     </StackPanel>
                 </Grid>
@@ -67,9 +85,9 @@
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
-                    <CheckBox Content="文字が長い場合、消すまでの時間を長くする。"></CheckBox>
+                    <CheckBox x:Name="additionalClearTimeCheckBox" Content="文字が長い場合、消すまでの時間を長くする。" Checked="additionalClearTimeCheckBox_Checked" Unchecked="additionalClearTimeCheckBox_Unchecked"></CheckBox>
                     <Label Grid.Row="1">（右にするほど消えるまでの時間が長くなります）</Label>
-                    <Slider Grid.Row="2" Width="400" HorizontalAlignment="Left"></Slider>
+                    <Slider x:Name="additionalClearTimeSlider" Grid.Row="2" Width="400" HorizontalAlignment="Left" ValueChanged="additionalClearTimeSlider_ValueChanged"></Slider>
                 </Grid>
             </StackPanel>
         </GroupBox>

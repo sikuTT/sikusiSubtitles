@@ -27,5 +27,13 @@ namespace sikusiSubtitles.Translation {
 
             InitializeComponent();
         }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e) {
+            keyPasswordBox.Password = service.Key;
+        }
+
+        private void keyPasswordBox_PasswordChanged(object sender, RoutedEventArgs e) {
+            service.Key = keyPasswordBox.Password;
+        }
     }
 }

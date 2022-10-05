@@ -27,5 +27,20 @@ namespace sikusiSubtitles.Translation {
 
             InitializeComponent();
         }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e) {
+            keyPasswordBox.Password = service.Key;
+            regionTextBox.Text = service.Region;
+        }
+
+        /** パスワードが変更された */
+        private void keyPasswordBox_PasswordChanged(object sender, RoutedEventArgs e) {
+            service.Key = keyPasswordBox.Password;
+        }
+
+        /** 地域が変更された */
+        private void regionTextBox_TextInput(object sender, TextCompositionEventArgs e) {
+            service.Region = regionTextBox.Text;
+        }
     }
 }

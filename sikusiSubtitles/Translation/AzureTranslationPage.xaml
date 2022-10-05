@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:sikusiSubtitles.Translation"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -28,9 +28,9 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Label Content="キー" VerticalAlignment="Center"/>
-                <PasswordBox Grid.Column="1"/>
+                <PasswordBox x:Name="keyPasswordBox" Grid.Column="1" PasswordChanged="keyPasswordBox_PasswordChanged"/>
                 <Label Content="場所/地域" Grid.Row="1" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="1" Grid.Column="1"></TextBox>
+                <TextBox x:Name="regionTextBox" Grid.Row="1" Grid.Column="1" TextInput="regionTextBox_TextInput"></TextBox>
             </Grid>
         </GroupBox>
 

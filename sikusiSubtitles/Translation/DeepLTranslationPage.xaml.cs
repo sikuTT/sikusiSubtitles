@@ -27,5 +27,14 @@ namespace sikusiSubtitles.Translation {
 
             InitializeComponent();
         }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e) {
+            keyPasswordBox.Password = service.Key;
+        }
+
+        /** APIキーが変更された */
+        private void keyPasswordBox_PasswordChanged(object sender, RoutedEventArgs e) {
+            service.Key = keyPasswordBox.Password;
+        }
     }
 }

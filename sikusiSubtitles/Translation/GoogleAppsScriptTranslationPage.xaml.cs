@@ -27,6 +27,11 @@ namespace sikusiSubtitles.Translation {
             this.service = service;
 
             InitializeComponent();
+        }
+
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e) {
+            keyPasswordBox.Password = service.Key;
 
             codeTextBox.Text =
                 "function doGet(e) {\r\n" +
@@ -38,7 +43,12 @@ namespace sikusiSubtitles.Translation {
                 "}";
         }
 
+        /** APIキーが変更された */
+        private void keyPasswordBox_PasswordChanged(object sender, RoutedEventArgs e) {
+            service.Key = keyPasswordBox.Password;
+        }
 
+        /** ブラウザでGoogle Apps Scriptを開く */
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e) {
             ProcessStartInfo pi = new ProcessStartInfo() {
                 FileName = e.Uri.AbsoluteUri,

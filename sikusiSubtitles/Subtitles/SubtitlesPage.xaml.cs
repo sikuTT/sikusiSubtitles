@@ -19,11 +19,14 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace sikusiSubtitles.Subtitles {
+    /** 字幕表示先モデル */
     public class LanguageModel {
         public string Code { get; set; } = "";
         public string Language { get; set; } = "";
     }
 
+
+    /** 字幕表示先モデル */
     public class LanguageListModel : INotifyPropertyChanged {
         public event PropertyChangedEventHandler? PropertyChanged;
         public ObservableCollection<LanguageModel> LanguageList { get; set; } = new ObservableCollection<LanguageModel>();
@@ -41,6 +44,7 @@ namespace sikusiSubtitles.Subtitles {
         }
     }
 
+    /** コントロール内で使用するモデル */
     public class ViewModel {
         public ObservableCollection<LanguageListModel> TranslationLanguageList { get; set; } = new ObservableCollection<LanguageListModel>();
     }
@@ -49,8 +53,10 @@ namespace sikusiSubtitles.Subtitles {
     /// SubtitlesPage.xaml の相互作用ロジック
     /// </summary>
     public partial class SubtitlesPage : UserControl {
+        // モデル
         ViewModel viewModel = new ViewModel();
 
+        // サービス
         ServiceManager serviceManager;
         SubtitlesService service;
 
@@ -92,11 +98,30 @@ namespace sikusiSubtitles.Subtitles {
             additionalClearTimeSlider.Value = service.AdditionalClearTime;
         }
 
+        /**
+         * コントロールの表示状態が変わった
+         * 設定画面を表示したか、設定画面から出て行った
+         */
+        private void UserControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
+            if ((bool)e.NewValue == false) {
+                // 設定画面から出ていくとき、選択されていない翻訳先は削除する
+                for (var i = 0; i < viewModel.TranslationLanguageList.Count;) {
+                    if (viewModel.TranslationLanguageList[i].SelectedCode == "") {
+                        viewModel.TranslationLanguageList.RemoveAt(i);
+                        service.TranslationLanguageToList.RemoveAt(i);
+                    } else {
+                        i++;
+                    }
+                }
+            }
+        }
+
         /** 翻訳サービスが変更された */
         private void translationServiceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             translationLanguageFromComboBox.Items.Clear();
 
             if (translationServiceComboBox.SelectedIndex != -1) {
+                // 使用する翻訳サービスを変更
                 translationService = translationServices[translationServiceComboBox.SelectedIndex];
                 service.TranslationEngine = translationService.Name;
 
@@ -111,6 +136,7 @@ namespace sikusiSubtitles.Subtitles {
                 for (var i = 0; i < service.TranslationLanguageToList.Count; i++) {
                     var item = viewModel.TranslationLanguageList[i];
                     item.LanguageList.Clear();
+                    item.SelectedCode = "";
                     foreach (var lang in translationLanguages) {
                         var langModel = new LanguageModel() { Code = lang.Item1, Language = lang.Item2 };
                         item.LanguageList.Add(langModel);
@@ -127,16 +153,6 @@ namespace sikusiSubtitles.Subtitles {
             }
         }
 
-        /** 翻訳先言語が追加された */
-        private void addTranslateToLanguageButton_Click(object sender, RoutedEventArgs e) {
-            var item = new LanguageListModel();
-            foreach (var lang in translationLanguages) {
-                item.LanguageList.Add(new LanguageModel() { Code = lang.Item1, Language = lang.Item2 });
-            }
-            viewModel.TranslationLanguageList.Add(item);
-            service.TranslationLanguageToList.Add("");
-        }
-
         /** 翻訳先言語が変更された */
         private void translationLanguageToComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             var comboBox = sender as ComboBox;
@@ -151,6 +167,16 @@ namespace sikusiSubtitles.Subtitles {
                     }
                 }
             }
+        }
+
+        /** 翻訳先言語が追加された */
+        private void addTranslateToLanguageButton_Click(object sender, RoutedEventArgs e) {
+            var item = new LanguageListModel();
+            foreach (var lang in translationLanguages) {
+                item.LanguageList.Add(new LanguageModel() { Code = lang.Item1, Language = lang.Item2 });
+            }
+            viewModel.TranslationLanguageList.Add(item);
+            service.TranslationLanguageToList.Add("");
         }
 
         /** 翻訳先言語が削除された */

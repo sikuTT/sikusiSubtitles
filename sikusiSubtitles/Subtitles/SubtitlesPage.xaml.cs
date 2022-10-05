@@ -44,17 +44,12 @@ namespace sikusiSubtitles.Subtitles {
         }
     }
 
-    /** コントロール内で使用するモデル */
-    public class ViewModel {
-        public ObservableCollection<LanguageListModel> TranslationLanguageList { get; set; } = new ObservableCollection<LanguageListModel>();
-    }
-
     /// <summary>
     /// SubtitlesPage.xaml の相互作用ロジック
     /// </summary>
     public partial class SubtitlesPage : UserControl {
         // モデル
-        ViewModel viewModel = new ViewModel();
+        ObservableCollection<LanguageListModel> translationLanguageList = new ObservableCollection<LanguageListModel>();
 
         // サービス
         ServiceManager serviceManager;
@@ -78,11 +73,11 @@ namespace sikusiSubtitles.Subtitles {
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e) {
             // 翻訳先一覧を必要な数だけ作成する
-            listBox.DataContext = viewModel;
+            listBox.DataContext = translationLanguageList;
             foreach (var lang in service.TranslationLanguageToList) {
                 var languageList = new LanguageListModel();
                 languageList.SelectedCode = lang;
-                viewModel.TranslationLanguageList.Add(languageList);
+                translationLanguageList.Add(languageList);
             }
 
             // 翻訳サービス一覧
@@ -105,9 +100,9 @@ namespace sikusiSubtitles.Subtitles {
         private void UserControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
             if ((bool)e.NewValue == false) {
                 // 設定画面から出ていくとき、選択されていない翻訳先は削除する
-                for (var i = 0; i < viewModel.TranslationLanguageList.Count;) {
-                    if (viewModel.TranslationLanguageList[i].SelectedCode == "") {
-                        viewModel.TranslationLanguageList.RemoveAt(i);
+                for (var i = 0; i < translationLanguageList.Count;) {
+                    if (translationLanguageList[i].SelectedCode == "") {
+                        translationLanguageList.RemoveAt(i);
                         service.TranslationLanguageToList.RemoveAt(i);
                     } else {
                         i++;
@@ -134,7 +129,7 @@ namespace sikusiSubtitles.Subtitles {
 
                 // 翻訳先言語を選択された翻訳サービスがサポートする言語一覧で更新する
                 for (var i = 0; i < service.TranslationLanguageToList.Count; i++) {
-                    var item = viewModel.TranslationLanguageList[i];
+                    var item = translationLanguageList[i];
                     item.LanguageList.Clear();
                     item.SelectedCode = "";
                     foreach (var lang in translationLanguages) {
@@ -175,7 +170,7 @@ namespace sikusiSubtitles.Subtitles {
             foreach (var lang in translationLanguages) {
                 item.LanguageList.Add(new LanguageModel() { Code = lang.Code, Language = lang.Name });
             }
-            viewModel.TranslationLanguageList.Add(item);
+            translationLanguageList.Add(item);
             service.TranslationLanguageToList.Add("");
         }
 
@@ -186,7 +181,7 @@ namespace sikusiSubtitles.Subtitles {
                 object item = control.DataContext;
                 var index = listBox.Items.IndexOf(item);
                 if (index != -1) {
-                    viewModel.TranslationLanguageList.RemoveAt(index);
+                    translationLanguageList.RemoveAt(index);
                     service.TranslationLanguageToList.RemoveAt(index);
                 }
             }

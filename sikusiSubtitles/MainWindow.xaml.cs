@@ -1,4 +1,5 @@
-﻿using sikusiSubtitles.SpeechRecognition;
+﻿using sikusiSubtitles.OBS;
+using sikusiSubtitles.SpeechRecognition;
 using sikusiSubtitles.Subtitles;
 using sikusiSubtitles.Translation;
 using System;
@@ -44,6 +45,11 @@ namespace sikusiSubtitles {
             new AzureTranslationService(serviceManager);
             new DeepLTranslationService(serviceManager);
 
+            // OBS Service
+            new ObsServiceManager(serviceManager);
+            new ObsService(serviceManager);
+            new ObsSubtitlesService(serviceManager);
+
             // ServiceManager
             serviceManager.Init();
         }
@@ -56,7 +62,7 @@ namespace sikusiSubtitles {
 
             foreach (var manager in serviceManager.Managers) {
                 AddPage(manager);
-                var item = new TreeViewItem() { Name = manager.Name, Header = manager.DisplayName, IsExpanded = true };
+                var item = new TreeViewItem() { Name = manager.ServiceName, Header = manager.DisplayName, IsExpanded = true };
                 menuTreeView.Items.Add(item);
             }
 

@@ -26,7 +26,9 @@ namespace sikusiSubtitles.SpeechRecognition {
             this.service = service;
 
             InitializeComponent();
+        }
 
+        private void UserControl_Loaded(object sender, RoutedEventArgs e) {
             // キー
             keyPasswordBox.Password = service.Key;
 

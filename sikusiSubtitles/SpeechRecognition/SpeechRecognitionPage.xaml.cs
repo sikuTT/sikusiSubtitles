@@ -40,10 +40,9 @@ namespace sikusiSubtitles.SpeechRecognition {
             // マイク一覧
             var enumerator = new MMDeviceEnumerator();
             micList = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
-            
-            InitializeUI();
         }
-        private void InitializeUI() {
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e) {
             // マイク一覧
             foreach (var mic in this.micList) {
                 var i = this.micComboBox.Items.Add(mic.FriendlyName);

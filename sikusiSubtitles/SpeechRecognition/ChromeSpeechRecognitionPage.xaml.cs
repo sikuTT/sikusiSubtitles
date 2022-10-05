@@ -27,7 +27,9 @@ namespace sikusiSubtitles.SpeechRecognition {
             this.service = service;
 
             InitializeComponent();
+        }
 
+        private void UserControl_Loaded(object sender, RoutedEventArgs e) {
             // コントロールの初期値
             portNumericEditBox.Value = service.Port;
         }

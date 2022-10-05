@@ -46,11 +46,9 @@ namespace sikusiSubtitles {
 
             // ServiceManager
             serviceManager.Init();
-
-            InitializeUI();
         }
 
-        private void InitializeUI() {
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
             // Controls
             foreach (var control in serviceManager.TopFlowControls) {
                 this.topPanel.Children.Add(control);

@@ -62,19 +62,15 @@ namespace sikusiSubtitles {
 
             foreach (var manager in serviceManager.Managers) {
                 AddPage(manager);
-                var item = new TreeViewItem() { Name = manager.ServiceName, Header = manager.DisplayName, IsExpanded = true };
+                var item = new TreeViewItem() { Name = manager.Name, Header = manager.DisplayName, IsExpanded = true };
                 menuTreeView.Items.Add(item);
-            }
 
-            foreach (var service in serviceManager.Services) {
-                AddPage(service);
-                var item = new TreeViewItem() { Name = service.Name, Header = service.DisplayName, IsExpanded = true };
-
-                foreach (var parentItem in menuTreeView.Items) {
-                    var parentTreeViewItem = parentItem as TreeViewItem;
-                    if (parentTreeViewItem != null && parentTreeViewItem.Name == service.ServiceName) {
-                        parentTreeViewItem.Items.Add(item);
-                        break;
+                var services = serviceManager.Services.FindAll(service => service.ServiceName == manager.ServiceName);
+                foreach (var service in services) {
+                    AddPage(service);
+                    if (manager.GetSettingPage() != null || manager.DisplayName != service.DisplayName) {
+                        var childItem = new TreeViewItem() { Name = service.Name, Header = service.DisplayName, IsExpanded = true };
+                        item.Items.Add(childItem);
                     }
                 }
             }

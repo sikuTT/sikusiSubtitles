@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace sikusiSubtitles.OBS {
     public class ObsServiceManager : sikusiSubtitles.Service {
         public static new string ServiceName = "OBS";
-        public ObsServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, "ObsServiceManager", "OBS", 400, true) {
+        public ObsServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, ServiceName, "OBS", 400, true) {
         }
     }
 }

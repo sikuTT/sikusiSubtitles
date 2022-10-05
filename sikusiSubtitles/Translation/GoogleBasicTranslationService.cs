@@ -13,7 +13,7 @@ using System.Windows.Controls;
 
 namespace sikusiSubtitles.Translation {
     public class GoogleBasicTranslationService : TranslationService {
-        private List<Tuple<string, string>> languages = new GoogleTranslationLanguages().Languages;
+        private List<Language> languages = new GoogleTranslationLanguages().Languages;
 
         public string Key { get; set; } = "";
 
@@ -35,7 +35,7 @@ namespace sikusiSubtitles.Translation {
             };
         }
 
-        public override List<Tuple<string, string>> GetLanguages() {
+        public override List<Language> GetLanguages() {
             return this.languages;
         }
 

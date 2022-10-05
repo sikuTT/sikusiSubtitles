@@ -14,7 +14,7 @@ namespace sikusiSubtitles.Translation {
         public string Key { get; set; } = "";
 
         public DeepLTranslationService(ServiceManager serviceManager) : base(serviceManager, "DeepL", "DeepL", 400) {
-            this.languages.Sort((a, b) => a.Item2.CompareTo(b.Item2));
+            this.languages.Sort((a, b) => a.Name.CompareTo(b.Name));
         }
 
         public override UserControl? GetSettingPage()
@@ -32,7 +32,7 @@ namespace sikusiSubtitles.Translation {
             };
         }
 
-        public override List<Tuple<string, string>> GetLanguages() {
+        public override List<Language> GetLanguages() {
             return this.languages;
         }
 
@@ -71,35 +71,35 @@ namespace sikusiSubtitles.Translation {
             }
         }
 
-        private List<Tuple<string, string>> languages = new List<Tuple<string, string>> {
-            new Tuple<string, string>("bg", "Bulgarian"),
-            new Tuple<string, string>("cs", "Czech"),
-            new Tuple<string, string>("da", "Danish"),
-            new Tuple<string, string>("de", "German"),
-            new Tuple<string, string>("el", "Greek"),
-            new Tuple<string, string>("en-GB", "English (British)"),
-            new Tuple<string, string>("en-US", "English (American)"),
-            new Tuple<string, string>("es", "Spanish"),
-            new Tuple<string, string>("et", "Estonian"),
-            new Tuple<string, string>("fi", "Finnish"),
-            new Tuple<string, string>("fr", "French"),
-            new Tuple<string, string>("hu", "Hungarian"),
-            new Tuple<string, string>("id", "Indonesian"),
-            new Tuple<string, string>("it", "Italian"),
-            new Tuple<string, string>("ja", "Japanese"),
-            new Tuple<string, string>("lt", "Lithuanian"),
-            new Tuple<string, string>("lv", "Latvian"),
-            new Tuple<string, string>("nl", "Dutch"),
-            new Tuple<string, string>("pl", "Polish"),
-            new Tuple<string, string>("pt-BR", "Portuguese (Brazilian)"),
-            new Tuple<string, string>("pt-PT", "Portuguese (European)"),
-            new Tuple<string, string>("ro", "Romanian"),
-            new Tuple<string, string>("ru", "Russian"),
-            new Tuple<string, string>("sk", "Slovak"),
-            new Tuple<string, string>("sl", "Slovenian"),
-            new Tuple<string, string>("sv", "Swedish"),
-            new Tuple<string, string>("tr", "Turkish"),
-            new Tuple<string, string>("zh", "Chinese"),
+        private List<Language> languages = new List<Language> {
+            new Language("bg", "Bulgarian"),
+            new Language("cs", "Czech"),
+            new Language("da", "Danish"),
+            new Language("de", "German"),
+            new Language("el", "Greek"),
+            new Language("en-GB", "English (British)"),
+            new Language("en-US", "English (American)"),
+            new Language("es", "Spanish"),
+            new Language("et", "Estonian"),
+            new Language("fi", "Finnish"),
+            new Language("fr", "French"),
+            new Language("hu", "Hungarian"),
+            new Language("id", "Indonesian"),
+            new Language("it", "Italian"),
+            new Language("ja", "Japanese"),
+            new Language("lt", "Lithuanian"),
+            new Language("lv", "Latvian"),
+            new Language("nl", "Dutch"),
+            new Language("pl", "Polish"),
+            new Language("pt-BR", "Portuguese (Brazilian)"),
+            new Language("pt-PT", "Portuguese (European)"),
+            new Language("ro", "Romanian"),
+            new Language("ru", "Russian"),
+            new Language("sk", "Slovak"),
+            new Language("sl", "Slovenian"),
+            new Language("sv", "Swedish"),
+            new Language("tr", "Turkish"),
+            new Language("zh", "Chinese"),
         };
     }
 }

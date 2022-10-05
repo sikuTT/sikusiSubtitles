@@ -64,7 +64,7 @@ namespace sikusiSubtitles.Subtitles {
         // 翻訳サービス
         List<TranslationService> translationServices = new List<TranslationService>();
         TranslationService? translationService;
-        List<Tuple<string, string>> translationLanguages = new List<Tuple<string, string>>();
+        List<Language> translationLanguages = new List<Language>();
 
         public SubtitlesPage(ServiceManager serviceManager, SubtitlesService service) {
             this.serviceManager = serviceManager;
@@ -128,8 +128,8 @@ namespace sikusiSubtitles.Subtitles {
                 // 翻訳元言語を選択された翻訳サービスがサポートする言語一覧で更新する
                 translationLanguages = translationService.GetLanguages();
                 foreach (var lang in translationLanguages) {
-                    var i = translationLanguageFromComboBox.Items.Add(lang.Item2);
-                    if (service.TranslationLanguageFrom == lang.Item1) translationLanguageFromComboBox.SelectedIndex = i;
+                    var i = translationLanguageFromComboBox.Items.Add(lang.Name);
+                    if (service.TranslationLanguageFrom == lang.Code) translationLanguageFromComboBox.SelectedIndex = i;
                 }
 
                 // 翻訳先言語を選択された翻訳サービスがサポートする言語一覧で更新する
@@ -138,9 +138,9 @@ namespace sikusiSubtitles.Subtitles {
                     item.LanguageList.Clear();
                     item.SelectedCode = "";
                     foreach (var lang in translationLanguages) {
-                        var langModel = new LanguageModel() { Code = lang.Item1, Language = lang.Item2 };
+                        var langModel = new LanguageModel() { Code = lang.Code, Language = lang.Name };
                         item.LanguageList.Add(langModel);
-                        if (service.TranslationLanguageToList[i] == lang.Item1) item.SelectedCode = lang.Item1;
+                        if (service.TranslationLanguageToList[i] == lang.Code) item.SelectedCode = lang.Code;
                     }
                 }
             }
@@ -149,7 +149,7 @@ namespace sikusiSubtitles.Subtitles {
         /** 翻訳元言語が変更された */
         private void translationLanguageFromComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (translationLanguageFromComboBox.SelectedIndex != -1) {
-                service.TranslationLanguageFrom = translationLanguages[translationLanguageFromComboBox.SelectedIndex].Item1;
+                service.TranslationLanguageFrom = translationLanguages[translationLanguageFromComboBox.SelectedIndex].Code;
             }
         }
 
@@ -173,7 +173,7 @@ namespace sikusiSubtitles.Subtitles {
         private void addTranslateToLanguageButton_Click(object sender, RoutedEventArgs e) {
             var item = new LanguageListModel();
             foreach (var lang in translationLanguages) {
-                item.LanguageList.Add(new LanguageModel() { Code = lang.Item1, Language = lang.Item2 });
+                item.LanguageList.Add(new LanguageModel() { Code = lang.Code, Language = lang.Name });
             }
             viewModel.TranslationLanguageList.Add(item);
             service.TranslationLanguageToList.Add("");

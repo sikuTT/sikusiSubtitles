@@ -24,7 +24,6 @@ namespace sikusiSubtitles.SpeechRecognition {
 
         public SpeechRecognitionServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, ServiceName, "音声認識", 100, true) {
             speechRecognitionButton = new ToggleButton();
-            // speechRecognitionCheckBox.Appearance = Appearance.Button;
             speechRecognitionButton.Content = "音声認識";
             speechRecognitionButton.Width = 70;
             speechRecognitionButton.Checked += speechRecognitionButton_Checked;

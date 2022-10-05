@@ -22,7 +22,7 @@ namespace sikusiSubtitles.SpeechRecognition {
         public string Key { get; set; } = "";
         public bool Log { get; set; } = true;
 
-        public override List<Tuple<string, string>> GetLanguages() {
+        public override List<Language> GetLanguages() {
             return engines;
         }
 
@@ -214,20 +214,20 @@ namespace sikusiSubtitles.SpeechRecognition {
             }
         }
 
-        private List<Tuple<string, string>> engines = new List<Tuple<string, string>>() {
-            new Tuple<string, string>("-a-general-input", "音声入力_汎用"),
-            // new Tuple<string, string>("-a-medgeneral-input", "音声入力_医療"),
-            // new Tuple<string, string>("-a-bizmrreport-input", "音声入力_製薬"),
-            // new Tuple<string, string>("-a-medkarte-input", "音声入力_電子カルテ"),
-            // new Tuple<string, string>("-a-bizinsurance-input", "音声入力_保険"),
-            // new Tuple<string, string>("-a-bizfinance-input", "音声入力_金融"),
-            new Tuple<string, string>("-a-general", "会話_汎用"),
-            // new Tuple<string, string>("-a-medgeneral", "会話_医療"),
-            // new Tuple<string, string>("-a-bizmrreport", "会話_製薬"),
-            // new Tuple<string, string>("-a-bizfinance", "会話_金融"),
-            // new Tuple<string, string>("-a-bizinsurance", "会話_保険"),
-            new Tuple<string, string>("-a-general-en", "英語_汎用"),
-            new Tuple<string, string>("-a-general-zh", "中国語_汎用"),
+        private List<Language> engines = new List<Language>() {
+            new Language("-a-general-input", "音声入力_汎用"),
+            // new Language("-a-medgeneral-input", "音声入力_医療"),
+            // new Language("-a-bizmrreport-input", "音声入力_製薬"),
+            // new Language("-a-medkarte-input", "音声入力_電子カルテ"),
+            // new Language("-a-bizinsurance-input", "音声入力_保険"),
+            // new Language("-a-bizfinance-input", "音声入力_金融"),
+            new Language("-a-general", "会話_汎用"),
+            // new Language("-a-medgeneral", "会話_医療"),
+            // new Language("-a-bizmrreport", "会話_製薬"),
+            // new Language("-a-bizfinance", "会話_金融"),
+            // new Language("-a-bizinsurance", "会話_保険"),
+            new Language("-a-general-en", "英語_汎用"),
+            new Language("-a-general-zh", "中国語_汎用"),
         };
     }
 

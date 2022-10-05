@@ -37,7 +37,7 @@ namespace sikusiSubtitles.SpeechRecognition {
             };
         }
 
-        public override List<Tuple<string, string>> GetLanguages() {
+        public override List<Language> GetLanguages() {
             return this.Languages;
         }
 
@@ -129,15 +129,15 @@ namespace sikusiSubtitles.SpeechRecognition {
             InvokeServiceStopped(args);
         }
 
-        List<Tuple<string, string>> Languages = new List<Tuple<string, string>>() {
-            new Tuple<string, string>("ja-JP", "日本語"),
-            new Tuple<string, string>("en-US", "英語"),
-            new Tuple<string, string>("es-ES", "スペイン語（スペイン）"),
-            new Tuple<string, string>("pt-P", "ポルトガル語（ポルトガル）"),
-            new Tuple<string, string>("pt-BR", "ポルトガル語（ブラジル）"),
-            new Tuple<string, string>("ko-KR", "韓国語"),
-            new Tuple<string, string>("zh", "中国語（簡体字、中国本土）"),
-            new Tuple<string, string>("cmn-Hant-TW", "中国語（繁体字、台湾）"),
+        List<Language> Languages = new List<Language>() {
+            new Language("ja-JP", "日本語"),
+            new Language("en-US", "英語"),
+            new Language("es-ES", "スペイン語（スペイン）"),
+            new Language("pt-P", "ポルトガル語（ポルトガル）"),
+            new Language("pt-BR", "ポルトガル語（ブラジル）"),
+            new Language("ko-KR", "韓国語"),
+            new Language("zh", "中国語（簡体字、中国本土）"),
+            new Language("cmn-Hant-TW", "中国語（繁体字、台湾）"),
         };
     }
 }

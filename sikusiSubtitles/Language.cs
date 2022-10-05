@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace sikusiSubtitles.Translation {
+namespace sikusiSubtitles {
     public class Language {
         public string Code { get; set; }
         public string Name { get; set; }

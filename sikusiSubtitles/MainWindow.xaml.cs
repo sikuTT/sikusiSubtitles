@@ -1,4 +1,5 @@
 ﻿using sikusiSubtitles.OBS;
+using sikusiSubtitles.Speech;
 using sikusiSubtitles.SpeechRecognition;
 using sikusiSubtitles.Subtitles;
 using sikusiSubtitles.Translation;
@@ -49,6 +50,11 @@ namespace sikusiSubtitles {
             new ObsServiceManager(serviceManager);
             new ObsService(serviceManager);
             new ObsSubtitlesService(serviceManager);
+
+            // Speech Service
+            new SpeechServiceManager(serviceManager);
+            new SapiSpeechService(serviceManager);
+            new VoiceVoxSpeechService(serviceManager);
 
             // ServiceManager
             serviceManager.Init();

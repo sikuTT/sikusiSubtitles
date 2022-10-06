@@ -1,4 +1,5 @@
 ﻿using sikusiSubtitles.OBS;
+using sikusiSubtitles.Shortcut;
 using sikusiSubtitles.Speech;
 using sikusiSubtitles.SpeechRecognition;
 using sikusiSubtitles.Subtitles;
@@ -55,6 +56,10 @@ namespace sikusiSubtitles {
             new SpeechServiceManager(serviceManager);
             new SapiSpeechService(serviceManager);
             new VoiceVoxSpeechService(serviceManager);
+
+            // Shortcut Service
+            new ShortcutServiceManager(serviceManager);
+            new ShortcutService(serviceManager);
 
             // ServiceManager
             serviceManager.Init();

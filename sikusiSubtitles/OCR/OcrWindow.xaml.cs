@@ -79,8 +79,9 @@ namespace sikusiSubtitles.OCR {
             translationServiceComboBox.SelectedItem = translationServices.Find(service => service.Name == ocrManager.TranslationEngine);
 
             // OBSに接続されている場合、テキストソースを取得する
+            obsService = this.serviceManager.GetService<ObsService>();
             GetObsTextSourcesAsync();
-            
+
             // 読み上げサービス一覧
             speechServices = this.serviceManager.GetServices<SpeechService>();
             speechServiceComboBox.ItemsSource = speechServices;
@@ -284,9 +285,21 @@ namespace sikusiSubtitles.OCR {
                     var result = await translationService.TranslateAsync(ocrTextBox.Text, null, ocrManager.TranslationLanguage);
                     if (result != null && result.Translations.Count > 0) {
                         translatedTextBox.Text = result.Translations[0].Text;
+
+                        // OBSに接続済みで、翻訳結果表示先が指定されている場合、OBS上に翻訳結果を表示する。
+                        var subtitlesService = this.serviceManager.GetService<ObsSubtitlesService>();
+                        if (obsService != null && obsService.IsConnected && subtitlesService != null && obsTextSourceComboBox.SelectedItem != null) {
+                            var sourceName = obsTextSourceComboBox.SelectedItem as string;
+                            if (sourceName != null) {
+                                await subtitlesService.SetTextAsync(sourceName, result.Translations[0].Text ?? "");
+                            }
+                        }
+                    } else {
+                        // 翻訳に失敗
+                        MessageBox.Show("翻訳に失敗しました。", null, MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
                 } catch (Exception ex) {
-                    Debug.WriteLine("translationButton_Click: " + ex.Message);
+                   Debug.WriteLine("translationButton_Click: " + ex.Message);
                 }
             }
         }
@@ -315,9 +328,7 @@ namespace sikusiSubtitles.OCR {
             this.obsTextSourceComboBox.ItemsSource = null;
 
             // OBSのテキストソースの一覧を取得
-            obsService = this.serviceManager.GetService<ObsService>();
-
-            if (obsService != null && obsService.ObsSocket.IsConnected) {
+            if (obsService != null && obsService.IsConnected) {
                 var nameList = new List<string>() { "" };
                 // シーン一覧を取得する
                 var sceneList = await obsService.ObsSocket.GetSceneListAsync();

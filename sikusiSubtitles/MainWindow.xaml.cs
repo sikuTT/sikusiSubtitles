@@ -74,6 +74,7 @@ namespace sikusiSubtitles {
         private void Window_Loaded(object sender, RoutedEventArgs e) {
             // Controls
             foreach (var control in serviceManager.TopFlowControls) {
+                control.Margin = new Thickness(5, 0, 5, 0);
                 this.topPanel.Children.Add(control);
             }
 

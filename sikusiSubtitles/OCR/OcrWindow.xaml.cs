@@ -55,6 +55,13 @@ namespace sikusiSubtitles.OCR {
             this.processId = processId;
 
             InitializeComponent();
+
+            // ショートカットイベントを取得
+            shortcutService = this.serviceManager.GetService<ShortcutService>();
+            if (shortcutService != null) {
+                shortcutService.ShortcutRun += ShortcutRun;
+            }
+
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
@@ -89,10 +96,17 @@ namespace sikusiSubtitles.OCR {
 
             // OCR時の自動読み上げ
             speechCheckBox.IsChecked = ocrManager.SpeechWhenOcrRun;
+
+            // ショートカットの設定
+            ocrShortcutKeyTextBox.Text = ocrManager.OcrShortcut.ShortcutKey;
         }
 
         /** ウィンドウがクローズされた */
         private void Window_Closed(object sender, EventArgs e) {
+            if (this.shortcutService != null) {
+                this.shortcutService.ShortcutRun -= ShortcutRun;
+            }
+
             if (captureWindow != null) {
                 captureWindow.Close();
             }
@@ -178,6 +192,11 @@ namespace sikusiSubtitles.OCR {
         /** OBSテキストソースの更新ボタンが押された */
         private void refreshObsTextSourceButton_Click(object sender, RoutedEventArgs e) {
             GetObsTextSourcesAsync();
+        }
+
+        /** OBSに表示された翻訳結果をクリアする */
+        private void clearObsTranslatedTextButton_Click(object sender, RoutedEventArgs e) {
+            ClearObsTranslatedText();
         }
 
         /** 音声読み上げエンジンが変更された */
@@ -361,6 +380,17 @@ namespace sikusiSubtitles.OCR {
             }
         }
 
+        /** OBSに表示された翻訳結果をクリアする */
+        private async void ClearObsTranslatedText() {
+            var subtitlesService = this.serviceManager.GetService<ObsSubtitlesService>();
+            if (obsService?.IsConnected == true && subtitlesService != null && obsTextSourceComboBox.SelectedItem != null) {
+                var sourceName = obsTextSourceComboBox.SelectedItem as string;
+                if (sourceName != null) {
+                    await subtitlesService.SetTextAsync(sourceName, "");
+                }
+            }
+        }
+
         /** 読み上げボタンの状態を設定する */
         private void SetSpeechButtonEnabled() {
             var enabled = speechVoiceComboBox.SelectedIndex != -1 && ocrTextBox.Text.Length > 0;
@@ -394,6 +424,26 @@ namespace sikusiSubtitles.OCR {
             }
 
             return null;
+        }
+
+        /**
+         * ショートカットが実行された
+         */
+        private async void ShortcutRun(object? sender, Shortcut.Shortcut shortcut) {
+            if (this.IsActive == true && ocrShortcutKeyTextBox.IsFocused == true) {
+                ocrShortcutKeyTextBox.Text = shortcut.ShortcutKey;
+            } else {
+                if (ocrButton.IsEnabled == true && shortcut.ShortcutKey == ocrShortcutKeyTextBox.Text) {
+                    await Ocr();
+                } else if (shortcut.Name == "clear-ocr-translated-text") {
+                    ClearObsTranslatedText();
+                }
+            }
+        }
+
+        /** OCRのショートカットをデフォルト設定に戻す */
+        private void resetOcrShortcutKeyButton_Click(object sender, RoutedEventArgs e) {
+            ocrShortcutKeyTextBox.Text = ocrManager.OcrShortcut.ShortcutKey;
         }
     }
 }

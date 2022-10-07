@@ -68,7 +68,7 @@
                     <Label Grid.Row="0">OCRエンジン</Label>
                     <ComboBox x:Name="ocrServiceComboBox" Grid.Column="1" DisplayMemberPath="DisplayName" SelectionChanged="ocrServiceComboBox_SelectionChanged"></ComboBox>
                     <ComboBox x:Name="ocrLanguageComboBox" Grid.Column="2" DisplayMemberPath="Name" SelectionChanged="ocrLanguageComboBox_SelectionChanged"></ComboBox>
-                    <Button x:Name="ocrButton" Grid.Column="3" Click="ocrButton_Click">文字認識</Button>
+                    <Button x:Name="ocrButton" Grid.Column="3" IsEnabled="False" Click="ocrButton_Click">文字認識</Button>
                 </Grid>
                 <Grid Style="{StaticResource Row}">
                     <Grid.ColumnDefinitions>
@@ -92,7 +92,7 @@
                     <Label Grid.Row="0">OBSテキストソース</Label>
                     <ComboBox x:Name="obsTextSourceComboBox" Grid.Column="1"></ComboBox>
                     <Button x:Name="refreshObsTextSourceButton" Grid.Column="2" Click="refreshObsTextSourceButton_Click">更新</Button>
-                    <Button Grid.Column="3">クリア</Button>
+                    <Button x:Name="clearObsTranslatedTextButton" Grid.Column="3" Click="clearObsTranslatedTextButton_Click">クリア</Button>
                 </Grid>
                 <Grid Style="{StaticResource Row}">
                     <Grid.ColumnDefinitions>
@@ -131,8 +131,8 @@
                 <ColumnDefinition Width="110"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Label>ショートカット</Label>
-            <TextBox IsReadOnly="True" Grid.Column="1"></TextBox>
-            <Button Grid.Column="2">デフォルトに戻す</Button>
+            <TextBox x:Name="ocrShortcutKeyTextBox" IsReadOnly="True" Grid.Column="1"></TextBox>
+            <Button x:Name="resetOcrShortcutKeyButton" Grid.Column="2" Click="resetOcrShortcutKeyButton_Click">デフォルトに戻す</Button>
         </Grid>
     </Grid>
 </Window>

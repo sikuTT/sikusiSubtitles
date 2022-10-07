@@ -1,0 +1,138 @@
+﻿<Window x:Class="sikusiSubtitles.OCR.OcrWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:sikusiSubtitles.OCR"
+        mc:Ignorable="d"
+        Title="OcrWindow" Height="450" Width="800" Loaded="Window_Loaded">
+    <Window.Resources>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Padding" Value="5"></Setter>
+        </Style>
+        <Style TargetType="{x:Type Grid}" x:Key="Row">
+            <Setter Property="Margin" Value="0,5,0,5"></Setter>
+            <Style.Resources>
+                <Style TargetType="Label">
+                    <Setter Property="Margin" Value="5,0,5,0"></Setter>
+                    <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+                </Style>
+                <Style TargetType="CheckBox">
+                    <Setter Property="Margin" Value="5,0,5,0"></Setter>
+                    <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+                </Style>
+                <Style TargetType="ComboBox">
+                    <Setter Property="Margin" Value="5,0,5,0"></Setter>
+                    <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+                </Style>
+                <Style TargetType="Button">
+                    <Setter Property="Margin" Value="5,0,5,0"></Setter>
+                    <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+                </Style>
+                <Style TargetType="TextBox">
+                    <Setter Property="Margin" Value="5,0,5,0"></Setter>
+                    <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+                </Style>
+            </Style.Resources>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Style="{StaticResource Row}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="120"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Label>キャプチャー対象</Label>
+            <TextBox x:Name="windowTitleTextBox" IsReadOnly="True" Grid.Column="1"></TextBox>
+            <Button Grid.Column="2">読み取り先を設定</Button>
+        </Grid>
+        <Grid Grid.Row="1">
+            <StackPanel>
+                <Grid Style="{StaticResource Row}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="110"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="80"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0">OCRエンジン</Label>
+                    <ComboBox x:Name="ocrServiceComboBox" Grid.Column="1"></ComboBox>
+                    <ComboBox Grid.Column="2"></ComboBox>
+                    <Button Grid.Column="3">文字認識</Button>
+                </Grid>
+                <Grid Style="{StaticResource Row}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="110"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="80"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0">翻訳エンジン</Label>
+                    <ComboBox x:Name="translationServiceComboBox" Grid.Column="1" SelectionChanged="translationServiceComboBox_SelectionChanged"></ComboBox>
+                    <ComboBox x:Name="translationLanguageComboBox"  Grid.Column="2" SelectionChanged="translationLanguageComboBox_SelectionChanged"></ComboBox>
+                    <Button x:Name="translationButton" Grid.Column="3" IsEnabled="False" Click="translationButton_Click">翻訳</Button>
+                </Grid>
+                <Grid Style="{StaticResource Row}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="110"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="80"></ColumnDefinition>
+                        <ColumnDefinition Width="80"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0">OBSテキストソース</Label>
+                    <ComboBox x:Name="obsTextSourceComboBox" Grid.Column="1"></ComboBox>
+                    <Button x:Name="refreshObsTextSourceButton" Grid.Column="2" Click="refreshObsTextSourceButton_Click">更新</Button>
+                    <Button Grid.Column="3">クリア</Button>
+                </Grid>
+                <Grid Style="{StaticResource Row}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="110"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                        <ColumnDefinition Width="80"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0">読み上げ</Label>
+                    <ComboBox x:Name="speechServiceComboBox" Grid.Column="1" SelectionChanged="speechServiceComboBox_SelectionChanged"></ComboBox>
+                    <ComboBox x:Name="speechVoiceComboBox" Grid.Column="2" SelectionChanged="speechVoiceComboBox_SelectionChanged"></ComboBox>
+                    <Button x:Name="speechButton" Grid.Column="3" Click="speechButton_Click" IsEnabled="False">読み上げる</Button>
+                    <Button x:Name="speechCancelButton" Grid.Column="3" Click="speechCancelButton_Click" IsEnabled="False" Visibility="Collapsed">キャンセル</Button>
+                </Grid>
+                <Grid Style="{StaticResource Row}" HorizontalAlignment="Right">
+                    <CheckBox x:Name="speechCheckBox" Checked="speechCheckBox_Checked" Unchecked="speechCheckBox_Unchecked">文章の読み取り時に読み上げる</CheckBox>
+                </Grid>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="2" Style="{StaticResource Row}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label>テキスト</Label>
+            <TextBox x:Name="ocrTextBox" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top" LostFocus="ocrTextBox_LostFocus" TextChanged="ocrTextBox_TextChanged"></TextBox>
+            <Label Grid.Row="2">翻訳結果</Label>
+            <TextBox x:Name="translatedTextBox" Grid.Row="3" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top"></TextBox>
+        </Grid>
+        <Grid Grid.Row="3" Style="{StaticResource Row}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="110"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Label>ショートカット</Label>
+            <TextBox IsReadOnly="True" Grid.Column="1"></TextBox>
+            <Button Grid.Column="2">デフォルトに戻す</Button>
+        </Grid>
+    </Grid>
+</Window>

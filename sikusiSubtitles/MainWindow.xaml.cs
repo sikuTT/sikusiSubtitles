@@ -1,4 +1,5 @@
 ﻿using sikusiSubtitles.OBS;
+using sikusiSubtitles.OCR;
 using sikusiSubtitles.Shortcut;
 using sikusiSubtitles.Speech;
 using sikusiSubtitles.SpeechRecognition;
@@ -60,6 +61,9 @@ namespace sikusiSubtitles {
             // Shortcut Service
             new ShortcutServiceManager(serviceManager);
             new ShortcutService(serviceManager);
+
+            // Shortcut Service
+            new OcrServiceManager(serviceManager);
 
             // ServiceManager
             serviceManager.Init();

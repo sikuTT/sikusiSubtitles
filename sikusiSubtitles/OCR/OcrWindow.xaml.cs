@@ -43,6 +43,10 @@ namespace sikusiSubtitles.OCR {
         // ショートカット
         ShortcutService? shortcutService;
 
+        // 画面のキャプチャーエリア指定
+        CaptureWindow? captureWindow;
+        System.Drawing.Rectangle captureArea;
+
         public OcrWindow(ServiceManager serviceManager, OcrServiceManager ocrManager, int processId) {
             this.serviceManager = serviceManager;
             this.ocrManager = ocrManager;
@@ -83,6 +87,35 @@ namespace sikusiSubtitles.OCR {
             speechServiceComboBox.SelectedIndex = speechServices.FindIndex(service => service.Name == ocrManager.OcrSpeechEngine);
         }
 
+        /** ウィンドウがクローズされた */
+        private void Window_Closed(object sender, EventArgs e) {
+            if (captureWindow != null) {
+                captureWindow.Close();
+            }
+        }
+
+        /** 読み取りエリアの設定ボタン */
+        private void captureAreaButton_Click(object sender, RoutedEventArgs e) {
+            // キャプチャーするウィンドウの上に、キャプチャー画面を表示する。
+            Process process = Process.GetProcessById(processId);
+            if (captureWindow != null) {
+                captureWindow.Close();
+            }
+
+            // キャプチャー対象のウィンドウをアクティブにする
+            Microsoft.VisualBasic.Interaction.AppActivate(processId);
+
+            // キャプチャー対象のウィンドウの上にキャプチャー処理をするウィンドウを作成する
+            captureWindow = new CaptureWindow(process.MainWindowHandle, captureArea);
+            captureWindow.Show();
+            captureWindow.Activate();
+            captureWindow.AreaSelected += CaptureAreaSelected;
+            captureWindow.Closed += (object? sender, EventArgs e) => {
+                captureWindow.AreaSelected -= CaptureAreaSelected;
+                captureWindow = null;
+            };
+        }
+
         /** 翻訳エンジンが変更された */
         private void translationServiceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (translationServiceComboBox.SelectedIndex != -1) {
@@ -106,16 +139,7 @@ namespace sikusiSubtitles.OCR {
 
         /** 翻訳ボタンが押された */
         private async void translationButton_Click(object sender, RoutedEventArgs e) {
-            if (translationService != null) {
-                try {
-                    var result = await translationService.TranslateAsync(ocrTextBox.Text, null, ocrManager.TranslationLanguage);
-                    if (result != null && result.Translations.Count > 0) {
-                        translatedTextBox.Text = result.Translations[0].Text;
-                    }
-                } catch (Exception ex) {
-                    Debug.WriteLine("translationButton_Click: " + ex.Message);
-                }
-            }
+            await TranslateAsync();
         }
 
         /** OBSテキストソースの更新ボタンが押された */
@@ -147,7 +171,7 @@ namespace sikusiSubtitles.OCR {
 
         /** 読み上げボタン */
         private async void speechButton_Click(object sender, RoutedEventArgs e) {
-            await SpeechOcrText();
+            await SpeechOcrTextAsync();
         }
 
         /** 読み上げキャンセルボタン */
@@ -178,6 +202,44 @@ namespace sikusiSubtitles.OCR {
             //  テキストが選択されている場合、選択状態を維持する
             if (ocrTextBox.SelectedText.Length > 0) {
                 e.Handled = true;
+            }
+        }
+
+        /** OCRを実行する */
+        private void Ocr() {
+
+        }
+
+        /** 翻訳をする */
+        private async Task TranslateAsync() {
+            if (translationService != null) {
+                try {
+                    var result = await translationService.TranslateAsync(ocrTextBox.Text, null, ocrManager.TranslationLanguage);
+                    if (result != null && result.Translations.Count > 0) {
+                        translatedTextBox.Text = result.Translations[0].Text;
+                    }
+                } catch (Exception ex) {
+                    Debug.WriteLine("translationButton_Click: " + ex.Message);
+                }
+            }
+        }
+
+        /** OCRテキストを読み上げる */
+        private async Task SpeechOcrTextAsync() {
+            if (speechService != null && speechVoiceComboBox.SelectedIndex != -1) {
+                var voices = speechService.GetVoices();
+                var voice = voices[speechVoiceComboBox.SelectedIndex];
+
+                try {
+                    speechButton.Visibility = Visibility.Collapsed;
+                    speechCancelButton.Visibility = Visibility.Visible;
+
+                    var text = ocrTextBox.SelectedText.Length > 0 ? ocrTextBox.SelectedText : ocrTextBox.Text;
+                    await speechService.SpeakAsync(voice, text);
+                } finally {
+                    speechButton.Visibility = Visibility.Visible;
+                    speechCancelButton.Visibility = Visibility.Collapsed;
+                }
             }
         }
 
@@ -219,27 +281,7 @@ namespace sikusiSubtitles.OCR {
                         }
                     }
                 }
-                //                this.obsTextSourceComboBox.Items.AddRange(nameList.Distinct().ToArray());
                 this.obsTextSourceComboBox.ItemsSource = nameList.Distinct();
-            }
-        }
-
-        /** OCRテキストを読み上げる */
-        private async Task SpeechOcrText() {
-            if (speechService != null && speechVoiceComboBox.SelectedIndex != -1) {
-                var voices = speechService.GetVoices();
-                var voice = voices[speechVoiceComboBox.SelectedIndex];
-
-                try {
-                    speechButton.Visibility = Visibility.Collapsed;
-                    speechCancelButton.Visibility = Visibility.Visible;
-
-                    var text = ocrTextBox.SelectedText.Length > 0 ? ocrTextBox.SelectedText : ocrTextBox.Text;
-                    await speechService.SpeakAsync(voice, text);
-                } finally {
-                    speechButton.Visibility = Visibility.Visible;
-                    speechCancelButton.Visibility = Visibility.Collapsed;
-                }
             }
         }
 
@@ -247,6 +289,13 @@ namespace sikusiSubtitles.OCR {
         private void SetSpeechButtonEnabled() {
             var enabled = speechVoiceComboBox.SelectedIndex != -1 && ocrTextBox.Text.Length > 0;
             speechButton.IsEnabled = speechCancelButton.IsEnabled = enabled;
+        }
+
+        /** OCRをするウィンドウエリアが選択された */
+        private void CaptureAreaSelected(object? sender, System.Drawing.Rectangle area) {
+            captureArea = area;
+            ocrButton.IsEnabled = true;
+            Ocr();
         }
     }
 }

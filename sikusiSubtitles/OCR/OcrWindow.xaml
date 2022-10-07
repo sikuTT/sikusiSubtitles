@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:sikusiSubtitles.OCR"
         mc:Ignorable="d"
-        Title="OcrWindow" Height="450" Width="800" Loaded="Window_Loaded">
+        Title="OcrWindow" Height="450" Width="800" Loaded="Window_Loaded" Closed="Window_Closed">
     <Window.Resources>
         <Style TargetType="{x:Type Button}">
             <Setter Property="Padding" Value="5"></Setter>
@@ -54,7 +54,7 @@
             </Grid.ColumnDefinitions>
             <Label>キャプチャー対象</Label>
             <TextBox x:Name="windowTitleTextBox" IsReadOnly="True" Grid.Column="1"></TextBox>
-            <Button Grid.Column="2">読み取り先を設定</Button>
+            <Button x:Name="captureAreaButton" Grid.Column="2" Click="captureAreaButton_Click">読み取り先を設定</Button>
         </Grid>
         <Grid Grid.Row="1">
             <StackPanel>
@@ -68,7 +68,7 @@
                     <Label Grid.Row="0">OCRエンジン</Label>
                     <ComboBox x:Name="ocrServiceComboBox" Grid.Column="1"></ComboBox>
                     <ComboBox Grid.Column="2"></ComboBox>
-                    <Button Grid.Column="3">文字認識</Button>
+                    <Button x:Name="ocrButton" Grid.Column="3">文字認識</Button>
                 </Grid>
                 <Grid Style="{StaticResource Row}">
                     <Grid.ColumnDefinitions>

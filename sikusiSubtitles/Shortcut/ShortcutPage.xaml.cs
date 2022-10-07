@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,11 +20,31 @@ namespace sikusiSubtitles.Shortcut {
     /// <summary>
     /// ShortcutPage.xaml の相互作用ロジック
     /// </summary>
+    public class ShortcutModel : INotifyPropertyChanged {
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public string Name { get; set; } = "";
+        public string Source { get; set; } = "";
+        public string Command { get; set; } = "";
+        public string ShortcutKey {
+            get { return shortcutKey; }
+            set {
+                shortcutKey = value;
+                NotifyPropertyChanged();
+            }
+        }
+        string shortcutKey = "";
+
+        void NotifyPropertyChanged([CallerMemberName] String propertyName = "") {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
     public partial class ShortcutPage : UserControl {
         ServiceManager serviceManager;
         ShortcutService service;
 
-        ObservableCollection<Shortcut> shortcutList = new ObservableCollection<Shortcut>();
+        ObservableCollection<ShortcutModel> shortcutList = new ObservableCollection<ShortcutModel>();
 
 
         public ShortcutPage(ServiceManager serviceManager, ShortcutService Service) {
@@ -34,7 +56,12 @@ namespace sikusiSubtitles.Shortcut {
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e) {
             service.Shortcuts.ForEach(shortcut => {
-                shortcutList.Add(shortcut);
+                shortcutList.Add(new ShortcutModel {
+                    Name = shortcut.Name,
+                    Source = shortcut.Source,
+                    Command = shortcut.Command,
+                    ShortcutKey = shortcut.ShortcutKey,
+                });
             });
             shortcutListView.DataContext = shortcutList;
 
@@ -67,10 +94,19 @@ namespace sikusiSubtitles.Shortcut {
             service.Shortcuts[shortcutListView.SelectedIndex].ShortcutKey = this.shortcutTextBox.Text;
         }
 
+        /** ショートカットのクリアボタンが押された */
+        private void clearShortcutButton_Click(object sender, RoutedEventArgs e) {
+            shortcutList[shortcutListView.SelectedIndex].ShortcutKey = "";
+
+            // ショートカットをショートカットサービスに反映
+            service.Shortcuts[shortcutListView.SelectedIndex].ShortcutKey = "";
+        }
+
         private void ShortcutRun(object? sender, Shortcut shortcut) {
             if (this.shortcutTextBox.IsFocused) {
                 this.shortcutTextBox.Text = shortcut.ShortcutKey;
             }
         }
+
     }
 }

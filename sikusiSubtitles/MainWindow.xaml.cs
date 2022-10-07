@@ -62,8 +62,10 @@ namespace sikusiSubtitles {
             new ShortcutServiceManager(serviceManager);
             new ShortcutService(serviceManager);
 
-            // Shortcut Service
+            // OCR Service
             new OcrServiceManager(serviceManager);
+            new TesseractOcrService(serviceManager);
+            new AzureOcrService(serviceManager);
 
             // ServiceManager
             serviceManager.Init();

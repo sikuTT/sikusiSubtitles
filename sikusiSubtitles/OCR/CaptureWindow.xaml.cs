@@ -62,7 +62,7 @@ namespace sikusiSubtitles.OCR {
 
         /** マウスのボタンが離された */
         private void Window_MouseUp(object sender, MouseButtonEventArgs e) {
-            if (this.dragStart != null) {
+            if (dragStart != null && dragEnd != null && dragStart != dragEnd) {
                 AreaSelected?.Invoke(this, captureArea);
                 this.dragStart = this.dragEnd = null;
             }

@@ -10,7 +10,7 @@ namespace sikusiSubtitles.OCR {
         public OcrService(ServiceManager serviceManager, string name, string displayName, int index) : base(serviceManager, OcrServiceManager.ServiceName, name, displayName, index) {
         }
 
-        public abstract List<Tuple<string, string>> GetLanguages();
+        public abstract List<Language> GetLanguages();
 
         public abstract Task<OcrResult> ExecuteAsync(Bitmap bitmap, string language);
 
@@ -26,7 +26,7 @@ namespace sikusiSubtitles.OCR {
         }
 
         protected string RemoveLineBreak(string text) {
-            text = text.Replace("\r\n", " ").Replace("\r", " ").Replace("\n", " ");
+            text = text.Replace("\r\n", " ").Replace("\r", " ").Replace("\n", " ").Trim();
             return text;
         }
     }

@@ -53,7 +53,7 @@
                 <ColumnDefinition Width="120"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Label>キャプチャー対象</Label>
-            <TextBox x:Name="windowTitleTextBox" IsReadOnly="True" Grid.Column="1"></TextBox>
+            <TextBox x:Name="windowTitleTextBox" IsReadOnly="True" Grid.Column="1" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"></TextBox>
             <Button x:Name="captureAreaButton" Grid.Column="2" Click="captureAreaButton_Click">読み取り先を設定</Button>
         </Grid>
         <Grid Grid.Row="1">
@@ -66,9 +66,9 @@
                         <ColumnDefinition Width="80"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Label Grid.Row="0">OCRエンジン</Label>
-                    <ComboBox x:Name="ocrServiceComboBox" Grid.Column="1"></ComboBox>
-                    <ComboBox Grid.Column="2"></ComboBox>
-                    <Button x:Name="ocrButton" Grid.Column="3">文字認識</Button>
+                    <ComboBox x:Name="ocrServiceComboBox" Grid.Column="1" DisplayMemberPath="DisplayName" SelectionChanged="ocrServiceComboBox_SelectionChanged"></ComboBox>
+                    <ComboBox x:Name="ocrLanguageComboBox" Grid.Column="2" DisplayMemberPath="Name" SelectionChanged="ocrLanguageComboBox_SelectionChanged"></ComboBox>
+                    <Button x:Name="ocrButton" Grid.Column="3" Click="ocrButton_Click">文字認識</Button>
                 </Grid>
                 <Grid Style="{StaticResource Row}">
                     <Grid.ColumnDefinitions>
@@ -78,8 +78,8 @@
                         <ColumnDefinition Width="80"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Label Grid.Row="0">翻訳エンジン</Label>
-                    <ComboBox x:Name="translationServiceComboBox" Grid.Column="1" SelectionChanged="translationServiceComboBox_SelectionChanged"></ComboBox>
-                    <ComboBox x:Name="translationLanguageComboBox"  Grid.Column="2" SelectionChanged="translationLanguageComboBox_SelectionChanged"></ComboBox>
+                    <ComboBox x:Name="translationServiceComboBox" Grid.Column="1" DisplayMemberPath="DisplayName" SelectionChanged="translationServiceComboBox_SelectionChanged"></ComboBox>
+                    <ComboBox x:Name="translationLanguageComboBox"  Grid.Column="2" DisplayMemberPath="Name" SelectionChanged="translationLanguageComboBox_SelectionChanged"></ComboBox>
                     <Button x:Name="translationButton" Grid.Column="3" IsEnabled="False" Click="translationButton_Click">翻訳</Button>
                 </Grid>
                 <Grid Style="{StaticResource Row}">
@@ -102,8 +102,8 @@
                         <ColumnDefinition Width="80"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Label Grid.Row="0">読み上げ</Label>
-                    <ComboBox x:Name="speechServiceComboBox" Grid.Column="1" SelectionChanged="speechServiceComboBox_SelectionChanged"></ComboBox>
-                    <ComboBox x:Name="speechVoiceComboBox" Grid.Column="2" SelectionChanged="speechVoiceComboBox_SelectionChanged"></ComboBox>
+                    <ComboBox x:Name="speechServiceComboBox" Grid.Column="1" DisplayMemberPath="DisplayName" SelectionChanged="speechServiceComboBox_SelectionChanged"></ComboBox>
+                    <ComboBox x:Name="speechVoiceComboBox" Grid.Column="2" DisplayMemberPath="DisplayName" SelectionChanged="speechVoiceComboBox_SelectionChanged"></ComboBox>
                     <Button x:Name="speechButton" Grid.Column="3" Click="speechButton_Click" IsEnabled="False">読み上げる</Button>
                     <Button x:Name="speechCancelButton" Grid.Column="3" Click="speechCancelButton_Click" IsEnabled="False" Visibility="Collapsed">キャンセル</Button>
                 </Grid>
@@ -120,9 +120,9 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Label>テキスト</Label>
-            <TextBox x:Name="ocrTextBox" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top" LostFocus="ocrTextBox_LostFocus" TextChanged="ocrTextBox_TextChanged"></TextBox>
+            <TextBox x:Name="ocrTextBox" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top" LostFocus="ocrTextBox_LostFocus" VerticalScrollBarVisibility="Auto" TextChanged="ocrTextBox_TextChanged"></TextBox>
             <Label Grid.Row="2">翻訳結果</Label>
-            <TextBox x:Name="translatedTextBox" Grid.Row="3" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top"></TextBox>
+            <TextBox x:Name="translatedTextBox" Grid.Row="3" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"></TextBox>
         </Grid>
         <Grid Grid.Row="3" Style="{StaticResource Row}">
             <Grid.ColumnDefinitions>

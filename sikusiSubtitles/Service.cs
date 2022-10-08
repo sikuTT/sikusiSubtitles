@@ -10,6 +10,8 @@ namespace sikusiSubtitles {
     public abstract class Service {
         protected ServiceManager ServiceManager;
 
+        public event EventHandler<bool>? ServiceStoped;
+
         public string ServiceName { get; set; }
         public string Name { get; set; }
         public string DisplayName { get; set; }
@@ -33,6 +35,10 @@ namespace sikusiSubtitles {
         public virtual void Finish() { }
 
         public virtual UserControl? GetSettingPage() { return null; }
+
+        public void InvokeServiceStoped() {
+            ServiceStoped?.Invoke(this, true);
+        }
 
         /**
          * チェックボックスボタンの状態に合わせて色を変更する

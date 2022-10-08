@@ -122,7 +122,7 @@ namespace sikusiSubtitles.Shortcut {
             try {
                 // キーの入力判定が残るときがあるので、一定時間入力がなければクリアしてごまかす
                 TimeSpan span = DateTime.Now - dateTime;
-                if (span.TotalSeconds > 2) keys.Clear();
+                if (span.TotalMilliseconds > 1500) keys.Clear();
                 dateTime = DateTime.Now;
 
 

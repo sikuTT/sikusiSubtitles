@@ -16,11 +16,11 @@
         public abstract void Stop();
 
         protected void InvokeRecognizing(string text) {
-            this.Recognizing?.Invoke(this, new SpeechRecognitionEventArgs(text));
+            this.Recognizing?.Invoke(this, new SpeechRecognitionEventArgs(text, false));
         }
 
         protected void InvokeRecognized(string text) {
-            this.Recognized?.Invoke(this, new SpeechRecognitionEventArgs(text));
+            this.Recognized?.Invoke(this, new SpeechRecognitionEventArgs(text, true));
         }
     }
 }

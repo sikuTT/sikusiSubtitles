@@ -4,13 +4,20 @@ class Recognizer {
     running = false;
 
     constructor(interimResults) {
-        console.log('class Recognizer');
-
         // URLを取得
         let url = new URL(window.location.href);
 
-        // URLSearchParamsオブジェクトを取得
+        // 音声認識する言語を取得
         let lang = url.searchParams.get('lang');
+
+        // 結果の送信先
+        let port= url.searchParams.get('port');
+
+        // WebSocket
+        var webSocket = new WebSocket(`ws://127.0.0.1:${port}/`);
+        webSocket.onopen = () => console.log('WebSocket Connected');
+        webSocket.onclose = () => window.close();
+        webSocket.onerror = () => window.close();
 
         this.recognition = new SpeechRecognition();
         console.log(this.recognition.lang);
@@ -51,11 +58,15 @@ class Recognizer {
                 if (result.isFinal === false)
                     isFinal = false;
             }
-            console.log(text);
-            console.log(isFinal);
+            console.log(isFinal + ': ' + text);
+
+            // 音声認識結果を表示
             const elem = document.getElementById('result');
             elem.innerText = text;
-            elem.setAttribute('data-is-final', isFinal.toString());
+
+            // 音声認識結果を送信する
+            var data = { text, recognized: isFinal };
+            webSocket.send(JSON.stringify(data));
         }
 
         /*

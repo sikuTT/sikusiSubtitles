@@ -1,6 +1,4 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -26,11 +24,16 @@ namespace sikusiSubtitles.SpeechRecognition {
         }
 
         private void ChromeSpeechRecognitionPage_Load(object sender, EventArgs e) {
-            portNumericUpDown.Value = service.Port;
+            httpServerPortUpDown.Value = service.HttpServerPort;
+            webSocketServerPortUpDown.Value = service.WebSocketPort;
         }
 
-        private void portNumericUpDown_ValueChanged(object sender, EventArgs e) {
-            service.Port = (int)portNumericUpDown.Value;
+        private void httpServerPortUpDown_ValueChanged(object sender, EventArgs e) {
+            service.HttpServerPort = (int)httpServerPortUpDown.Value;
+        }
+
+        private void webSocketServerPortUpDown_ValueChanged(object sender, EventArgs e) {
+            service.WebSocketPort = (int)webSocketServerPortUpDown.Value;
         }
     }
 }

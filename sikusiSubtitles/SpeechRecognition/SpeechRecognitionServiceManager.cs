@@ -86,6 +86,7 @@ namespace sikusiSubtitles.SpeechRecognition {
                             speechRecognitionService = service;
                             service.Recognizing += RecognizingHandler;
                             service.Recognized += RecognizedHandler;
+                            service.ServiceStoped += ServiceStoppedHandler;
                         }
                     }
                 }
@@ -103,9 +104,16 @@ namespace sikusiSubtitles.SpeechRecognition {
          * 音声認識を終了する
          */
         private void SpeechRecognitionStop() {
+            if (speechRecognitionCheckBox.InvokeRequired) {
+                Action act = delegate () { speechRecognitionCheckBox.Checked = false; };
+                speechRecognitionCheckBox.Invoke(act);
+            } else {
+                speechRecognitionCheckBox.Checked = false;
+            }
             if (speechRecognitionService != null) {
                 speechRecognitionService.Recognizing -= RecognizingHandler;
                 speechRecognitionService.Recognized -= RecognizedHandler;
+                speechRecognitionService.ServiceStoped -= ServiceStoppedHandler;
                 speechRecognitionService.Stop();
                 speechRecognitionService = null;
             }
@@ -119,5 +127,8 @@ namespace sikusiSubtitles.SpeechRecognition {
             this.Recognized?.Invoke(sender, args);
         }
 
+        private void ServiceStoppedHandler(Object? sender, bool args) {
+            SpeechRecognitionStop();
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace sikusiSubtitles {
     public abstract class Service {
         protected ServiceManager ServiceManager;
 
-        public event EventHandler<bool>? ServiceStoped;
+        public event EventHandler<object?>? ServiceStopped;
 
         public string ServiceName { get; set; }
         public string Name { get; set; }
@@ -36,8 +36,8 @@ namespace sikusiSubtitles {
 
         public virtual UserControl? GetSettingPage() { return null; }
 
-        public void InvokeServiceStoped() {
-            ServiceStoped?.Invoke(this, true);
+        public void InvokeServiceStopped(object? args) {
+            ServiceStopped?.Invoke(this, args);
         }
 
         /**

@@ -90,7 +90,7 @@ namespace sikusiSubtitles.SpeechRecognition {
                             speechRecognitionService = service;
                             service.Recognizing += RecognizingHandler;
                             service.Recognized += RecognizedHandler;
-                            service.ServiceStoped += ServiceStoppedHandler;
+                            service.ServiceStopped += ServiceStoppedHandler;
                         }
                     } else {
                         MessageBox.Show("使用する音声認識サービスを指定してください。");
@@ -119,7 +119,7 @@ namespace sikusiSubtitles.SpeechRecognition {
             if (speechRecognitionService != null) {
                 speechRecognitionService.Recognizing -= RecognizingHandler;
                 speechRecognitionService.Recognized -= RecognizedHandler;
-                speechRecognitionService.ServiceStoped -= ServiceStoppedHandler;
+                speechRecognitionService.ServiceStopped -= ServiceStoppedHandler;
                 speechRecognitionService.Stop();
                 speechRecognitionService = null;
             }
@@ -133,7 +133,7 @@ namespace sikusiSubtitles.SpeechRecognition {
             this.Recognized?.Invoke(sender, args);
         }
 
-        private void ServiceStoppedHandler(Object? sender, bool args) {
+        private void ServiceStoppedHandler(Object? sender, object? args) {
             SpeechRecognitionStop();
         }
     }

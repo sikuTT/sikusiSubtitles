@@ -22,6 +22,7 @@ namespace ObsWebSocket5 {
         EventSubscription eventSubscriptions = EventSubscription.None;
 
         public event EventHandler<Event.D>? EventReceived;
+        public event EventHandler<WebSocketCloseCode?>? Closed;
 
         public bool IsConnected { get { return webSocket != null && webSocket.State ==WebSocketState.Open; } }
 
@@ -123,6 +124,7 @@ namespace ObsWebSocket5 {
                         if (data.Result.CloseStatus != null) {
                             code = (WebSocketCloseCode)data.Result.CloseStatus;
                         }
+                        Closed?.Invoke(this, code);
                         throw new WebSocketClosedException(code, data.Result.CloseStatusDescription);
                     case WebSocketMessageType.Binary:
                         await CloseAsync();

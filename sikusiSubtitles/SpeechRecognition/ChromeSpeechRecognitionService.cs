@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public class ChromeSpeechRecognitionService : SpeechRecognitionService {
-        public int HttpServerPort { get; set; } = 14949;
+                public int HttpServerPort { get; set; } = 14949;
         public int WebSocketPort { get; set; } = 14950;
 
         ChromeSpeechRecognitionWebServer? webServer;
@@ -120,7 +120,7 @@ namespace sikusiSubtitles.SpeechRecognition {
         }
 
         private void ClosedHandler(object? sender, bool args) {
-            InvokeServiceStoped();
+            InvokeServiceStopped(args);
         }
 
         List<Tuple<string, string>> Languages = new List<Tuple<string, string>>() {

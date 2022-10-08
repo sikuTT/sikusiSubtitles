@@ -104,8 +104,8 @@ namespace sikusiSubtitles.SpeechRecognition {
          */
         private void SpeechRecognitionStop() {
             if (speechRecognitionService != null) {
-                speechRecognitionService.Recognizing -= Recognizing;
-                speechRecognitionService.Recognized -= Recognized;
+                speechRecognitionService.Recognizing -= RecognizingHandler;
+                speechRecognitionService.Recognized -= RecognizedHandler;
                 speechRecognitionService.Stop();
                 speechRecognitionService = null;
             }

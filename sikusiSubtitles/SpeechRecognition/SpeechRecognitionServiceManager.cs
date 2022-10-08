@@ -120,7 +120,6 @@ namespace sikusiSubtitles.SpeechRecognition {
             if (speechRecognitionService != null) {
                 speechRecognitionService.Recognizing -= RecognizingHandler;
                 speechRecognitionService.Recognized -= RecognizedHandler;
-                speechRecognitionService.ServiceStopped -= ServiceStoppedHandler;
                 speechRecognitionService.Stop();
                 speechRecognitionService = null;
             }

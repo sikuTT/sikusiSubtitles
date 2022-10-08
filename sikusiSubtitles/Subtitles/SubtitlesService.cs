@@ -90,6 +90,7 @@ namespace sikusiSubtitles.Subtitles {
 
         /** 音声の読み上げが確定したら翻訳する */
         private async void RecognizedHandler(Object? sender, SpeechRecognitionEventArgs args) {
+            Debug.WriteLine("🔶 RecognizedHandler");
             var subtitlesText = UpdateSubtitlesText(true, args.Text);
 
             var service = ServiceManager.GetServices<TranslationService>().Find(service => service.Name == TranslationEngine);

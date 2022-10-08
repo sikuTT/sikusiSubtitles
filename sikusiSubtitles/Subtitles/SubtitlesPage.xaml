@@ -75,7 +75,7 @@
                     <CheckBox x:Name="clearIntervalCheckBox" Content="一定時間で字幕を消す" Checked="clearIntervalCheckBox_Checked" Unchecked="clearIntervalCheckBox_Unchecked"/>
                     <StackPanel Grid.Row="1" Orientation="Horizontal">
                         <Label Content="消すまでの時間"/>
-                        <sikusiSubtitles:NumericEditBox x:Name="clearIntervalNumericEditBox" Width="81" TextInput="clearIntervalNumericEditBox_TextInput"/>
+                        <sikusiSubtitles:NumericEditBox x:Name="clearIntervalNumericEditBox" Width="81" TextChanged="clearIntervalNumericEditBox_TextChanged" MinValue="1" MaxValue="10"/>
                         <Label Content="秒"/>
                     </StackPanel>
                 </Grid>
@@ -87,7 +87,7 @@
                     </Grid.RowDefinitions>
                     <CheckBox x:Name="additionalClearTimeCheckBox" Content="文字が長い場合、消すまでの時間を長くする。" Checked="additionalClearTimeCheckBox_Checked" Unchecked="additionalClearTimeCheckBox_Unchecked"></CheckBox>
                     <Label Grid.Row="1">（右にするほど消えるまでの時間が長くなります）</Label>
-                    <Slider x:Name="additionalClearTimeSlider" Grid.Row="2" Width="400" HorizontalAlignment="Left" ValueChanged="additionalClearTimeSlider_ValueChanged"></Slider>
+                    <Slider x:Name="additionalClearTimeSlider" Grid.Row="2" Width="400" HorizontalAlignment="Left" ValueChanged="additionalClearTimeSlider_ValueChanged" Minimum="1"></Slider>
                 </Grid>
             </StackPanel>
         </GroupBox>

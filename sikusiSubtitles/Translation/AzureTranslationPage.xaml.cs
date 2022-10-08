@@ -39,7 +39,7 @@ namespace sikusiSubtitles.Translation {
         }
 
         /** 地域が変更された */
-        private void regionTextBox_TextInput(object sender, TextCompositionEventArgs e) {
+        private void regionTextBox_TextChanged(object sender, TextChangedEventArgs e) {
             service.Region = regionTextBox.Text;
         }
     }

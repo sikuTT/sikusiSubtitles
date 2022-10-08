@@ -103,7 +103,7 @@ namespace sikusiSubtitles.OBS {
         }
 
         /** 音声字幕の表示先が入力された */
-        private void voiceTextBox_TextInput(object sender, TextCompositionEventArgs e) {
+        private void voiceTextBox_TextChanged(object sender, TextChangedEventArgs e) {
             service.VoiceTarget = voiceTextBox.Text;
         }
 

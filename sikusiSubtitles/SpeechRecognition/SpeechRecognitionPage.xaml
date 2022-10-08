@@ -44,9 +44,9 @@
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Label Content="サービス" VerticalAlignment="Center"></Label>
-                <ComboBox x:Name="speechRecognitionServiceComboBox" Grid.Column="1" SelectionChanged="speechRecognitionServiceComboBox_SelectionChanged"></ComboBox>
+                <ComboBox x:Name="speechRecognitionServiceComboBox" Grid.Column="1" DisplayMemberPath="DisplayName" SelectionChanged="speechRecognitionServiceComboBox_SelectionChanged"></ComboBox>
                 <Label Content="言語" Grid.Row="1" VerticalAlignment="Center"></Label>
-                <ComboBox x:Name="languageComboBox" Grid.Column="1" Grid.Row="1" SelectionChanged="languageComboBox_SelectionChanged"></ComboBox>
+                <ComboBox x:Name="languageComboBox" Grid.Column="1" Grid.Row="1" DisplayMemberPath="Name" SelectionChanged="languageComboBox_SelectionChanged"></ComboBox>
             </Grid>
         </GroupBox>
     </StackPanel>

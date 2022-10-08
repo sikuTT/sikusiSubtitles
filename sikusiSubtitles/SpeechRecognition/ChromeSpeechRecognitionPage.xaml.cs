@@ -34,7 +34,7 @@ namespace sikusiSubtitles.SpeechRecognition {
             portNumericEditBox.Value = service.Port;
         }
 
-        private void portNumericEditBox_TextInput(object sender, TextCompositionEventArgs e) {
+        private void portNumericEditBox_TextChanged(object sender, TextChangedEventArgs e) {
             service.Port = portNumericEditBox.Value;
         }
     }

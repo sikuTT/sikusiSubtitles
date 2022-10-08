@@ -31,7 +31,7 @@
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Label Content="音声" VerticalAlignment="Center"></Label>
-                <TextBox x:Name="voiceTextBox" Grid.Column="1" TextInput="voiceTextBox_TextInput"></TextBox>
+                <TextBox x:Name="voiceTextBox" Grid.Column="1" TextChanged="voiceTextBox_TextChanged"></TextBox>
                 <Label Content="翻訳結果" Grid.Row="1" VerticalAlignment="Top" Margin="0,6,0,0"></Label>
                 <ListView x:Name="targetListView" Grid.Row="1" Grid.Column="1" Height="Auto" ItemsSource="{Binding Mode=OneWay}">
                     <ListView.ItemContainerStyle>

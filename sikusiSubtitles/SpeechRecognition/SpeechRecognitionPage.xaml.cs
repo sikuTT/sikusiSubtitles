@@ -1,6 +1,7 @@
 ﻿using NAudio.CoreAudioApi;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -51,35 +52,35 @@ namespace sikusiSubtitles.SpeechRecognition {
 
             // 音声認識サービス一覧
             services = this.serviceManager.GetServices<SpeechRecognitionService>();
-            services.ForEach(service => {
-                var i = speechRecognitionServiceComboBox.Items.Add(service.DisplayName);
-                if (service.Name == speechRecognitionServiceManager.Engine) speechRecognitionServiceComboBox.SelectedIndex = i;
-            });
+            speechRecognitionServiceComboBox.ItemsSource = services;
+            speechRecognitionServiceComboBox.SelectedItem = services.Find(service => service.Name == speechRecognitionServiceManager.Engine);
         }
 
         /** 使用するマイクが変更された */
         private void micComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-
+            if (micComboBox.SelectedIndex != -1) {
+                speechRecognitionServiceManager.Device = micList[micComboBox.SelectedIndex];
+            }
         }
 
         /** 使用する音声認識サービスが変更された */
         private void speechRecognitionServiceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            languageComboBox.Items.Clear();
-            if (speechRecognitionServiceComboBox.SelectedIndex != -1) {
-                var service = this.services[this.speechRecognitionServiceComboBox.SelectedIndex];
+            var service = speechRecognitionServiceComboBox.SelectedItem as SpeechRecognitionService;
+            if (service != null) {
                 speechRecognitionServiceManager.Engine = service.Name;
 
                 languages = service.GetLanguages();
-                foreach (var lang in languages) {
-                    var i = languageComboBox.Items.Add(lang.Name);
-                    if (lang.Code == speechRecognitionServiceManager.Language) languageComboBox.SelectedIndex = i;
-                }
+                languageComboBox.ItemsSource = languages;
+                languageComboBox.SelectedItem = languages.Find(lang => lang.Code == speechRecognitionServiceManager.Language);
+            } else {
+                languageComboBox.ItemsSource = null;
             }
         }
 
         /** 認識する言語が変更された */
         private void languageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            if (languageComboBox.SelectedIndex != -1) {
+            var lang = languageComboBox.SelectedItem as Language;
+            if (lang != null) {
                 speechRecognitionServiceManager.Language = languages[languageComboBox.SelectedIndex].Code;
             }
         }

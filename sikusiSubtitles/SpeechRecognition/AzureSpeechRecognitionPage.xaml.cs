@@ -38,7 +38,7 @@ namespace sikusiSubtitles.SpeechRecognition {
             service.Key = keyPasswordBox.Password;
         }
 
-        private void regionTextBox_TextInput(object sender, TextCompositionEventArgs e) {
+        private void regionTextBox_TextChanged(object sender, TextChangedEventArgs e) {
             service.Region = regionTextBox.Text;
         }
     }

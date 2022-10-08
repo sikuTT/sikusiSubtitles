@@ -37,14 +37,9 @@ namespace sikusiSubtitles {
             Services = new List<Service>();
 
             // Save file
-            SaveFilePath = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            SaveFilePath += @"\sikusiku\sikusiSubtitles\";
-            try {
-                Directory.CreateDirectory(SaveFilePath);
-                SaveFilePath += "settings.json";
-            } catch (Exception ex) {
-                Debug.WriteLine("ServiceManager: Create settings folder failed: " + ex.Message);
-            }
+            SaveFilePath = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\sikusiku\sikusiSubtitles\";
+            Directory.CreateDirectory(SaveFilePath);
+            SaveFilePath += @"settings.json";
         }
 
         public void AddService(Service service) {
@@ -116,8 +111,9 @@ namespace sikusiSubtitles {
         // 設定の読み込み
         public JObject? Load() {
             try {
-                JObject jobj = JObject.Parse(File.ReadAllText(SaveFilePath));
-                var servicesObj = jobj.GetValue("Services")?.ToObject<JObject>();
+                var jsonObj = JObject.Parse(File.ReadAllText(SaveFilePath));
+                var servicesObj = jsonObj.GetValue("Services")?.ToObject<JObject>();
+
                 if (servicesObj != null) {
                     foreach (var obj in servicesObj) {
                         var manager = Managers.Find(service => service.Name == obj.Key);
@@ -135,16 +131,19 @@ namespace sikusiSubtitles {
         }
 
         // 設定の保存
-        public void Save(JObject mainWindowObj) {
+        public void Save() {
             try {
                 JObject saveObj = new JObject();
                 JObject servicesObj = new JObject();
                 saveObj.Add(new JProperty("Services", servicesObj));
-                saveObj.Add(new JProperty("MainWindow", mainWindowObj));
+
+                // Managerを保存
                 foreach (var service in Managers) {
                     var obj = service.Save();
                     if (obj != null) servicesObj.Add(new JProperty(service.Name, obj));
                 }
+
+                // Servieを保存
                 foreach (var service in Services) {
                     var obj = service.Save();
                     if (obj != null) servicesObj.Add(new JProperty(service.Name, obj));

@@ -31,9 +31,9 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Label Content="IP" VerticalAlignment="Center"/>
-                <TextBox x:Name="ipTextBox" Grid.Column="1" TextInput="ipTextBox_TextInput"/>
+                <TextBox x:Name="ipTextBox" Grid.Column="1" TextChanged="ipTextBox_TextChanged"/>
                 <Label Content="ポート" Grid.Row="1" VerticalAlignment="Center"/>
-                <sikusiSubtitles:NumericEditBox x:Name="portNumericEditBox" Grid.Column="1" Grid.Row="1" TextInput="portNumericEditBox_TextInput"/>
+                <sikusiSubtitles:NumericEditBox x:Name="portNumericEditBox" Grid.Column="1" Grid.Row="1" TextChanged="portNumericEditBox_TextChanged" MinValue="1024" MaxValue="65535"/>
                 <Label Content="パスワード" Grid.Row="2" VerticalAlignment="Center"/>
                 <PasswordBox x:Name="passwordBox" Grid.Row="2" Grid.Column="1" PasswordChanged="passwordBox_PasswordChanged"/>
             </Grid>

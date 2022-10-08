@@ -198,7 +198,7 @@ namespace sikusiSubtitles.Subtitles {
         }
 
         /** 字幕を消すまでの時間の設定が変更された */
-        private void clearIntervalNumericEditBox_TextInput(object sender, TextCompositionEventArgs e) {
+        private void clearIntervalNumericEditBox_TextChanged(object sender, TextChangedEventArgs e) {
             service.ClearIntervalTime = clearIntervalNumericEditBox.Value;
         }
 

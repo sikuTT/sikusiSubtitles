@@ -25,7 +25,6 @@ namespace sikusiSubtitles.Subtitles {
         // Properties
         public string TranslationEngine { get; set; } = "";
         public string TranslationLanguageFrom { get; set; } = "";
-        public string VoiceTarget { get; set; } = "";
         public List<string> TranslationLanguageToList { get; set; } = new List<string>();
         public bool ClearInterval { get; set; } = false;
         public int ClearIntervalTime { get; set; } = 1;
@@ -43,7 +42,6 @@ namespace sikusiSubtitles.Subtitles {
         public override void Load(JToken token) {
             TranslationEngine = token.Value<string>("TranslationEngine") ?? "";
             TranslationLanguageFrom = token.Value<string>("TranslationLanguageFrom") ?? "";
-            VoiceTarget = token.Value<string>("VoiceTarget") ?? "";
             var toList = token.Value<JArray>("TranslationLanguageToList");
             if (toList != null) {
                 foreach (var to in toList) {
@@ -64,7 +62,6 @@ namespace sikusiSubtitles.Subtitles {
             return new JObject {
                 new JProperty("TranslationEngine", TranslationEngine),
                 new JProperty("TranslationLanguageFrom", TranslationLanguageFrom),
-                new JProperty("VoiceTarget", VoiceTarget),
                 new JProperty("TranslationLanguageToList", TranslationLanguageToList),
                 new JProperty("ClearInterval", ClearInterval),
                 new JProperty("ClearIntervalTime", ClearIntervalTime),

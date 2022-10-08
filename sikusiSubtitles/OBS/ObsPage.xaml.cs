@@ -35,12 +35,13 @@ namespace sikusiSubtitles.OBS {
         }
 
         /** IPが入力された */
-        private void ipTextBox_TextInput(object sender, TextCompositionEventArgs e) {
+        private void ipTextBox_TextChanged(object sender, TextChangedEventArgs e) {
             service.IP = ipTextBox.Text;
+
         }
 
         /** ポート番号が入力された */
-        private void portNumericEditBox_TextInput(object sender, TextCompositionEventArgs e) {
+        private void portNumericEditBox_TextChanged(object sender, TextChangedEventArgs e) {
             service.Port = portNumericEditBox.Value;
         }
 

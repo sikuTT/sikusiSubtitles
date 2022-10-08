@@ -66,9 +66,6 @@ namespace sikusiSubtitles {
             new OcrServiceManager(serviceManager);
             new TesseractOcrService(serviceManager);
             new AzureOcrService(serviceManager);
-
-            // ServiceManager
-            serviceManager.Init();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
@@ -99,10 +96,13 @@ namespace sikusiSubtitles {
                     item.IsSelected = true;
                 }
             }
+
+            // ServiceManager
+            serviceManager.Init();
         }
 
         private void Window_Closed(object sender, EventArgs e) {
-
+            serviceManager.Finish();
         }
 
         private void menuTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {

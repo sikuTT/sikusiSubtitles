@@ -27,7 +27,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Label Content="ポート"/>
-                <sikusiSubtitles:NumericEditBox x:Name="portNumericEditBox" Grid.Column="1" Width="90" HorizontalAlignment="Left" TextInput="portNumericEditBox_TextInput"/>
+                <sikusiSubtitles:NumericEditBox x:Name="portNumericEditBox" Grid.Column="1" Width="90" HorizontalAlignment="Left" TextChanged="portNumericEditBox_TextChanged" MinValue="1024" MaxValue="65535"/>
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="※Chromeからの接続に使用するポートです。" TextWrapping="Wrap"></TextBlock>
             </Grid>
         </GroupBox>

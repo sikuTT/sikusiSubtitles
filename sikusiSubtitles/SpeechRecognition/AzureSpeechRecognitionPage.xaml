@@ -32,7 +32,7 @@
                 <Label Content="キー" VerticalAlignment="Center"></Label>
                 <PasswordBox x:Name="keyPasswordBox" Grid.Column="1" PasswordChanged="keyPasswordBox_PasswordChanged"></PasswordBox>
                 <Label Content="場所/地域" Grid.Column="0" Grid.Row="1"></Label>
-                <TextBox x:Name="regionTextBox" Grid.Row="1" Grid.Column="1" TextInput="regionTextBox_TextInput"></TextBox>
+                <TextBox x:Name="regionTextBox" Grid.Row="1" Grid.Column="1" TextChanged="regionTextBox_TextChanged"></TextBox>
             </Grid>
         </GroupBox>
     </StackPanel>

@@ -11,8 +11,8 @@ namespace sikusiSubtitles.SpeechRecognition {
 
         // Properties
         public MMDevice? Device { get; set; }
-        public string Engine { get; set; } = "";
-        public string Language { get; set; } = "";
+        public string Engine { get; set; } = "ChromeSpeechRecognition";
+        public string Language { get; set; } = "ja-JP";
 
         private CheckBox speechRecognitionCheckBox;
         SpeechRecognitionService? speechRecognitionService;
@@ -25,6 +25,10 @@ namespace sikusiSubtitles.SpeechRecognition {
             speechRecognitionCheckBox.Width = 70;
             speechRecognitionCheckBox.CheckedChanged += speechRecognitionCheckBox_CheckedChanged;
             serviceManager.AddTopFlowControl(speechRecognitionCheckBox, 100);
+
+            // マイク設定
+            var enumerator = new MMDeviceEnumerator();
+            Device = enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Console);
         }
 
         public override UserControl? GetSettingPage()
@@ -57,7 +61,7 @@ namespace sikusiSubtitles.SpeechRecognition {
         }
 
         public SpeechRecognitionService? GetEngine() {
-            return this.ServiceManager.GetServices<SpeechRecognitionService>(ServiceName).Where(service => service.Name == Engine).First();
+            return this.ServiceManager.GetServices<SpeechRecognitionService>(ServiceName).Where(service => service.Name == Engine).FirstOrDefault();
         }
 
         /** 音声認識の開始終了のボタン */
@@ -87,6 +91,8 @@ namespace sikusiSubtitles.SpeechRecognition {
                             service.Recognizing += RecognizingHandler;
                             service.Recognized += RecognizedHandler;
                         }
+                    } else {
+                        MessageBox.Show("使用する音声認識サービスを指定してください。");
                     }
                 }
 

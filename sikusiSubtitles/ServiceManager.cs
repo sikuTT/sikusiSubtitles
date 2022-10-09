@@ -123,7 +123,7 @@ namespace sikusiSubtitles {
                         if (service != null && obj.Value != null) service.Load(obj.Value);
                     }
                 }
-                return jobj.GetValue("MainWindow")?.ToObject<JObject>();
+                return jsonObj.GetValue("MainWindow")?.ToObject<JObject>();
             } catch (Exception ex) {
                 Debug.WriteLine("ServiceManager: Load settings failed: " + ex.Message);
             }
@@ -131,11 +131,12 @@ namespace sikusiSubtitles {
         }
 
         // 設定の保存
-        public void Save() {
+        public void Save(JObject mainWindowObj) {
             try {
                 JObject saveObj = new JObject();
                 JObject servicesObj = new JObject();
                 saveObj.Add(new JProperty("Services", servicesObj));
+                saveObj.Add(new JProperty("MainWindow", mainWindowObj));
 
                 // Managerを保存
                 foreach (var service in Managers) {

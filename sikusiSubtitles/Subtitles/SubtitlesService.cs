@@ -49,9 +49,9 @@ namespace sikusiSubtitles.Subtitles {
                 }
             }
             ClearInterval = token.Value<bool>("ClearInterval");
-            ClearIntervalTime = token.Value<int?>("ClearIntervalTime") ?? 1;
+            ClearIntervalTime = token.Value<int?>("ClearIntervalTime") ?? ClearIntervalTime;
             AdditionalClear = token.Value<bool>("AdditionalClear");
-            AdditionalClearTime = token.Value<int?>("AdditionalClearTime") ?? 1;
+            AdditionalClearTime = token.Value<int?>("AdditionalClearTime") ?? AdditionalClearTime;
         }
 
         /** 設定を保存 */

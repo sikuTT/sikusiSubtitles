@@ -12,7 +12,7 @@ using System.Windows.Controls;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public class ChromeSpeechRecognitionService : SpeechRecognitionService {
-                public int HttpServerPort { get; set; } = 14949;
+        public int HttpServerPort { get; set; } = 14949;
         public int WebSocketPort { get; set; } = 14950;
 
         ChromeSpeechRecognitionWebServer? webServer;

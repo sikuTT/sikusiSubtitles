@@ -1,4 +1,5 @@
-﻿using sikusiSubtitles.OBS;
+﻿using Newtonsoft.Json.Linq;
+using sikusiSubtitles.OBS;
 using sikusiSubtitles.OCR;
 using sikusiSubtitles.Shortcut;
 using sikusiSubtitles.Speech;
@@ -31,78 +32,25 @@ namespace sikusiSubtitles {
         public MainWindow() {
             InitializeComponent();
 
-            // SpeechRecognition Service
-            new SpeechRecognitionServiceManager(serviceManager);
-            new ChromeSpeechRecognitionService(serviceManager);
-            new AzureSpeechRecognitionService(serviceManager);
-            new AmiVoiceSpeechRecognitionService(serviceManager);
+            // サービスとメニュー・設定画面を作成
+            CreateServices();
+            CreateMenuAndSettingPages();
 
-            // Subtitles Service
-            new SubtitlesServiceManager(serviceManager);
-            new SubtitlesService(serviceManager);
-
-            // Translation Service
-            new TranslationServiceManager(serviceManager);
-            new GoogleAppsScriptTranslationService(serviceManager);
-            new GoogleBasicTranslationService(serviceManager);
-            new AzureTranslationService(serviceManager);
-            new DeepLTranslationService(serviceManager);
-
-            // OBS Service
-            new ObsServiceManager(serviceManager);
-            new ObsService(serviceManager);
-            new ObsSubtitlesService(serviceManager);
-
-            // Speech Service
-            new SpeechServiceManager(serviceManager);
-            new SapiSpeechService(serviceManager);
-            new VoiceVoxSpeechService(serviceManager);
-
-            // Shortcut Service
-            new ShortcutServiceManager(serviceManager);
-            new ShortcutService(serviceManager);
-
-            // OCR Service
-            new OcrServiceManager(serviceManager);
-            new TesseractOcrService(serviceManager);
-            new AzureOcrService(serviceManager);
+            // 設定をロード
+            LoadSettings();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
-            // Controls
-            foreach (var control in serviceManager.TopFlowControls) {
-                control.Margin = new Thickness(5, 0, 5, 0);
-                this.topPanel.Children.Add(control);
-            }
-
-            foreach (var manager in serviceManager.Managers) {
-                AddPage(manager);
-                var item = new TreeViewItem() { Name = manager.Name, Header = manager.DisplayName, IsExpanded = true };
-                menuTreeView.Items.Add(item);
-
-                var services = serviceManager.Services.FindAll(service => service.ServiceName == manager.ServiceName);
-                foreach (var service in services) {
-                    AddPage(service);
-                    if (manager.GetSettingPage() != null || manager.DisplayName != service.DisplayName) {
-                        var childItem = new TreeViewItem() { Name = service.Name, Header = service.DisplayName, IsExpanded = true };
-                        item.Items.Add(childItem);
-                    }
-                }
-            }
-
-            if (menuTreeView.Items.Count > 0) {
-                var item = menuTreeView.Items.GetItemAt(0) as TreeViewItem;
-                if (item != null) {
-                    item.IsSelected = true;
-                }
-            }
-
-            // ServiceManager
-            serviceManager.Init();
         }
 
         private void Window_Closed(object sender, EventArgs e) {
             serviceManager.Finish();
+
+            var obj = new JObject();
+            obj.Add(new JProperty("Width", Width));
+            obj.Add(new JProperty("Height", Height));
+            obj.Add(new JProperty("MenuPaneWidth", menuPaneColumn.Width.Value));
+            this.serviceManager.Save(obj);
         }
 
         private void menuTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
@@ -143,6 +91,89 @@ namespace sikusiSubtitles {
             if (newPage != null) {
                 newPage.Visibility = Visibility.Visible;
             }
+        }
+
+        private void CreateServices() {
+            // SpeechRecognition Service
+            new SpeechRecognitionServiceManager(serviceManager);
+            new ChromeSpeechRecognitionService(serviceManager);
+            new AzureSpeechRecognitionService(serviceManager);
+            new AmiVoiceSpeechRecognitionService(serviceManager);
+
+            // Subtitles Service
+            new SubtitlesServiceManager(serviceManager);
+            new SubtitlesService(serviceManager);
+
+            // Translation Service
+            new TranslationServiceManager(serviceManager);
+            new GoogleAppsScriptTranslationService(serviceManager);
+            new GoogleBasicTranslationService(serviceManager);
+            new AzureTranslationService(serviceManager);
+            new DeepLTranslationService(serviceManager);
+
+            // OBS Service
+            new ObsServiceManager(serviceManager);
+            new ObsService(serviceManager);
+            new ObsSubtitlesService(serviceManager);
+
+            // Speech Service
+            new SpeechServiceManager(serviceManager);
+            new SapiSpeechService(serviceManager);
+            new VoiceVoxSpeechService(serviceManager);
+
+            // Shortcut Service
+            new ShortcutServiceManager(serviceManager);
+            new ShortcutService(serviceManager);
+
+            // OCR Service
+            new OcrServiceManager(serviceManager);
+            new TesseractOcrService(serviceManager);
+            new AzureOcrService(serviceManager);
+        }
+
+        private void CreateMenuAndSettingPages() {
+            // Controls
+            foreach (var control in serviceManager.TopFlowControls) {
+                control.Margin = new Thickness(5, 0, 5, 0);
+                this.topPanel.Children.Add(control);
+            }
+
+            foreach (var manager in serviceManager.Managers) {
+                AddPage(manager);
+                var item = new TreeViewItem() { Name = manager.Name, Header = manager.DisplayName, IsExpanded = true };
+                menuTreeView.Items.Add(item);
+
+                var services = serviceManager.Services.FindAll(service => service.ServiceName == manager.ServiceName);
+                foreach (var service in services) {
+                    AddPage(service);
+                    if (manager.GetSettingPage() != null || manager.DisplayName != service.DisplayName) {
+                        var childItem = new TreeViewItem() { Name = service.Name, Header = service.DisplayName, IsExpanded = true };
+                        item.Items.Add(childItem);
+                    }
+                }
+            }
+
+            if (menuTreeView.Items.Count > 0) {
+                var item = menuTreeView.Items.GetItemAt(0) as TreeViewItem;
+                if (item != null) {
+                    item.IsSelected = true;
+                }
+            }
+        }
+
+        private void LoadSettings() {
+            var obj = this.serviceManager.Load();
+            if (obj != null) {
+                var width = obj.Value<double?>("Width");
+                if (width != null) Width = (double)width;
+
+                var height = obj.Value<double?>("Height");
+                if (height != null) Height = (double)height;
+
+                var menuPaneWidth = obj.Value<double?>("MenuPaneWidth");
+                if (menuPaneWidth != null) menuPaneColumn.Width = new GridLength((double)menuPaneWidth);
+            }
+            serviceManager.Init();
         }
     }
 }

@@ -16,7 +16,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel>
-        <TextBlock Text="翻訳 - Azure Cognitive Service - Translator" Style="{StaticResource Header}"/>
+        <TextBlock Text="翻訳 - Azure Cognitive Services - Translator" Style="{StaticResource Header}"/>
         <GroupBox Header="認証情報">
             <Grid Margin="0,2,0,2">
                 <Grid.RowDefinitions>

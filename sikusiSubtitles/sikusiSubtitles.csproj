@@ -14,6 +14,7 @@
     <VersionSuffix>alpha</VersionSuffix>
     <Company>sikusiku</Company>
     <Copyright>sikusiku</Copyright>
+    <ApplicationIcon>Resources\sikusiKu.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,7 +25,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Subtitles\times.png" />
+    <None Remove="Resources\ei-translation.png" />
+    <None Remove="Resources\mic.png" />
+    <None Remove="Resources\times.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\sikusiKu.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,7 +58,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Subtitles\times.png" />
+    <Resource Include="Resources\ei-translation.png" />
+    <Resource Include="Resources\mic.png" />
+    <Resource Include="Resources\times.png" />
   </ItemGroup>
 
   <ItemGroup>

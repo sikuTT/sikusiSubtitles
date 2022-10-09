@@ -9,11 +9,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace sikusiSubtitles.Subtitles {
     public class SubtitlesService : Service {
         // Services
         SpeechRecognitionServiceManager? speechRecognitionServiceManager;
+
+        Label engineNameBox = new Label();
 
         // Subtitles texts
         List<SubtitlesText> subtitlesTexts = new List<SubtitlesText>();
@@ -23,7 +27,15 @@ namespace sikusiSubtitles.Subtitles {
         public event EventHandler<List<SubtitlesText>>? SubtitlesChanged;
 
         // Properties
-        public string TranslationEngine { get; set; } = "";
+        public string TranslationEngine {
+            get { return translationEngine; }
+            set {
+                translationEngine = value;
+                var translationService = ServiceManager.GetServices<TranslationService>().Find(service => service.Name == translationEngine);
+                engineNameBox.Content = translationService != null ? translationService.DisplayName : "";
+            }
+        }
+        string translationEngine = "";
         public string TranslationLanguageFrom { get; set; } = "";
         public List<string> TranslationLanguageToList { get; set; } = new List<string>();
         public bool ClearInterval { get; set; } = false;
@@ -32,6 +44,11 @@ namespace sikusiSubtitles.Subtitles {
         public int AdditionalClearTime { get; set; } = 1;
 
         public SubtitlesService(ServiceManager serviceManager) : base(serviceManager, SubtitlesServiceManager.ServiceName, "Subtitles", "字幕", 100) {
+            // ステータスバーに字幕で使用する翻訳エンジンを表示する
+            var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
+            stackPanel.Children.Add(new Image { Source = new BitmapImage(new Uri("pack://application:,,,/Resources/ei-translation.png")) });
+            stackPanel.Children.Add(engineNameBox);
+            serviceManager.AddStatusBarControl(stackPanel, 200);
         }
 
         public override UserControl? GetSettingPage() {
@@ -90,7 +107,6 @@ namespace sikusiSubtitles.Subtitles {
 
         /** 音声の読み上げが確定したら翻訳する */
         private async void RecognizedHandler(Object? sender, SpeechRecognitionEventArgs args) {
-            Debug.WriteLine("🔶 RecognizedHandler");
             var subtitlesText = UpdateSubtitlesText(true, args.Text);
 
             var service = ServiceManager.GetServices<TranslationService>().Find(service => service.Name == TranslationEngine);

@@ -18,7 +18,7 @@ namespace sikusiSubtitles.OCR {
         public string Endpoint { get; set; } = "";
 
 
-        public AzureOcrService(ServiceManager serviceManager) : base(serviceManager, "AzureOcr", "Azure Cognitive Service - Computer Vision", 200) {
+        public AzureOcrService(ServiceManager serviceManager) : base(serviceManager, "AzureOcr", "Azure Cognitive Services", 200) {
         }
 
         public override UserControl? GetSettingPage() {

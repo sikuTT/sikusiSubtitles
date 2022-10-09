@@ -142,10 +142,15 @@ namespace sikusiSubtitles {
         }
 
         private void CreateMenuAndSettingPages() {
-            // Controls
+            // Controls (Top)
             foreach (var control in serviceManager.TopFlowControls) {
                 control.Margin = new Thickness(5, 0, 5, 0);
                 this.topFlowPanel.Children.Add(control);
+            }
+
+            // Controls (Status Bar)
+            foreach (var control in serviceManager.StatusBarControls) {
+                this.statusBar.Items.Add(control);
             }
 
             foreach (var manager in serviceManager.Managers) {

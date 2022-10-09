@@ -5,30 +5,38 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace sikusiSubtitles {
     public class ServiceManager {
         class OrderedControl {
-            public Control Control { get; set; }
+            public FrameworkElement Element { get; set; }
             public int Index { get; set; }
 
-            public OrderedControl(Control control, int index) {
-                this.Control = control;
+            public OrderedControl(FrameworkElement element, int index) {
+                this.Element = element;
                 this.Index = index;
             }
         }
 
         public List<Service> Managers { get; set; }
         public List<Service> Services { get; set; }
-        public List<Control> TopFlowControls {
+        public List<FrameworkElement> TopFlowControls {
             get {
-                return this.topFlowControls.Select(oc => oc.Control).ToList();
+                return this.topFlowControls.Select(oc => oc.Element).ToList();
+            }
+        }
+
+        public List<FrameworkElement> StatusBarControls {
+            get {
+                return this.statusBarControls.Select(oc => oc.Element).ToList();
             }
         }
 
         private string SaveFilePath;
         private List<OrderedControl> topFlowControls = new List<OrderedControl>();
+        private List<OrderedControl> statusBarControls = new List<OrderedControl>();
 
         private Dictionary<string, Service> activeServices = new Dictionary<string, Service>();
 
@@ -106,6 +114,7 @@ namespace sikusiSubtitles {
             Managers.Sort((a, b) => a.Index - b.Index);
             Services.Sort((a, b) => a.Index - b.Index);
             topFlowControls.Sort((a, b) => a.Index - b.Index);
+            statusBarControls.Sort((a, b) => a.Index - b.Index);
         }
 
         // 設定の読み込み
@@ -182,6 +191,10 @@ namespace sikusiSubtitles {
 
         public void AddTopFlowControl(Control control, int index) {
             topFlowControls.Add(new OrderedControl(control, index));
+        }
+
+        public void AddStatusBarControl(FrameworkElement element, int index) {
+            statusBarControls.Add(new OrderedControl(element, index));
         }
     }
 }

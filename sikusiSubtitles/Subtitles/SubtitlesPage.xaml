@@ -54,7 +54,7 @@
                                 <ComboBox x:Name="translationLanguageToComboBox" ItemsSource="{Binding LanguageList}" DisplayMemberPath="Language" SelectedValuePath="Code" SelectedValue="{Binding SelectedCode}" SelectionChanged="translationLanguageToComboBox_SelectionChanged">
                                 </ComboBox>
                                 <Button x:Name="deleteTranslationLanguageToButton" Grid.Column="1" Width="25" Height="25" Margin="6,0,0,0" Click="deleteTranslationLanguageToButton_Click">
-                                    <Image Source="/Subtitles/times.png"></Image>
+                                    <Image Source="/Resources/times.png"></Image>
                                 </Button>
                             </Grid>
                         </DataTemplate>

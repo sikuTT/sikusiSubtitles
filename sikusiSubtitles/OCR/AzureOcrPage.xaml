@@ -16,7 +16,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel>
-        <TextBlock Style="{StaticResource Header}">Azure - Cognitive Service - Computer Vision</TextBlock>
+        <TextBlock Style="{StaticResource Header}">Azure - Cognitive Services - Computer Vision</TextBlock>
         <GroupBox Header="認証情報">
             <Grid>
                 <Grid.ColumnDefinitions>

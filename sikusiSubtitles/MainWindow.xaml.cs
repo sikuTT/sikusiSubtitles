@@ -135,7 +135,7 @@ namespace sikusiSubtitles {
             // Controls
             foreach (var control in serviceManager.TopFlowControls) {
                 control.Margin = new Thickness(5, 0, 5, 0);
-                this.topPanel.Children.Add(control);
+                this.topFlowPanel.Children.Add(control);
             }
 
             foreach (var manager in serviceManager.Managers) {

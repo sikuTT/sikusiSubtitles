@@ -7,6 +7,13 @@
     <UseWPF>true</UseWPF>
     <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
     <UseWindowsForms>False</UseWindowsForms>
+    <Authors>sikusiku</Authors>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/sikuTT/sikusiSubtitles.git</RepositoryUrl>
+    <VersionPrefix>0.6.0</VersionPrefix>
+    <VersionSuffix>alpha</VersionSuffix>
+    <Company>sikusiku</Company>
+    <Copyright>sikusiku</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +25,13 @@
 
   <ItemGroup>
     <None Remove="Subtitles\times.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

@@ -53,10 +53,14 @@ namespace sikusiSubtitles {
             this.serviceManager.Save(obj);
         }
 
+        /**
+         * 左パネルのツリービューから項目が選択された
+         * 右パネルに設定画面を表示する
+         */
         private void menuTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
             var item = e.NewValue as TreeViewItem;
             if (item != null) {
-                SelectTreeViewItem(item.Name);
+                SelectTreeViewItem(item);
             }
         }
 
@@ -76,20 +80,26 @@ namespace sikusiSubtitles {
             }
         }
 
-        private void SelectTreeViewItem(string name) {
+        private void SelectTreeViewItem(TreeViewItem item) {
             UserControl? newPage = null;
             foreach (var page in settingsGrid.Children) {
                 var settingsPage = page as UserControl;
                 if (settingsPage != null) {
                     settingsPage.Visibility = Visibility.Collapsed;
-                    if (settingsPage.Name == name) {
+                    if (settingsPage.Name == item.Name) {
                         newPage = settingsPage;
                     }
                 }
             }
 
             if (newPage != null) {
+                // 設定ページが見つかった場合、見つかった設定ページを表示する
                 newPage.Visibility = Visibility.Visible;
+            } else {
+                // 設定ページが見つからなかった場合、子要素の設定ページを表示する
+                if (item.Items.Count > 0) {
+                    SelectTreeViewItem((TreeViewItem)item.Items[0]);
+                }
             }
         }
 

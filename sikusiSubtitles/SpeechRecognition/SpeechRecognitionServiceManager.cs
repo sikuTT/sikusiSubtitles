@@ -29,6 +29,10 @@ namespace sikusiSubtitles.SpeechRecognition {
             speechRecognitionButton.Checked += speechRecognitionButton_Checked;
             speechRecognitionButton.Unchecked += speechRecognitionButton_Unchecked;
             serviceManager.AddTopFlowControl(speechRecognitionButton, 100);
+
+            // マイク設定
+            var enumerator = new MMDeviceEnumerator();
+            Device = enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Console);
         }
 
         public override UserControl? GetSettingPage()
@@ -42,14 +46,11 @@ namespace sikusiSubtitles.SpeechRecognition {
             // マイク設定
             var enumerator = new MMDeviceEnumerator();
             var micList = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
-            Device = micList.Where(mic => mic.ID == device).FirstOrDefault();
-            if (Device == null) {
-                Device = enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Console);
-            }
+            Device = micList.Where(mic => mic.ID == device).FirstOrDefault() ?? Device;
 
             // 音声認識エンジン
-            Engine = token.Value<string>("Engine") ?? "";
-            Language = token.Value<string>("Language") ?? "";
+            Engine = token.Value<string>("Engine") ?? Engine;
+            Language = token.Value<string>("Language") ?? Language;
         }
 
         public override JObject Save() {

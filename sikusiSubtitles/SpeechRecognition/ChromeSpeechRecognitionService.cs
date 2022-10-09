@@ -1,6 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,13 +10,11 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public class ChromeSpeechRecognitionService : SpeechRecognitionService {
-        public int Port { get; set; } = 14949;
+                public int HttpServerPort { get; set; } = 14949;
+        public int WebSocketPort { get; set; } = 14950;
 
-        private HttpListener? Listener;
-        private ChromeDriver? ChromeDriver;
-        private System.Timers.Timer? ChromeTimer;
-        private string LastText = "";
-        private bool isLastFinal = false;
+        ChromeSpeechRecognitionWebServer? webServer;
+        ChromeSpeechRecognitionWebSocketServer? webSocketServer;
 
         public ChromeSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "ChromeSpeechRecognition", "Google Chrome", 100) {
         }
@@ -28,12 +24,14 @@ namespace sikusiSubtitles.SpeechRecognition {
             return new ChromeSpeechRecognitionPage(ServiceManager, this);
         }
         public override void Load(JToken token) {
-            Port = token.Value<int?>("Port") ?? 14949;
+            HttpServerPort = token.Value<int?>("HttpServerPort") ?? HttpServerPort;
+            WebSocketPort = token.Value<int?>("WebSocketPort") ?? WebSocketPort;
         }
 
         public override JObject Save() {
             return new JObject {
-                new JProperty("Port", Port)
+                new JProperty("HttpServerPort", HttpServerPort),
+                new JProperty("WebSocketPort", WebSocketPort),
             };
         }
 
@@ -48,14 +46,18 @@ namespace sikusiSubtitles.SpeechRecognition {
                 return false;
             }
 
-            this.LastText = "";
-            var uri = "http://127.0.0.1:" + this.Port+ "/";
+            webServer = new ChromeSpeechRecognitionWebServer(HttpServerPort);
+            webServer.Start();
 
-            if (this.HttpListenerStart(uri) == false)
-                return false;
+            webSocketServer = new ChromeSpeechRecognitionWebSocketServer(WebSocketPort);
+            webSocketServer.Recognizing += RecognizingHandler;
+            webSocketServer.Recognized += RecognizedHandler;
+            webSocketServer.Closed += ClosedHandler;
+            webSocketServer.Start();
 
+            var uri = $"http://127.0.0.1:{HttpServerPort}/";
             if (this.LunchChrome(uri, manager.Language) == false) {
-                this.HttpListenerStop();
+                Stop();
                 return false;
             }
 
@@ -63,153 +65,45 @@ namespace sikusiSubtitles.SpeechRecognition {
         }
 
         public override void Stop() {
-            // 手動でChromeを閉じられていると、Chromeが存在しないことが分かるまでかなり時間がかかるので、
-            // UIがフリーズしないように別スレッドでクローズ処理をする。
-            Task.Run(() => {
-                try {
-                    this.HttpListenerStop();
-
-                    if (ChromeTimer != null) {
-                        ChromeTimer.Close();
-                        ChromeTimer.Elapsed -= ChromeObserver;
-                        ChromeTimer = null;
-                    }
-
-                    // Chromeを終了する。
-                    // 終了に時間がかかってる間にもう1回Chromeを起動されるとQuit中にChromeDriverのインスタンスが変わる可能性があるので、
-                    // 変わっていればnullにはしない。
-                    var temp = ChromeDriver;
-                    if (this.ChromeDriver != null) {
-                        ChromeDriver.Quit();
-                        ChromeDriver.Dispose();
-                        if (temp == ChromeDriver) {
-                            ChromeDriver = null;
-                        }
-                    }
-                } catch (Exception ex) {
-                    Debug.WriteLine(ex.Message);
-                }
-            });
-        }
-
-        private bool HttpListenerStart(string uri) {
             try {
-                Listener = new HttpListener();
-                Listener.Prefixes.Add(uri);
-                Listener.Start();
-                IAsyncResult result = Listener.BeginGetContext(new AsyncCallback(ListenerCallback), Listener);
-            } catch (HttpListenerException ex) {
-                Debug.WriteLine(ex.Message);
-                MessageBox.Show("WEBサーバーを開始できませんでした。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
+                if (webServer != null) {
+                    webServer.Stop();
+                    webServer = null;
+                }
             } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);
-                return false;
+                Debug.WriteLine("ChromeSpeechRecognitionService.Stop: " + ex.Message);
             }
-            return true;
-        }
-
-        private void HttpListenerStop() {
-            if (Listener != null) {
-                Listener.Stop();
-                Listener.Close();
-                Listener = null;
-            }
-        }
-
-        private void ListenerCallback(IAsyncResult result) {
-            Assembly? myAssembly = Assembly.GetEntryAssembly();
-            string? path = myAssembly?.Location;
-            if (path == null)
-                return;
-
-            int index = path.LastIndexOf('\\');
-            if (index == -1)
-                return;
-
-            path = path.Substring(0, index);
-
-            HttpListener? listener = (HttpListener?)result.AsyncState;
-            if (listener == null)
-                return;
 
             try {
-                // Call EndGetContext to complete the asynchronous operation.
-                HttpListenerContext context = listener.EndGetContext(result);
-                HttpListenerRequest request = context.Request;
-
-
-                path += request.RawUrl?.Replace("/", "\\");
-                index = path.IndexOf('?');
-                if (index != -1)
-                    path = path.Remove(index);
-
-                if (System.IO.Directory.Exists(path)) {
-                    path += @"\index.html";
+                if (webSocketServer != null) {
+                    webSocketServer.Recognizing -= RecognizingHandler;
+                    webSocketServer.Recognized -= RecognizedHandler;
+                    webSocketServer.Closed -= ClosedHandler;
+                    webSocketServer.Stop();
+                    webSocketServer = null;
                 }
-                Debug.WriteLine("request file = " + path);
-
-                // Obtain a response object.
-                HttpListenerResponse response = context.Response;
-
-                // Construct a response.
-                byte[] buffer;
-
-                if (!System.IO.File.Exists(path)) {
-                    Debug.WriteLine("request file not found");
-                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                    string responseString = "<HTML><BODY>File not found.</BODY></HTML>";
-                    buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
-                } else {
-                    Debug.WriteLine("request file found");
-                    using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read)) {
-                        buffer = new byte[stream.Length];
-                        stream.Read(buffer, 0, (int)stream.Length);
-                    }
-                }
-
-                // Get a response stream and write the response to it.
-                response.ContentLength64 = buffer.Length;
-                System.IO.Stream output = response.OutputStream;
-                output.Write(buffer, 0, buffer.Length);
-                // You must close the output stream.
-                output.Close();
             } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);
-            } finally {
-                if (listener.IsListening) {
-                    listener.BeginGetContext(new AsyncCallback(ListenerCallback), Listener);
-                }
+                Debug.WriteLine("ChromeSpeechRecognitionService.Stop: " + ex.Message);
             }
         }
 
-        private bool LunchChrome(string prefix, string language) {
-            try {
-                var service = ChromeDriverService.CreateDefaultService();
-                service.HideCommandPromptWindow = true;
-                var url = prefix + "browser-recognition/index.html?lang=" + language;
 
-                var options = new ChromeOptions();
-                // options.AddArgument($"--app={url}");
-                options.AddArgument("--window-size=500,300");
-                // options.AddArgument("use-fake-device-for-media-stream");
-                // options.AddArgument("use-fake-ui-for-media-stream");
-                options.AddArgument("--disable-notifications");
-                options.AddArgument("--no-sandbox");
-                options.AddExcludedArgument("enable-automation");
-                // options.AddAdditionalCapability("useAutomationExtension", false);
+        private bool LunchChrome(string uri, string language) {
+            try {   
+                uri += $"browser-recognition/index.html?lang={language}&port={WebSocketPort}";
+                // var chromePath = Microsoft.Win32.Registry.GetValue(@"HKEY_CLASSES_ROOT\ChromeHTML\shell\open\command", null, null) as string;
+                var chromePath = Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe", null, null) as string;
                 
-                var local = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                local += @"\sikusiku\sikusiSubtitles\ChromeProfile";
-                options.AddArgument($"--user-data-dir={local}");
+                if (chromePath != null) {
+                    // chromePath = chromePath.Replace("%1", $"\"--app={uri}\"");
 
-                this.ChromeDriver = new ChromeDriver(service, options);
-                this.ChromeDriver.Navigate().GoToUrl(url);
-
-                this.ChromeTimer = new System.Timers.Timer(1000);
-                this.ChromeTimer.AutoReset = false;
-                this.ChromeTimer.Elapsed += ChromeObserver;
-                this.ChromeTimer.Start();
+                    ProcessStartInfo pi = new ProcessStartInfo() {
+                        FileName = chromePath,
+                        Arguments = $"--app={uri}",
+                        UseShellExecute = true,
+                    };
+                    System.Diagnostics.Process.Start(pi);
+                }
             } catch (Exception ex) {
                 Debug.WriteLine(ex.Message);
                 return false;
@@ -217,31 +111,16 @@ namespace sikusiSubtitles.SpeechRecognition {
             return true;
         }
 
-        private void ChromeObserver(Object? sender, System.Timers.ElapsedEventArgs args) {
-            if (ChromeDriver == null)
-                return;
+        private void RecognizingHandler(object? sender, SpeechRecognitionEventArgs args) {
+            this.InvokeRecognizing(args.Text);
+        }
 
-            try {
-                var elem = ChromeDriver.FindElement(By.Id("result"));
-                var isFinal = elem.GetAttribute("data-is-final") == "true";
-                var text = elem.Text;
-                if (this.isLastFinal != isFinal || this.LastText != text) {
-                    // 読み取った音声に変化がない場合は送信しないようにしたいので、値を記憶しておく。
-                    this.isLastFinal = isFinal;
-                    this.LastText = text;
-                    Debug.WriteLine("is final = " + isFinal + ", text = " + text);
+        private void RecognizedHandler(object? sender, SpeechRecognitionEventArgs args) {
+            this.InvokeRecognized(args.Text);
+        }
 
-                    // イベントを送信
-                    if (isFinal) {
-                        this.InvokeRecognized(text);
-                    } else {
-                        this.InvokeRecognizing(text);
-                    }
-                }
-                this.ChromeTimer?.Start();
-            } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);
-            }
+        private void ClosedHandler(object? sender, bool args) {
+            InvokeServiceStopped(args);
         }
 
         List<Tuple<string, string>> Languages = new List<Tuple<string, string>>() {

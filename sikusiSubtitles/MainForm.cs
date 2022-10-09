@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using sikusiSubtitles.OBS;
 using sikusiSubtitles.OCR;
 using sikusiSubtitles.Shortcut;
@@ -51,6 +52,17 @@ namespace sikusiSubtitles {
             new VoiceVoxSpeechService(this.serviceManager);
 
             // Init all services
+            var obj = this.serviceManager.Load();
+            if (obj != null) {
+                var width = obj.Value<int?>("Width");
+                if (width != null) Width = (int)width;
+
+                var height = obj.Value<int?>("Height");
+                if (height != null) Height = (int)height;
+
+                var menuPaneWidth = obj.Value<int?>("MenuPaneWidth");
+                if (menuPaneWidth != null) splitContainer1.SplitterDistance = (int)menuPaneWidth;
+            }
             this.serviceManager.Init();
         }
 
@@ -104,7 +116,12 @@ namespace sikusiSubtitles {
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e) {
             this.serviceManager.Finish();
-            Properties.Settings.Default.Save();
+
+            var obj = new JObject();
+            obj.Add(new JProperty("Width", Width));
+            obj.Add(new JProperty("Height", Height));
+            obj.Add(new JProperty("MenuPaneWidth", splitContainer1.SplitterDistance));
+            this.serviceManager.Save(obj);
         }
 
         private void menuView_AfterSelect(object sender, TreeViewEventArgs e) {

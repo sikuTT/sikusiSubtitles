@@ -63,6 +63,7 @@ namespace sikusiSubtitles.OBS {
             try {
                 await ObsSocket.ConnectAsync(url, this.Password);
                 ConnectionChanged?.Invoke(this, true);
+                ObsSocket.Closed += ClosedHandler;
             } catch (WebSocketClosedException) {
                 MessageBox.Show("認証に失敗しました。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
@@ -75,8 +76,17 @@ namespace sikusiSubtitles.OBS {
         }
 
         async public Task DisconnectAsync() {
+            if (obsCheckBox.InvokeRequired) {
+                var act = delegate () {
+                    obsCheckBox.Checked = false;
+                };
+                obsCheckBox.Invoke(act);
+            } else {
+                obsCheckBox.Checked = false;
+            }
+            ObsSocket.Closed -= ClosedHandler;
             await ObsSocket.CloseAsync();
-                ConnectionChanged?.Invoke(this, false);
+            ConnectionChanged?.Invoke(this, false);
         }
 
         /** OBSへの接続ボタン */
@@ -90,6 +100,10 @@ namespace sikusiSubtitles.OBS {
             } else if (IsConnected) {
                 await DisconnectAsync();
             }
+        }
+
+        private async void ClosedHandler(object? sender, WebSocketCloseCode? code) {
+            await DisconnectAsync();
         }
     }
 }

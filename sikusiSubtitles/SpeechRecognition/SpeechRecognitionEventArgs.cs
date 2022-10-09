@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public class SpeechRecognitionEventArgs {
-        public SpeechRecognitionEventArgs() {
-            Text = "";
-        }
-        public SpeechRecognitionEventArgs(string text) {
+        public SpeechRecognitionEventArgs() {}
+        public SpeechRecognitionEventArgs(string text, bool recognized) {
             Text = text;
+            Recognized = recognized;
         }
 
-        public string Text { get; set;}
+        public string Text { get; set; } = "";
+        public bool Recognized { get; set; } = true;
     }
 }

@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using Tesseract;
 
 namespace sikusiSubtitles.OCR {
@@ -13,13 +17,12 @@ namespace sikusiSubtitles.OCR {
         public TesseractOcrService(ServiceManager serviceManager) : base(serviceManager, "Tesseract", "Tesseract", 100) {
         }
 
-        public override UserControl? GetSettingPage()
-        {
+        public override UserControl? GetSettingPage() {
             return new TesseractOcrPage(ServiceManager, this);
         }
 
-        public override List<Tuple<string, string>> GetLanguages() {
-            List<Tuple<string, string>> langs = new List<Tuple<string, string>>();
+        public override List<Language> GetLanguages() {
+            List<Language> langs = new List<Language>();
 
             try {
                 var path = GetDataPath();
@@ -30,7 +33,7 @@ namespace sikusiSubtitles.OCR {
                         if (i != -1) {
                             var lang = file.Substring(i + 1);
                             lang = lang.Substring(0, lang.Length - 12);
-                            langs.Add(new Tuple<string, string>(lang, lang));
+                            langs.Add(new Language(lang, lang));
                         }
                     }
                 }
@@ -43,7 +46,7 @@ namespace sikusiSubtitles.OCR {
         public async override Task<OcrResult> ExecuteAsync(Bitmap bitmap, string language) {
             var path = GetDataPath();
             if (path == null) {
-                MessageBox.Show("言語データが取得できません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("言語データが取得できません。", null, MessageBoxButton.OK, MessageBoxImage.Error);
                 return new OcrResult() { Error = "言語データが取得できません。" };
             }
 
@@ -54,7 +57,7 @@ namespace sikusiSubtitles.OCR {
                 var image = BitmapToImage(bitmap);
 
                 // OCRの実行
-                Page? page = null;
+                Tesseract.Page? page = null;
                 await Task.Run(() => page = tesseract.Process(image));
 
                 Debug.WriteLine("TesseractOcrService: " + page?.GetText());
@@ -76,7 +79,8 @@ namespace sikusiSubtitles.OCR {
         }
 
         private string GetDataPath() {
-            return Application.StartupPath + "\\tessdata";
+            var path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            return path + "\\tessdata";
         }
     }
 }

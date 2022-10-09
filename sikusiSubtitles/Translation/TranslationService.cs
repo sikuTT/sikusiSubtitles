@@ -12,6 +12,6 @@ namespace sikusiSubtitles.Translation {
         public abstract Task<TranslationResult> TranslateAsync(string text, string? from, string to);
         public abstract Task<TranslationResult> TranslateAsync(string text, string? from, string[] toList);
 
-        public abstract List<Tuple<string, string>> GetLanguages();
+        public abstract List<Language> GetLanguages();
     }
 }

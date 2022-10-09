@@ -4,9 +4,13 @@ using sikusiSubtitles;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace sikusiSubtitles.Speech {
     public class Speaker {
@@ -22,9 +26,8 @@ namespace sikusiSubtitles.Speech {
     }
     
     public class VoiceVoxSpeechService : SpeechService {
-        List<Tuple<string, string>> voices = new List<Tuple<string, string>>();
+        List<Voice> voices = new List<Voice>();
         HttpClient HttpClient = new HttpClient();
-        WaveOut? waveOut;
 
         public string Url { get; set; } = "http://localhost";
         public int Port { get; set; } = 50021;
@@ -39,34 +42,22 @@ namespace sikusiSubtitles.Speech {
             return new VoiceVoxSpeechPage(ServiceManager, this);
         }
 
-        public override List<Tuple<string, string>> GetVoices() {
+        public override List<Voice> GetVoices() {
             return this.voices;
         }
 
-        public override async Task SpeakAsync(string voice, string text) {
-            var query = await CreateAudioQuery(voice, text);
+        public override async Task SpeakAsync(Voice voice, string text) {
+            var query = await CreateAudioQuery(voice.Id, text);
             if (query != null) {
-                var stream = await GetAudioData(voice, query);
+                var stream = await GetAudioData(voice.Id, query);
                 if (stream != null) {
-                    var reader = new WaveFileReader(stream);
-                    waveOut = new WaveOut();
-                    waveOut.Init(reader);
-                    waveOut.Play();
-                    await Task.Run(() => {
-                        while (waveOut.PlaybackState == PlaybackState.Playing) {
-                            Thread.Sleep(100);
-                        }
-                    });
+                    await SpeakFromStreamAsync(stream);
                 }
             }
         }
 
         public override async Task CancelSpeakAsync() {
-            await Task.Run(() => {
-                if (waveOut != null) {
-                    waveOut.Stop();
-                }
-            });
+            await CancelSpeakFromStreamAsync();
         }
 
         public async Task GetSpeakers() {
@@ -89,7 +80,7 @@ namespace sikusiSubtitles.Speech {
                             speaker.styles.ForEach(style => {
                                 var id = style.id.ToString();
                                 var name = $"{speaker.name}（{style.name}）";
-                                this.voices.Add(new Tuple<string, string>(id, name));
+                                this.voices.Add(new Voice("VOICEVOX", id, name));
                             });
                         }
                     }

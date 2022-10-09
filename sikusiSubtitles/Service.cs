@@ -1,10 +1,9 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 
 namespace sikusiSubtitles {
     public abstract class Service {
@@ -44,13 +43,13 @@ namespace sikusiSubtitles {
          * チェックボックスボタンの状態に合わせて色を変更する
          * （デフォルトの色は分かりにくいので）
          */
-        protected void SetCheckBoxButtonColor(CheckBox checkbox) {
-            if (checkbox.Checked) {
-                checkbox.BackColor = SystemColors.Highlight;
-                checkbox.ForeColor = SystemColors.HighlightText;
+        protected void SetCheckBoxButtonColor(ToggleButton checkbox) {
+            if (checkbox.IsChecked == true) {
+                // checkbox.BackColor = SystemColors.Highlight;
+                // checkbox.ForeColor = SystemColors.HighlightText;
             } else {
-                checkbox.BackColor = SystemColors.ButtonHighlight;
-                checkbox.ForeColor = SystemColors.ControlText;
+                // checkbox.BackColor = SystemColors.ButtonHighlight;
+                // checkbox.ForeColor = SystemColors.ControlText;
             }
         }
 

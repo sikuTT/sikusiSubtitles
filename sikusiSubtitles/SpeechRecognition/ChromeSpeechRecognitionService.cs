@@ -2,15 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public class ChromeSpeechRecognitionService : SpeechRecognitionService {
-                public int HttpServerPort { get; set; } = 14949;
+        public int HttpServerPort { get; set; } = 14949;
         public int WebSocketPort { get; set; } = 14950;
 
         ChromeSpeechRecognitionWebServer? webServer;
@@ -35,14 +37,14 @@ namespace sikusiSubtitles.SpeechRecognition {
             };
         }
 
-        public override List<Tuple<string, string>> GetLanguages() {
+        public override List<Language> GetLanguages() {
             return this.Languages;
         }
 
         public override bool Start() {
             var manager = this.ServiceManager.GetManager<SpeechRecognitionServiceManager>();
             if (manager == null || manager.Language == "") {
-                MessageBox.Show("言語を選択してください。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("言語を選択してください。", null, MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
 
@@ -123,15 +125,15 @@ namespace sikusiSubtitles.SpeechRecognition {
             InvokeServiceStopped(args);
         }
 
-        List<Tuple<string, string>> Languages = new List<Tuple<string, string>>() {
-            new Tuple<string, string>("ja-JP", "日本語"),
-            new Tuple<string, string>("en-US", "英語"),
-            new Tuple<string, string>("es-ES", "スペイン語（スペイン）"),
-            new Tuple<string, string>("pt-P", "ポルトガル語（ポルトガル）"),
-            new Tuple<string, string>("pt-BR", "ポルトガル語（ブラジル）"),
-            new Tuple<string, string>("ko-KR", "韓国語"),
-            new Tuple<string, string>("zh", "中国語（簡体字、中国本土）"),
-            new Tuple<string, string>("cmn-Hant-TW", "中国語（繁体字、台湾）"),
+        List<Language> Languages = new List<Language>() {
+            new Language("ja-JP", "日本語"),
+            new Language("en-US", "英語"),
+            new Language("es-ES", "スペイン語（スペイン）"),
+            new Language("pt-P", "ポルトガル語（ポルトガル）"),
+            new Language("pt-BR", "ポルトガル語（ブラジル）"),
+            new Language("ko-KR", "韓国語"),
+            new Language("zh", "中国語（簡体字、中国本土）"),
+            new Language("cmn-Hant-TW", "中国語（繁体字、台湾）"),
         };
     }
 }

@@ -2,32 +2,41 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace sikusiSubtitles {
     public class ServiceManager {
         class OrderedControl {
-            public Control Control { get; set; }
+            public FrameworkElement Element { get; set; }
             public int Index { get; set; }
 
-            public OrderedControl(Control control, int index) {
-                this.Control = control;
+            public OrderedControl(FrameworkElement element, int index) {
+                this.Element = element;
                 this.Index = index;
             }
         }
 
         public List<Service> Managers { get; set; }
         public List<Service> Services { get; set; }
-        public List<Control> TopFlowControls {
+        public List<FrameworkElement> TopFlowControls {
             get {
-                return this.topFlowControls.Select(oc => oc.Control).ToList();
+                return this.topFlowControls.Select(oc => oc.Element).ToList();
+            }
+        }
+
+        public List<FrameworkElement> StatusBarControls {
+            get {
+                return this.statusBarControls.Select(oc => oc.Element).ToList();
             }
         }
 
         private string SaveFilePath;
         private List<OrderedControl> topFlowControls = new List<OrderedControl>();
+        private List<OrderedControl> statusBarControls = new List<OrderedControl>();
 
         private Dictionary<string, Service> activeServices = new Dictionary<string, Service>();
 
@@ -36,14 +45,9 @@ namespace sikusiSubtitles {
             Services = new List<Service>();
 
             // Save file
-            SaveFilePath = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            SaveFilePath += @"\sikusiku\sikusiSubtitles\";
-            try {
-                Directory.CreateDirectory(SaveFilePath);
-                SaveFilePath += "settings.json";
-            } catch (Exception ex) {
-                Debug.WriteLine("ServiceManager: Create settings folder failed: " + ex.Message);
-            }
+            SaveFilePath = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\sikusiku\sikusiSubtitles\";
+            Directory.CreateDirectory(SaveFilePath);
+            SaveFilePath += @"settings.json";
         }
 
         public void AddService(Service service) {
@@ -110,13 +114,15 @@ namespace sikusiSubtitles {
             Managers.Sort((a, b) => a.Index - b.Index);
             Services.Sort((a, b) => a.Index - b.Index);
             topFlowControls.Sort((a, b) => a.Index - b.Index);
+            statusBarControls.Sort((a, b) => a.Index - b.Index);
         }
 
         // 設定の読み込み
         public JObject? Load() {
             try {
-                JObject jobj = JObject.Parse(File.ReadAllText(SaveFilePath));
-                var servicesObj = jobj.GetValue("Services")?.ToObject<JObject>();
+                var jsonObj = JObject.Parse(File.ReadAllText(SaveFilePath));
+                var servicesObj = jsonObj.GetValue("Services")?.ToObject<JObject>();
+
                 if (servicesObj != null) {
                     foreach (var obj in servicesObj) {
                         var manager = Managers.Find(service => service.Name == obj.Key);
@@ -126,7 +132,7 @@ namespace sikusiSubtitles {
                         if (service != null && obj.Value != null) service.Load(obj.Value);
                     }
                 }
-                return jobj.GetValue("MainWindow")?.ToObject<JObject>();
+                return jsonObj.GetValue("MainWindow")?.ToObject<JObject>();
             } catch (Exception ex) {
                 Debug.WriteLine("ServiceManager: Load settings failed: " + ex.Message);
             }
@@ -140,10 +146,14 @@ namespace sikusiSubtitles {
                 JObject servicesObj = new JObject();
                 saveObj.Add(new JProperty("Services", servicesObj));
                 saveObj.Add(new JProperty("MainWindow", mainWindowObj));
+
+                // Managerを保存
                 foreach (var service in Managers) {
                     var obj = service.Save();
                     if (obj != null) servicesObj.Add(new JProperty(service.Name, obj));
                 }
+
+                // Servieを保存
                 foreach (var service in Services) {
                     var obj = service.Save();
                     if (obj != null) servicesObj.Add(new JProperty(service.Name, obj));
@@ -181,6 +191,10 @@ namespace sikusiSubtitles {
 
         public void AddTopFlowControl(Control control, int index) {
             topFlowControls.Add(new OrderedControl(control, index));
+        }
+
+        public void AddStatusBarControl(FrameworkElement element, int index) {
+            statusBarControls.Add(new OrderedControl(element, index));
         }
     }
 }

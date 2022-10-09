@@ -8,11 +8,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace sikusiSubtitles.Subtitles {
     public class SubtitlesService : Service {
         // Services
         SpeechRecognitionServiceManager? speechRecognitionServiceManager;
+
+        Label engineNameBox = new Label();
 
         // Subtitles texts
         List<SubtitlesText> subtitlesTexts = new List<SubtitlesText>();
@@ -22,9 +27,16 @@ namespace sikusiSubtitles.Subtitles {
         public event EventHandler<List<SubtitlesText>>? SubtitlesChanged;
 
         // Properties
-        public string TranslationEngine { get; set; } = "";
+        public string TranslationEngine {
+            get { return translationEngine; }
+            set {
+                translationEngine = value;
+                var translationService = ServiceManager.GetServices<TranslationService>().Find(service => service.Name == translationEngine);
+                engineNameBox.Content = translationService != null ? translationService.DisplayName : "";
+            }
+        }
+        string translationEngine = "";
         public string TranslationLanguageFrom { get; set; } = "";
-        public string VoiceTarget { get; set; } = "";
         public List<string> TranslationLanguageToList { get; set; } = new List<string>();
         public bool ClearInterval { get; set; } = false;
         public int ClearIntervalTime { get; set; } = 1;
@@ -32,6 +44,11 @@ namespace sikusiSubtitles.Subtitles {
         public int AdditionalClearTime { get; set; } = 1;
 
         public SubtitlesService(ServiceManager serviceManager) : base(serviceManager, SubtitlesServiceManager.ServiceName, "Subtitles", "字幕", 100) {
+            // ステータスバーに字幕で使用する翻訳エンジンを表示する
+            var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
+            stackPanel.Children.Add(new Image { Source = new BitmapImage(new Uri("pack://application:,,,/Resources/ei-translation.png")) });
+            stackPanel.Children.Add(engineNameBox);
+            serviceManager.AddStatusBarControl(stackPanel, 200);
         }
 
         public override UserControl? GetSettingPage() {
@@ -42,7 +59,6 @@ namespace sikusiSubtitles.Subtitles {
         public override void Load(JToken token) {
             TranslationEngine = token.Value<string>("TranslationEngine") ?? "";
             TranslationLanguageFrom = token.Value<string>("TranslationLanguageFrom") ?? "";
-            VoiceTarget = token.Value<string>("VoiceTarget") ?? "";
             var toList = token.Value<JArray>("TranslationLanguageToList");
             if (toList != null) {
                 foreach (var to in toList) {
@@ -50,9 +66,9 @@ namespace sikusiSubtitles.Subtitles {
                 }
             }
             ClearInterval = token.Value<bool>("ClearInterval");
-            ClearIntervalTime = token.Value<int?>("ClearIntervalTime") ?? 1;
+            ClearIntervalTime = token.Value<int?>("ClearIntervalTime") ?? ClearIntervalTime;
             AdditionalClear = token.Value<bool>("AdditionalClear");
-            AdditionalClearTime = token.Value<int?>("AdditionalClearTime") ?? 1;
+            AdditionalClearTime = token.Value<int?>("AdditionalClearTime") ?? AdditionalClearTime;
         }
 
         /** 設定を保存 */
@@ -63,7 +79,6 @@ namespace sikusiSubtitles.Subtitles {
             return new JObject {
                 new JProperty("TranslationEngine", TranslationEngine),
                 new JProperty("TranslationLanguageFrom", TranslationLanguageFrom),
-                new JProperty("VoiceTarget", VoiceTarget),
                 new JProperty("TranslationLanguageToList", TranslationLanguageToList),
                 new JProperty("ClearInterval", ClearInterval),
                 new JProperty("ClearIntervalTime", ClearIntervalTime),

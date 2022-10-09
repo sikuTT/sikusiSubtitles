@@ -6,6 +6,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 
 namespace sikusiSubtitles.OBS {
     public class ObsService : sikusiSubtitles.Service {
@@ -17,7 +20,7 @@ namespace sikusiSubtitles.OBS {
         public int Port { get; set; } = 4455;
         public string Password { get; set; } = "";
 
-        private CheckBox obsCheckBox;
+        private ToggleButton obsButton;
 
         public bool IsConnected {
             get { return ObsSocket.IsConnected; }
@@ -26,13 +29,12 @@ namespace sikusiSubtitles.OBS {
         public ObsService(ServiceManager serviceManager) : base(serviceManager, ObsServiceManager.ServiceName, "OBS", "OBS", 100) {
             this.ObsSocket = new ObsWebSocket();
 
-            obsCheckBox = new CheckBox();
-            obsCheckBox.Appearance = Appearance.Button;
-            obsCheckBox.Text = "OBS接続";
-            obsCheckBox.TextAlign = ContentAlignment.MiddleCenter;
-            obsCheckBox.Width = 70;
-            obsCheckBox.CheckedChanged += obsCheckBox_CheckedChanged;
-            serviceManager.AddTopFlowControl(obsCheckBox, 200);
+            obsButton = new ToggleButton();
+            obsButton.Content = "OBS接続";
+            obsButton.Width = 70;
+            obsButton.Checked += obsButton_Checked;
+            obsButton.Unchecked += obsButton_Unchecked;
+            serviceManager.AddTopFlowControl(obsButton, 200);
         }
 
         public override UserControl? GetSettingPage() {
@@ -65,10 +67,10 @@ namespace sikusiSubtitles.OBS {
                 ConnectionChanged?.Invoke(this, true);
                 ObsSocket.Closed += ClosedHandler;
             } catch (WebSocketClosedException) {
-                MessageBox.Show("認証に失敗しました。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("認証に失敗しました。", null, MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             } catch (Exception) {
-                MessageBox.Show("接続できませんでした。接続先を確認してください。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("接続できませんでした。接続先を確認してください。", null, MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
 
@@ -76,30 +78,24 @@ namespace sikusiSubtitles.OBS {
         }
 
         async public Task DisconnectAsync() {
-            if (obsCheckBox.InvokeRequired) {
-                var act = delegate () {
-                    obsCheckBox.Checked = false;
-                };
-                obsCheckBox.Invoke(act);
-            } else {
-                obsCheckBox.Checked = false;
-            }
+            obsButton.Dispatcher.Invoke(() => {
+                obsButton.IsChecked = false;
+            });
             ObsSocket.Closed -= ClosedHandler;
             await ObsSocket.CloseAsync();
             ConnectionChanged?.Invoke(this, false);
         }
 
         /** OBSへの接続ボタン */
-        private async void obsCheckBox_CheckedChanged(object? sender, EventArgs e) {
-            this.SetCheckBoxButtonColor(this.obsCheckBox);
-
-            if (this.obsCheckBox.Checked) {
-                if (await ConnectAsync() == false) {
-                    this.obsCheckBox.Checked = false;
-                }
-            } else if (IsConnected) {
-                await DisconnectAsync();
+        private async void obsButton_Checked(object? sender, RoutedEventArgs e) {
+            if (await ConnectAsync() == false) {
+                this.obsButton.IsChecked = false;
             }
+        }
+
+        /** OBSへの接続ボタン */
+        private async void obsButton_Unchecked(object? sender, RoutedEventArgs e) {
+            await DisconnectAsync();
         }
 
         private async void ClosedHandler(object? sender, WebSocketCloseCode? code) {

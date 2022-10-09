@@ -4,21 +4,24 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace sikusiSubtitles.OCR {
-    public class AzureOcrService : OcrService{
+    public class AzureOcrService : OcrService {
         public string Key { get; set; } = "";
         public string Endpoint { get; set; } = "";
 
 
-        public AzureOcrService(ServiceManager serviceManager) : base(serviceManager, "AzureOcr", "Azure Cognitive Service - Computer Vision", 200) {
+        public AzureOcrService(ServiceManager serviceManager) : base(serviceManager, "AzureOcr", "Azure Cognitive Services", 200) {
         }
 
-        public override UserControl? GetSettingPage()
-        {
+        public override UserControl? GetSettingPage() {
             return new AzureOcrPage(ServiceManager, this);
         }
 
@@ -34,7 +37,7 @@ namespace sikusiSubtitles.OCR {
             };
         }
 
-        public override List<Tuple<string, string>> GetLanguages() {
+        public override List<Language> GetLanguages() {
             return this.languages;
         }
 
@@ -85,8 +88,8 @@ namespace sikusiSubtitles.OCR {
             }
         }
 
-        List<Tuple<string, string>> languages = new List<Tuple<string, string>>() {
-            new Tuple<string, string>("", "（自動）"),
+        List<Language> languages = new List<Language>() {
+            new Language("", "（自動）"),
         };
     }
 }

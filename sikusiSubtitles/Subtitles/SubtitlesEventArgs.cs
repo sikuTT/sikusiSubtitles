@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace sikusiSubtitles.Subtitles {
     public class TranslationText {
         public string Language { get; set; } = "";

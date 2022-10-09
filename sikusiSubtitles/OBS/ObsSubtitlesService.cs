@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace sikusiSubtitles.OBS {
     public class ObsSubtitlesService : sikusiSubtitles.Service {

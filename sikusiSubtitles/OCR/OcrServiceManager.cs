@@ -6,9 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace sikusiSubtitles.OCR {
-    public class OcrServiceManager : Service{
+    public class OcrServiceManager : Service {
         public static new string ServiceName = "OCR";
 
         public string OcrEngine { get; set; } = "";
@@ -27,8 +28,7 @@ namespace sikusiSubtitles.OCR {
         public OcrServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, ServiceName, "OCR", 500, true) {
         }
 
-        public override UserControl? GetSettingPage()
-        {
+        public override UserControl? GetSettingPage() {
             return new OcrPage(ServiceManager, this);
         }
 
@@ -40,7 +40,7 @@ namespace sikusiSubtitles.OCR {
             TranslationLanguage = token.Value<string>("TranslationLanguage") ?? "";
             OcrSpeechEngine = token.Value<string>("OcrSpeechEngine") ?? "";
             OcrSpeechVoice = token.Value<string>("OcrSpeechVoice") ?? "";
-            SpeechWhenOcrRun= token.Value<bool>("SpeechWhenOcrRun");
+            SpeechWhenOcrRun = token.Value<bool>("SpeechWhenOcrRun");
             ocrShortcut.ShortcutKey = token.Value<string>("OcrShortcutKey") ?? "";
             clearObsTextShortcut.ShortcutKey = token.Value<string>("ClearObsTextShortcutKey") ?? "";
         }

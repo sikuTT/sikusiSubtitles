@@ -3,13 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace sikusiSubtitles.Translation {
     public class GoogleAppsScriptTranslationService : TranslationService {
         private HttpClient HttpClient = new HttpClient();
-        private List<Tuple<string, string>> languages = new GoogleTranslationLanguages().Languages;
+        private List<Language> languages = new GoogleTranslationLanguages().Languages;
 
         public string Key { get; set; } = "";
 
@@ -31,7 +34,7 @@ namespace sikusiSubtitles.Translation {
             };
         }
 
-        public override List<Tuple<string, string>> GetLanguages() {
+        public override List<Language> GetLanguages() {
             return this.languages;
         }
 
@@ -70,7 +73,7 @@ namespace sikusiSubtitles.Translation {
 
         private bool CheckParameters() {
             if (this.Key == null || this.Key == "") {
-                MessageBox.Show("APIキーが設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("APIキーが設定されていません。", null, MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             } else {
                 return true;

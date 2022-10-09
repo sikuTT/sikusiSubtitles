@@ -5,6 +5,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Forms;
 
 namespace sikusiSubtitles.Shortcut {
     public class ShortcutService : sikusiSubtitles.Service {
@@ -62,8 +64,7 @@ namespace sikusiSubtitles.Shortcut {
             CreateKeyNames();
         }
 
-        public override UserControl? GetSettingPage()
-        {
+        public override System.Windows.Controls.UserControl? GetSettingPage() {
             return new ShortcutPage(ServiceManager, this);
         }
 
@@ -121,7 +122,7 @@ namespace sikusiSubtitles.Shortcut {
             try {
                 // キーの入力判定が残るときがあるので、一定時間入力がなければクリアしてごまかす
                 TimeSpan span = DateTime.Now - dateTime;
-                if (span.TotalSeconds > 2) keys.Clear();
+                if (span.TotalMilliseconds > 1500) keys.Clear();
                 dateTime = DateTime.Now;
 
 
@@ -220,11 +221,13 @@ namespace sikusiSubtitles.Shortcut {
     }
 
     public class Shortcut {
-        public string Name { get; set; }
-        public string Source { get; set; }
-        public string Command { get; set; }
-        public string ShortcutKey { get; set; }
+        public string Name { get; set; } = "";
+        public string Source { get; set; } = "";
+        public string Command { get; set; } = "";
+        public string ShortcutKey { get; set; } = "";
 
+        public Shortcut() {}
+ 
         public Shortcut(string name, string source, string command, string shortcutKey) {
             Name = name;
             Source = source;

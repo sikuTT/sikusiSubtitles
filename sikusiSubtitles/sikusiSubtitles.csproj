@@ -2,33 +2,52 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows10.0.17763.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <PackageIcon>sikusiKu.png</PackageIcon>
-    <AssemblyVersion>1</AssemblyVersion>
-    <FileVersion>0.5.0</FileVersion>
-    <Company>sikusiku</Company>
+    <UseWPF>true</UseWPF>
+    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+    <UseWindowsForms>False</UseWindowsForms>
     <Authors>sikusiku</Authors>
-    <Version>0.5.0</Version>
-    <ApplicationIcon>Images\sikusiKu.ico</ApplicationIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/sikuTT/sikusiSubtitles.git</RepositoryUrl>
+    <VersionPrefix>0.6.0</VersionPrefix>
+    <VersionSuffix>alpha</VersionSuffix>
+    <Company>sikusiku</Company>
+    <Copyright>sikusiku</Copyright>
+    <ApplicationIcon>Resources\sikusiKu.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="com\amivoice\wrp\Wrp_.cs" />
+    <Compile Remove="Controls\**" />
+    <EmbeddedResource Remove="Controls\**" />
+    <None Remove="Controls\**" />
+    <Page Remove="Controls\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Images\sikusiKu.ico" />
+    <None Remove="Resources\ei-translation.png" />
+    <None Remove="Resources\mic.png" />
+    <None Remove="Resources\times.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\sikusiKu.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DeepL.net" Version="1.5.0" />
-    <PackageReference Include="Google.Apis.Translate.v2" Version="1.57.0.875" />
+    <PackageReference Include="Google.Cloud.Translation.V2" Version="3.1.0" />
     <PackageReference Include="Microsoft.Azure.CognitiveServices.Vision.ComputerVision" Version="7.0.1" />
     <PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.23.0" />
     <PackageReference Include="NAudio" Version="2.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.Speech" Version="6.0.0" />
     <PackageReference Include="Tesseract" Version="4.1.1" />
   </ItemGroup>
@@ -39,30 +58,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Properties\Settings.Designer.cs">
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
+    <Resource Include="Resources\ei-translation.png" />
+    <Resource Include="Resources\mic.png" />
+    <Resource Include="Resources\times.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
+    <Page Update="Style.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
   </ItemGroup>
 
 </Project>

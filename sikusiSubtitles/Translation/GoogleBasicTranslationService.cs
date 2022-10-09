@@ -8,14 +8,16 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace sikusiSubtitles.Translation {
     public class GoogleBasicTranslationService : TranslationService {
-        private List<Tuple<string, string>> languages = new GoogleTranslationLanguages().Languages;
+        private List<Language> languages = new GoogleTranslationLanguages().Languages;
 
         public string Key { get; set; } = "";
 
-        public GoogleBasicTranslationService(ServiceManager serviceManager) : base(serviceManager, "GoogleBasicTranslation", "Google Cloud Translation - Basic", 200) {
+        public GoogleBasicTranslationService(ServiceManager serviceManager) : base(serviceManager, "GoogleBasicTranslation", "Google Cloud Translation", 200) {
         }
 
         public override UserControl? GetSettingPage()
@@ -33,7 +35,7 @@ namespace sikusiSubtitles.Translation {
             };
         }
 
-        public override List<Tuple<string, string>> GetLanguages() {
+        public override List<Language> GetLanguages() {
             return this.languages;
         }
 
@@ -73,7 +75,7 @@ namespace sikusiSubtitles.Translation {
 
         private bool CheckParameters() {
             if (this.Key == null || this.Key == "") {
-                MessageBox.Show("APIキーが設定されていません。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("APIキーが設定されていません。", null, MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             } else {
                 return true;

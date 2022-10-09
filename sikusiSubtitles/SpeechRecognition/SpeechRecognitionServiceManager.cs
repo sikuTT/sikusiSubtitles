@@ -1,5 +1,13 @@
 ﻿using NAudio.CoreAudioApi;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public class SpeechRecognitionServiceManager : sikusiSubtitles.Service {
@@ -11,20 +19,38 @@ namespace sikusiSubtitles.SpeechRecognition {
 
         // Properties
         public MMDevice? Device { get; set; }
-        public string Engine { get; set; } = "ChromeSpeechRecognition";
+        public string Engine { 
+            get { return engine; }
+            set {
+                engine = value;
+                selectingService = speechRecognitionServices.Find(service => service.Name == engine);
+                SetStatusBarText();
+            }
+        }
+        string engine = "ChromeSpeechRecognition";
+
         public string Language { get; set; } = "ja-JP";
 
-        private CheckBox speechRecognitionCheckBox;
-        SpeechRecognitionService? speechRecognitionService;
+        ToggleButton speechRecognitionButton= new ToggleButton();
+        Label engineNameBox = new Label();
+        List<SpeechRecognitionService> speechRecognitionServices = new List<SpeechRecognitionService>();
+        SpeechRecognitionService? selectingService;
+        SpeechRecognitionService? runningService;
 
         public SpeechRecognitionServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, ServiceName, "音声認識", 100, true) {
-            speechRecognitionCheckBox = new CheckBox();
-            speechRecognitionCheckBox.Appearance = Appearance.Button;
-            speechRecognitionCheckBox.Text = "音声認識";
-            speechRecognitionCheckBox.TextAlign = ContentAlignment.MiddleCenter;
-            speechRecognitionCheckBox.Width = 70;
-            speechRecognitionCheckBox.CheckedChanged += speechRecognitionCheckBox_CheckedChanged;
-            serviceManager.AddTopFlowControl(speechRecognitionCheckBox, 100);
+            // 音声認識開始ボタンを作成
+            speechRecognitionButton.Content = "音声認識";
+            speechRecognitionButton.Width = 70;
+            speechRecognitionButton.Checked += speechRecognitionButton_Checked;
+            speechRecognitionButton.Unchecked += speechRecognitionButton_Unchecked;
+            serviceManager.AddTopFlowControl(speechRecognitionButton, 100);
+
+            // ステータスバーに音声認識エンジンを表示する
+            var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
+            stackPanel.Children.Add(new Image { Source = new BitmapImage(new Uri("pack://application:,,,/Resources/mic.png")) });
+            stackPanel.Children.Add(engineNameBox);
+            engineNameBox.VerticalContentAlignment = VerticalAlignment.Center;
+            serviceManager.AddStatusBarControl(stackPanel, 100);
 
             // マイク設定
             var enumerator = new MMDeviceEnumerator();
@@ -36,20 +62,22 @@ namespace sikusiSubtitles.SpeechRecognition {
             return new SpeechRecognitionPage(ServiceManager, this);
         }
 
+        public override void Init()
+        {
+            speechRecognitionServices = ServiceManager.GetServices<SpeechRecognitionService>();
+        }
+
         public override void Load(JToken token) {
             var device = token.Value<string>("Device") ?? "";
 
             // マイク設定
             var enumerator = new MMDeviceEnumerator();
             var micList = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
-            Device = micList.Where(mic => mic.ID == device).FirstOrDefault();
-            if (Device == null) {
-                Device = enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Console);
-            }
+            Device = micList.Where(mic => mic.ID == device).FirstOrDefault() ?? Device;
 
             // 音声認識エンジン
-            Engine = token.Value<string>("Engine") ?? "";
-            Language = token.Value<string>("Language") ?? "";
+            Engine = token.Value<string>("Engine") ?? Engine;
+            Language = token.Value<string>("Language") ?? Language;
         }
 
         public override JObject Save() {
@@ -61,36 +89,35 @@ namespace sikusiSubtitles.SpeechRecognition {
         }
 
         public SpeechRecognitionService? GetEngine() {
-            return this.ServiceManager.GetServices<SpeechRecognitionService>(ServiceName).Where(service => service.Name == Engine).FirstOrDefault();
+            return selectingService;
         }
 
-        /** 音声認識の開始終了のボタン */
-        private void speechRecognitionCheckBox_CheckedChanged(object? sender, EventArgs e) {
-            this.SetCheckBoxButtonColor(this.speechRecognitionCheckBox);
+        /** 音声認識の開始 */
+        private void speechRecognitionButton_Checked(object? sender, RoutedEventArgs e) {
+            this.SetCheckBoxButtonColor(this.speechRecognitionButton);
+            this.SpeechRecognitionStart();
+        }
 
-            if (this.speechRecognitionCheckBox.Checked) {
-                this.SpeechRecognitionStart();
-            } else {
-                this.SpeechRecognitionStop();
-            }
+        /** 音声認識の狩猟 */
+        private void speechRecognitionButton_Unchecked(object? sender, RoutedEventArgs e) {
+            this.SetCheckBoxButtonColor(this.speechRecognitionButton);
+            this.SpeechRecognitionStop();
         }
 
         /**
          * 音声認識を開始する
          */
         private void SpeechRecognitionStart() {
-            if (speechRecognitionService == null) {
-                var manager = ServiceManager.GetManager<SpeechRecognitionServiceManager>();
-                if (manager?.Device == null) {
+            if (runningService == null) {
+                if (Device == null) {
                     MessageBox.Show("マイクを設定してください。");
                 } else {
-                    var service = manager.GetEngine();
-                    if (service != null) {
-                        if (service.Start()) {
-                            speechRecognitionService = service;
-                            service.Recognizing += RecognizingHandler;
-                            service.Recognized += RecognizedHandler;
-                            service.ServiceStopped += ServiceStoppedHandler;
+                    if (selectingService != null) {
+                        if (selectingService.Start()) {
+                            runningService = selectingService;
+                            selectingService.Recognizing += RecognizingHandler;
+                            selectingService.Recognized += RecognizedHandler;
+                            selectingService.ServiceStopped += ServiceStoppedHandler;
                         }
                     } else {
                         MessageBox.Show("使用する音声認識サービスを指定してください。");
@@ -98,11 +125,11 @@ namespace sikusiSubtitles.SpeechRecognition {
                 }
 
                 // 音声認識を開始できなかった場合、音声認識ボタンのチェックを外す。
-                if (speechRecognitionService == null) {
-                    this.speechRecognitionCheckBox.Checked = false;
+                if (runningService == null) {
+                    this.speechRecognitionButton.IsChecked = false;
                 }
             } else {
-                this.speechRecognitionCheckBox.Checked = false;
+                this.speechRecognitionButton.IsChecked = false;
             }
         }
 
@@ -110,18 +137,15 @@ namespace sikusiSubtitles.SpeechRecognition {
          * 音声認識を終了する
          */
         private void SpeechRecognitionStop() {
-            if (speechRecognitionCheckBox.InvokeRequired) {
-                Action act = delegate () { speechRecognitionCheckBox.Checked = false; };
-                speechRecognitionCheckBox.Invoke(act);
-            } else {
-                speechRecognitionCheckBox.Checked = false;
-            }
-            if (speechRecognitionService != null) {
-                speechRecognitionService.Recognizing -= RecognizingHandler;
-                speechRecognitionService.Recognized -= RecognizedHandler;
-                speechRecognitionService.ServiceStopped -= ServiceStoppedHandler;
-                speechRecognitionService.Stop();
-                speechRecognitionService = null;
+            speechRecognitionButton.Dispatcher.Invoke(() => speechRecognitionButton.IsChecked = false);
+            if (runningService != null) {
+                runningService.Recognizing -= RecognizingHandler;
+                runningService.Recognized -= RecognizedHandler;
+                runningService.Stop();
+                runningService = null;
+
+                // 音声認識中に使用するエンジンが変更されても音声認識中はエンジンを変更しないので、音声認識終了後に表示を更新する
+                engineNameBox.Dispatcher.Invoke(() => SetStatusBarText());
             }
         }
 
@@ -135,6 +159,10 @@ namespace sikusiSubtitles.SpeechRecognition {
 
         private void ServiceStoppedHandler(Object? sender, object? args) {
             SpeechRecognitionStop();
+        }
+
+        private void SetStatusBarText() {
+            engineNameBox.Content = runningService != null ? runningService.DisplayName : selectingService != null ? selectingService.DisplayName : "";
         }
     }
 }

@@ -445,5 +445,68 @@ namespace sikusiSubtitles.OCR {
         private void resetOcrShortcutKeyButton_Click(object sender, RoutedEventArgs e) {
             ocrShortcutKeyTextBox.Text = ocrManager.OcrShortcut.ShortcutKey;
         }
+
+        /** OCRで取得した文字列をweblioで検索する */
+        private void searchByWeblioMenuItem_Click(object sender, RoutedEventArgs e) {
+            var text = ocrTextBox.SelectedText.Length > 0 ? ocrTextBox.SelectedText : ocrTextBox.Text;
+            var url = "https://ejje.weblio.jp/content/" + Uri.EscapeDataString(text.Trim());
+            ProcessStartInfo pi = new ProcessStartInfo() {
+                FileName = url,
+                UseShellExecute = true,
+            };
+            System.Diagnostics.Process.Start(pi);
+        }
+
+        /** OCRで取得した文字列をALCで検索する */
+        private void searchByAlcMenuItem_Click(object sender, RoutedEventArgs e) {
+            var text = ocrTextBox.SelectedText.Length > 0 ? ocrTextBox.SelectedText : ocrTextBox.Text;
+            var url = "https://eow.alc.co.jp/search?q=" + Uri.EscapeDataString(text.Trim());
+            ProcessStartInfo pi = new ProcessStartInfo() {
+                FileName = url,
+                UseShellExecute = true,
+            };
+            System.Diagnostics.Process.Start(pi);
+        }
+
+        /** OCRで取得した文字列をgoogleで検索する */
+        private void searchByGoogleMenuItem_Click(object sender, RoutedEventArgs e) {
+            var text = ocrTextBox.SelectedText.Length > 0 ? ocrTextBox.SelectedText : ocrTextBox.Text;
+            var url = "https://www.google.com/search?q=" + Uri.EscapeDataString(text.Trim());
+            ProcessStartInfo pi = new ProcessStartInfo() {
+                FileName = url,
+                UseShellExecute = true,
+            };
+            System.Diagnostics.Process.Start(pi);
+        }
+
+        /**
+         */
+        private async void speechMenuItem_Click(object sender, RoutedEventArgs e) {
+            await SpeechOcrTextAsync();
+        }
+
+        /**
+         * OCRテキストボックスで選択範囲を切り取り
+         * OCRテキストボックスのコンテキストメニューを置き換えており、一般的なメニューが消えているので追加
+         */
+        private void cutMenuItem_Click(object sender, RoutedEventArgs e) {
+            ocrTextBox.Cut();
+        }
+
+        /**
+         * OCRテキストボックスで選択範囲をコピー
+         * OCRテキストボックスのコンテキストメニューを置き換えており、一般的なメニューが消えているので追加
+         */
+        private void copyMenuItem_Click(object sender, RoutedEventArgs e) {
+            ocrTextBox.Copy();
+        }
+
+        /**
+         * OCRテキストボックスで選択範囲にペースト
+         * OCRテキストボックスのコンテキストメニューを置き換えており、一般的なメニューが消えているので追加
+         */
+        private void pasteMemuItem_Click(object sender, RoutedEventArgs e) {
+            ocrTextBox.Paste();
+        }
     }
 }

@@ -120,7 +120,21 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Label>テキスト</Label>
-            <TextBox x:Name="ocrTextBox" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top" LostFocus="ocrTextBox_LostFocus" VerticalScrollBarVisibility="Auto" TextChanged="ocrTextBox_TextChanged"></TextBox>
+            <TextBox x:Name="ocrTextBox" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top" LostFocus="ocrTextBox_LostFocus" VerticalScrollBarVisibility="Auto" TextChanged="ocrTextBox_TextChanged">
+                <TextBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem x:Name="searchByWeblioMenuItem" Header="weblioで検索する" Click="searchByWeblioMenuItem_Click"/>
+                        <MenuItem x:Name="searchByAlcMenuItem" Header="アルク（英辞郎）で検索する" Click="searchByAlcMenuItem_Click"/>
+                        <MenuItem x:Name="searchByGoogleMenuItem" Header="googleで検索する" Click="searchByGoogleMenuItem_Click"/>
+                        <Separator/>
+                        <MenuItem x:Name="speechMenuItem" Header="読み上げる" Click="speechMenuItem_Click"/>
+                        <Separator/>
+                        <MenuItem x:Name="cutMenuItem" Header="切り取り" Click="cutMenuItem_Click"/>
+                        <MenuItem x:Name="copyMenuItem" Header="コピー" Click="copyMenuItem_Click"/>
+                        <MenuItem x:Name="pasteMemuItem" Header="貼り付け" Click="pasteMemuItem_Click"/>
+                    </ContextMenu>
+                </TextBox.ContextMenu>
+            </TextBox>
             <Label Grid.Row="2">翻訳結果</Label>
             <TextBox x:Name="translatedTextBox" Grid.Row="3" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"></TextBox>
         </Grid>

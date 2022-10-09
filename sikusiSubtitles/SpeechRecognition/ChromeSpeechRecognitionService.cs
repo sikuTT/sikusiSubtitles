@@ -68,14 +68,10 @@ namespace sikusiSubtitles.SpeechRecognition {
 
         public override void Stop() {
             try {
-                Listener = new HttpListener();
-                Listener.Prefixes.Add(uri);
-                Listener.Start();
-                IAsyncResult result = Listener.BeginGetContext(new AsyncCallback(ListenerCallback), Listener);
-            } catch (HttpListenerException ex) {
-                Debug.WriteLine(ex.Message);
-                MessageBox.Show("WEBサーバーを開始できませんでした。", null, MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
+                if (webServer != null) {
+                    webServer.Stop();
+                    webServer = null;
+                }
             } catch (Exception ex) {
                 Debug.WriteLine("ChromeSpeechRecognitionService.Stop: " + ex.Message);
             }

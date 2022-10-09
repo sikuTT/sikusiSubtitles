@@ -12,6 +12,10 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Style.xaml"></ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="sikusiSubtitles:NumericEditBox">
+                <Setter Property="Height" Value="25"></Setter>
+                <Setter Property="Margin" Value="0,5,0,5"></Setter>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel>
@@ -21,14 +25,16 @@
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
+                    <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="60"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Label Content="ポート"/>
-                <sikusiSubtitles:NumericEditBox x:Name="portNumericEditBox" Grid.Column="1" Width="90" HorizontalAlignment="Left" TextChanged="portNumericEditBox_TextChanged" MinValue="1024" MaxValue="65535"/>
-                <TextBlock Grid.Row="1" Grid.Column="1" Text="※Chromeからの接続に使用するポートです。" TextWrapping="Wrap"></TextBlock>
+                <Label Content="ポート" VerticalAlignment="Center"/>
+                <sikusiSubtitles:NumericEditBox x:Name="httpPortNumericEditBox" Grid.Column="1" Width="90" HorizontalAlignment="Left" TextChanged="httpPortNumericEditBox_TextChanged" MinValue="1024" MaxValue="65535"/>
+                <sikusiSubtitles:NumericEditBox x:Name="webSocketPortNumericEditBox" Grid.Column="1" Width="90" HorizontalAlignment="Left" TextChanged="webSocketPortNumericEditBox_TextChanged" MinValue="1024" MaxValue="65535" Grid.Row="1"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="※Chromeからの接続に使用するポートです。" TextWrapping="Wrap"></TextBlock>
             </Grid>
         </GroupBox>
     </StackPanel>

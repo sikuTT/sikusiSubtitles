@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public class ChromeSpeechRecognitionWebServer {
@@ -27,7 +29,7 @@ namespace sikusiSubtitles.SpeechRecognition {
                 var result = Listener.BeginGetContext(new AsyncCallback(HttpListenerCallback), Listener);
             } catch (HttpListenerException ex) {
                 Debug.WriteLine(ex.Message);
-                MessageBox.Show("WEBサーバーを開始できませんでした。", null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("WEBサーバーを開始できませんでした。", null, MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             } catch (Exception ex) {
                 Debug.WriteLine(ex.Message);

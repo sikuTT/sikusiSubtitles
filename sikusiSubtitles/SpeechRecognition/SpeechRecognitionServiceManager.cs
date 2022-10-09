@@ -112,12 +112,9 @@ namespace sikusiSubtitles.SpeechRecognition {
          * 音声認識を終了する
          */
         private void SpeechRecognitionStop() {
-            if (speechRecognitionCheckBox.InvokeRequired) {
-                Action act = delegate () { speechRecognitionCheckBox.Checked = false; };
-                speechRecognitionCheckBox.Invoke(act);
-            } else {
-                speechRecognitionCheckBox.Checked = false;
-            }
+            speechRecognitionButton.Dispatcher.Invoke(() => {
+                speechRecognitionButton.IsChecked = false;
+            });
             if (speechRecognitionService != null) {
                 speechRecognitionService.Recognizing -= RecognizingHandler;
                 speechRecognitionService.Recognized -= RecognizedHandler;

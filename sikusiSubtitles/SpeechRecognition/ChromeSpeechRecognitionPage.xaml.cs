@@ -31,11 +31,16 @@ namespace sikusiSubtitles.SpeechRecognition {
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e) {
             // コントロールの初期値
-            portNumericEditBox.Value = service.Port;
+            httpPortNumericEditBox.Value = service.HttpServerPort;
+            webSocketPortNumericEditBox.Value = service.WebSocketPort;
         }
 
-        private void portNumericEditBox_TextChanged(object sender, TextChangedEventArgs e) {
-            service.Port = portNumericEditBox.Value;
+        private void httpPortNumericEditBox_TextChanged(object sender, TextChangedEventArgs e) {
+            service.HttpServerPort = httpPortNumericEditBox.Value;
+        }
+
+        private void webSocketPortNumericEditBox_TextChanged(object sender, TextChangedEventArgs e) {
+            service.WebSocketPort = webSocketPortNumericEditBox.Value;
         }
     }
 }

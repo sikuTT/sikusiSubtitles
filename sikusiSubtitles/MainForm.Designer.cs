@@ -67,7 +67,7 @@
             this.versionLabel.Name = "versionLabel";
             this.versionLabel.Size = new System.Drawing.Size(52, 15);
             this.versionLabel.TabIndex = 6;
-            this.versionLabel.Text = "Ver. 0.4.4";
+            this.versionLabel.Text = "Ver. 0.5.0";
             // 
             // topLayoutPanel
             // 

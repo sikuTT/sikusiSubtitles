@@ -138,23 +138,14 @@ namespace sikusiSubtitles.OCR {
                 using var bitmap = adjustedBitmap.Clone() as System.Drawing.Bitmap;
                 if (bitmap != null) {
                     if (!captureArea.IsEmpty) {
-                        var w = captureArea.Width == 0 ? 1 : captureArea.Width;
-                        var h = captureArea.Height == 0 ? 1 : captureArea.Height;
-
-                        // 前回のキャプチャからウィンドウサイズが小さくなった場合CaptureAreaがウィンドウ外に行ってしまう可能性があるので、ウィンドウ内に収まるように調整する
-                        var x = (int)Math.Min(captureArea.Left, originalBitmap.Width - 2);
-                        var y = (int)Math.Min(captureArea.Top, originalBitmap.Height - 2);
-                        if (x + w >= originalBitmap.Width) w = (int)originalBitmap.Width - x;
-                        if (y + h >= originalBitmap.Height) h = (int)originalBitmap.Height - y;
-
                         using var g = Graphics.FromImage(bitmap);
 
                         // 選択範囲を明るくする
-                        g.DrawImage(originalBitmap, x, y, new Rectangle(x, y, w, h), GraphicsUnit.Pixel);
+                        g.DrawImage(originalBitmap, captureArea.Left, captureArea.Top, captureArea, GraphicsUnit.Pixel);
 
                         // 選択範囲に枠を付ける
-                        var pen = new System.Drawing.Pen(System.Drawing.Color.LimeGreen, 3);
-                        g.DrawRectangle(pen, x, y, w, h);
+                        var pen = new System.Drawing.Pen(System.Drawing.Color.LimeGreen, 2);
+                        g.DrawRectangle(pen, captureArea.Left - 1, captureArea.Top - 1, captureArea.Width + 2, captureArea.Height + 2);
                     }
 
                     var hBitmap = bitmap.GetHbitmap();

@@ -48,6 +48,7 @@ namespace sikusiSubtitles.OCR {
         // 画面のキャプチャーエリア指定
         CaptureWindow? captureWindow;
         System.Drawing.Rectangle captureArea;
+        int scale = 1;
 
         public OcrWindow(ServiceManager serviceManager, OcrServiceManager ocrManager, int processId) {
             this.serviceManager = serviceManager;
@@ -421,11 +422,23 @@ namespace sikusiSubtitles.OCR {
                     var width = captureArea.Width;
                     var height = captureArea.Height;
 
-                    Bitmap bitmap = new Bitmap(width, height);
-                    using (Graphics g = Graphics.FromImage(bitmap)) {
+                    Bitmap screenBitmap = new Bitmap(width, height);
+                    using (Graphics g = Graphics.FromImage(screenBitmap)) {
                         g.CopyFromScreen(left, top, 0, 0, new System.Drawing.Size(width, height));
                     }
-                    return bitmap;
+
+                    // オリジナル画像の拡大が設定されている場合は拡大する
+                    Bitmap? scaledBitmap;
+                    if (scale > 1) {
+                        scaledBitmap = new Bitmap(width * scale, height * scale);
+                        using (Graphics g = Graphics.FromImage(scaledBitmap)) {
+                            g.DrawImage(screenBitmap, new Rectangle(0, 0, width * scale, height * scale), new Rectangle(0, 0, width, height), GraphicsUnit.Pixel);
+                        }
+                    } else {
+                        scaledBitmap = screenBitmap;
+                    }
+                    System.Windows.Forms.Clipboard.SetImage(scaledBitmap);
+                    return scaledBitmap;
                 }
             }
 

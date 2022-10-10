@@ -28,11 +28,8 @@ namespace sikusiSubtitles.OCR {
         System.Drawing.Rectangle captureArea;
 
         // 描画用ビットマップ
-        DrawingGroup drawingGroup = new DrawingGroup();
-        BitmapSource? originalBitmapSource;
-        BitmapSource? adjustedBitmapSource;
-        ImageDrawing? originalImageDrawing;
-        GeometryDrawing? borderGeometryDrawing;
+        Bitmap? originalBitmap;
+        Bitmap? adjustedBitmap;
 
         // ドラッグ処理
         System.Windows.Point? dragStart;
@@ -41,15 +38,17 @@ namespace sikusiSubtitles.OCR {
         public event EventHandler<System.Drawing.Rectangle>? AreaSelected;
 
         public CaptureWindow(IntPtr windowHandle, System.Drawing.Rectangle captureArea) {
+            InitializeComponent();
+
             this.windowHandle = windowHandle;
             this.captureArea = captureArea;
 
-            InitializeComponent();
-
-            DrawingImage drawingImageSource = new DrawingImage(drawingGroup);
-            image.Source = drawingImageSource;
-
             ScreenCapture();
+        }
+
+        private void Window_Closed(object sender, EventArgs e) {
+            if (originalBitmap != null) originalBitmap.Dispose();
+            if (adjustedBitmap != null) adjustedBitmap.Dispose();
         }
 
         /** マウスのボタンが押された */
@@ -96,26 +95,12 @@ namespace sikusiSubtitles.OCR {
                 var height = rect.bottom - rect.top;
 
                 // 調整前（オリジナル）の状態のビットマップを作成
-                var originalBitmap = new Bitmap(width, height);
-                using (var g = Graphics.FromImage(originalBitmap)) {
-                    g.CopyFromScreen(rect.left, rect.top, 0, 0, originalBitmap.Size);
-                }
-                var hBitmap = originalBitmap.GetHbitmap();
-                originalBitmapSource = Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-                DeleteObject(hBitmap);
+                originalBitmap = new Bitmap(width, height);
+                using var g = Graphics.FromImage(originalBitmap);
+                g.CopyFromScreen(rect.left, rect.top, 0, 0, originalBitmap.Size);
 
                 // 選択前の状態のビットマップを作成（暗いビットマップ）
-                var adjustedBitmap = AdjustBrightness(originalBitmap, 0.3f);
-                hBitmap = adjustedBitmap.GetHbitmap();
-                adjustedBitmapSource = Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-                DeleteObject(hBitmap);
-
-                // 描画する画像の一番下に暗い画像を配置する
-                ImageDrawing adjustedImage = new ImageDrawing();
-                adjustedImage.Rect = new Rect(0, 0, adjustedBitmap.Width, adjustedBitmap.Height);
-                adjustedImage.ImageSource = adjustedBitmapSource;
-                if (adjustedImage.CanFreeze) adjustedImage.Freeze();
-                drawingGroup.Children.Add(adjustedImage);
+                adjustedBitmap = AdjustBrightness(originalBitmap, 0.3f);
 
                 CreateBitmapSource();
 
@@ -149,39 +134,32 @@ namespace sikusiSubtitles.OCR {
         }
 
         private void CreateBitmapSource() {
-            if (!captureArea.IsEmpty && originalBitmapSource != null) {
-                var w = captureArea.Width == 0 ? 1 : captureArea.Width;
-                var h = captureArea.Height == 0 ? 1 : captureArea.Height;
+            if (originalBitmap != null && adjustedBitmap != null) {
+                using var bitmap = adjustedBitmap.Clone() as System.Drawing.Bitmap;
+                if (bitmap != null) {
+                    if (!captureArea.IsEmpty) {
+                        var w = captureArea.Width == 0 ? 1 : captureArea.Width;
+                        var h = captureArea.Height == 0 ? 1 : captureArea.Height;
 
-                // 前回のキャプチャからウィンドウサイズが小さくなった場合CaptureAreaがウィンドウ外に行ってしまい例外が発生する可能性があるので、ウィンドウ外に出ないようにする。
-                var x = (int)Math.Min(captureArea.Left, originalBitmapSource.Width - 2);
-                var y = (int)Math.Min(captureArea.Top, originalBitmapSource.Height - 2);
-                if (x + w >= originalBitmapSource.Width) w = (int)originalBitmapSource.Width - x;
-                if (y + h >= originalBitmapSource.Height) h = (int)originalBitmapSource.Height- y;
+                        // 前回のキャプチャからウィンドウサイズが小さくなった場合CaptureAreaがウィンドウ外に行ってしまう可能性があるので、ウィンドウ内に収まるように調整する
+                        var x = (int)Math.Min(captureArea.Left, originalBitmap.Width - 2);
+                        var y = (int)Math.Min(captureArea.Top, originalBitmap.Height - 2);
+                        if (x + w >= originalBitmap.Width) w = (int)originalBitmap.Width - x;
+                        if (y + h >= originalBitmap.Height) h = (int)originalBitmap.Height - y;
 
-                try {
-                    // 選択範囲にオリジナルの画像を表示
-                    if (originalImageDrawing == null) {
-                        originalImageDrawing = new ImageDrawing();
-                        drawingGroup.Children.Add(originalImageDrawing);
-                    }
-                    originalImageDrawing.Rect = new Rect(captureArea.Left, captureArea.Top, w, h);
-                    originalImageDrawing.ImageSource = new CroppedBitmap(originalBitmapSource, new Int32Rect(x, y, w, h));
+                        using var g = Graphics.FromImage(bitmap);
 
-                    // 選択範囲に枠線を表示
-                    if (borderGeometryDrawing == null) {
-                        var brush = System.Windows.Media.Brushes.Transparent;
-                        var pen = new System.Windows.Media.Pen(System.Windows.Media.Brushes.LimeGreen, 4);
-                        var rect = new RectangleGeometry();
-                        borderGeometryDrawing = new GeometryDrawing(brush, pen, rect);
-                        drawingGroup.Children.Add(borderGeometryDrawing);
+                        // 選択範囲を明るくする
+                        g.DrawImage(originalBitmap, x, y, new Rectangle(x, y, w, h), GraphicsUnit.Pixel);
+
+                        // 選択範囲に枠を付ける
+                        var pen = new System.Drawing.Pen(System.Drawing.Color.LimeGreen, 3);
+                        g.DrawRectangle(pen, x, y, w, h);
                     }
-                    var rectGeo = borderGeometryDrawing.Geometry as RectangleGeometry;
-                    if (rectGeo != null) {
-                        rectGeo.Rect = new Rect(x, y, w, h);
-                    }
-                } catch (Exception ex) {
-                    Debug.WriteLine(ex.Message);
+
+                    var hBitmap = bitmap.GetHbitmap();
+                    image.Source = Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                    DeleteObject(hBitmap);
                 }
             }
         }

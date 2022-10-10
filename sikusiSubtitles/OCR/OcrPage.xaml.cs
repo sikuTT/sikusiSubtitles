@@ -17,7 +17,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace sikusiSubtitles.OCR {
-    public class OcrProcess {
+    public class OcrProcessModel {
         public string ProcessName { get; set; } = "";
         public string WindowTitle { get; set; } = "";
         public int ProcessId { get; set; }
@@ -30,7 +30,7 @@ namespace sikusiSubtitles.OCR {
         ServiceManager serviceManager;
         OcrServiceManager ocrManager;
 
-        ObservableCollection<OcrProcess> processList = new ObservableCollection<OcrProcess>();
+        List<OcrProcessModel> processList = new List<OcrProcessModel>();
 
         DispatcherTimer? refreshTimer;
 
@@ -43,9 +43,9 @@ namespace sikusiSubtitles.OCR {
             InitializeComponent();
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e) {
+        private async void UserControl_Loaded(object sender, RoutedEventArgs e) {
             processListView.DataContext = processList;
-            RefreshProcessList();
+            await RefreshProcessList();
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
@@ -82,8 +82,8 @@ namespace sikusiSubtitles.OCR {
         }
 
         /** プロセス一覧を更新するボタンが押された */
-        private void refreshButton_Click(object sender, RoutedEventArgs e) {
-            RefreshProcessList();
+        private async void refreshButton_Click(object sender, RoutedEventArgs e) {
+            await RefreshProcessList();
         }
 
         private void CreateRefreshTimer() {
@@ -103,34 +103,57 @@ namespace sikusiSubtitles.OCR {
         }
 
         /** プロセス一覧を更新 */
-        private void RefreshProcessList() {
-            var selectedItem = processListView.SelectedItem as OcrProcess;
+        private async Task RefreshProcessList() {
+            var selectedItem = processListView.SelectedItem as OcrProcessModel;
+            var updatedModel = false;
 
-            this.processList.Clear();
+            await Task.Run(() => {
+                // プロセス一覧を取得する
+                var processList = Process.GetProcesses().Where(p => p.Id != Process.GetCurrentProcess().Id && p.MainWindowTitle != "").ToList();
 
-            // プロセス一覧を取得する
-            var processList = Process.GetProcesses();
-            foreach (var process in processList) {
-                if (process.Id != Process.GetCurrentProcess().Id && process.MainWindowTitle != "") {
-                    // プロセスを追加1
-                    this.processList.Add(new OcrProcess() {
-                        ProcessId = process.Id,
-                        ProcessName = process.ProcessName,
-                        WindowTitle = process.MainWindowTitle,
-                    });
+                // 新規のプロセスは追加、変更されたプロセスは更新
+                foreach (var process in processList) {
+                    var foundProcess = this.processList.Find(p => p.ProcessId == process.Id);
+                    if (foundProcess == null) {
+                        // プロセスを追加
+                        this.processList.Add(new OcrProcessModel() {
+                            ProcessId = process.Id,
+                            ProcessName = process.ProcessName,
+                            WindowTitle = process.MainWindowTitle,
+                        });
+                        updatedModel = true;
+                    } else if (foundProcess.WindowTitle != process.MainWindowTitle) {
+                        foundProcess.WindowTitle = process.MainWindowTitle;
+                        updatedModel = true;
+                    }
                 }
-            }
 
-            // リスト更新前に選択されていたプロセスを再選択する
-            if (selectedItem != null) {
-                var item  = this.processList.Where(process => process.ProcessId == selectedItem.ProcessId).FirstOrDefault();
-                if (item != null) processListView.SelectedItem = item;
+                // 削除されたプロセスはモデルから削除
+                for (var i = this.processList.Count -1; i >= 0; i--) {
+                    var process = this.processList[i];
+                    var foundProcess = processList.Where(p => p.Id == process.ProcessId).FirstOrDefault();
+                    if (foundProcess == null) {
+                        this.processList.RemoveAt(i);
+                        updatedModel = true;
+                    }
+                }
+            });
+
+            if (updatedModel == true) {
+                this.processListView.DataContext = null;
+                this.processListView.DataContext = this.processList;
+
+                // リスト更新前に選択されていたプロセスを再選択する
+                if (selectedItem != null) {
+                    var item = this.processList.Where(process => process.ProcessId == selectedItem.ProcessId).FirstOrDefault();
+                    if (item != null) processListView.SelectedItem = item;
+                }
             }
         }
 
         /** プロセス一覧の更新タイマー */
-        private void RefreshTimerTick(object? sender, EventArgs args) {
-            RefreshProcessList();
+        private async void RefreshTimerTick(object? sender, EventArgs args) {
+            await RefreshProcessList();
         }
     }
 }

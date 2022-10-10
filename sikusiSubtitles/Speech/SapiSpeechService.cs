@@ -13,16 +13,17 @@ namespace sikusiSubtitles.Speech {
         List<Voice> voices = new List<Voice>();
         System.Speech.Synthesis.SpeechSynthesizer? sapiSynth;
 
-        public SapiSpeechService(ServiceManager serviceManager) : base(serviceManager, "SapiSpeech", "システム標準", 500) {
+        public SapiSpeechService(ServiceManager serviceManager) : base(serviceManager, "SapiSpeech", "Windows標準", 500) {
             var voices = Windows.Media.SpeechSynthesis.SpeechSynthesizer.AllVoices;
             foreach (var voice in voices) {
+                var name = voice.DisplayName;
                 this.voices.Add(new Voice("OneCore", voice.Id, voice.DisplayName, voice.Language, voice.Gender.ToString()));
             }
 
             var synth = new System.Speech.Synthesis.SpeechSynthesizer();
             var voices2 = synth.GetInstalledVoices();
             foreach (var voice in voices2) {
-                this.voices.Add(new Voice("SAPI", voice.VoiceInfo.Id, voice.VoiceInfo.Name));
+                this.voices.Add(new Voice("SAPI", voice.VoiceInfo.Id, voice.VoiceInfo.Name, voice.VoiceInfo.Culture.Name, voice.VoiceInfo.Gender.ToString()));
             }
         }
 

@@ -149,29 +149,39 @@ namespace sikusiSubtitles.OCR {
         }
 
         private void CreateBitmapSource() {
-            if (!captureArea.IsEmpty) {
+            if (!captureArea.IsEmpty && originalBitmapSource != null) {
                 var w = captureArea.Width == 0 ? 1 : captureArea.Width;
                 var h = captureArea.Height == 0 ? 1 : captureArea.Height;
 
-                // 選択範囲にオリジナルの画像を表示
-                if (originalImageDrawing == null) {
-                    originalImageDrawing = new ImageDrawing();
-                    drawingGroup.Children.Add(originalImageDrawing);
-                }
-                originalImageDrawing.Rect = new Rect(captureArea.Left, captureArea.Top, w, h);
-                originalImageDrawing.ImageSource = new CroppedBitmap(originalBitmapSource, new Int32Rect(captureArea.Left, captureArea.Top, w, h));
+                // 前回のキャプチャからウィンドウサイズが小さくなった場合CaptureAreaがウィンドウ外に行ってしまい例外が発生する可能性があるので、ウィンドウ外に出ないようにする。
+                var x = (int)Math.Min(captureArea.Left, originalBitmapSource.Width - 2);
+                var y = (int)Math.Min(captureArea.Top, originalBitmapSource.Height - 2);
+                if (x + w >= originalBitmapSource.Width) w = (int)originalBitmapSource.Width - x;
+                if (y + h >= originalBitmapSource.Height) h = (int)originalBitmapSource.Height- y;
 
-                // 選択範囲に枠線を表示
-                if (borderGeometryDrawing == null) {
-                    var brush = System.Windows.Media.Brushes.Transparent;
-                    var pen = new System.Windows.Media.Pen(System.Windows.Media.Brushes.LimeGreen, 4);
-                    var rect = new RectangleGeometry();
-                    borderGeometryDrawing = new GeometryDrawing(brush, pen, rect);
-                    drawingGroup.Children.Add(borderGeometryDrawing);
-                }
-                var rectGeo = borderGeometryDrawing.Geometry as RectangleGeometry;
-                if (rectGeo != null) {
-                    rectGeo.Rect = new Rect(captureArea.Left, captureArea.Top, w, h);
+                try {
+                    // 選択範囲にオリジナルの画像を表示
+                    if (originalImageDrawing == null) {
+                        originalImageDrawing = new ImageDrawing();
+                        drawingGroup.Children.Add(originalImageDrawing);
+                    }
+                    originalImageDrawing.Rect = new Rect(captureArea.Left, captureArea.Top, w, h);
+                    originalImageDrawing.ImageSource = new CroppedBitmap(originalBitmapSource, new Int32Rect(x, y, w, h));
+
+                    // 選択範囲に枠線を表示
+                    if (borderGeometryDrawing == null) {
+                        var brush = System.Windows.Media.Brushes.Transparent;
+                        var pen = new System.Windows.Media.Pen(System.Windows.Media.Brushes.LimeGreen, 4);
+                        var rect = new RectangleGeometry();
+                        borderGeometryDrawing = new GeometryDrawing(brush, pen, rect);
+                        drawingGroup.Children.Add(borderGeometryDrawing);
+                    }
+                    var rectGeo = borderGeometryDrawing.Geometry as RectangleGeometry;
+                    if (rectGeo != null) {
+                        rectGeo.Rect = new Rect(x, y, w, h);
+                    }
+                } catch (Exception ex) {
+                    Debug.WriteLine(ex.Message);
                 }
             }
         }

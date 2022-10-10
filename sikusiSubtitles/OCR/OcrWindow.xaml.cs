@@ -118,10 +118,16 @@ namespace sikusiSubtitles.OCR {
             Process process = Process.GetProcessById(processId);
             if (captureWindow != null) {
                 captureWindow.Close();
+                captureWindow = null;
             }
 
             // キャプチャー対象のウィンドウをアクティブにする
-            Microsoft.VisualBasic.Interaction.AppActivate(processId);
+            try {
+                Microsoft.VisualBasic.Interaction.AppActivate(processId);
+            } catch (Exception) {
+                MessageBox.Show("ウィンドウを取得できません。", null, MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             // キャプチャー対象のウィンドウの上にキャプチャー処理をするウィンドウを作成する
             captureWindow = new CaptureWindow(process.MainWindowHandle, captureArea);

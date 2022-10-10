@@ -24,10 +24,14 @@ namespace sikusiSubtitles.OCR {
         [System.Runtime.InteropServices.DllImport("gdi32.dll")]
         static extern bool DeleteObject(IntPtr hObject);
 
+        [System.Runtime.InteropServices.DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory")]
+        public static extern void CopyMemory(IntPtr dest, IntPtr source, int Length);
+
         IntPtr windowHandle;
         System.Drawing.Rectangle captureArea;
 
         // 描画用ビットマップ
+        WriteableBitmap? writeableBitmap;
         Bitmap? originalBitmap;
         Bitmap? adjustedBitmap;
 
@@ -95,12 +99,16 @@ namespace sikusiSubtitles.OCR {
                 var height = rect.bottom - rect.top;
 
                 // 調整前（オリジナル）の状態のビットマップを作成
-                originalBitmap = new Bitmap(width, height);
+                originalBitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
                 using var g = Graphics.FromImage(originalBitmap);
                 g.CopyFromScreen(rect.left, rect.top, 0, 0, originalBitmap.Size);
 
                 // 選択前の状態のビットマップを作成（暗いビットマップ）
                 adjustedBitmap = AdjustBrightness(originalBitmap, 0.3f);
+
+                // イメージのソースになるWriteableBitmapを作成
+                writeableBitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Pbgra32, null);
+                image.Source = writeableBitmap;
 
                 CreateBitmapSource();
 
@@ -116,7 +124,7 @@ namespace sikusiSubtitles.OCR {
          * 画像の明るさを変更する
          */
         private Bitmap AdjustBrightness(System.Drawing.Image img, float brightness) {
-            var bmp = new Bitmap(img.Width, img.Height);
+            var bmp = new Bitmap(img.Width, img.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             using (var g = Graphics.FromImage(bmp)) {
                 var cm = new ColorMatrix(new float[][] {
                     new float[] {brightness, 0, 0, 0, 0},
@@ -134,7 +142,7 @@ namespace sikusiSubtitles.OCR {
         }
 
         private void CreateBitmapSource() {
-            if (originalBitmap != null && adjustedBitmap != null) {
+            if (originalBitmap != null && adjustedBitmap != null && writeableBitmap != null) {
                 using var bitmap = adjustedBitmap.Clone() as System.Drawing.Bitmap;
                 if (bitmap != null) {
                     if (!captureArea.IsEmpty) {
@@ -148,9 +156,19 @@ namespace sikusiSubtitles.OCR {
                         g.DrawRectangle(pen, captureArea.Left - 1, captureArea.Top - 1, captureArea.Width + 2, captureArea.Height + 2);
                     }
 
-                    var hBitmap = bitmap.GetHbitmap();
-                    image.Source = Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-                    DeleteObject(hBitmap);
+
+                    BitmapData data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                    try {
+                        writeableBitmap.Lock();
+                        try {
+                            CopyMemory(writeableBitmap.BackBuffer, data.Scan0, (writeableBitmap.BackBufferStride * bitmap.Height));
+                            writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, bitmap.Width, bitmap.Height));
+                        } finally {
+                            writeableBitmap.Unlock();
+                        }
+                    } finally {
+                        bitmap.UnlockBits(data);
+                    }
                 }
             }
         }

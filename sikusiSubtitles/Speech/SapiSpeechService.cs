@@ -78,7 +78,7 @@ namespace sikusiSubtitles.Speech {
             try {
                 sapiSynth = new System.Speech.Synthesis.SpeechSynthesizer();
                 sapiSynth.SetOutputToDefaultAudioDevice();
-                sapiSynth.SelectVoice(voice.DisplayName);
+                sapiSynth.SelectVoice(voice.Name);
                 await Task.Run(() => {
                     try {
                         sapiSynth.Speak(text);

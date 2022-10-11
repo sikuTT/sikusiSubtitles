@@ -20,5 +20,9 @@ OBSに字幕を表示します。
 * DeepL
 
 OCRは以下のサービスが使用可能です。
+* Windows標準機能
 * Tesseract
 * Azure Cognitive Services - Computer Vision
+
+音声読み上げは以下のサービスが使用可能です。
+* Windows標準機能 (SAPI / OneCore)

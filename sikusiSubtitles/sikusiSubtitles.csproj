@@ -11,7 +11,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/sikuTT/sikusiSubtitles.git</RepositoryUrl>
     <VersionPrefix>0.6.0</VersionPrefix>
-    <VersionSuffix>alpha</VersionSuffix>
+    <VersionSuffix></VersionSuffix>
     <Company>sikusiku</Company>
     <Copyright>sikusiku</Copyright>
     <ApplicationIcon>Resources\sikusiKu.ico</ApplicationIcon>

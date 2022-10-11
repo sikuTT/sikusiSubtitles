@@ -9,22 +9,28 @@ namespace sikusiSubtitles.Speech {
         public string Type => type;
         public string Id => id;
         public string DisplayName => displayName;
+        public string Name => name;
         public string? Language => language;
         public string? Gender => gender;
         public string? Age => age;
 
-        public Voice(string type, string id, string displayName, string? language = null, string? gender = null, string? age = null) {
+        public Voice(string type, string id, string name, string? language = null, string? gender = null, string? age = null) {
             this.type = type;
             this.id = id;
-            this.displayName = displayName;
+            this.name = name;
             this.language = language;
             this.gender = gender;
             this.age = age;
+            this.displayName = name;
+            if (language != null) {
+                displayName += $" ({language})";
+            }
         }
 
         string type;
         string id;
         string displayName;
+        string name;
         string? language;
         string? gender;
         string? age;

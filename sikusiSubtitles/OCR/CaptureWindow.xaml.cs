@@ -24,15 +24,16 @@ namespace sikusiSubtitles.OCR {
         [System.Runtime.InteropServices.DllImport("gdi32.dll")]
         static extern bool DeleteObject(IntPtr hObject);
 
+        [System.Runtime.InteropServices.DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory")]
+        public static extern void CopyMemory(IntPtr dest, IntPtr source, int Length);
+
         IntPtr windowHandle;
         System.Drawing.Rectangle captureArea;
 
         // 描画用ビットマップ
-        DrawingGroup drawingGroup = new DrawingGroup();
-        BitmapSource? originalBitmapSource;
-        BitmapSource? adjustedBitmapSource;
-        ImageDrawing? originalImageDrawing;
-        GeometryDrawing? borderGeometryDrawing;
+        WriteableBitmap? writeableBitmap;
+        Bitmap? originalBitmap;
+        Bitmap? adjustedBitmap;
 
         // ドラッグ処理
         System.Windows.Point? dragStart;
@@ -41,15 +42,17 @@ namespace sikusiSubtitles.OCR {
         public event EventHandler<System.Drawing.Rectangle>? AreaSelected;
 
         public CaptureWindow(IntPtr windowHandle, System.Drawing.Rectangle captureArea) {
+            InitializeComponent();
+
             this.windowHandle = windowHandle;
             this.captureArea = captureArea;
 
-            InitializeComponent();
-
-            DrawingImage drawingImageSource = new DrawingImage(drawingGroup);
-            image.Source = drawingImageSource;
-
             ScreenCapture();
+        }
+
+        private void Window_Closed(object sender, EventArgs e) {
+            if (originalBitmap != null) originalBitmap.Dispose();
+            if (adjustedBitmap != null) adjustedBitmap.Dispose();
         }
 
         /** マウスのボタンが押された */
@@ -96,26 +99,16 @@ namespace sikusiSubtitles.OCR {
                 var height = rect.bottom - rect.top;
 
                 // 調整前（オリジナル）の状態のビットマップを作成
-                var originalBitmap = new Bitmap(width, height);
-                using (var g = Graphics.FromImage(originalBitmap)) {
-                    g.CopyFromScreen(rect.left, rect.top, 0, 0, originalBitmap.Size);
-                }
-                var hBitmap = originalBitmap.GetHbitmap();
-                originalBitmapSource = Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-                DeleteObject(hBitmap);
+                originalBitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                using var g = Graphics.FromImage(originalBitmap);
+                g.CopyFromScreen(rect.left, rect.top, 0, 0, originalBitmap.Size);
 
                 // 選択前の状態のビットマップを作成（暗いビットマップ）
-                var adjustedBitmap = AdjustBrightness(originalBitmap, 0.3f);
-                hBitmap = adjustedBitmap.GetHbitmap();
-                adjustedBitmapSource = Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-                DeleteObject(hBitmap);
+                adjustedBitmap = AdjustBrightness(originalBitmap, 0.3f);
 
-                // 描画する画像の一番下に暗い画像を配置する
-                ImageDrawing adjustedImage = new ImageDrawing();
-                adjustedImage.Rect = new Rect(0, 0, adjustedBitmap.Width, adjustedBitmap.Height);
-                adjustedImage.ImageSource = adjustedBitmapSource;
-                if (adjustedImage.CanFreeze) adjustedImage.Freeze();
-                drawingGroup.Children.Add(adjustedImage);
+                // イメージのソースになるWriteableBitmapを作成
+                writeableBitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Pbgra32, null);
+                image.Source = writeableBitmap;
 
                 CreateBitmapSource();
 
@@ -131,7 +124,7 @@ namespace sikusiSubtitles.OCR {
          * 画像の明るさを変更する
          */
         private Bitmap AdjustBrightness(System.Drawing.Image img, float brightness) {
-            var bmp = new Bitmap(img.Width, img.Height);
+            var bmp = new Bitmap(img.Width, img.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             using (var g = Graphics.FromImage(bmp)) {
                 var cm = new ColorMatrix(new float[][] {
                     new float[] {brightness, 0, 0, 0, 0},
@@ -149,29 +142,33 @@ namespace sikusiSubtitles.OCR {
         }
 
         private void CreateBitmapSource() {
-            if (!captureArea.IsEmpty) {
-                var w = captureArea.Width == 0 ? 1 : captureArea.Width;
-                var h = captureArea.Height == 0 ? 1 : captureArea.Height;
+            if (originalBitmap != null && adjustedBitmap != null && writeableBitmap != null) {
+                using var bitmap = adjustedBitmap.Clone() as System.Drawing.Bitmap;
+                if (bitmap != null) {
+                    if (!captureArea.IsEmpty) {
+                        using var g = Graphics.FromImage(bitmap);
 
-                // 選択範囲にオリジナルの画像を表示
-                if (originalImageDrawing == null) {
-                    originalImageDrawing = new ImageDrawing();
-                    drawingGroup.Children.Add(originalImageDrawing);
-                }
-                originalImageDrawing.Rect = new Rect(captureArea.Left, captureArea.Top, w, h);
-                originalImageDrawing.ImageSource = new CroppedBitmap(originalBitmapSource, new Int32Rect(captureArea.Left, captureArea.Top, w, h));
+                        // 選択範囲を明るくする
+                        g.DrawImage(originalBitmap, captureArea.Left, captureArea.Top, captureArea, GraphicsUnit.Pixel);
 
-                // 選択範囲に枠線を表示
-                if (borderGeometryDrawing == null) {
-                    var brush = System.Windows.Media.Brushes.Transparent;
-                    var pen = new System.Windows.Media.Pen(System.Windows.Media.Brushes.LimeGreen, 4);
-                    var rect = new RectangleGeometry();
-                    borderGeometryDrawing = new GeometryDrawing(brush, pen, rect);
-                    drawingGroup.Children.Add(borderGeometryDrawing);
-                }
-                var rectGeo = borderGeometryDrawing.Geometry as RectangleGeometry;
-                if (rectGeo != null) {
-                    rectGeo.Rect = new Rect(captureArea.Left, captureArea.Top, w, h);
+                        // 選択範囲に枠を付ける
+                        var pen = new System.Drawing.Pen(System.Drawing.Color.LimeGreen, 2);
+                        g.DrawRectangle(pen, captureArea.Left - 1, captureArea.Top - 1, captureArea.Width + 2, captureArea.Height + 2);
+                    }
+
+
+                    BitmapData data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                    try {
+                        writeableBitmap.Lock();
+                        try {
+                            CopyMemory(writeableBitmap.BackBuffer, data.Scan0, (writeableBitmap.BackBufferStride * bitmap.Height));
+                            writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, bitmap.Width, bitmap.Height));
+                        } finally {
+                            writeableBitmap.Unlock();
+                        }
+                    } finally {
+                        bitmap.UnlockBits(data);
+                    }
                 }
             }
         }

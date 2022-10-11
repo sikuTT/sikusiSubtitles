@@ -14,7 +14,7 @@ using Tesseract;
 
 namespace sikusiSubtitles.OCR {
     public class TesseractOcrService : OcrService {
-        public TesseractOcrService(ServiceManager serviceManager) : base(serviceManager, "Tesseract", "Tesseract", 100) {
+        public TesseractOcrService(ServiceManager serviceManager) : base(serviceManager, "Tesseract", "Tesseract", 200) {
         }
 
         public override UserControl? GetSettingPage() {
@@ -59,7 +59,6 @@ namespace sikusiSubtitles.OCR {
                 // OCRの実行
                 Tesseract.Page? page = null;
                 await Task.Run(() => page = tesseract.Process(image));
-
                 Debug.WriteLine("TesseractOcrService: " + page?.GetText());
                 if (page != null) {
                     string text = RemoveLineBreak(page.GetText());

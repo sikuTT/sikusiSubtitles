@@ -25,9 +25,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Resources\ei-translation.png" />
     <None Remove="Resources\mic.png" />
+    <None Remove="Resources\obs.png" />
+    <None Remove="Resources\ocr.png" />
+    <None Remove="Resources\shortcut.png" />
+    <None Remove="Resources\speak.png" />
     <None Remove="Resources\times.png" />
+    <None Remove="Resources\translation.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,9 +62,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\ei-translation.png" />
     <Resource Include="Resources\mic.png" />
+    <Resource Include="Resources\obs.png" />
+    <Resource Include="Resources\ocr.png" />
+    <Resource Include="Resources\shortcut.png" />
+    <Resource Include="Resources\speak.png" />
     <Resource Include="Resources\times.png" />
+    <Resource Include="Resources\translation.png" />
   </ItemGroup>
 
   <ItemGroup>

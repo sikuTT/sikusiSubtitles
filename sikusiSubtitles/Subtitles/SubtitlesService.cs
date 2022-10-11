@@ -46,7 +46,7 @@ namespace sikusiSubtitles.Subtitles {
         public SubtitlesService(ServiceManager serviceManager) : base(serviceManager, SubtitlesServiceManager.ServiceName, "Subtitles", "字幕", 100) {
             // ステータスバーに字幕で使用する翻訳エンジンを表示する
             var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
-            stackPanel.Children.Add(new Image { Source = new BitmapImage(new Uri("pack://application:,,,/Resources/ei-translation.png")) });
+            stackPanel.Children.Add(new Image { Source = new BitmapImage(new Uri("pack://application:,,,/Resources/translation.png")) });
             stackPanel.Children.Add(engineNameBox);
             serviceManager.AddStatusBarControl(stackPanel, 200);
         }

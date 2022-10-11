@@ -137,6 +137,7 @@ namespace sikusiSubtitles {
 
             // OCR Service
             new OcrServiceManager(serviceManager);
+            new WindowsOcrService(serviceManager);
             new TesseractOcrService(serviceManager);
             new AzureOcrService(serviceManager);
         }
@@ -160,10 +161,12 @@ namespace sikusiSubtitles {
 
                 var services = serviceManager.Services.FindAll(service => service.ServiceName == manager.ServiceName);
                 foreach (var service in services) {
-                    AddPage(service);
-                    if (manager.GetSettingPage() != null || manager.DisplayName != service.DisplayName) {
-                        var childItem = new TreeViewItem() { Name = service.Name, Header = service.DisplayName, IsExpanded = true };
-                        item.Items.Add(childItem);
+                    if (service.GetSettingPage() != null) {
+                        AddPage(service);
+                        if (manager.GetSettingPage() != null || manager.DisplayName != service.DisplayName) {
+                            var childItem = new TreeViewItem() { Name = service.Name, Header = service.DisplayName, IsExpanded = true };
+                            item.Items.Add(childItem);
+                        }
                     }
                 }
             }

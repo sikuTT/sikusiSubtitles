@@ -21,7 +21,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <TextBlock Text="音声読み上げ - システム標準" Style="{StaticResource Header}"></TextBlock>
+        <TextBlock Text="音声読み上げ - Windows標準" Style="{StaticResource Header}"></TextBlock>
         <Grid Grid.Column="1" Grid.Row="1" Margin="0,10,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>

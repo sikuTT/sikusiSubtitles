@@ -19,10 +19,8 @@ namespace sikusiSubtitles.OCR {
         public WindowsOcrService(ServiceManager serviceManager) : base(serviceManager, "WIndowsOCR", "Windows標準", 100) {
             availableLanguages = OcrEngine.AvailableRecognizerLanguages;
             languages = availableLanguages.Select(lang => new Language(lang.LanguageTag, lang.DisplayName)).ToList();
-        }
 
-        public override UserControl? GetSettingPage() {
-            return new WindowsOcrPage(ServiceManager, this);
+            settingsPage = new WindowsOcrPage(ServiceManager, this);
         }
 
         public override async Task<OcrResult> ExecuteAsync(System.Drawing.Bitmap bitmap, string language) {

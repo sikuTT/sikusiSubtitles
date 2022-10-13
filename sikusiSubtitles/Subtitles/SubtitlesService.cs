@@ -49,10 +49,9 @@ namespace sikusiSubtitles.Subtitles {
             stackPanel.Children.Add(new Image { Source = new BitmapImage(new Uri("pack://application:,,,/Resources/translation.png")) });
             stackPanel.Children.Add(engineNameBox);
             serviceManager.AddStatusBarControl(stackPanel, 200);
-        }
 
-        public override UserControl? GetSettingPage() {
-            return new SubtitlesPage(ServiceManager, this);
+            // 設定ページ
+            settingsPage = new SubtitlesPage(ServiceManager, this);
         }
 
         /** 設定の読み込み */

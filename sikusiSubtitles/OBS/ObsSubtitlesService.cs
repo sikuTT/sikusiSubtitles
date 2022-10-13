@@ -17,6 +17,7 @@ namespace sikusiSubtitles.OBS {
         public List<string> TranslateTargetList { get; set; } = new List<string>();
 
         public ObsSubtitlesService(ServiceManager serviceManager) : base(serviceManager, ObsServiceManager.ServiceName, "ObsSubtitles", "字幕", 200) {
+            settingsPage = new ObsSubtitlesPage(ServiceManager, this);
         }
 
         // Services
@@ -24,10 +25,6 @@ namespace sikusiSubtitles.OBS {
         private SubtitlesService? subtitlesService;
 
         private Dictionary<string, string> previousTexts = new Dictionary<string, string>();
-
-        public override UserControl? GetSettingPage() {
-            return new ObsSubtitlesPage(ServiceManager, this);
-        }
 
         public override void Init() {
             obsService = ServiceManager.GetService<ObsService>();

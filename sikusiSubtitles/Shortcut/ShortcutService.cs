@@ -62,10 +62,9 @@ namespace sikusiSubtitles.Shortcut {
             Shortcuts = new List<Shortcut>();
 
             CreateKeyNames();
-        }
 
-        public override System.Windows.Controls.UserControl? GetSettingPage() {
-            return new ShortcutPage(ServiceManager, this);
+            // 設定ページ
+            settingsPage = new ShortcutPage(ServiceManager, this);
         }
 
         public override void Init() {

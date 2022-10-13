@@ -18,11 +18,7 @@ namespace sikusiSubtitles.Translation {
         public string Key { get; set; } = "";
 
         public GoogleBasicTranslationService(ServiceManager serviceManager) : base(serviceManager, "GoogleBasicTranslation", "Google Cloud Translation", 200) {
-        }
-
-        public override UserControl? GetSettingPage()
-        {
-            return new GoogleBasicTranslationPage(ServiceManager, this);
+            settingsPage = new GoogleBasicTranslationPage(ServiceManager, this);
         }
 
         public override void Load(JToken token) {

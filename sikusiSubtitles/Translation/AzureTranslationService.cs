@@ -19,12 +19,8 @@ namespace sikusiSubtitles.Translation {
         private HttpClient HttpClient = new HttpClient();
 
         public AzureTranslationService(ServiceManager serviceManager) : base(serviceManager, "AzureTranslation", "Azure Cognitive Services", 300) {
+            settingsPage = new AzureTranslationPage(ServiceManager, this);
             this.languages.Sort((a, b) => a.Name.CompareTo(b.Name));
-        }
-
-        public override UserControl? GetSettingPage()
-        {
-            return new AzureTranslationPage(ServiceManager, this);
         }
 
         public override void Load(JToken token) {

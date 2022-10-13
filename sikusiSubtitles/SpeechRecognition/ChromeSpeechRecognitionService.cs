@@ -19,12 +19,9 @@ namespace sikusiSubtitles.SpeechRecognition {
         ChromeSpeechRecognitionWebSocketServer? webSocketServer;
 
         public ChromeSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "ChromeSpeechRecognition", "Google Chrome", 100) {
+            settingsPage = new ChromeSpeechRecognitionPage(ServiceManager, this);
         }
 
-        public override UserControl? GetSettingPage()
-        {
-            return new ChromeSpeechRecognitionPage(ServiceManager, this);
-        }
         public override void Load(JToken token) {
             HttpServerPort = token.Value<int?>("HttpServerPort") ?? HttpServerPort;
             WebSocketPort = token.Value<int?>("WebSocketPort") ?? WebSocketPort;

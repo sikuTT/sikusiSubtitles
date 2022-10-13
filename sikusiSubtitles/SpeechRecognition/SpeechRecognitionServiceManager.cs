@@ -55,11 +55,9 @@ namespace sikusiSubtitles.SpeechRecognition {
             // マイク設定
             var enumerator = new MMDeviceEnumerator();
             Device = enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Console);
-        }
 
-        public override UserControl? GetSettingPage()
-        {
-            return new SpeechRecognitionPage(ServiceManager, this);
+            // 設定ページ
+            settingsPage = new SpeechRecognitionPage(ServiceManager, this);
         }
 
         public override void Init()
@@ -94,13 +92,11 @@ namespace sikusiSubtitles.SpeechRecognition {
 
         /** 音声認識の開始 */
         private void speechRecognitionButton_Checked(object? sender, RoutedEventArgs e) {
-            this.SetCheckBoxButtonColor(this.speechRecognitionButton);
             this.SpeechRecognitionStart();
         }
 
         /** 音声認識の狩猟 */
         private void speechRecognitionButton_Unchecked(object? sender, RoutedEventArgs e) {
-            this.SetCheckBoxButtonColor(this.speechRecognitionButton);
             this.SpeechRecognitionStop();
         }
 

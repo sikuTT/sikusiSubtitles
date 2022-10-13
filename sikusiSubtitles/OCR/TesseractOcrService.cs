@@ -15,10 +15,8 @@ using Tesseract;
 namespace sikusiSubtitles.OCR {
     public class TesseractOcrService : OcrService {
         public TesseractOcrService(ServiceManager serviceManager) : base(serviceManager, "Tesseract", "Tesseract", 200) {
-        }
-
-        public override UserControl? GetSettingPage() {
-            return new TesseractOcrPage(ServiceManager, this);
+            // 設定ぺーいj
+            settingsPage = new TesseractOcrPage(ServiceManager, this);
         }
 
         public override List<Language> GetLanguages() {

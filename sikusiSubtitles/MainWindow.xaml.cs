@@ -70,7 +70,7 @@ namespace sikusiSubtitles {
 
 
         private void AddPage(Service service) {
-            var page = service.GetSettingPage();
+            var page = service.SettingsPage;
             if (page != null) {
                 page.Name = service.Name;
                 Grid.SetRow(page, 0);
@@ -161,9 +161,9 @@ namespace sikusiSubtitles {
 
                 var services = serviceManager.Services.FindAll(service => service.ServiceName == manager.ServiceName);
                 foreach (var service in services) {
-                    if (service.GetSettingPage() != null) {
+                    if (service.SettingsPage != null) {
                         AddPage(service);
-                        if (manager.GetSettingPage() != null || manager.DisplayName != service.DisplayName) {
+                        if (manager.SettingsPage != null || manager.DisplayName != service.DisplayName) {
                             var childItem = new TreeViewItem() { Name = service.Name, Header = service.DisplayName, IsExpanded = true };
                             item.Items.Add(childItem);
                         }

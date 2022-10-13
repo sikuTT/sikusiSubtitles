@@ -19,6 +19,9 @@ namespace sikusiSubtitles.SpeechRecognition {
         ChromeSpeechRecognitionWebSocketServer? webSocketServer;
 
         public ChromeSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "ChromeSpeechRecognition", "Google Chrome", 100) {
+        }
+
+        public override void Init() {
             settingsPage = new ChromeSpeechRecognitionPage(ServiceManager, this);
         }
 

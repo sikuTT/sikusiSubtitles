@@ -26,7 +26,15 @@ namespace sikusiSubtitles.OCR {
         private Shortcut.Shortcut clearObsTextShortcut = new Shortcut.Shortcut("clear-obs-text", "OCR", "OCRの翻訳結果をクリアする", "");
 
         public OcrServiceManager(ServiceManager serviceManager) : base(serviceManager, ServiceName, ServiceName, "OCR", 500, true) {
+        }
+
+        public override void Init() {
             settingsPage = new OcrPage(ServiceManager, this);
+            var shortcutService = this.ServiceManager.GetService<ShortcutService>();
+            if (shortcutService != null) {
+                shortcutService.Shortcuts.Add(ocrShortcut);
+                shortcutService.Shortcuts.Add(clearObsTextShortcut);
+            }
         }
 
         public override void Load(JToken token) {
@@ -54,14 +62,6 @@ namespace sikusiSubtitles.OCR {
                 new JProperty("OcrShortcutKey", ocrShortcut.ShortcutKey),
                 new JProperty("ClearObsTextShortcutKey", clearObsTextShortcut.ShortcutKey)
             };
-        }
-
-        public override void Init() {
-            var shortcutService = this.ServiceManager.GetService<ShortcutService>();
-            if (shortcutService != null) {
-                shortcutService.Shortcuts.Add(ocrShortcut);
-                shortcutService.Shortcuts.Add(clearObsTextShortcut);
-            }
         }
 
         public OcrService? GetOcrEngine() {

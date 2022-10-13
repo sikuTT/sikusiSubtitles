@@ -16,8 +16,7 @@ namespace sikusiSubtitles.OBS {
         public string VoiceTarget { get; set; } = "";
         public List<string> TranslateTargetList { get; set; } = new List<string>();
 
-        public ObsSubtitlesService(ServiceManager serviceManager) : base(serviceManager, ObsServiceManager.ServiceName, "ObsSubtitles", "字幕", 200) {
-            settingsPage = new ObsSubtitlesPage(ServiceManager, this);
+        public ObsSubtitlesService(ServiceManager serviceManager) : base(serviceManager, SubtitlesServiceManager.ServiceName, "ObsSubtitles", "OBS", 200) {
         }
 
         // Services
@@ -27,6 +26,8 @@ namespace sikusiSubtitles.OBS {
         private Dictionary<string, string> previousTexts = new Dictionary<string, string>();
 
         public override void Init() {
+            settingsPage = new ObsSubtitlesPage(ServiceManager, this);
+
             obsService = ServiceManager.GetService<ObsService>();
             if (obsService != null) {
                 obsService.ConnectionChanged += ObsConnectionChanged;

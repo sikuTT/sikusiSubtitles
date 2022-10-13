@@ -49,9 +49,19 @@ namespace sikusiSubtitles.Subtitles {
             stackPanel.Children.Add(new Image { Source = new BitmapImage(new Uri("pack://application:,,,/Resources/translation.png")) });
             stackPanel.Children.Add(engineNameBox);
             serviceManager.AddStatusBarControl(stackPanel, 200);
+        }
 
-            // 設定ページ
+        /**
+         * サービスの初期化
+         * 音声認識の監視を始める。
+         */
+        public override void Init() {
             settingsPage = new SubtitlesPage(ServiceManager, this);
+            speechRecognitionServiceManager = ServiceManager.GetService<SpeechRecognitionServiceManager>();
+            if (speechRecognitionServiceManager != null) {
+                speechRecognitionServiceManager.Recognizing += RecognizingHandler;
+                speechRecognitionServiceManager.Recognized += RecognizedHandler;
+            }
         }
 
         /** 設定の読み込み */
@@ -84,18 +94,6 @@ namespace sikusiSubtitles.Subtitles {
                 new JProperty("AdditionalClear", AdditionalClear),
                 new JProperty("AdditionalClearTime", AdditionalClearTime),
             };
-        }
-
-        /**
-         * サービスの初期化
-         * 音声認識の監視を始める。
-         */
-        public override void Init() {
-            speechRecognitionServiceManager = ServiceManager.GetService<SpeechRecognitionServiceManager>();
-            if (speechRecognitionServiceManager != null) {
-                speechRecognitionServiceManager.Recognizing += RecognizingHandler;
-                speechRecognitionServiceManager.Recognized += RecognizedHandler;
-            }
         }
 
         /** 音声が読み上げられたら字幕を更新する */

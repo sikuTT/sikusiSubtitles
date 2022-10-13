@@ -55,13 +55,11 @@ namespace sikusiSubtitles.SpeechRecognition {
             // マイク設定
             var enumerator = new MMDeviceEnumerator();
             Device = enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Console);
-
-            // 設定ページ
-            settingsPage = new SpeechRecognitionPage(ServiceManager, this);
         }
 
         public override void Init()
         {
+            settingsPage = new SpeechRecognitionPage(ServiceManager, this);
             speechRecognitionServices = ServiceManager.GetServices<SpeechRecognitionService>();
         }
 

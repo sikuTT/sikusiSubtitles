@@ -32,12 +32,14 @@ namespace sikusiSubtitles {
         public MainWindow() {
             InitializeComponent();
 
-            // サービスとメニュー・設定画面を作成
+            // サービスの作成
             CreateServices();
-            CreateMenuAndSettingPages();
 
             // 設定をロード
             LoadSettings();
+
+            // メニューと設定画面の作成
+            CreateMenuAndSettingPages();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {

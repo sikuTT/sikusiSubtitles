@@ -18,6 +18,9 @@ namespace sikusiSubtitles {
 
         public bool IsManager { get; set; }
 
+        public UserControl? SettingsPage => settingsPage;
+        protected UserControl? settingsPage;
+
         public Service(ServiceManager serviceManager, string serviceName, string name, string displayName, int index, bool manager = false) {
             ServiceManager = serviceManager;
             ServiceName = serviceName;
@@ -33,24 +36,12 @@ namespace sikusiSubtitles {
         public virtual void Init() { }
         public virtual void Finish() { }
 
-        public virtual UserControl? GetSettingPage() { return null; }
-
         public void InvokeServiceStopped(object? args) {
             ServiceStopped?.Invoke(this, args);
         }
 
-        /**
-         * チェックボックスボタンの状態に合わせて色を変更する
-         * （デフォルトの色は分かりにくいので）
-         */
-        protected void SetCheckBoxButtonColor(ToggleButton checkbox) {
-            if (checkbox.IsChecked == true) {
-                // checkbox.BackColor = SystemColors.Highlight;
-                // checkbox.ForeColor = SystemColors.HighlightText;
-            } else {
-                // checkbox.BackColor = SystemColors.ButtonHighlight;
-                // checkbox.ForeColor = SystemColors.ControlText;
-            }
+        protected void SetSettingsPage(UserControl settingsPage) {
+            this.settingsPage = settingsPage;
         }
 
         protected string Encrypt(string text) {

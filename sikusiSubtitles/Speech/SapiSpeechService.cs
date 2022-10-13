@@ -25,10 +25,8 @@ namespace sikusiSubtitles.Speech {
             foreach (var voice in voices2) {
                 this.voices.Add(new Voice("SAPI", voice.VoiceInfo.Id, voice.VoiceInfo.Name, voice.VoiceInfo.Culture.Name, voice.VoiceInfo.Gender.ToString()));
             }
-        }
 
-        public override UserControl? GetSettingPage() {
-            return new SystemSpeechPage(ServiceManager, this);
+            settingsPage = new SystemSpeechPage(ServiceManager, this);
         }
 
         public override List<Voice> GetVoices() {

@@ -36,10 +36,9 @@ namespace sikusiSubtitles.Speech {
 
         public VoiceVoxSpeechService(ServiceManager serviceManager) : base(serviceManager, "VOICEVOX", "VOICEVOX", 500) {
             Task task = GetSpeakers();
-        }
 
-        public override UserControl? GetSettingPage() {
-            return new VoiceVoxSpeechPage(ServiceManager, this);
+            // 設定ページ
+            settingsPage = new VoiceVoxSpeechPage(ServiceManager, this);
         }
 
         public override List<Voice> GetVoices() {

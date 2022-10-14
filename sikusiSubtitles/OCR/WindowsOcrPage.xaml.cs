@@ -23,10 +23,10 @@ namespace sikusiSubtitles.OCR {
         WindowsOcrService service;
 
         public WindowsOcrPage(ServiceManager serviceManager, WindowsOcrService service) {
-            InitializeComponent();
-
             this.serviceManager = serviceManager;
             this.service = service;
+
+            InitializeComponent();
 
             languageListBox.ItemsSource = service.GetLanguages();
             languageListBox.DisplayMemberPath = "Name";

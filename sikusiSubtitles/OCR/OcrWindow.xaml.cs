@@ -51,11 +51,11 @@ namespace sikusiSubtitles.OCR {
         int scale = 1;
 
         public OcrWindow(ServiceManager serviceManager, OcrServiceManager ocrManager, int processId) {
-            InitializeComponent();
-
             this.serviceManager = serviceManager;
             this.ocrManager = ocrManager;
             this.processId = processId;
+
+            InitializeComponent();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {

@@ -19,9 +19,6 @@ namespace sikusiSubtitles.OCR {
 
 
         public AzureOcrService(ServiceManager serviceManager) : base(serviceManager, "AzureOcr", "Azure Cognitive Services", 300) {
-        }
-
-        public override void Init() {
             settingsPage = new AzureOcrPage(ServiceManager, this);
         }
 

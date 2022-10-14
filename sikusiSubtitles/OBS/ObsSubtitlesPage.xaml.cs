@@ -53,14 +53,14 @@ namespace sikusiSubtitles.OBS {
         public ObsSubtitlesPage(ServiceManager serviceManager, ObsSubtitlesService service) {
             this.serviceManager = serviceManager;
             this.service = service;
-            this.subtitlesService = serviceManager.GetService<SubtitlesService>();
 
             InitializeComponent();
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e) {
-            targetListView.ItemsSource = translateTargets;
+            this.subtitlesService = serviceManager.GetService<SubtitlesService>();
 
+            targetListView.ItemsSource = translateTargets;
             voiceTextBox.Text = service.VoiceTarget;
         }
 

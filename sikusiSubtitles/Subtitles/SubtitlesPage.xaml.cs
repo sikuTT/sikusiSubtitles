@@ -66,12 +66,12 @@ namespace sikusiSubtitles.Subtitles {
             this.service = service;
 
             InitializeComponent();
-
-            // 翻訳サービス一覧
-            translationServices = serviceManager.GetServices<TranslationService>();
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e) {
+            // 翻訳サービス一覧
+            translationServices = serviceManager.GetServices<TranslationService>();
+
             // 翻訳先一覧を必要な数だけ作成する
             listBox.DataContext = translationLanguageList;
             foreach (var lang in service.TranslationLanguageToList) {

@@ -45,6 +45,7 @@ namespace sikusiSubtitles.SpeechRecognition {
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e) {
             // マイク一覧
+            // マイク一覧はそのままItemsSourceに設定すると動作が重たかったので、文字列だけを設定する
             foreach (var mic in this.micList) {
                 var i = this.micComboBox.Items.Add(mic.FriendlyName);
                 if (mic.ID == speechRecognitionServiceManager.Device?.ID) this.micComboBox.SelectedIndex = i;

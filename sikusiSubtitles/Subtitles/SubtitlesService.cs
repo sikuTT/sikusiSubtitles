@@ -49,6 +49,9 @@ namespace sikusiSubtitles.Subtitles {
             stackPanel.Children.Add(new Image { Source = new BitmapImage(new Uri("pack://application:,,,/Resources/translation.png")) });
             stackPanel.Children.Add(engineNameBox);
             serviceManager.AddStatusBarControl(stackPanel, 200);
+
+            // 設定ページ
+            settingsPage = new SubtitlesPage(ServiceManager, this);
         }
 
         /**
@@ -56,7 +59,6 @@ namespace sikusiSubtitles.Subtitles {
          * 音声認識の監視を始める。
          */
         public override void Init() {
-            settingsPage = new SubtitlesPage(ServiceManager, this);
             speechRecognitionServiceManager = ServiceManager.GetService<SpeechRecognitionServiceManager>();
             if (speechRecognitionServiceManager != null) {
                 speechRecognitionServiceManager.Recognizing += RecognizingHandler;

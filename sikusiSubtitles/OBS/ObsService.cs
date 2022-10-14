@@ -35,9 +35,7 @@ namespace sikusiSubtitles.OBS {
             obsButton.Checked += obsButton_Checked;
             obsButton.Unchecked += obsButton_Unchecked;
             serviceManager.AddTopFlowControl(obsButton, 200);
-        }
 
-        public override void Init() {
             settingsPage = new ObsPage(ServiceManager, this);
         }
 

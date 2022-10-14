@@ -15,9 +15,8 @@ namespace sikusiSubtitles.Translation {
 
         public DeepLTranslationService(ServiceManager serviceManager) : base(serviceManager, "DeepL", "DeepL", 400) {
             this.languages.Sort((a, b) => a.Name.CompareTo(b.Name));
-        }
 
-        public override void Init() {
+            // 設定ページ
             settingsPage = new DeepLTranslationPage(ServiceManager, this);
         }
 

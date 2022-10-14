@@ -62,10 +62,11 @@ namespace sikusiSubtitles.Shortcut {
             Shortcuts = new List<Shortcut>();
 
             CreateKeyNames();
+
+            settingsPage = new ShortcutPage(ServiceManager, this);
         }
 
         public override void Init() {
-            settingsPage = new ShortcutPage(ServiceManager, this);
             Start();
         }
 

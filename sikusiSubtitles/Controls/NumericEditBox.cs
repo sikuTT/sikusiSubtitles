@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace sikusiSubtitles {
+namespace sikusiSubtitles.Controls {
     /// <summary>
     /// このカスタム コントロールを XAML ファイルで使用するには、手順 1a または 1b の後、手順 2 に従います。
     ///
@@ -47,27 +47,35 @@ namespace sikusiSubtitles {
     public class NumericEditBox : TextBox {
         // public static readonly DependencyProperty MinValueProperty = DependencyProperty.Register("MinValue", typeof(int), typeof(NumericEditBox));
         // public static readonly DependencyProperty MaxvalueProperty = DependencyProperty.Register("MaxValue", typeof(int), typeof(NumericEditBox));
-        
+
         static NumericEditBox() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(NumericEditBox), new FrameworkPropertyMetadata(typeof(NumericEditBox)));
         }
 
         public int Value {
-            get { return int.Parse(Text); }
-            set { Text = value.ToString(); }
+            get => this.value;
+            set {
+                Text = value.ToString();
+                this.value = value;
+            }
         }
+        int value;
 
-        public int MinValue { get; set; } = Int32.MinValue;
-        public int MaxValue { get; set; } = Int32.MaxValue;
+        public int MinValue { get; set; } = int.MinValue;
+        public int MaxValue { get; set; } = int.MaxValue;
 
         protected override void OnLostFocus(RoutedEventArgs e) {
             base.OnLostFocus(e);
 
-            var value = int.Parse(Text);
-            if (value < MinValue) {
-                Text = MinValue.ToString();
-            } else if (value > MaxValue) {
-                Text = MaxValue.ToString();
+            try {
+                Value = int.Parse(Text);
+                if (Value < MinValue) {
+                    Value = MinValue;
+                } else if (Value > MaxValue) {
+                    Value = MaxValue;
+                }
+            } catch (Exception) {
+                Text = Value.ToString();
             }
         }
 
@@ -85,12 +93,12 @@ namespace sikusiSubtitles {
                 e.Handled = true;
             } else if (e.Key == Key.Up || e.Key == Key.Down) {
                 int num = 0;
-                Int32.TryParse(Text, out num);
+                int.TryParse(Text, out num);
 
                 if (e.Key == Key.Up && num < MaxValue) {
-                    Text = (++num).ToString();
+                    Value = ++num;
                 } else if (e.Key == Key.Down && num > MinValue) {
-                    Text = (--num).ToString();
+                    Value = --num;
                 }
             }
         }

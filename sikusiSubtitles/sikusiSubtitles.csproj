@@ -18,13 +18,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controls\**" />
-    <EmbeddedResource Remove="Controls\**" />
-    <None Remove="Controls\**" />
-    <Page Remove="Controls\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Resources\mic.png" />
     <None Remove="Resources\obs.png" />
     <None Remove="Resources\ocr.png" />

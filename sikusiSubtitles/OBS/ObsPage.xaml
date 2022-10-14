@@ -3,8 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:sikusiSubtitles.OBS"
-             xmlns:sikusiSubtitles="clr-namespace:sikusiSubtitles" x:Class="sikusiSubtitles.OBS.ObsPage"
+             xmlns:local="clr-namespace:sikusiSubtitles.OBS" x:Class="sikusiSubtitles.OBS.ObsPage"
+             xmlns:sikusiSubtitles="clr-namespace:sikusiSubtitles"
+             xmlns:Controls="clr-namespace:sikusiSubtitles.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
     <UserControl.Resources>
@@ -13,7 +14,7 @@
                 <ResourceDictionary Source="../Style.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource List}"></Style>
-            <Style TargetType="{x:Type sikusiSubtitles:NumericEditBox}" BasedOn="{StaticResource List}"></Style>
+            <Style TargetType="{x:Type Controls:NumericEditBox}" BasedOn="{StaticResource List}"></Style>
             <Style TargetType="{x:Type PasswordBox}" BasedOn="{StaticResource List}"></Style>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -33,7 +34,7 @@
                 <Label Content="IP" VerticalAlignment="Center"/>
                 <TextBox x:Name="ipTextBox" Grid.Column="1" TextChanged="ipTextBox_TextChanged"/>
                 <Label Content="ポート" Grid.Row="1" VerticalAlignment="Center"/>
-                <sikusiSubtitles:NumericEditBox x:Name="portNumericEditBox" Grid.Column="1" Grid.Row="1" TextChanged="portNumericEditBox_TextChanged" MinValue="1024" MaxValue="65535"/>
+                <Controls:NumericEditBox x:Name="portNumericEditBox" Grid.Column="1" Grid.Row="1" TextChanged="portNumericEditBox_TextChanged" MinValue="1024" MaxValue="65535"/>
                 <Label Content="パスワード" Grid.Row="2" VerticalAlignment="Center"/>
                 <PasswordBox x:Name="passwordBox" Grid.Row="2" Grid.Column="1" PasswordChanged="passwordBox_PasswordChanged"/>
             </Grid>

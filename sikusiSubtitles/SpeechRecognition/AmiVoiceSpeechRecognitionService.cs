@@ -27,9 +27,6 @@ namespace sikusiSubtitles.SpeechRecognition {
         }
 
         public AmiVoiceSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "AmiVoice", "AmiVoice", 300) {
-        }
-
-        public override void Init() {
             settingsPage = new AmiVoiceSpeechRecognitionPage(ServiceManager, this);
         }
 

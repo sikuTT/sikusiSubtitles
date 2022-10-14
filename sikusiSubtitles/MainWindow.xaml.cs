@@ -29,17 +29,18 @@ namespace sikusiSubtitles {
     public partial class MainWindow : Window {
         ServiceManager serviceManager = new ServiceManager();
 
+        // サービス作成 → 設定ページ作成 → サービスの設定をロード → 設定ページのフォームロードの順で動かす
         public MainWindow() {
             InitializeComponent();
 
             // サービスの作成
             CreateServices();
 
-            // 設定をロード
-            LoadSettings();
-
             // メニューと設定画面の作成
             CreateMenuAndSettingPages();
+
+            // 設定をロード
+            LoadSettings();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {

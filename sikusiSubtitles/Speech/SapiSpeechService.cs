@@ -25,9 +25,8 @@ namespace sikusiSubtitles.Speech {
             foreach (var voice in voices2) {
                 this.voices.Add(new Voice("SAPI", voice.VoiceInfo.Id, voice.VoiceInfo.Name, voice.VoiceInfo.Culture.Name, voice.VoiceInfo.Gender.ToString()));
             }
-        }
 
-        public override void Init() {
+            // 設定ページ
             settingsPage = new SystemSpeechPage(ServiceManager, this);
         }
 

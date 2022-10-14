@@ -20,9 +20,7 @@ namespace sikusiSubtitles.Translation {
 
         public AzureTranslationService(ServiceManager serviceManager) : base(serviceManager, "AzureTranslation", "Azure Cognitive Services", 300) {
             this.languages.Sort((a, b) => a.Name.CompareTo(b.Name));
-        }
 
-        public override void Init() {
             settingsPage = new AzureTranslationPage(ServiceManager, this);
         }
 

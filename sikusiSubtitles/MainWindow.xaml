@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:sikusiSubtitles"
         x:Class="sikusiSubtitles.MainWindow"
         mc:Ignorable="d"
-        Title="sikusiSubtitles" Height="600" Width="800" Closed="Window_Closed" Loaded="Window_Loaded">
+        Title="sikusiSubtitles" Height="600" Width="800" Closed="Window_Closed" Loaded="Window_Loaded"
+        ResizeMode="CanResizeWithGrip">
     <Grid Margin="0,0,0,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>

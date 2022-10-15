@@ -16,8 +16,8 @@ namespace sikusiSubtitles.OBS {
         public event EventHandler<bool>? ConnectionChanged;
 
         public ObsWebSocket ObsSocket { get; }
-        public string IP { get; set; } = "";
-        public int Port { get; set; }
+        public string IP { get; set; } = "127.0.0.1";
+        public int Port { get; set; } = 4455;
         public string Password { get; set; } = "";
 
         private ToggleButton obsButton;
@@ -40,8 +40,8 @@ namespace sikusiSubtitles.OBS {
         }
 
         public override void Load(JToken token) {
-            IP = token.Value<string>("IP") ?? "127.0.0.1";
-            Port = token.Value<int?>("Port") ?? 4455;
+            IP = token.Value<string>("IP") ?? IP;
+            Port = token.Value<int?>("Port") ?? Port;
             Password = Decrypt(token.Value<string>("Password") ?? "");
         }
 

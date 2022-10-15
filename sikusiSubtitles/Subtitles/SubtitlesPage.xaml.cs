@@ -189,32 +189,44 @@ namespace sikusiSubtitles.Subtitles {
 
         /** 「一定時間で字幕を消す」を設定 */
         private void clearIntervalCheckBox_Checked(object sender, RoutedEventArgs e) {
-            service.ClearInterval = true;
+            if (IsLoaded) {
+                service.ClearInterval = true;
+            }
         }
 
         /** 「一定時間で字幕を消す」の設定を解除 */
         private void clearIntervalCheckBox_Unchecked(object sender, RoutedEventArgs e) {
-            service.ClearInterval = false;
+            if (IsLoaded) {
+                service.ClearInterval = false;
+            }
         }
 
         /** 字幕を消すまでの時間の設定が変更された */
         private void clearIntervalNumericEditBox_ValueChanged(object sender, RoutedPropertyChangedEventArgs<int> e) {
-            service.ClearIntervalTime = e.NewValue;
+            if (IsLoaded) {
+                service.ClearIntervalTime = e.NewValue;
+            }
         }
 
         /** 文字場長い場合、字幕を消すまでの時間を長くするオプションがチェックされた */
         private void additionalClearTimeCheckBox_Checked(object sender, RoutedEventArgs e) {
-            service.AdditionalClear = true;
+            if (IsLoaded) {
+                service.AdditionalClear = true;
+            }
         }
 
         /** 文字場長い場合、字幕を消すまでの時間を長くするオプションが解除された */
         private void additionalClearTimeCheckBox_Unchecked(object sender, RoutedEventArgs e) {
-            service.AdditionalClear = false;
+            if (IsLoaded) {
+                service.AdditionalClear = false;
+            }
         }
 
         /** 文字が長い場合、字幕を消すまでの時間をどれだけ長くするかの設定が変更された */
         private void additionalClearTimeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-            service.AdditionalClearTime = (int)additionalClearTimeSlider.Value;
+            if (IsLoaded) {
+                service.AdditionalClearTime = (int)additionalClearTimeSlider.Value;
+            }
         }
     }
 }

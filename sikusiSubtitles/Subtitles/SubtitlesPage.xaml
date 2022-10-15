@@ -76,7 +76,7 @@
                     <CheckBox x:Name="clearIntervalCheckBox" Content="一定時間で字幕を消す" Checked="clearIntervalCheckBox_Checked" Unchecked="clearIntervalCheckBox_Unchecked"/>
                     <StackPanel Grid.Row="1" Orientation="Horizontal">
                         <Label Content="消すまでの時間"/>
-                        <Controls:NumericEditBox x:Name="clearIntervalNumericEditBox" Width="81" TextChanged="clearIntervalNumericEditBox_TextChanged" MinValue="1" MaxValue="10"/>
+                        <Controls:NumericEditBox x:Name="clearIntervalNumericEditBox" Width="81" ValueChanged="clearIntervalNumericEditBox_ValueChanged" MinValue="1" MaxValue="10"/>
                         <Label Content="秒"/>
                     </StackPanel>
                 </Grid>

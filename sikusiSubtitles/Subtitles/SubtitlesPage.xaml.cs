@@ -198,8 +198,8 @@ namespace sikusiSubtitles.Subtitles {
         }
 
         /** 字幕を消すまでの時間の設定が変更された */
-        private void clearIntervalNumericEditBox_TextChanged(object sender, TextChangedEventArgs e) {
-            service.ClearIntervalTime = clearIntervalNumericEditBox.Value;
+        private void clearIntervalNumericEditBox_ValueChanged(object sender, RoutedPropertyChangedEventArgs<int> e) {
+            service.ClearIntervalTime = e.NewValue;
         }
 
         /** 文字場長い場合、字幕を消すまでの時間を長くするオプションがチェックされた */

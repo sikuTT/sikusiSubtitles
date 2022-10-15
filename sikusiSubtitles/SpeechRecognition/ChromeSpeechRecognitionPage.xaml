@@ -33,8 +33,8 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Label Content="ポート" VerticalAlignment="Center"/>
-                <Controls:NumericEditBox x:Name="httpPortNumericEditBox" Grid.Column="1" Width="90" HorizontalAlignment="Left" TextChanged="httpPortNumericEditBox_TextChanged" MinValue="1024" MaxValue="65535"/>
-                <Controls:NumericEditBox x:Name="webSocketPortNumericEditBox" Grid.Column="1" Width="90" HorizontalAlignment="Left" TextChanged="webSocketPortNumericEditBox_TextChanged" MinValue="1024" MaxValue="65535" Grid.Row="1"/>
+                <Controls:NumericEditBox x:Name="httpPortNumericEditBox" Grid.Column="1" Width="90" HorizontalAlignment="Left" MinValue="1024" MaxValue="65535" ValueChanged="httpPortNumericEditBox_ValueChanged"/>
+                <Controls:NumericEditBox x:Name="webSocketPortNumericEditBox" Grid.Column="1" Grid.Row="1" Width="90" HorizontalAlignment="Left" MinValue="1024" MaxValue="65535" ValueChanged="webSocketPortNumericEditBox_ValueChanged"/>
                 <TextBlock Grid.Row="2" Grid.Column="1" Text="※Chromeからの接続に使用するポートです。" TextWrapping="Wrap"></TextBlock>
             </Grid>
         </GroupBox>

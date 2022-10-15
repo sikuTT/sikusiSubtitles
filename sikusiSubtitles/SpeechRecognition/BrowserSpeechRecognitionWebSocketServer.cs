@@ -11,14 +11,14 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace sikusiSubtitles.SpeechRecognition {
-    public class ChromeSpeechRecognitionWebSocketServer {
+    public class BrowserSpeechRecognitionWebSocketServer {
         HttpListener? Server;
 
         public event EventHandler<SpeechRecognitionEventArgs>? Recognizing;
         public event EventHandler<SpeechRecognitionEventArgs>? Recognized;
         public event EventHandler<bool>? Closed;
 
-        public ChromeSpeechRecognitionWebSocketServer(int port) {
+        public BrowserSpeechRecognitionWebSocketServer(int port) {
             Server = new HttpListener();
             Server.Prefixes.Add($"http://127.0.0.1:{port}/");
         }
@@ -42,7 +42,7 @@ namespace sikusiSubtitles.SpeechRecognition {
                             await Receive(webSocket);
                         });
                     } catch (Exception ex) {
-                        Debug.WriteLine("ChromeSpeechRecognitionWebSocketServer.Start: " + ex.Message);
+                        Debug.WriteLine("BrowserSpeechRecognitionWebSocketServer.Start: " + ex.Message);
                         break;
                     }
                 }
@@ -93,7 +93,7 @@ namespace sikusiSubtitles.SpeechRecognition {
                     }
 
                 } catch (Exception ex) {
-                    Debug.WriteLine("ChromeSpeechRecognitionWebSocketServer.Receive: " + ex.Message);
+                    Debug.WriteLine("BrowserSpeechRecognitionWebSocketServer.Receive: " + ex.Message);
                 }
             }
         }

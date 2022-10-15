@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,7 +28,7 @@ namespace sikusiSubtitles.SpeechRecognition {
                 SetStatusBarText();
             }
         }
-        string engine = "ChromeSpeechRecognition";
+        string engine = "EdgeSpeechRecognition";
 
         public string Language { get; set; } = "";
 
@@ -148,10 +149,12 @@ namespace sikusiSubtitles.SpeechRecognition {
         }
 
         private void RecognizingHandler(Object? sender, SpeechRecognitionEventArgs args) {
+            Debug.WriteLine($"SpeechRecognitionServiceManager: false: {args.Text}");
             this.Recognizing?.Invoke(sender, args);
         }
 
         private void RecognizedHandler(Object? sender, SpeechRecognitionEventArgs args) {
+            Debug.WriteLine($"SpeechRecognitionServiceManager: true: {args.Text}");
             this.Recognized?.Invoke(sender, args);
         }
 

@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace sikusiSubtitles.SpeechRecognition {
-    public class ChromeSpeechRecognitionWebServer {
+    public class BrowserSpeechRecognitionWebServer {
         int Port;
         HttpListener? Listener;
 
-        public ChromeSpeechRecognitionWebServer(int port) {
+        public BrowserSpeechRecognitionWebServer(int port) {
             Port = port;
         }
 

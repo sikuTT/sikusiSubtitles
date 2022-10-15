@@ -16,13 +16,13 @@ using System.Windows.Shapes;
 
 namespace sikusiSubtitles.SpeechRecognition {
     /// <summary>
-    /// ChromeSpeechRecognitionPage.xaml の相互作用ロジック
+    /// BrowserSpeechRecognitionPage.xaml の相互作用ロジック
     /// </summary>
-    public partial class ChromeSpeechRecognitionPage : UserControl {
+    public partial class BrowserSpeechRecognitionPage : UserControl {
         ServiceManager serviceManager;
-        ChromeSpeechRecognitionService service;
+        BrowserSpeechRecognitionPageService service;
 
-        public ChromeSpeechRecognitionPage(ServiceManager serviceManager, ChromeSpeechRecognitionService service) {
+        public BrowserSpeechRecognitionPage(ServiceManager serviceManager, BrowserSpeechRecognitionPageService service) {
             this.serviceManager = serviceManager;
             this.service = service;
 

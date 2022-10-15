@@ -11,12 +11,12 @@ using System.Windows;
 using System.Windows.Controls;
 
 namespace sikusiSubtitles.SpeechRecognition {
-    public class ChromeSpeechRecognitionService : BrowserSpeechRecognitionBaseService {
-        public ChromeSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "ChromeSpeechRecognition", "Google Chrome", 0) {
+    public class EdgeSpeechRecognitionService : BrowserSpeechRecognitionBaseService {
+        public EdgeSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "EdgeSpeechRecognition", "Microsoft Edge", 0) {
         }
 
         protected override string? GetBrowserPath() {
-            return Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe", null, null) as string;
+            return Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\msedge.exe", null, null) as string;
         }
         protected override string GetBrowserArgs(string uri) {
             return $"--app={uri}";

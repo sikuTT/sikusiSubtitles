@@ -72,7 +72,7 @@ namespace sikusiSubtitles {
         }
 
 
-        private void AddPage(Service service) {
+        private UserControl? AddPage(Service service) {
             var page = service.SettingsPage;
             if (page != null) {
                 page.Name = service.Name;
@@ -81,6 +81,7 @@ namespace sikusiSubtitles {
                 page.Visibility = Visibility.Collapsed;
                 settingsGrid.Children.Add(page);
             }
+            return page;
         }
 
         private void SelectTreeViewItem(TreeViewItem item) {
@@ -109,6 +110,8 @@ namespace sikusiSubtitles {
         private void CreateServices() {
             // SpeechRecognition Service
             new SpeechRecognitionServiceManager(serviceManager);
+            new BrowserSpeechRecognitionPageService(serviceManager);
+            new EdgeSpeechRecognitionService(serviceManager);
             new ChromeSpeechRecognitionService(serviceManager);
             new AzureSpeechRecognitionService(serviceManager);
             new AmiVoiceSpeechRecognitionService(serviceManager);
@@ -164,8 +167,7 @@ namespace sikusiSubtitles {
 
                 var services = serviceManager.Services.FindAll(service => service.ServiceName == manager.ServiceName);
                 foreach (var service in services) {
-                    if (service.SettingsPage != null) {
-                        AddPage(service);
+                    if (AddPage(service) != null) {
                         if (manager.SettingsPage != null || manager.DisplayName != service.DisplayName) {
                             var childItem = new TreeViewItem() { Name = service.Name, Header = service.DisplayName, IsExpanded = true };
                             item.Items.Add(childItem);

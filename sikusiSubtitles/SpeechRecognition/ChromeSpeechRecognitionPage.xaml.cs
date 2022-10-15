@@ -36,11 +36,15 @@ namespace sikusiSubtitles.SpeechRecognition {
         }
 
         private void httpPortNumericEditBox_ValueChanged(object sender, RoutedPropertyChangedEventArgs<int> e) {
-            service.HttpServerPort = e.NewValue;
+            if (IsLoaded) {
+                service.HttpServerPort = e.NewValue;
+            }
         }
 
         private void webSocketPortNumericEditBox_ValueChanged(object sender, RoutedPropertyChangedEventArgs<int> e) {
-            service.WebSocketPort = e.NewValue;
+            if (IsLoaded) {
+                service.WebSocketPort = e.NewValue;
+            }
         }
     }
 }

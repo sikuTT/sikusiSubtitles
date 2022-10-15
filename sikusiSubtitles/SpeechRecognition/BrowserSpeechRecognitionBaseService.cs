@@ -39,13 +39,20 @@ namespace sikusiSubtitles.SpeechRecognition {
             }
 
             webServer = new BrowserSpeechRecognitionWebServer(browserPageService.HttpServerPort);
-            webServer.Start();
+            if (webServer.Start() == false) {
+                Stop();
+                return false;
+            }
 
             webSocketServer = new BrowserSpeechRecognitionWebSocketServer(browserPageService.WebSocketPort);
             webSocketServer.Recognizing += RecognizingHandler;
             webSocketServer.Recognized += RecognizedHandler;
             webSocketServer.Closed += ClosedHandler;
-            webSocketServer.Start();
+            if (webSocketServer.Start() == false) {
+                Stop();
+                return false;
+            }
+            webSocketServer.Listen();
 
             var uri = $"http://127.0.0.1:{browserPageService.HttpServerPort}/";
             if (this.LunchBrowser(uri, manager.Language) == false) {

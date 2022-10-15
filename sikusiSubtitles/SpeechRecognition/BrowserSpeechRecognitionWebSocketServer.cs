@@ -9,6 +9,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public class BrowserSpeechRecognitionWebSocketServer {
@@ -23,28 +24,37 @@ namespace sikusiSubtitles.SpeechRecognition {
             Server.Prefixes.Add($"http://127.0.0.1:{port}/");
         }
 
-        public async void Start() {
+        public bool Start() {
             if (Server != null) {
-                Server.Start();
+                try {
+                    Server.Start();
+                } catch (Exception) {
+                    MessageBox.Show("WebSocketサーバーを開始できませんでした。", null, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
 
-                while (Server != null) {
-                    try {
-                        var hc = await Server.GetContextAsync();
-                        if (!hc.Request.IsWebSocketRequest) {
-                            hc.Response.StatusCode = 400;
-                            hc.Response.Close();
-                            continue;
-                        }
-
-                        Task task = Task.Run(async () => {
-                            var wsc = await hc.AcceptWebSocketAsync(null);
-                            var webSocket = wsc.WebSocket;
-                            await Receive(webSocket);
-                        });
-                    } catch (Exception ex) {
-                        Debug.WriteLine("BrowserSpeechRecognitionWebSocketServer.Start: " + ex.Message);
-                        break;
+        public async void Listen() {
+            while (Server != null) {
+                try {
+                    var hc = await Server.GetContextAsync();
+                    if (!hc.Request.IsWebSocketRequest) {
+                        hc.Response.StatusCode = 400;
+                        hc.Response.Close();
+                        continue;
                     }
+
+                    Task task = Task.Run(async () => {
+                        var wsc = await hc.AcceptWebSocketAsync(null);
+                        var webSocket = wsc.WebSocket;
+                        await Receive(webSocket);
+                    });
+                } catch (Exception ex) {
+                    Debug.WriteLine("BrowserSpeechRecognitionWebSocketServer.Start: " + ex.Message);
+                    break;
                 }
             }
         }

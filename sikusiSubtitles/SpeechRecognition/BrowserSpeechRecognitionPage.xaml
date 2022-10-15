@@ -17,7 +17,7 @@
     </UserControl.Resources>
     <StackPanel>
         <TextBlock Text="音声認識 - ブラウザー" Style="{StaticResource Header}"/>
-        <GroupBox Header="接続情報">
+        <GroupBox Header="ポート設定">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition/>
@@ -25,11 +25,12 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="110"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Label Content="ポート" VerticalAlignment="Center"/>
+                <Label Content="Webサーバー" VerticalAlignment="Center"/>
                 <Controls:NumericEditBox x:Name="httpPortNumericEditBox" Style="{StaticResource RowItem}" Grid.Column="1" Width="90" HorizontalAlignment="Left" MinValue="1024" MaxValue="65535" ValueChanged="httpPortNumericEditBox_ValueChanged"/>
+                <Label Content="WebSocketサーバー" Grid.Row="1" VerticalAlignment="Center"/>
                 <Controls:NumericEditBox x:Name="webSocketPortNumericEditBox" Style="{StaticResource RowItem}" Grid.Column="1" Grid.Row="1" Width="90" HorizontalAlignment="Left" MinValue="1024" MaxValue="65535" ValueChanged="webSocketPortNumericEditBox_ValueChanged"/>
                 <TextBlock Grid.Row="2" Grid.Column="1" Text="※ブラウザーからの接続に使用するポートです。" TextWrapping="Wrap"></TextBlock>
             </Grid>

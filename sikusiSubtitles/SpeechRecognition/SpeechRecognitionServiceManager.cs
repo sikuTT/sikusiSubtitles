@@ -102,17 +102,23 @@ namespace sikusiSubtitles.SpeechRecognition {
         private void SpeechRecognitionStart() {
             if (runningService == null) {
                 if (Device == null) {
-                    MessageBox.Show("マイクを設定してください。");
+                    MessageBox.Show("マイクを設定してください。", null, MessageBoxButton.OK, MessageBoxImage.Warning);
                 } else {
                     if (selectingService != null) {
-                        if (selectingService.Start()) {
-                            runningService = selectingService;
-                            selectingService.Recognizing += RecognizingHandler;
-                            selectingService.Recognized += RecognizedHandler;
-                            selectingService.ServiceStopped += ServiceStoppedHandler;
+                        var languages = selectingService.GetLanguages();
+                        var selectingLanguage = languages.Find(lang => lang.Code == Language);
+                        if (selectingLanguage != null) {
+                            if (selectingService.Start()) {
+                                runningService = selectingService;
+                                selectingService.Recognizing += RecognizingHandler;
+                                selectingService.Recognized += RecognizedHandler;
+                                selectingService.ServiceStopped += ServiceStoppedHandler;
+                            }
+                        } else {
+                            MessageBox.Show("音声認識する言語を設定してください。", null, MessageBoxButton.OK, MessageBoxImage.Warning);
                         }
                     } else {
-                        MessageBox.Show("使用する音声認識サービスを指定してください。");
+                        MessageBox.Show("使用する音声認識サービスを指定してください。", null, MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
                 }
 

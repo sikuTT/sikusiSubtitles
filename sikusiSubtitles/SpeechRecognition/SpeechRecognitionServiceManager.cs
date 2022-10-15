@@ -29,7 +29,7 @@ namespace sikusiSubtitles.SpeechRecognition {
         }
         string engine = "ChromeSpeechRecognition";
 
-        public string Language { get; set; } = "ja-JP";
+        public string Language { get; set; } = "";
 
         ToggleButton speechRecognitionButton= new ToggleButton();
         Label engineNameBox = new Label();
@@ -52,10 +52,6 @@ namespace sikusiSubtitles.SpeechRecognition {
             engineNameBox.VerticalContentAlignment = VerticalAlignment.Center;
             serviceManager.AddStatusBarControl(stackPanel, 100);
 
-            // マイク設定
-            var enumerator = new MMDeviceEnumerator();
-            Device = enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Console);
-
             // 設定画面
             settingsPage = new SpeechRecognitionPage(ServiceManager, this);
         }
@@ -71,11 +67,11 @@ namespace sikusiSubtitles.SpeechRecognition {
             // マイク設定
             var enumerator = new MMDeviceEnumerator();
             var micList = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
-            Device = micList.Where(mic => mic.ID == device).FirstOrDefault() ?? Device;
+            Device = micList.Where(mic => mic.ID == device).FirstOrDefault() ?? enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Console);
 
             // 音声認識エンジン
-            Engine = token.Value<string>("Engine") ?? Engine;
-            Language = token.Value<string>("Language") ?? Language;
+            Engine = token.Value<string>("Engine") ?? "";
+            Language = token.Value<string>("Language") ?? "ja-JP";
         }
 
         public override JObject Save() {

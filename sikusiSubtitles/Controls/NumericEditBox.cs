@@ -62,7 +62,7 @@ namespace sikusiSubtitles.Controls {
         }
 
         void RaiseValueChangedEvent(int newValue, int oldValue) {
-            RoutedPropertyChangedEventArgs<int> routedEventArgs = new (newValue, oldValue, ValueChangedEvent);
+            RoutedPropertyChangedEventArgs<int> routedEventArgs = new (oldValue, newValue, ValueChangedEvent);
             RaiseEvent(routedEventArgs);
         }
 
@@ -159,9 +159,8 @@ namespace sikusiSubtitles.Controls {
                     num = MaxValue;
                 }
                 Value = num;
-            } else {
-                Text = Value.ToString();
             }
+            Text = Value.ToString();
         }
 
         /**

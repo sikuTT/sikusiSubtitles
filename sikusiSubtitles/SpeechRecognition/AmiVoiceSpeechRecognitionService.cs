@@ -20,7 +20,7 @@ namespace sikusiSubtitles.SpeechRecognition {
         private WrpListener? Listener;
 
         public string Key { get; set; } = "";
-        public bool Log { get; set; } = true;
+        public bool Log { get; set; }
 
         public override List<Language> GetLanguages() {
             return engines;

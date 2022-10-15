@@ -12,8 +12,8 @@ using System.Windows.Controls;
 
 namespace sikusiSubtitles.SpeechRecognition {
     public class ChromeSpeechRecognitionService : SpeechRecognitionService {
-        public int HttpServerPort { get; set; } = 14949;
-        public int WebSocketPort { get; set; } = 14950;
+        public int HttpServerPort { get; set; }
+        public int WebSocketPort { get; set; }
 
         ChromeSpeechRecognitionWebServer? webServer;
         ChromeSpeechRecognitionWebSocketServer? webSocketServer;
@@ -23,8 +23,8 @@ namespace sikusiSubtitles.SpeechRecognition {
         }
 
         public override void Load(JToken token) {
-            HttpServerPort = token.Value<int?>("HttpServerPort") ?? HttpServerPort;
-            WebSocketPort = token.Value<int?>("WebSocketPort") ?? WebSocketPort;
+            HttpServerPort = token.Value<int?>("HttpServerPort") ?? 14949;
+            WebSocketPort = token.Value<int?>("WebSocketPort") ?? 14950;
         }
 
         public override JObject Save() {

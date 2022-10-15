@@ -18,7 +18,7 @@
             <RowDefinition Height="30" />
         </Grid.RowDefinitions>
         <DockPanel Margin="0,5,0,5">
-            <Label DockPanel.Dock="Right" VerticalContentAlignment="Center" Content="Ver. 0.6.0"/>
+            <Label DockPanel.Dock="Right" VerticalContentAlignment="Center" Content="Ver. 0.6.1"/>
             <StackPanel x:Name="topFlowPanel" DockPanel.Dock="Left" Orientation="Horizontal"/>
         </DockPanel>
         <Grid Grid.Row="1">

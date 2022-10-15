@@ -34,7 +34,7 @@
                 <Label Content="IP" VerticalAlignment="Center"/>
                 <TextBox x:Name="ipTextBox" Grid.Column="1" TextChanged="ipTextBox_TextChanged"/>
                 <Label Content="ポート" Grid.Row="1" VerticalAlignment="Center"/>
-                <Controls:NumericEditBox x:Name="portNumericEditBox" Grid.Column="1" Grid.Row="1" TextChanged="portNumericEditBox_TextChanged" MinValue="1024" MaxValue="65535"/>
+                <Controls:NumericEditBox x:Name="portNumericEditBox" Grid.Column="1" Grid.Row="1" MinValue="1024" MaxValue="65535" ValueChanged="portNumericEditBox_ValueChanged" />
                 <Label Content="パスワード" Grid.Row="2" VerticalAlignment="Center"/>
                 <PasswordBox x:Name="passwordBox" Grid.Row="2" Grid.Column="1" PasswordChanged="passwordBox_PasswordChanged"/>
             </Grid>

@@ -35,12 +35,12 @@ namespace sikusiSubtitles.SpeechRecognition {
             webSocketPortNumericEditBox.Value = service.WebSocketPort;
         }
 
-        private void httpPortNumericEditBox_TextChanged(object sender, TextChangedEventArgs e) {
-            service.HttpServerPort = httpPortNumericEditBox.Value;
+        private void httpPortNumericEditBox_ValueChanged(object sender, RoutedPropertyChangedEventArgs<int> e) {
+            service.HttpServerPort = e.NewValue;
         }
 
-        private void webSocketPortNumericEditBox_TextChanged(object sender, TextChangedEventArgs e) {
-            service.WebSocketPort = webSocketPortNumericEditBox.Value;
+        private void webSocketPortNumericEditBox_ValueChanged(object sender, RoutedPropertyChangedEventArgs<int> e) {
+            service.WebSocketPort = e.NewValue;
         }
     }
 }

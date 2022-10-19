@@ -9,11 +9,13 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace sikusiSubtitles.SpeechRecognition {
-    public class ChromeSpeechRecognitionWebServer {
+    public class BrowserSpeechRecognitionWebServer {
         int Port;
         HttpListener? Listener;
 
-        public ChromeSpeechRecognitionWebServer(int port) {
+        public bool IsListening() => Listener != null && Listener.IsListening;
+
+        public BrowserSpeechRecognitionWebServer(int port) {
             Port = port;
         }
 
@@ -27,12 +29,10 @@ namespace sikusiSubtitles.SpeechRecognition {
                 Listener.Prefixes.Add(uri);
                 Listener.Start();
                 var result = Listener.BeginGetContext(new AsyncCallback(HttpListenerCallback), Listener);
-            } catch (HttpListenerException ex) {
-                Debug.WriteLine(ex.Message);
-                MessageBox.Show("WEBサーバーを開始できませんでした。", null, MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
             } catch (Exception ex) {
+                Listener = null;
                 Debug.WriteLine(ex.Message);
+                MessageBox.Show("Webサーバーを開始できませんでした。", null, MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
             return true;

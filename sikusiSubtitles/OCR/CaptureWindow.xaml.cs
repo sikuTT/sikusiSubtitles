@@ -27,7 +27,12 @@ namespace sikusiSubtitles.OCR {
         [System.Runtime.InteropServices.DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory")]
         public static extern void CopyMemory(IntPtr dest, IntPtr source, int Length);
 
-        IntPtr windowHandle;
+        // ターゲットのウィンドウ
+        IntPtr targetProcess;
+        IntPtr targetWindowHandle;
+        double scale;
+
+        // キャプチャーエリア
         System.Drawing.Rectangle captureArea;
 
         // 描画用ビットマップ
@@ -41,12 +46,27 @@ namespace sikusiSubtitles.OCR {
 
         public event EventHandler<System.Drawing.Rectangle>? AreaSelected;
 
-        public CaptureWindow(IntPtr windowHandle, System.Drawing.Rectangle captureArea) {
+        public CaptureWindow(IntPtr targetProcess, IntPtr targetWindowHandle, System.Drawing.Rectangle captureArea) {
             InitializeComponent();
 
-            this.windowHandle = windowHandle;
+            this.targetProcess = targetProcess;
+            this.targetWindowHandle = targetWindowHandle;
             this.captureArea = captureArea;
 
+            // キャプチャー用のウィンドウをキャプチャー対象のウィンドウの上に移動する
+            // ロード時にモニターのDPIを取得したいので、Loadedイベント前に移動する
+            var interop = new WindowInteropHelper(this);
+            interop.EnsureHandle();
+            interop.Owner = targetWindowHandle;
+
+            RECT rect;
+            if (GetWindowRect(targetWindowHandle, out rect)) {
+                Left = rect.left;
+                Top = rect.top;
+            }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
             ScreenCapture();
         }
 
@@ -79,10 +99,10 @@ namespace sikusiSubtitles.OCR {
 
                 var start = (System.Windows.Point)dragStart;
                 var end = (System.Windows.Point)dragEnd;
-                var l = Math.Min((int)start.X, (int)end.X);
-                var t = Math.Min((int)start.Y, (int)end.Y);
-                var r = Math.Max((int)start.X, (int)end.X);
-                var b = Math.Max((int)start.Y, (int)end.Y);
+                var l = (int)(Math.Min((int)start.X, (int)end.X) * scale);
+                var t = (int)(Math.Min((int)start.Y, (int)end.Y) * scale);
+                var r = (int)(Math.Max((int)start.X, (int)end.X) * scale);
+                var b = (int)(Math.Max((int)start.Y, (int)end.Y) * scale);
                 captureArea = new System.Drawing.Rectangle(l, t, r - l, b - t);
 
                 CreateBitmapSource();
@@ -93,8 +113,12 @@ namespace sikusiSubtitles.OCR {
          * 画面のキャプチャ
          */
         private void ScreenCapture() {
+            var helper = new System.Windows.Interop.WindowInteropHelper(this);
+            uint dpi = GetDpiForWindow(helper.Handle);
+            scale = dpi / 96.0;
+
             RECT rect;
-            if (GetWindowRect(windowHandle, out rect)) {
+            if (GetWindowRect(targetWindowHandle, out rect)) {
                 var width = rect.right - rect.left;
                 var height = rect.bottom - rect.top;
 
@@ -113,11 +137,13 @@ namespace sikusiSubtitles.OCR {
                 CreateBitmapSource();
 
                 // キャプチャーするウィンドウの上に、キャプチャー画面を表示する。
-                this.Left = rect.left;
-                this.Top = rect.top;
-                this.Width = width;
-                this.Height = height;
+                this.Left = rect.left / scale;
+                this.Top = rect.top / scale;
+                this.Width = width / scale;
+                this.Height = height / scale;
             }
+
+            // SetThreadDpiAwarenessContext(old);
         }
 
         /**

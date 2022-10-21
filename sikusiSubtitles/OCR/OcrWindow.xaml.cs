@@ -48,7 +48,7 @@ namespace sikusiSubtitles.OCR {
         // 画面のキャプチャーエリア指定
         CaptureWindow? captureWindow;
         System.Drawing.Rectangle captureArea;
-        int scale = 1;
+        int captureScale = 1;
 
         public OcrWindow(ServiceManager serviceManager, OcrServiceManager ocrManager, int processId) {
             this.serviceManager = serviceManager;
@@ -130,7 +130,7 @@ namespace sikusiSubtitles.OCR {
             }
 
             // キャプチャー対象のウィンドウの上にキャプチャー処理をするウィンドウを作成する
-            captureWindow = new CaptureWindow(process.MainWindowHandle, captureArea);
+            captureWindow = new CaptureWindow(process.Handle, process.MainWindowHandle, captureArea);
             captureWindow.Show();
             captureWindow.Activate();
             captureWindow.AreaSelected += CaptureAreaSelected;
@@ -286,9 +286,11 @@ namespace sikusiSubtitles.OCR {
                     if (bitmap == null) {
                         MessageBox.Show("画面をキャプチャー出来ませんでした。", null, MessageBoxButton.OK, MessageBoxImage.Error);
                     } else {
+                        System.Windows.Forms.Clipboard.SetImage(bitmap);
                         OcrResult result = await this.ocrService.ExecuteAsync(bitmap, ocrLanguage.Code);
                         if (result.Text != null) {
                             this.ocrTextBox.Text = result.Text;
+                            this.translatedTextBox.Text = "";
 
                             // 文字が取得できた場合、読み上げと翻訳をする
                             if (result.Text.Length > 0) {
@@ -427,6 +429,8 @@ namespace sikusiSubtitles.OCR {
         private Bitmap? CaptureWindow() {
             Process process = Process.GetProcessById(processId);
             if (!captureArea.IsEmpty) {
+                var dpi = GetDpiForWindow(process.MainWindowHandle);
+
                 // 画面をキャプチャーする
                 RECT rect;
                 if (GetWindowRect(process.MainWindowHandle, out rect)) {
@@ -442,10 +446,10 @@ namespace sikusiSubtitles.OCR {
 
                     // キャプチャ画像の拡大が設定されている場合は拡大する
                     Bitmap? scaledBitmap;
-                    if (scale > 1) {
-                        scaledBitmap = new Bitmap(width * scale, height * scale);
+                    if (captureScale > 1) {
+                        scaledBitmap = new Bitmap(width * captureScale, height * captureScale);
                         using (Graphics g = Graphics.FromImage(scaledBitmap)) {
-                            g.DrawImage(screenBitmap, new Rectangle(0, 0, width * scale, height * scale), new Rectangle(0, 0, width, height), GraphicsUnit.Pixel);
+                            g.DrawImage(screenBitmap, new Rectangle(0, 0, width * captureScale, height * captureScale), new Rectangle(0, 0, width, height), GraphicsUnit.Pixel);
                         }
                     } else {
                         scaledBitmap = screenBitmap;

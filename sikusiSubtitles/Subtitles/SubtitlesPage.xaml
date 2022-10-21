@@ -42,7 +42,7 @@
                 <Label Content="翻訳サービス" VerticalAlignment="Center"/>
                 <ComboBox x:Name="translationServiceComboBox" Grid.Column="1" SelectionChanged="translationServiceComboBox_SelectionChanged"></ComboBox>
                 <Label Content="翻訳元言語" Grid.Row="1" VerticalAlignment="Center"/>
-                <ComboBox x:Name="translationLanguageFromComboBox" Grid.Row="1" Grid.Column="1" SelectionChanged="translationLanguageFromComboBox_SelectionChanged"></ComboBox>
+                <ComboBox x:Name="translationLanguageFromComboBox" Grid.Row="1" Grid.Column="1" DisplayMemberPath="Name" SelectionChanged="translationLanguageFromComboBox_SelectionChanged"></ComboBox>
                 <Label Content="翻訳先言語" Grid.Row="2" VerticalAlignment="Top" Margin="0,7,0,0"/>
                 <ListBox x:Name="listBox" Grid.Row="2" Grid.Column="1" HorizontalContentAlignment="Stretch" ItemsSource="{Binding Mode=OneWay}">
                     <ListBox.ItemTemplate>

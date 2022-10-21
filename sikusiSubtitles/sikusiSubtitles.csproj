@@ -15,6 +15,8 @@
     <Company>sikusiku</Company>
     <Copyright>sikusiku</Copyright>
     <ApplicationIcon>Resources\sikusiKu.ico</ApplicationIcon>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <ItemGroup>

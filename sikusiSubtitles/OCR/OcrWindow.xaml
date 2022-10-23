@@ -192,6 +192,9 @@
                     <Label Style="{StaticResource MenuArrow}">▴</Label>
                 </StackPanel>
             </Button>
+            <Button x:Name="duplicateStatusButton" Click="duplicateStatusButton_Click" ToolTip="ウィンドウを複製">
+                <Image Source="/Resources/duplicate.png"></Image>
+            </Button>
             <Popup x:Name="ocrStatusPopup" StaysOpen="False" PlacementTarget="{Binding ElementName=ocrStatusButton}" Placement="Top">
                 <Border Style="{StaticResource FrameBorder}">
                     <Grid>

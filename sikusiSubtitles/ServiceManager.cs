@@ -34,13 +34,19 @@ namespace sikusiSubtitles {
             }
         }
 
+        public MainWindow MainWindow => mainWindow;
+
         private string SaveFilePath;
         private List<OrderedControl> topFlowControls = new List<OrderedControl>();
         private List<OrderedControl> statusBarControls = new List<OrderedControl>();
 
         private Dictionary<string, Service> activeServices = new Dictionary<string, Service>();
 
-        public ServiceManager() {
+        private MainWindow mainWindow;
+
+        public ServiceManager(MainWindow mainWindow) {
+            this.mainWindow = mainWindow;
+
             Managers = new List<Service>();
             Services = new List<Service>();
 

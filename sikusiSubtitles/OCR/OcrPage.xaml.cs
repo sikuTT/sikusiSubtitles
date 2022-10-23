@@ -41,9 +41,6 @@ namespace sikusiSubtitles.OCR {
             InitializeComponent();
         }
 
-        private async void UserControl_Loaded(object sender, RoutedEventArgs e) {
-        }
-
         /**
          * コントロールの表示状態が変わった
          * （設定画面が表示されたり、他のページへ移動したりした場合）

@@ -34,8 +34,6 @@ namespace sikusiSubtitles.OCR {
 
         DispatcherTimer? refreshTimer;
 
-        List<Window> ocrWindows = new List<Window>();
-
         public OcrPage(ServiceManager serviceManager, OcrServiceManager ocrManager) {
             this.serviceManager = serviceManager;
             this.ocrManager = ocrManager;
@@ -44,14 +42,6 @@ namespace sikusiSubtitles.OCR {
         }
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e) {
-            processListView.DataContext = processList;
-            await RefreshProcessList();
-        }
-
-        private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
-            foreach (var win in ocrWindows) {
-                win.Close();
-            }
         }
 
         /**
@@ -60,6 +50,7 @@ namespace sikusiSubtitles.OCR {
          */
         private void UserControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
             if (IsVisible) {
+                Task task = RefreshProcessList();
                 CreateRefreshTimer();
             } else {
                 StopRefreshTimer();
@@ -77,7 +68,6 @@ namespace sikusiSubtitles.OCR {
                 var process = processList[processListView.SelectedIndex];
                 var win = new OcrWindow(serviceManager, ocrManager, process.ProcessId);
                 win.Show();
-                ocrWindows.Add(win);
             }
         }
 
@@ -104,42 +94,42 @@ namespace sikusiSubtitles.OCR {
 
         /** プロセス一覧を更新 */
         private async Task RefreshProcessList() {
-            var selectedItem = processListView.SelectedItem as OcrProcessModel;
-            var updatedModel = false;
+            var modelUpdated = false;
+            List<Process> newProcessList = new List<Process>();
 
             await Task.Run(() => {
                 // プロセス一覧を取得する
-                var processList = Process.GetProcesses().Where(p => p.Id != Process.GetCurrentProcess().Id && p.MainWindowTitle != "").ToList();
+                newProcessList = Process.GetProcesses().Where(p => p.Id != Process.GetCurrentProcess().Id && p.MainWindowTitle != "").ToList();
 
-                // 新規のプロセスは追加、変更されたプロセスは更新
-                foreach (var process in processList) {
+                // 追加されたプロセス、更新されたプロセスがあるかを検索
+                foreach (var process in newProcessList) {
                     var foundProcess = this.processList.Find(p => p.ProcessId == process.Id);
+                    modelUpdated = foundProcess == null || (foundProcess.ProcessId == process.Id && foundProcess.WindowTitle != process.MainWindowTitle);
+                    if (modelUpdated) break;
+                }
+
+                // 削除されたプロセスがあるかを検索
+                foreach (var process in this.processList) {
+                    var foundProcess = newProcessList.Find(p => p.Id == process.ProcessId);
                     if (foundProcess == null) {
-                        // プロセスを追加
-                        this.processList.Add(new OcrProcessModel() {
-                            ProcessId = process.Id,
-                            ProcessName = process.ProcessName,
-                            WindowTitle = process.MainWindowTitle,
-                        });
-                        updatedModel = true;
-                    } else if (foundProcess.WindowTitle != process.MainWindowTitle) {
-                        foundProcess.WindowTitle = process.MainWindowTitle;
-                        updatedModel = true;
+                        modelUpdated = true;
+                        break;
                     }
                 }
 
-                // 削除されたプロセスはモデルから削除
-                for (var i = this.processList.Count -1; i >= 0; i--) {
-                    var process = this.processList[i];
-                    var foundProcess = processList.Where(p => p.Id == process.ProcessId).FirstOrDefault();
-                    if (foundProcess == null) {
-                        this.processList.RemoveAt(i);
-                        updatedModel = true;
-                    }
+                /** プロセス一覧が更新された場合、モデルを作り直す */
+                if (modelUpdated == true) {
+                    this.processList = newProcessList.Select(p => new OcrProcessModel {
+                        ProcessId = p.Id,
+                        ProcessName = p.ProcessName,
+                        WindowTitle = p.MainWindowTitle,
+                    }).ToList();
                 }
             });
 
-            if (updatedModel == true) {
+            if (modelUpdated == true) {
+                var selectedItem = processListView.SelectedItem as OcrProcessModel;
+
                 this.processListView.DataContext = null;
                 this.processListView.DataContext = this.processList;
 

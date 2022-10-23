@@ -27,11 +27,13 @@ namespace sikusiSubtitles {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-        ServiceManager serviceManager = new ServiceManager();
+        ServiceManager serviceManager;
 
         // サービス作成 → 設定ページ作成 → サービスの設定をロード → 設定ページのフォームロードの順で動かす
         public MainWindow() {
             InitializeComponent();
+
+            serviceManager = new ServiceManager(this);
 
             // サービスの作成
             CreateServices();

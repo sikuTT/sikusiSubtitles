@@ -16,6 +16,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Windows.UI.Core;
 using static sikusiSubtitles.OCR.ScreenCapture;
 
 namespace sikusiSubtitles.OCR {
@@ -30,10 +31,12 @@ namespace sikusiSubtitles.OCR {
         // OCR
         List<OcrService> ocrServices = new List<OcrService>();
         OcrService? ocrService;
+        string ocrServiceName;
 
         // 翻訳
         List<TranslationService> translationServices = new List<TranslationService>();
         TranslationService? translationService;
+        string translationServiceName;
 
         // OBS
         ObsService? obsService;
@@ -41,6 +44,7 @@ namespace sikusiSubtitles.OCR {
         // 読み上げ
         List<SpeechService> speechServices = new List<SpeechService>();
         SpeechService? speechService;
+        string speechServiceName;
 
         // ショートカット
         ShortcutService? shortcutService;
@@ -51,14 +55,60 @@ namespace sikusiSubtitles.OCR {
         int captureScale = 1;
 
         public OcrWindow(ServiceManager serviceManager, OcrServiceManager ocrManager, int processId) {
+            InitializeComponent();
+
             this.serviceManager = serviceManager;
             this.ocrManager = ocrManager;
             this.processId = processId;
 
+            // OCR
+            this.ocrServiceName = ocrManager.OcrEngine;
+
+            // 翻訳
+            this.translationServiceName = ocrManager.TranslationEngine;
+
+            // 読み上げ
+            this.speechServiceName = ocrManager.OcrSpeechEngine;
+
+            // OCR時の自動読み上げ
+            speechCheckBox.IsChecked = ocrManager.SpeechWhenOcrRun;
+
+            // ショートカットの設定
+            ocrShortcutKeyTextBox.Text = ocrManager.OcrShortcut.ShortcutKey;
+            clearTranslatedShortcutKeyTextBox.Text = ocrManager.ClearObsTextShortcut.ShortcutKey;
+        }
+
+        public OcrWindow(OcrWindow ocrWindow) {
             InitializeComponent();
+
+            this.serviceManager = ocrWindow.serviceManager;
+            this.ocrManager = ocrWindow.ocrManager;
+            this.processId = ocrWindow.processId;
+
+            // OCR
+            this.ocrServiceName = ocrWindow.ocrServiceName;
+
+            // 翻訳
+            this.translationServiceName = ocrWindow.translationServiceName;
+
+            // 読み上げ
+            this.speechServiceName = ocrWindow.speechServiceName;
+
+            // 画面のキャプチャーエリア指定
+            this.captureArea = ocrWindow.captureArea;
+            this.captureScale = ocrWindow.captureScale;
+            if (!captureArea.IsEmpty) {
+                this.ocrButton.IsEnabled = true;
+            }
+
+            // ショートカット
+            this.ocrShortcutKeyTextBox.Text = ocrWindow.ocrShortcutKeyTextBox.Text;
+            this.clearTranslatedShortcutKeyTextBox.Text = ocrWindow.clearTranslatedShortcutKeyTextBox.Text;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
+            serviceManager.MainWindow.Closed += MainWindowClosed;
+
             // キャプチャー対象のウィンドウ名をフォームに表示する。
             Process process = Process.GetProcessById(processId);
             windowTitleTextBox.Text = process.MainWindowTitle;
@@ -66,12 +116,12 @@ namespace sikusiSubtitles.OCR {
             // OCRサービス一覧をコンボボックスに設定
             ocrServices = this.serviceManager.GetServices<OcrService>();
             ocrServiceComboBox.ItemsSource = ocrServices;
-            ocrServiceComboBox.SelectedItem = ocrServices.Find(service => service.Name == ocrManager.OcrEngine);
+            ocrServiceComboBox.SelectedItem = ocrServices.Find(service => service.Name == ocrServiceName);
 
             // 翻訳エンジンの一覧をコンボボックスに設定
             translationServices = serviceManager.GetServices<TranslationService>();
             translationServiceComboBox.ItemsSource = translationServices;
-            translationServiceComboBox.SelectedItem = translationServices.Find(service => service.Name == ocrManager.TranslationEngine);
+            translationServiceComboBox.SelectedItem = translationServices.Find(service => service.Name == translationServiceName);
 
             // OBSに接続されている場合、テキストソースを取得する
             obsService = this.serviceManager.GetService<ObsService>();
@@ -79,13 +129,7 @@ namespace sikusiSubtitles.OCR {
             // 読み上げサービス一覧
             speechServices = this.serviceManager.GetServices<SpeechService>();
             speechServiceComboBox.ItemsSource = speechServices;
-            speechServiceComboBox.SelectedItem = speechServices.Find(service => service.Name == ocrManager.OcrSpeechEngine);
-
-            // OCR時の自動読み上げ
-            speechCheckBox.IsChecked = ocrManager.SpeechWhenOcrRun;
-
-            // ショートカットの設定
-            ocrShortcutKeyTextBox.Text = ocrManager.OcrShortcut.ShortcutKey;
+            speechServiceComboBox.SelectedItem = speechServices.Find(service => service.Name == speechServiceName);
 
             // ショートカットイベントを取得
             shortcutService = this.serviceManager.GetService<ShortcutService>();
@@ -471,7 +515,6 @@ namespace sikusiSubtitles.OCR {
             } else if (this.IsActive == true && clearTranslatedShortcutKeyTextBox.IsFocused == true) {
                 clearTranslatedShortcutKeyTextBox.Text = shortcut.ShortcutKey;
             } else {
-
                 if (ocrButton.IsEnabled == true && shortcut.ShortcutKey == ocrShortcutKeyTextBox.Text) {
                     await Ocr();
                 } else if (shortcut.ShortcutKey == clearTranslatedShortcutKeyTextBox.Text) {
@@ -521,6 +564,12 @@ namespace sikusiSubtitles.OCR {
                 UseShellExecute = true,
             };
             System.Diagnostics.Process.Start(pi);
+        }
+
+        /** OCRウィンドウを複製する */
+        private void duplicateStatusButton_Click(object sender, RoutedEventArgs e) {
+            var ocrWindow = new OcrWindow(this);
+            ocrWindow.Show();
         }
 
         /**
@@ -623,6 +672,11 @@ namespace sikusiSubtitles.OCR {
 
         private void shortcutKeyStatusButton_Click(object sender, RoutedEventArgs e) {
             shortcutKeyStatusPopup.IsOpen = true;
+        }
+
+        /** メインウィンドウがクローズされた場合、このウィンドウも終了する */
+        private void MainWindowClosed(object? sender, EventArgs e) {
+            this.Close();
         }
     }
 }

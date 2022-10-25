@@ -54,22 +54,32 @@ namespace sikusiSubtitles.OBS {
         }
 
         async public Task<bool> ConnectAsync() {
-            if (this.IP == "") {
-                MessageBox.Show("接続先を設定してください。");
-                return false;
-            }
-
-            var url = String.Format("ws://{0}:{1}/", IP, Port);
             try {
-                await ObsSocket.ConnectAsync(url, this.Password);
-                ConnectionChanged?.Invoke(this, true);
-                ObsSocket.Closed += ClosedHandler;
-            } catch (WebSocketClosedException) {
-                MessageBox.Show("認証に失敗しました。", null, MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
-            } catch (Exception) {
-                MessageBox.Show("接続できませんでした。接続先を確認してください。", null, MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
+                if (IsConnected) {
+                    return true;
+                }
+
+                if (this.IP == "") {
+                    MessageBox.Show("接続先を設定してください。");
+                    return false;
+                }
+
+                var url = String.Format("ws://{0}:{1}/", IP, Port);
+                try {
+                    await ObsSocket.ConnectAsync(url , this.Password);
+                    ConnectionChanged?.Invoke(this , true);
+                    ObsSocket.Closed += ClosedHandler;
+                } catch (WebSocketClosedException) {
+                    MessageBox.Show("認証に失敗しました。" , null , MessageBoxButton.OK , MessageBoxImage.Error);
+                    return false;
+                } catch (Exception) {
+                    MessageBox.Show("接続できませんでした。接続先を確認してください。" , null , MessageBoxButton.OK , MessageBoxImage.Error);
+                    return false;
+                }
+            } finally {
+                obsButton.Dispatcher.Invoke(() => {
+                    obsButton.IsChecked = ObsSocket.IsConnected;
+                });
             }
 
             return ObsSocket.IsConnected;
@@ -86,9 +96,7 @@ namespace sikusiSubtitles.OBS {
 
         /** OBSへの接続ボタン */
         private async void obsButton_Checked(object? sender, RoutedEventArgs e) {
-            if (await ConnectAsync() == false) {
-                this.obsButton.IsChecked = false;
-            }
+            await ConnectAsync();
         }
 
         /** OBSへの接続ボタン */

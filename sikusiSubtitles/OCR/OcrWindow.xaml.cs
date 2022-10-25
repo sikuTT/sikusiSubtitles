@@ -141,8 +141,12 @@ namespace sikusiSubtitles.OCR {
             translationServiceComboBox.ItemsSource = translationServices;
             translationServiceComboBox.SelectedItem = translationServices.Find(service => service.Name == translationServiceName);
 
-            // OBSに接続されている場合、テキストソースを取得する
+            // OBS
             obsService = this.serviceManager.GetService<ObsService>();
+            if (obsService != null) {
+                obsService.ConnectionChanged += obsConnectionChangedHandler;
+                obsConnectionChangedHandler(this , obsService.IsConnected);
+            }
 
             // 読み上げサービス一覧
             speechServices = this.serviceManager.GetServices<SpeechService>();
@@ -165,6 +169,11 @@ namespace sikusiSubtitles.OCR {
 
         /** ウィンドウがクローズされた */
         private void Window_Closed(object sender, EventArgs e) {
+            // OBS
+            if (obsService != null) {
+                obsService.ConnectionChanged -= obsConnectionChangedHandler;
+            }
+
             if (this.shortcutService != null) {
                 this.shortcutService.ShortcutRun -= ShortcutRun;
             }
@@ -536,6 +545,28 @@ namespace sikusiSubtitles.OCR {
                 MessageBox.Show("キャプチャー対象のプロセスが取得できませんでした。", null, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             return null;
+        }
+
+        /** OBSの接続状態が変更された */
+        private async void obsConnectionChangedHandler(object? sender , bool e) {
+            if (e == true) {
+                this.connectObs.Visibility = Visibility.Collapsed;
+                this.obsSettings.Visibility = Visibility.Visible;
+
+                if (obsStatusPopup.IsOpen) {
+                    await GetObsTextSourcesAsync();
+                }
+            } else {
+                this.connectObs.Visibility = Visibility.Visible;
+                this.obsSettings.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        /** OBSに接続する */
+        private async void connectObsButton_Click(object sender , RoutedEventArgs e) {
+            if (obsService != null) {
+                await obsService.ConnectAsync();
+            }
         }
 
         /**

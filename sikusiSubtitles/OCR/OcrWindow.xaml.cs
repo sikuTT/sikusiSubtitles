@@ -1,9 +1,11 @@
-﻿using sikusiSubtitles.OBS;
+﻿using Reactive.Bindings;
+using sikusiSubtitles.OBS;
 using sikusiSubtitles.Shortcut;
 using sikusiSubtitles.Speech;
 using sikusiSubtitles.Translation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -20,10 +22,21 @@ using Windows.UI.Core;
 using static sikusiSubtitles.OCR.ScreenCapture;
 
 namespace sikusiSubtitles.OCR {
+    class OcrWindowViewModel : INotifyPropertyChanged {
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        // キャプチャ対象の情報
+        public ReactivePropertySlim<string> WindowTitle { get; } = new();
+
+        // 読み上げ
+        public ReactivePropertySlim<bool> SpeechWhenOcrRun { get; } = new();
+    }
+
     /// <summary>
     /// OcrWindow.xaml の相互作用ロジック
     /// </summary>
     public partial class OcrWindow : Window {
+        OcrWindowViewModel viewModel = new();
         ServiceManager serviceManager;
         OcrServiceManager ocrManager;
         int processId;
@@ -60,6 +73,7 @@ namespace sikusiSubtitles.OCR {
 
         public OcrWindow(ServiceManager serviceManager, OcrServiceManager ocrManager, int processId) {
             InitializeComponent();
+            DataContext = viewModel;
 
             this.serviceManager = serviceManager;
             this.ocrManager = ocrManager;
@@ -76,9 +90,7 @@ namespace sikusiSubtitles.OCR {
             // 読み上げ
             this.speechServiceName = ocrManager.OcrSpeechEngine;
             this.speechVoiceId = ocrManager.OcrSpeechVoice;
-
-            // OCR時の自動読み上げ
-            speechCheckBox.IsChecked = ocrManager.SpeechWhenOcrRun;
+            viewModel.SpeechWhenOcrRun.Value = ocrManager.SpeechWhenOcrRun;
 
             // ショートカットの設定
             ocrShortcutKeyTextBox.Text = ocrManager.OcrShortcut.ShortcutKey;
@@ -87,6 +99,7 @@ namespace sikusiSubtitles.OCR {
 
         public OcrWindow(OcrWindow ocrWindow) {
             InitializeComponent();
+            DataContext = viewModel;
 
             this.serviceManager = ocrWindow.serviceManager;
             this.ocrManager = ocrWindow.ocrManager;
@@ -106,6 +119,7 @@ namespace sikusiSubtitles.OCR {
             // 読み上げ
             this.speechServiceName = ocrWindow.speechServiceName;
             this.speechVoiceId = ocrWindow.speechVoiceId;
+            viewModel.SpeechWhenOcrRun.Value = ocrWindow.viewModel.SpeechWhenOcrRun.Value;
 
             // 画面のキャプチャーエリア指定
             this.captureArea = ocrWindow.captureArea;
@@ -125,7 +139,7 @@ namespace sikusiSubtitles.OCR {
             // キャプチャー対象のウィンドウ名をフォームに表示する。
             try {
                 Process process = Process.GetProcessById(processId);
-                windowTitleTextBox.Text = process.MainWindowTitle;
+                viewModel.WindowTitle.Value = process.MainWindowTitle;
             }
             catch (Exception) {
                 MessageBox.Show("キャプチャー対象のプロセスが取得できませんでした。", null, MessageBoxButton.OK, MessageBoxImage.Error);
@@ -381,7 +395,7 @@ namespace sikusiSubtitles.OCR {
 
                             // 文字が取得できた場合、読み上げと翻訳をする
                             if (result.Text.Length > 0) {
-                                if (speechCheckBox.IsChecked == true) {
+                                if (viewModel.SpeechWhenOcrRun.Value) {
                                     Task task = SpeechOcrTextAsync();
                                 }
                                 await TranslateAsync();

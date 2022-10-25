@@ -68,6 +68,7 @@
             <Setter Property="FontSize" Value="16"></Setter>
             <Setter Property="Padding" Value="0"></Setter>
             <Setter Property="VerticalAlignment" Value="Top"></Setter>
+            <Setter Property="Height" Value="40"></Setter>
         </Style>
         <Style TargetType="{x:Type Control}" x:Key="PopupRow">
             <Setter Property="MinWidth" Value="250"></Setter>
@@ -203,7 +204,7 @@
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
                         </Grid.RowDefinitions>
@@ -223,7 +224,7 @@
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
                         </Grid.RowDefinitions>
@@ -237,19 +238,25 @@
             </Popup>
             <Popup x:Name="obsStatusPopup" StaysOpen="False" PlacementTarget="{Binding ElementName=obsStatusButton}" Placement="Top">
                 <Border Style="{StaticResource FrameBorder}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="80"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="40"></RowDefinition>
-                            <RowDefinition Height="40"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Style="{StaticResource PopupHeader}" Grid.ColumnSpan="2">OBS設定</Label>
-                        <Label Grid.Row="1">字幕表示先</Label>
-                        <ComboBox x:Name="obsTextSourceComboBox" Grid.Row="1" Grid.Column="1" Style="{StaticResource PopupRow}" SelectionChanged="obsTextSourceComboBox_SelectionChanged"></ComboBox>
-                    </Grid>
+                    <StackPanel>
+                        <Label Style="{StaticResource PopupHeader}">OBS設定</Label>
+                        <Grid x:Name="connectObs">
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Label>OBSに接続していません。</Label>
+                            <Button x:Name="connectObsButton" Grid.Row="1" Margin="5" Style="{StaticResource PopupRow}" Click="connectObsButton_Click">OBSに接続する</Button>
+                        </Grid>
+                        <Grid x:Name="obsSettings" Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Row="1">字幕表示先</Label>
+                            <ComboBox x:Name="obsTextSourceComboBox" Grid.Row="1" Grid.Column="1" Style="{StaticResource PopupRow}" SelectionChanged="obsTextSourceComboBox_SelectionChanged"></ComboBox>
+                        </Grid>
+                    </StackPanel>
                 </Border>
             </Popup>
             <Popup x:Name="speechStatusPopup" StaysOpen="False" PlacementTarget="{Binding ElementName=speechStatusButton}" Placement="Top">
@@ -260,7 +267,7 @@
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
                         </Grid.RowDefinitions>
@@ -281,7 +288,7 @@
                             <ColumnDefinition Width="auto"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
                         </Grid.RowDefinitions>

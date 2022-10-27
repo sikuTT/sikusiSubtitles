@@ -116,6 +116,7 @@ namespace sikusiSubtitles {
             // Subtitles Service
             new SubtitlesServiceManager(serviceManager);
             new SubtitlesService(serviceManager);
+            new SubtitlesWindowService(serviceManager);
 
             // Translation Service
             new TranslationServiceManager(serviceManager);

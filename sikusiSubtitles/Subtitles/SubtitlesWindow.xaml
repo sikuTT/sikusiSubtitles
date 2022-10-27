@@ -1,0 +1,14 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:sikusiSubtitles.Subtitles" xmlns:Controls="clr-namespace:sikusiSubtitles.Controls" x:Class="sikusiSubtitles.Subtitles.SubtitlesWindow"
+        d:DataContext="{d:DesignInstance Type={x:Type local:WindowViewModel}}"
+        mc:Ignorable="d"
+        Title="SubtitlesWindow" Height="450" Width="800">
+    <Grid>
+        <Rectangle x:Name="background"/>
+        <Controls:OutlineTextControl x:Name="textLabel" Text="{Binding Text, Mode=TwoWay}"/>
+    </Grid>
+</Window>

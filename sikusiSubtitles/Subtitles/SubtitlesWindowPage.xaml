@@ -1,0 +1,75 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:sikusiSubtitles.Subtitles"
+             xmlns:sikusiSubtitles="clr-namespace:sikusiSubtitles" xmlns:Controls="clr-namespace:sikusiSubtitles.Controls" x:Class="sikusiSubtitles.Subtitles.SubtitlesWindowPage"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Style.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <UserControl.DataContext>
+        <local:PageViewModel/>
+    </UserControl.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Style="{StaticResource Header}"><Run Text="字幕ウィンドウ"/></TextBlock>
+        <GroupBox Grid.Row="1" Header="ウィンドウ設定">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Style="{StaticResource Row}"/>
+                    <RowDefinition Style="{StaticResource Row}"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="350"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <CheckBox Grid.ColumnSpan="3" Content="キャプションバーを表示する" Style="{StaticResource RowItem}"/>
+                <Label Grid.Row="1" Content="背景色"/>
+                <Controls:ColorPickerButton x:Name="backgroundColor" Grid.Row="1" Grid.Column="1" Color="{Binding BackgroundColor, Mode=TwoWay}" Style="{StaticResource RowItem}" VerticalContentAlignment="Stretch"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Row="2" Header="文字設定">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Style="{StaticResource Row}"/>
+                    <RowDefinition Style="{StaticResource Row}"/>
+                    <RowDefinition Style="{StaticResource Row}"/>
+                    <RowDefinition Style="{StaticResource Row}"/>
+                    <RowDefinition Style="{StaticResource Row}"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="350"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Content="フォント"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <ComboBox x:Name="fontComboBox" MinWidth="200" Style="{StaticResource RowItem}"/>
+                    <sikusiSubtitles:NumericEditBox Width="40" Value="12" Style="{StaticResource RowItem}" Margin="10,5,0,5"/>
+                    <Label Content="pt"/>
+                    <ToggleButton Width="25" Content="B" Style="{StaticResource RowItem}" Margin="10,5,0,5"/>
+                    <ToggleButton Width="25" Content="I" Style="{StaticResource RowItem}" Margin="5,5,0,5"/>
+                </StackPanel>
+                <Label Grid.Row="1" Content="文字の色"/>
+                <Controls:ColorPickerButton x:Name="fontColor" Grid.Row="1" Grid.Column="1" Color="{Binding FontColor, Mode=TwoWay}" Style="{StaticResource RowItem}" VerticalContentAlignment="Stretch"/>
+                <CheckBox Grid.Row="2" Grid.ColumnSpan="2" Content="輪郭線を表示する" FontStyle="Normal" Style="{StaticResource RowItem}"/>
+                <Label Grid.Row="3" Content="輪郭線の太さ"/>
+                <sikusiSubtitles:NumericEditBox Grid.Row="3" Grid.Column="1" Width="40" Style="{StaticResource RowItem}" HorizontalAlignment="Left"/>
+                <Label Grid.Row="4" Content="輪郭線の色"/>
+                <Controls:ColorPickerButton x:Name="strokeColor" Grid.Row="4" Grid.Column="1" Color="{Binding StrokeColor, Mode=TwoWay}" Style="{StaticResource RowItem}" VerticalContentAlignment="Stretch"/>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>

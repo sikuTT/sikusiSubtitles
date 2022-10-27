@@ -47,7 +47,7 @@ namespace sikusiSubtitles {
     public class NumericEditBox : TextBox {
         // public static readonly DependencyProperty MinValueProperty = DependencyProperty.Register("MinValue", typeof(int), typeof(NumericEditBox));
         // public static readonly DependencyProperty MaxvalueProperty = DependencyProperty.Register("MaxValue", typeof(int), typeof(NumericEditBox));
-        
+
         static NumericEditBox() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(NumericEditBox), new FrameworkPropertyMetadata(typeof(NumericEditBox)));
         }
@@ -57,8 +57,8 @@ namespace sikusiSubtitles {
             set { Text = value.ToString(); }
         }
 
-        public int MinValue { get; set; } = Int32.MinValue;
-        public int MaxValue { get; set; } = Int32.MaxValue;
+        public int MinValue { get; set; } = int.MinValue;
+        public int MaxValue { get; set; } = int.MaxValue;
 
         protected override void OnLostFocus(RoutedEventArgs e) {
             base.OnLostFocus(e);
@@ -85,7 +85,7 @@ namespace sikusiSubtitles {
                 e.Handled = true;
             } else if (e.Key == Key.Up || e.Key == Key.Down) {
                 int num = 0;
-                Int32.TryParse(Text, out num);
+                int.TryParse(Text, out num);
 
                 if (e.Key == Key.Up && num < MaxValue) {
                     Text = (++num).ToString();

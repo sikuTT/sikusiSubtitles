@@ -80,12 +80,10 @@ namespace sikusiSubtitles.SpeechRecognition {
         }
 
         private void RecognizingHandler(Object? sender, Microsoft.CognitiveServices.Speech.SpeechRecognitionEventArgs args) {
-            Debug.WriteLine("Recognizing: " + args.Result.Reason.ToString() + ", " + args.Result.Text);
             this.InvokeRecognizing(args.Result.Text);
         }
 
         private void RecognizedHandler(Object? sender, Microsoft.CognitiveServices.Speech.SpeechRecognitionEventArgs args) {
-            Debug.WriteLine("Recognized: " + args.Result.Reason.ToString() + ", " + args.Result.Text);
             this.InvokeRecognized(args.Result.Text);
         }
 

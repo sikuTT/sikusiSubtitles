@@ -1,9 +1,10 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:sikusiSubtitles">
+    xmlns:local="clr-namespace:sikusiSubtitles"
+    xmlns:Controls="clr-namespace:sikusiSubtitles.Controls">
 
-    <Style TargetType="{x:Type local:NumericEditBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+    <Style TargetType="{x:Type Controls:NumericEditBox}" BasedOn="{StaticResource {x:Type TextBox}}">
         <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
 <!--
         <Setter Property="Template">

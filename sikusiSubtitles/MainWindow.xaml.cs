@@ -27,11 +27,13 @@ namespace sikusiSubtitles {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-        ServiceManager serviceManager = new ServiceManager();
+        ServiceManager serviceManager;
 
         // サービス作成 → 設定ページ作成 → サービスの設定をロード → 設定ページのフォームロードの順で動かす
         public MainWindow() {
             InitializeComponent();
+
+            serviceManager = new ServiceManager(this);
 
             // サービスの作成
             CreateServices();
@@ -72,7 +74,7 @@ namespace sikusiSubtitles {
         }
 
 
-        private void AddPage(Service service) {
+        private UserControl? AddPage(Service service) {
             var page = service.SettingsPage;
             if (page != null) {
                 page.Name = service.Name;
@@ -81,6 +83,7 @@ namespace sikusiSubtitles {
                 page.Visibility = Visibility.Collapsed;
                 settingsGrid.Children.Add(page);
             }
+            return page;
         }
 
         private void SelectTreeViewItem(TreeViewItem item) {
@@ -109,6 +112,8 @@ namespace sikusiSubtitles {
         private void CreateServices() {
             // SpeechRecognition Service
             new SpeechRecognitionServiceManager(serviceManager);
+            new BrowserSpeechRecognitionPageService(serviceManager);
+            new EdgeSpeechRecognitionService(serviceManager);
             new ChromeSpeechRecognitionService(serviceManager);
             new AzureSpeechRecognitionService(serviceManager);
             new AmiVoiceSpeechRecognitionService(serviceManager);
@@ -165,8 +170,7 @@ namespace sikusiSubtitles {
 
                 var services = serviceManager.Services.FindAll(service => service.ServiceName == manager.ServiceName);
                 foreach (var service in services) {
-                    if (service.SettingsPage != null) {
-                        AddPage(service);
+                    if (AddPage(service) != null) {
                         if (manager.SettingsPage != null || manager.DisplayName != service.DisplayName) {
                             var childItem = new TreeViewItem() { Name = service.Name, Header = service.DisplayName, IsExpanded = true };
                             item.Items.Add(childItem);

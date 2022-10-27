@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -14,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace sikusiSubtitles {
+namespace sikusiSubtitles.Controls {
     /// <summary>
     /// このカスタム コントロールを XAML ファイルで使用するには、手順 1a または 1b の後、手順 2 に従います。
     ///
@@ -45,32 +46,127 @@ namespace sikusiSubtitles {
     ///
     /// </summary>
     public class NumericEditBox : TextBox {
-        // public static readonly DependencyProperty MinValueProperty = DependencyProperty.Register("MinValue", typeof(int), typeof(NumericEditBox));
-        // public static readonly DependencyProperty MaxvalueProperty = DependencyProperty.Register("MaxValue", typeof(int), typeof(NumericEditBox));
+        //
+        // ValueChanged Event
+        //
+        public static readonly RoutedEvent ValueChangedEvent = EventManager.RegisterRoutedEvent(
+            name: "ValueChanged",
+            routingStrategy: RoutingStrategy.Bubble,
+            handlerType: typeof(RoutedPropertyChangedEventHandler<int>),
+            ownerType: typeof(NumericEditBox)
+        );
 
+        public event RoutedEventHandler ValueChanged {
+            add { AddHandler(ValueChangedEvent, value); }
+            remove { RemoveHandler(ValueChangedEvent, value); }
+        }
+
+        void RaiseValueChangedEvent(int newValue, int oldValue) {
+            RoutedPropertyChangedEventArgs<int> routedEventArgs = new (oldValue, newValue, ValueChangedEvent);
+            RaiseEvent(routedEventArgs);
+        }
+
+        //
+        // Value Property
+        //
+        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
+            "Value",
+            typeof(int),
+            typeof(NumericEditBox),
+            new PropertyMetadata(0, ValuePropertyChanged)
+        );
+
+        static void ValuePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            NumericEditBox control = (NumericEditBox)d;
+            int value = (int)e.NewValue;
+            if (value < control.MinValue) {
+                value = control.MinValue;
+            } else if (value  > control.MaxValue) {
+                value  = control.MaxValue;
+            }
+
+            control.Text = value.ToString();
+            control.RaiseValueChangedEvent(value, (int)e.OldValue);
+        }
+
+        public int Value {
+            get => (int)GetValue(ValueProperty);
+            set => SetValue(ValueProperty, value);
+        }
+
+        //
+        // MinValue Property
+        //
+        public static readonly DependencyProperty MinValueProperty = DependencyProperty.Register(
+            "MinValue",
+            typeof(int),
+            typeof(NumericEditBox),
+            new PropertyMetadata(int.MinValue, MinValuePropertyChanged)
+        );
+
+        static void MinValuePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            NumericEditBox control = (NumericEditBox)d;
+            if (control.Value < (int)e.NewValue) {
+                control.Value = (int)e.NewValue;
+            }
+        }
+
+        public int MinValue {
+            get => (int)GetValue(MinValueProperty);
+            set => SetValue(MinValueProperty, value);
+        }
+
+        //
+        // MaxValue Property
+        //
+        public static readonly DependencyProperty MaxValueProperty = DependencyProperty.Register(
+            "MaxValue",
+            typeof(int),
+            typeof(NumericEditBox),
+            new PropertyMetadata(int.MaxValue, MaxValuePropertyChanged)
+        );
+
+        static void MaxValuePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            NumericEditBox control = (NumericEditBox)d;
+            if (control.Value > (int)e.NewValue) {
+                control.Value = (int)e.NewValue;
+            }
+        }
+
+        public int MaxValue {
+            get => (int)GetValue(MaxValueProperty);
+            set => SetValue(MaxValueProperty, value);
+        }
+
+        /**
+         * Constructor
+         */
         static NumericEditBox() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(NumericEditBox), new FrameworkPropertyMetadata(typeof(NumericEditBox)));
         }
 
-        public int Value {
-            get { return int.Parse(Text); }
-            set { Text = value.ToString(); }
-        }
-
-        public int MinValue { get; set; } = int.MinValue;
-        public int MaxValue { get; set; } = int.MaxValue;
-
+        /**
+         * フォーカスが外れた時、値に問題がある場合、問題のない値に変更する
+         */
         protected override void OnLostFocus(RoutedEventArgs e) {
             base.OnLostFocus(e);
 
-            var value = int.Parse(Text);
-            if (value < MinValue) {
-                Text = MinValue.ToString();
-            } else if (value > MaxValue) {
-                Text = MaxValue.ToString();
+            int num;
+            if (int.TryParse(Text, out num)) {
+                if (num < MinValue) {
+                    num = MinValue;
+                } else if (num > MaxValue) {
+                    num = MaxValue;
+                }
+                Value = num;
             }
+            Text = Value.ToString();
         }
 
+        /**
+         * 文字入力時に呼ばれる
+         * 数値のみ入力できるようにする
+         */
         protected override void OnPreviewTextInput(TextCompositionEventArgs e) {
             base.OnPreviewTextInput(e);
 
@@ -78,20 +174,42 @@ namespace sikusiSubtitles {
             e.Handled = regex.IsMatch(e.Text);
         }
 
+        /**
+         * キーが押された時に呼ばれる
+         * 上下のキーが押された場合、値をプラスマイナス１する
+         */
         protected override void OnPreviewKeyDown(KeyEventArgs e) {
             base.OnPreviewKeyDown(e);
 
             if (e.Key == Key.Space) {
                 e.Handled = true;
             } else if (e.Key == Key.Up || e.Key == Key.Down) {
-                int num = 0;
-                int.TryParse(Text, out num);
-
-                if (e.Key == Key.Up && num < MaxValue) {
-                    Text = (++num).ToString();
-                } else if (e.Key == Key.Down && num > MinValue) {
-                    Text = (--num).ToString();
+                if (e.Key == Key.Up && Value < MaxValue) {
+                    Value++;
+                } else if (e.Key == Key.Down && Value > MinValue) {
+                    Value--;
                 }
+            }
+        }
+
+        /**
+         * 文字が入力されたときに呼ばれる
+         * 入力された値が数値なら、値を更新する
+         */
+        protected override void OnTextChanged(TextChangedEventArgs e) {
+            int num;
+            if (int.TryParse(Text, out num) && IsValid(num)) {
+                Value = num;
+            }
+        }
+
+        /** 入力チェック */
+        private bool IsValid(int number) {
+            int num;
+            if (int.TryParse(Text, out num)) {
+                return num >= MinValue && num <= MaxValue;
+            } else {
+                return false;
             }
         }
     }

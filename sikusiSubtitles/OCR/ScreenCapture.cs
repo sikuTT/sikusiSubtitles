@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace sikusiSubtitles.OCR {
@@ -17,5 +19,8 @@ namespace sikusiSubtitles.OCR {
             public int right;
             public int bottom;
         }
+
+        [DllImport("user32.dll")]
+        public static extern uint GetDpiForWindow(IntPtr hwnd);
     }
 }

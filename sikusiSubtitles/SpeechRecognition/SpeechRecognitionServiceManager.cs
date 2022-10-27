@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,9 +28,9 @@ namespace sikusiSubtitles.SpeechRecognition {
                 SetStatusBarText();
             }
         }
-        string engine = "ChromeSpeechRecognition";
+        string engine = "EdgeSpeechRecognition";
 
-        public string Language { get; set; } = "ja-JP";
+        public string Language { get; set; } = "";
 
         ToggleButton speechRecognitionButton= new ToggleButton();
         Label engineNameBox = new Label();
@@ -52,10 +53,6 @@ namespace sikusiSubtitles.SpeechRecognition {
             engineNameBox.VerticalContentAlignment = VerticalAlignment.Center;
             serviceManager.AddStatusBarControl(stackPanel, 100);
 
-            // マイク設定
-            var enumerator = new MMDeviceEnumerator();
-            Device = enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Console);
-
             // 設定画面
             settingsPage = new SpeechRecognitionPage(ServiceManager, this);
         }
@@ -71,11 +68,11 @@ namespace sikusiSubtitles.SpeechRecognition {
             // マイク設定
             var enumerator = new MMDeviceEnumerator();
             var micList = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
-            Device = micList.Where(mic => mic.ID == device).FirstOrDefault() ?? Device;
+            Device = micList.Where(mic => mic.ID == device).FirstOrDefault() ?? enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Console);
 
             // 音声認識エンジン
-            Engine = token.Value<string>("Engine") ?? Engine;
-            Language = token.Value<string>("Language") ?? Language;
+            Engine = token.Value<string>("Engine") ?? "";
+            Language = token.Value<string>("Language") ?? "ja-JP";
         }
 
         public override JObject Save() {
@@ -106,17 +103,23 @@ namespace sikusiSubtitles.SpeechRecognition {
         private void SpeechRecognitionStart() {
             if (runningService == null) {
                 if (Device == null) {
-                    MessageBox.Show("マイクを設定してください。");
+                    MessageBox.Show("マイクを設定してください。", null, MessageBoxButton.OK, MessageBoxImage.Warning);
                 } else {
                     if (selectingService != null) {
-                        if (selectingService.Start()) {
-                            runningService = selectingService;
-                            selectingService.Recognizing += RecognizingHandler;
-                            selectingService.Recognized += RecognizedHandler;
-                            selectingService.ServiceStopped += ServiceStoppedHandler;
+                        var languages = selectingService.GetLanguages();
+                        var selectingLanguage = languages.Find(lang => lang.Code == Language);
+                        if (selectingLanguage != null) {
+                            if (selectingService.Start()) {
+                                runningService = selectingService;
+                                selectingService.Recognizing += RecognizingHandler;
+                                selectingService.Recognized += RecognizedHandler;
+                                selectingService.ServiceStopped += ServiceStoppedHandler;
+                            }
+                        } else {
+                            MessageBox.Show("音声認識する言語を設定してください。", null, MessageBoxButton.OK, MessageBoxImage.Warning);
                         }
                     } else {
-                        MessageBox.Show("使用する音声認識サービスを指定してください。");
+                        MessageBox.Show("使用する音声認識サービスを指定してください。", null, MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
                 }
 
@@ -146,10 +149,12 @@ namespace sikusiSubtitles.SpeechRecognition {
         }
 
         private void RecognizingHandler(Object? sender, SpeechRecognitionEventArgs args) {
+            Debug.WriteLine($"SpeechRecognitionServiceManager: false: {args.Text}");
             this.Recognizing?.Invoke(sender, args);
         }
 
         private void RecognizedHandler(Object? sender, SpeechRecognitionEventArgs args) {
+            Debug.WriteLine($"SpeechRecognitionServiceManager: true: {args.Text}");
             this.Recognized?.Invoke(sender, args);
         }
 

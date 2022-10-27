@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:sikusiSubtitles.OCR"
         mc:Ignorable="d"
-        Title="CaptureWindow" Height="450" Width="800" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" Topmost="True" MouseDown="Window_MouseDown" MouseMove="Window_MouseMove" MouseUp="Window_MouseUp" Closed="Window_Closed">
+        Title="CaptureWindow" Height="450" Width="800" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" Topmost="True" MouseDown="Window_MouseDown" MouseMove="Window_MouseMove" MouseUp="Window_MouseUp" Closed="Window_Closed" Loaded="Window_Loaded">
     <Grid>
         <Image x:Name="image" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
     </Grid>

@@ -31,7 +31,7 @@ namespace sikusiSubtitles.Subtitles {
         public event PropertyChangedEventHandler? PropertyChanged;
         public ObservableCollection<LanguageModel> LanguageList { get; set; } = new ObservableCollection<LanguageModel>();
         public string SelectedCode {
-            get { return selectedCode; }
+            get => selectedCode;
             set {
                 selectedCode = value;
                 NotifyPropertyChanged();
@@ -75,16 +75,16 @@ namespace sikusiSubtitles.Subtitles {
             // 翻訳先一覧を必要な数だけ作成する
             listBox.DataContext = translationLanguageList;
             foreach (var lang in service.TranslationLanguageToList) {
-                var languageList = new LanguageListModel();
-                languageList.SelectedCode = lang;
+                var languageList = new LanguageListModel { SelectedCode = lang };
                 translationLanguageList.Add(languageList);
             }
 
             // 翻訳サービス一覧
-            foreach (var service in translationServices) {
-                var i = translationServiceComboBox.Items.Add(service.DisplayName);
-                if (service.Name == this.service.TranslationEngine) translationServiceComboBox.SelectedIndex = i;
-            }
+            var translationServiceList = translationServices.Select(service => service.DisplayName).ToList();
+            translationServiceList.Insert(0, "（翻訳しない）");
+            translationServiceComboBox.ItemsSource = translationServiceList;
+            var i = translationServices.FindIndex(service => service.Name == this.service.TranslationEngine);
+            translationServiceComboBox.SelectedIndex = i != -1 ? i + 1 : 0;
 
             // 字幕を消すまでの時間
             clearIntervalCheckBox.IsChecked = service.ClearInterval;
@@ -100,12 +100,10 @@ namespace sikusiSubtitles.Subtitles {
         private void UserControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
             if ((bool)e.NewValue == false) {
                 // 設定画面から出ていくとき、選択されていない翻訳先は削除する
-                for (var i = 0; i < translationLanguageList.Count;) {
+                for (var i = translationLanguageList.Count - 1; i >= 0; i--) {
                     if (translationLanguageList[i].SelectedCode == "") {
                         translationLanguageList.RemoveAt(i);
                         service.TranslationLanguageToList.RemoveAt(i);
-                    } else {
-                        i++;
                     }
                 }
             }
@@ -113,38 +111,41 @@ namespace sikusiSubtitles.Subtitles {
 
         /** 翻訳サービスが変更された */
         private void translationServiceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            translationLanguageFromComboBox.Items.Clear();
+            translationLanguageFromComboBox.ItemsSource = null;
+            foreach (var item in translationLanguageList) {
+                item.LanguageList.Clear();
+                item.SelectedCode = "";
+            }
 
-            if (translationServiceComboBox.SelectedIndex != -1) {
+            if (translationServiceComboBox.SelectedIndex > 0) {
                 // 使用する翻訳サービスを変更
-                translationService = translationServices[translationServiceComboBox.SelectedIndex];
+                translationService = translationServices[translationServiceComboBox.SelectedIndex - 1];
                 service.TranslationEngine = translationService.Name;
 
                 // 翻訳元言語を選択された翻訳サービスがサポートする言語一覧で更新する
                 translationLanguages = translationService.GetLanguages();
-                foreach (var lang in translationLanguages) {
-                    var i = translationLanguageFromComboBox.Items.Add(lang.Name);
-                    if (service.TranslationLanguageFrom == lang.Code) translationLanguageFromComboBox.SelectedIndex = i;
-                }
+                translationLanguageFromComboBox.ItemsSource = translationLanguages;
+                translationLanguageFromComboBox.SelectedIndex = translationLanguages.FindIndex(lang => lang.Code == service.TranslationLanguageFrom);
 
                 // 翻訳先言語を選択された翻訳サービスがサポートする言語一覧で更新する
                 for (var i = 0; i < service.TranslationLanguageToList.Count; i++) {
                     var item = translationLanguageList[i];
-                    item.LanguageList.Clear();
-                    item.SelectedCode = "";
                     foreach (var lang in translationLanguages) {
                         var langModel = new LanguageModel() { Code = lang.Code, Language = lang.Name };
                         item.LanguageList.Add(langModel);
                         if (service.TranslationLanguageToList[i] == lang.Code) item.SelectedCode = lang.Code;
                     }
                 }
+            } else {
+                service.TranslationEngine = "";
             }
         }
 
         /** 翻訳元言語が変更された */
         private void translationLanguageFromComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            if (translationLanguageFromComboBox.SelectedIndex != -1) {
-                service.TranslationLanguageFrom = translationLanguages[translationLanguageFromComboBox.SelectedIndex].Code;
+            var lang = translationLanguageFromComboBox.SelectedItem as Language;
+            if (lang != null) {
+                service.TranslationLanguageFrom = lang.Code;
             }
         }
 
@@ -152,13 +153,11 @@ namespace sikusiSubtitles.Subtitles {
         private void translationLanguageToComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             var comboBox = sender as ComboBox;
             if (comboBox != null) {
-                if (comboBox.SelectedIndex != -1) {
-                    var item = comboBox.DataContext as LanguageListModel;
-                    if (item != null) {
-                        var index = listBox.Items.IndexOf(item);
-                        if (index != -1) {
-                            service.TranslationLanguageToList[index] = item.SelectedCode;
-                        }
+                var item = comboBox.DataContext as LanguageListModel;
+                if (item?.SelectedCode != null) {
+                    var index = listBox.Items.IndexOf(item);
+                    if (index != -1) {
+                        service.TranslationLanguageToList[index] = item.SelectedCode;
                     }
                 }
             }
@@ -189,32 +188,44 @@ namespace sikusiSubtitles.Subtitles {
 
         /** 「一定時間で字幕を消す」を設定 */
         private void clearIntervalCheckBox_Checked(object sender, RoutedEventArgs e) {
-            service.ClearInterval = true;
+            if (IsLoaded) {
+                service.ClearInterval = true;
+            }
         }
 
         /** 「一定時間で字幕を消す」の設定を解除 */
         private void clearIntervalCheckBox_Unchecked(object sender, RoutedEventArgs e) {
-            service.ClearInterval = false;
+            if (IsLoaded) {
+                service.ClearInterval = false;
+            }
         }
 
         /** 字幕を消すまでの時間の設定が変更された */
-        private void clearIntervalNumericEditBox_TextChanged(object sender, TextChangedEventArgs e) {
-            service.ClearIntervalTime = clearIntervalNumericEditBox.Value;
+        private void clearIntervalNumericEditBox_ValueChanged(object sender, RoutedPropertyChangedEventArgs<int> e) {
+            if (IsLoaded) {
+                service.ClearIntervalTime = e.NewValue;
+            }
         }
 
         /** 文字場長い場合、字幕を消すまでの時間を長くするオプションがチェックされた */
         private void additionalClearTimeCheckBox_Checked(object sender, RoutedEventArgs e) {
-            service.AdditionalClear = true;
+            if (IsLoaded) {
+                service.AdditionalClear = true;
+            }
         }
 
         /** 文字場長い場合、字幕を消すまでの時間を長くするオプションが解除された */
         private void additionalClearTimeCheckBox_Unchecked(object sender, RoutedEventArgs e) {
-            service.AdditionalClear = false;
+            if (IsLoaded) {
+                service.AdditionalClear = false;
+            }
         }
 
         /** 文字が長い場合、字幕を消すまでの時間をどれだけ長くするかの設定が変更された */
         private void additionalClearTimeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-            service.AdditionalClearTime = (int)additionalClearTimeSlider.Value;
+            if (IsLoaded) {
+                service.AdditionalClearTime = (int)additionalClearTimeSlider.Value;
+            }
         }
     }
 }

@@ -1,9 +1,11 @@
-﻿using sikusiSubtitles.OBS;
+﻿using Reactive.Bindings;
+using sikusiSubtitles.OBS;
 using sikusiSubtitles.Shortcut;
 using sikusiSubtitles.Speech;
 using sikusiSubtitles.Translation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -16,13 +18,25 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Windows.UI.Core;
 using static sikusiSubtitles.OCR.ScreenCapture;
 
 namespace sikusiSubtitles.OCR {
+    class OcrWindowViewModel : INotifyPropertyChanged {
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        // キャプチャ対象の情報
+        public ReactivePropertySlim<string> WindowTitle { get; } = new();
+
+        // 読み上げ
+        public ReactivePropertySlim<bool> SpeechWhenOcrRun { get; } = new();
+    }
+
     /// <summary>
     /// OcrWindow.xaml の相互作用ロジック
     /// </summary>
     public partial class OcrWindow : Window {
+        OcrWindowViewModel viewModel = new();
         ServiceManager serviceManager;
         OcrServiceManager ocrManager;
         int processId;
@@ -30,17 +44,24 @@ namespace sikusiSubtitles.OCR {
         // OCR
         List<OcrService> ocrServices = new List<OcrService>();
         OcrService? ocrService;
+        string ocrServiceName;
+        string? ocrLanguageCode;
 
         // 翻訳
         List<TranslationService> translationServices = new List<TranslationService>();
         TranslationService? translationService;
+        string translationServiceName;
+        string? translationLanguageCode;
 
         // OBS
         ObsService? obsService;
+        string obsTextSource = "";
 
         // 読み上げ
         List<SpeechService> speechServices = new List<SpeechService>();
         SpeechService? speechService;
+        string speechServiceName;
+        string speechVoiceId;
 
         // ショートカット
         ShortcutService? shortcutService;
@@ -48,44 +69,103 @@ namespace sikusiSubtitles.OCR {
         // 画面のキャプチャーエリア指定
         CaptureWindow? captureWindow;
         System.Drawing.Rectangle captureArea;
-        int scale = 1;
+        int captureScale = 1;
 
         public OcrWindow(ServiceManager serviceManager, OcrServiceManager ocrManager, int processId) {
+            InitializeComponent();
+            DataContext = viewModel;
+
             this.serviceManager = serviceManager;
             this.ocrManager = ocrManager;
             this.processId = processId;
 
+            // OCR
+            this.ocrServiceName = ocrManager.OcrEngine;
+            this.ocrLanguageCode = ocrManager.OcrLanguage;
+
+            // 翻訳
+            this.translationServiceName = ocrManager.TranslationEngine;
+            this.translationLanguageCode = ocrManager.TranslationLanguage;
+
+            // 読み上げ
+            this.speechServiceName = ocrManager.OcrSpeechEngine;
+            this.speechVoiceId = ocrManager.OcrSpeechVoice;
+            viewModel.SpeechWhenOcrRun.Value = ocrManager.SpeechWhenOcrRun;
+
+            // ショートカットの設定
+            ocrShortcutKeyTextBox.Text = ocrManager.OcrShortcut.ShortcutKey;
+            clearTranslatedShortcutKeyTextBox.Text = ocrManager.ClearObsTextShortcut.ShortcutKey;
+        }
+
+        public OcrWindow(OcrWindow ocrWindow) {
             InitializeComponent();
+            DataContext = viewModel;
+
+            this.serviceManager = ocrWindow.serviceManager;
+            this.ocrManager = ocrWindow.ocrManager;
+            this.processId = ocrWindow.processId;
+
+            // OCR
+            this.ocrServiceName = ocrWindow.ocrServiceName;
+            this.ocrLanguageCode = ocrWindow.ocrLanguageCode;
+
+            // 翻訳
+            this.translationServiceName = ocrWindow.translationServiceName;
+            this.translationLanguageCode = ocrWindow.translationLanguageCode;
+
+            // OBS
+            obsTextSource = ocrWindow.obsTextSource;
+
+            // 読み上げ
+            this.speechServiceName = ocrWindow.speechServiceName;
+            this.speechVoiceId = ocrWindow.speechVoiceId;
+            viewModel.SpeechWhenOcrRun.Value = ocrWindow.viewModel.SpeechWhenOcrRun.Value;
+
+            // 画面のキャプチャーエリア指定
+            this.captureArea = ocrWindow.captureArea;
+            this.captureScale = ocrWindow.captureScale;
+            if (!captureArea.IsEmpty) {
+                this.ocrButton.IsEnabled = true;
+            }
+
+            // ショートカット
+            this.ocrShortcutKeyTextBox.Text = ocrWindow.ocrShortcutKeyTextBox.Text;
+            this.clearTranslatedShortcutKeyTextBox.Text = ocrWindow.clearTranslatedShortcutKeyTextBox.Text;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
+            serviceManager.MainWindow.Closed += MainWindowClosed;
+
             // キャプチャー対象のウィンドウ名をフォームに表示する。
-            Process process = Process.GetProcessById(processId);
-            windowTitleTextBox.Text = process.MainWindowTitle;
+            try {
+                Process process = Process.GetProcessById(processId);
+                viewModel.WindowTitle.Value = process.MainWindowTitle;
+            }
+            catch (Exception) {
+                MessageBox.Show("キャプチャー対象のプロセスが取得できませんでした。", null, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
             // OCRサービス一覧をコンボボックスに設定
             ocrServices = this.serviceManager.GetServices<OcrService>();
             ocrServiceComboBox.ItemsSource = ocrServices;
-            ocrServiceComboBox.SelectedItem = ocrServices.Find(service => service.Name == ocrManager.OcrEngine);
+            ocrServiceComboBox.SelectedItem = ocrServices.Find(service => service.Name == ocrServiceName);
 
             // 翻訳エンジンの一覧をコンボボックスに設定
             translationServices = serviceManager.GetServices<TranslationService>();
             translationServiceComboBox.ItemsSource = translationServices;
-            translationServiceComboBox.SelectedItem = translationServices.Find(service => service.Name == ocrManager.TranslationEngine);
+            translationServiceComboBox.SelectedItem = translationServices.Find(service => service.Name == translationServiceName);
 
-            // OBSに接続されている場合、テキストソースを取得する
+            // OBS
             obsService = this.serviceManager.GetService<ObsService>();
+            if (obsService != null) {
+                obsService.ConnectionChanged += obsConnectionChangedHandler;
+                obsConnectionChangedHandler(this , obsService.IsConnected);
+            }
 
             // 読み上げサービス一覧
             speechServices = this.serviceManager.GetServices<SpeechService>();
             speechServiceComboBox.ItemsSource = speechServices;
-            speechServiceComboBox.SelectedItem = speechServices.Find(service => service.Name == ocrManager.OcrSpeechEngine);
-
-            // OCR時の自動読み上げ
-            speechCheckBox.IsChecked = ocrManager.SpeechWhenOcrRun;
-
-            // ショートカットの設定
-            ocrShortcutKeyTextBox.Text = ocrManager.OcrShortcut.ShortcutKey;
+            speechServiceComboBox.SelectedItem = speechServices.Find(service => service.Name == speechServiceName);
 
             // ショートカットイベントを取得
             shortcutService = this.serviceManager.GetService<ShortcutService>();
@@ -103,6 +183,11 @@ namespace sikusiSubtitles.OCR {
 
         /** ウィンドウがクローズされた */
         private void Window_Closed(object sender, EventArgs e) {
+            // OBS
+            if (obsService != null) {
+                obsService.ConnectionChanged -= obsConnectionChangedHandler;
+            }
+
             if (this.shortcutService != null) {
                 this.shortcutService.ShortcutRun -= ShortcutRun;
             }
@@ -115,29 +200,28 @@ namespace sikusiSubtitles.OCR {
         /** 読み取りエリアの設定ボタン */
         private void captureAreaButton_Click(object sender, RoutedEventArgs e) {
             // キャプチャーするウィンドウの上に、キャプチャー画面を表示する。
-            Process process = Process.GetProcessById(processId);
-            if (captureWindow != null) {
-                captureWindow.Close();
-                captureWindow = null;
-            }
-
-            // キャプチャー対象のウィンドウをアクティブにする
             try {
-                Microsoft.VisualBasic.Interaction.AppActivate(processId);
-            } catch (Exception) {
-                MessageBox.Show("ウィンドウを取得できません。", null, MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
+                Process process = Process.GetProcessById(processId);
+                if (captureWindow != null) {
+                    captureWindow.Close();
+                    captureWindow = null;
+                }
 
-            // キャプチャー対象のウィンドウの上にキャプチャー処理をするウィンドウを作成する
-            captureWindow = new CaptureWindow(process.MainWindowHandle, captureArea);
-            captureWindow.Show();
-            captureWindow.Activate();
-            captureWindow.AreaSelected += CaptureAreaSelected;
-            captureWindow.Closed += (object? sender, EventArgs e) => {
-                captureWindow.AreaSelected -= CaptureAreaSelected;
-                captureWindow = null;
-            };
+                // キャプチャー対象のウィンドウをアクティブにする
+                Microsoft.VisualBasic.Interaction.AppActivate(processId);
+
+                // キャプチャー対象のウィンドウの上にキャプチャー処理をするウィンドウを作成する
+                captureWindow = new CaptureWindow(process.Handle, process.MainWindowHandle, captureArea);
+                captureWindow.Show();
+                captureWindow.Activate();
+                captureWindow.AreaSelected += CaptureAreaSelected;
+                captureWindow.Closed += (object? sender, EventArgs e) => {
+                    captureWindow.AreaSelected -= CaptureAreaSelected;
+                    captureWindow = null;
+                };
+            } catch (Exception) {
+                MessageBox.Show("キャプチャー対象のプロセスが取得できませんでした。", null, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         /** OCRエンジンが変更された */
@@ -146,12 +230,16 @@ namespace sikusiSubtitles.OCR {
             if (service != null) {
                 // デフォルトのOCRサービスを変更
                 ocrService = service;
-                ocrManager.OcrEngine = service.Name;
+                ocrManager.OcrEngine = ocrServiceName = service.Name;
 
                 // 言語一覧を選択したOCRサービスがサポートする言語一覧にする
                 var languages = service.GetLanguages();
+                var currentOcrLanguageCode = ocrLanguageCode;
                 ocrLanguageComboBox.ItemsSource = languages;
-                ocrLanguageComboBox.SelectedItem = languages.Find(lang => lang.Code == ocrManager.OcrLanguage);
+                ocrLanguageComboBox.SelectedItem = languages.Find(lang => lang.Code == currentOcrLanguageCode);
+            } else {
+                ocrService = null;
+                ocrManager.OcrEngine = ocrServiceName = "";
             }
             SetOcrStatusText();
         }
@@ -160,7 +248,10 @@ namespace sikusiSubtitles.OCR {
         private void ocrLanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             var lang = ocrLanguageComboBox.SelectedItem as Language;
             if (lang != null) {
-                ocrManager.OcrLanguage = lang.Code;
+                ocrManager.OcrEngine = ocrService?.Name ?? "";  // 別のOCRが設定されているかもしれないので、OCRも設定する
+                ocrManager.OcrLanguage = ocrLanguageCode = lang.Code;
+            } else {
+                ocrLanguageCode = null;
             }
             SetOcrStatusText();
         }
@@ -176,11 +267,15 @@ namespace sikusiSubtitles.OCR {
             if (service != null) {
                 // デフォルトの翻訳サービスを変更
                 translationService = service;
-                ocrManager.TranslationEngine = service.Name;
+                ocrManager.TranslationEngine = translationServiceName = service.Name;
 
                 var languages = service.GetLanguages();
+                var currentLanguageCode = translationLanguageCode;
                 translationLanguageComboBox.ItemsSource = languages;
-                translationLanguageComboBox.SelectedItem = languages.Find(lang => lang.Code == ocrManager.TranslationLanguage);
+                translationLanguageComboBox.SelectedItem = languages.Find(lang => lang.Code == currentLanguageCode);
+            } else {
+                translationService = null;
+                ocrManager.TranslationEngine = translationServiceName = "";
             }
             SetTranslationStatusText();
         }
@@ -189,7 +284,10 @@ namespace sikusiSubtitles.OCR {
         private void translationLanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             var lang = translationLanguageComboBox.SelectedItem as Language;
             if (lang != null) {
-                ocrManager.TranslationLanguage = lang.Code;
+                ocrManager.TranslationEngine = translationService?.Name ?? "";
+                ocrManager.TranslationLanguage = translationLanguageCode = lang.Code;
+            } else {
+                translationLanguageCode = null;
             }
             SetTranslationStatusText();
         }
@@ -201,6 +299,7 @@ namespace sikusiSubtitles.OCR {
 
         /** OCRテキストソースが選択された */
         private void obsTextSourceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            obsTextSource = obsTextSourceComboBox.SelectedItem as string ?? "";
             SetObsStatusText();
         }
 
@@ -214,11 +313,15 @@ namespace sikusiSubtitles.OCR {
             var service = speechServiceComboBox.SelectedItem as SpeechService;
             if (service != null) {
                 speechService = service;
-                ocrManager.OcrSpeechEngine = service.Name;
+                ocrManager.OcrSpeechEngine = speechServiceName = service.Name;
 
                 var voices = service.GetVoices();
+                var currentVoiceId = speechVoiceId;
                 speechVoiceComboBox.ItemsSource = voices;
-                speechVoiceComboBox.SelectedItem = voices.Find(voice => voice.Id == ocrManager.OcrSpeechVoice);
+                speechVoiceComboBox.SelectedItem = voices.Find(voice => voice.Id == currentVoiceId);
+            } else {
+                speechService = null;
+                ocrManager.OcrSpeechEngine = speechServiceName = "";
             }
             SetSpeechStatusText();
         }
@@ -227,7 +330,7 @@ namespace sikusiSubtitles.OCR {
         private void speechVoiceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             var voice = speechVoiceComboBox.SelectedItem as Voice;
             if (voice != null) {
-                ocrManager.OcrSpeechVoice = voice.Id;
+                ocrManager.OcrSpeechVoice = speechVoiceId = voice.Id;
             }
 
             SetSpeechButtonEnabled();
@@ -275,24 +378,24 @@ namespace sikusiSubtitles.OCR {
             try {
                 this.ocrButton.IsEnabled = false;
 
-                var ocrLanguage = ocrLanguageComboBox.SelectedItem as Language;
-
                 if (ocrService == null) {
                     MessageBox.Show("OCRに使用するサービスが設定されていません。", null, MessageBoxButton.OK, MessageBoxImage.Error);
-                } else if (this.ocrLanguageComboBox.SelectedIndex == -1) {
+                } else if (ocrLanguageCode == null) {
                     MessageBox.Show("OCRで読み取る言語が設定されていません。", null, MessageBoxButton.OK, MessageBoxImage.Error);
-                } else if (this.ocrService != null && ocrLanguage != null) {
+                } else if (this.ocrService != null) {
                     var bitmap = CaptureWindow();
                     if (bitmap == null) {
                         MessageBox.Show("画面をキャプチャー出来ませんでした。", null, MessageBoxButton.OK, MessageBoxImage.Error);
                     } else {
-                        OcrResult result = await this.ocrService.ExecuteAsync(bitmap, ocrLanguage.Code);
+                        System.Windows.Forms.Clipboard.SetImage(bitmap);
+                        OcrResult result = await this.ocrService.ExecuteAsync(bitmap, ocrLanguageCode);
                         if (result.Text != null) {
                             this.ocrTextBox.Text = result.Text;
+                            this.translatedTextBox.Text = "";
 
                             // 文字が取得できた場合、読み上げと翻訳をする
                             if (result.Text.Length > 0) {
-                                if (ocrManager.SpeechWhenOcrRun) {
+                                if (viewModel.SpeechWhenOcrRun.Value) {
                                     Task task = SpeechOcrTextAsync();
                                 }
                                 await TranslateAsync();
@@ -311,19 +414,16 @@ namespace sikusiSubtitles.OCR {
 
         /** 翻訳をする */
         private async Task TranslateAsync() {
-            if (translationService != null) {
+            if (translationService != null && translationLanguageCode != null) {
                 try {
-                    var result = await translationService.TranslateAsync(ocrTextBox.Text, null, ocrManager.TranslationLanguage);
+                    var result = await translationService.TranslateAsync(ocrTextBox.Text, null, translationLanguageCode);
                     if (result != null && result.Translations.Count > 0) {
                         translatedTextBox.Text = result.Translations[0].Text;
 
                         // OBSに接続済みで、翻訳結果表示先が指定されている場合、OBS上に翻訳結果を表示する。
                         var subtitlesService = this.serviceManager.GetService<ObsSubtitlesService>();
-                        if (obsService != null && obsService.IsConnected && subtitlesService != null && obsTextSourceComboBox.SelectedItem != null) {
-                            var sourceName = obsTextSourceComboBox.SelectedItem as string;
-                            if (sourceName != null) {
-                                await subtitlesService.SetTextAsync(sourceName, result.Translations[0].Text ?? "");
-                            }
+                        if (obsService != null && obsService.IsConnected && subtitlesService != null && obsTextSource != "") {
+                            await subtitlesService.SetTextAsync(obsTextSource , result.Translations[0].Text ?? "");
                         }
                     } else {
                         // 翻訳に失敗
@@ -356,7 +456,7 @@ namespace sikusiSubtitles.OCR {
          * OBSのテキストソースの一覧を取得する。
          */
         async private Task GetObsTextSourcesAsync() {
-            var selectedItem = obsTextSourceComboBox.SelectedItem as string;
+            var currentSource = this.obsTextSource;
             this.obsTextSourceComboBox.ItemsSource = null;
 
             // OBSのテキストソースの一覧を取得
@@ -395,7 +495,7 @@ namespace sikusiSubtitles.OCR {
                 this.obsTextSourceComboBox.ItemsSource = items;
 
                 // 更新前に選択されていたアイテムと同じものがあれば再選択する
-                var newSelectedItem = items.Where(i => i == selectedItem).FirstOrDefault();
+                var newSelectedItem = items.Where(i => i == currentSource).FirstOrDefault();
                 this.obsTextSourceComboBox.SelectedItem = newSelectedItem;
             }
         }
@@ -403,11 +503,8 @@ namespace sikusiSubtitles.OCR {
         /** OBSに表示された翻訳結果をクリアする */
         private async void ClearObsTranslatedText() {
             var subtitlesService = this.serviceManager.GetService<ObsSubtitlesService>();
-            if (obsService?.IsConnected == true && subtitlesService != null && obsTextSourceComboBox.SelectedItem != null) {
-                var sourceName = obsTextSourceComboBox.SelectedItem as string;
-                if (sourceName != null) {
-                    await subtitlesService.SetTextAsync(sourceName, "");
-                }
+            if (obsService?.IsConnected == true && subtitlesService != null && obsTextSource != "") {
+                await subtitlesService.SetTextAsync(obsTextSource, "");
             }
         }
 
@@ -425,36 +522,65 @@ namespace sikusiSubtitles.OCR {
 
         /** ウィンドウをキャプチャーする */
         private Bitmap? CaptureWindow() {
-            Process process = Process.GetProcessById(processId);
-            if (!captureArea.IsEmpty) {
-                // 画面をキャプチャーする
-                RECT rect;
-                if (GetWindowRect(process.MainWindowHandle, out rect)) {
-                    var left = rect.left + captureArea.Left;
-                    var top = rect.top + captureArea.Top;
-                    var width = captureArea.Width;
-                    var height = captureArea.Height;
+            try {
+                if (!captureArea.IsEmpty) {
+                    Process process = Process.GetProcessById(processId);
+                    var dpi = GetDpiForWindow(process.MainWindowHandle);
 
-                    Bitmap screenBitmap = new Bitmap(width, height);
-                    using (Graphics g = Graphics.FromImage(screenBitmap)) {
-                        g.CopyFromScreen(left, top, 0, 0, new System.Drawing.Size(width, height));
-                    }
+                    // 画面をキャプチャーする
+                    RECT rect;
+                    if (GetWindowRect(process.MainWindowHandle, out rect)) {
+                        var left = rect.left + captureArea.Left;
+                        var top = rect.top + captureArea.Top;
+                        var width = captureArea.Width;
+                        var height = captureArea.Height;
 
-                    // キャプチャ画像の拡大が設定されている場合は拡大する
-                    Bitmap? scaledBitmap;
-                    if (scale > 1) {
-                        scaledBitmap = new Bitmap(width * scale, height * scale);
-                        using (Graphics g = Graphics.FromImage(scaledBitmap)) {
-                            g.DrawImage(screenBitmap, new Rectangle(0, 0, width * scale, height * scale), new Rectangle(0, 0, width, height), GraphicsUnit.Pixel);
+                        Bitmap screenBitmap = new Bitmap(width, height);
+                        using (Graphics g = Graphics.FromImage(screenBitmap)) {
+                            g.CopyFromScreen(left, top, 0, 0, new System.Drawing.Size(width, height));
                         }
-                    } else {
-                        scaledBitmap = screenBitmap;
+
+                        // キャプチャ画像の拡大が設定されている場合は拡大する
+                        Bitmap? scaledBitmap;
+                        if (captureScale > 1) {
+                            scaledBitmap = new Bitmap(width * captureScale, height * captureScale);
+                            using (Graphics g = Graphics.FromImage(scaledBitmap)) {
+                                g.DrawImage(screenBitmap, new Rectangle(0, 0, width * captureScale, height * captureScale), new Rectangle(0, 0, width, height), GraphicsUnit.Pixel);
+                            }
+                        }
+                        else {
+                            scaledBitmap = screenBitmap;
+                        }
+                        return scaledBitmap;
                     }
-                    return scaledBitmap;
                 }
             }
-
+            catch (Exception) {
+                MessageBox.Show("キャプチャー対象のプロセスが取得できませんでした。", null, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
             return null;
+        }
+
+        /** OBSの接続状態が変更された */
+        private async void obsConnectionChangedHandler(object? sender , bool e) {
+            if (e == true) {
+                this.connectObs.Visibility = Visibility.Collapsed;
+                this.obsSettings.Visibility = Visibility.Visible;
+
+                if (obsStatusPopup.IsOpen) {
+                    await GetObsTextSourcesAsync();
+                }
+            } else {
+                this.connectObs.Visibility = Visibility.Visible;
+                this.obsSettings.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        /** OBSに接続する */
+        private async void connectObsButton_Click(object sender , RoutedEventArgs e) {
+            if (obsService != null) {
+                await obsService.ConnectAsync();
+            }
         }
 
         /**
@@ -467,7 +593,6 @@ namespace sikusiSubtitles.OCR {
             } else if (this.IsActive == true && clearTranslatedShortcutKeyTextBox.IsFocused == true) {
                 clearTranslatedShortcutKeyTextBox.Text = shortcut.ShortcutKey;
             } else {
-
                 if (ocrButton.IsEnabled == true && shortcut.ShortcutKey == ocrShortcutKeyTextBox.Text) {
                     await Ocr();
                 } else if (shortcut.ShortcutKey == clearTranslatedShortcutKeyTextBox.Text) {
@@ -519,6 +644,12 @@ namespace sikusiSubtitles.OCR {
             System.Diagnostics.Process.Start(pi);
         }
 
+        /** OCRウィンドウを複製する */
+        private void duplicateStatusButton_Click(object sender, RoutedEventArgs e) {
+            var ocrWindow = new OcrWindow(this);
+            ocrWindow.Show();
+        }
+
         /**
          */
         private async void speechMenuItem_Click(object sender, RoutedEventArgs e) {
@@ -552,9 +683,6 @@ namespace sikusiSubtitles.OCR {
         private void SetOcrStatusText() {
             var service = ocrManager.GetOcrEngine();
             if (service != null) {
-                // var lang = service.GetLanguages().Find(lang => lang.Code == ocrManager.OcrLanguage);
-                // var langName = lang != null ? lang.Name : "";
-                // ocrServiceName.Content = $"{service.DisplayName} - {langName}";
                 ocrStatusText.Text = service.DisplayName;
             } else {
                 ocrStatusText.Text = "";
@@ -564,9 +692,6 @@ namespace sikusiSubtitles.OCR {
         private void SetTranslationStatusText() {
             var service = ocrManager.GetTranslationEngine();
             if (service != null) {
-                // var lang = service.GetLanguages().Find(lang => lang.Code == ocrManager.TranslationLanguage);
-                // var langName = lang != null ? lang.Name : "";
-                // translationServiceName.Content = $"{service.DisplayName} - {langName}";
                 translationStatusText.Text = service.DisplayName;
             } else {
                 translationStatusText.Text = "";
@@ -574,12 +699,7 @@ namespace sikusiSubtitles.OCR {
         }
 
         private void SetObsStatusText() {
-            var text = obsTextSourceComboBox.SelectedItem as string;
-            if (text != null) {
-                obsStatusText.Text = text;
-            } else {
-                obsStatusText.Text = "";
-            }
+            obsStatusText.Text = obsTextSource;
         }
 
         private void SetSpeechStatusText() {
@@ -619,6 +739,11 @@ namespace sikusiSubtitles.OCR {
 
         private void shortcutKeyStatusButton_Click(object sender, RoutedEventArgs e) {
             shortcutKeyStatusPopup.IsOpen = true;
+        }
+
+        /** メインウィンドウがクローズされた場合、このウィンドウも終了する */
+        private void MainWindowClosed(object? sender, EventArgs e) {
+            this.Close();
         }
     }
 }

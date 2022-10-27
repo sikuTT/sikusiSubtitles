@@ -20,14 +20,14 @@ namespace sikusiSubtitles.SpeechRecognition {
         private WrpListener? Listener;
 
         public string Key { get; set; } = "";
-        public bool Log { get; set; } = true;
-
-        public override List<Language> GetLanguages() {
-            return engines;
-        }
+        public bool Log { get; set; }
 
         public AmiVoiceSpeechRecognitionService(ServiceManager serviceManager) : base(serviceManager, "AmiVoice", "AmiVoice", 300) {
             settingsPage = new AmiVoiceSpeechRecognitionPage(ServiceManager, this);
+        }
+
+        public override List<Language> GetLanguages() {
+            return engines;
         }
 
         public override void Load(JToken token) {
@@ -307,7 +307,6 @@ namespace sikusiSubtitles.SpeechRecognition {
                         }
                     }
                 }
-                Debug.WriteLine(result.text);
             }
             return result;
         }

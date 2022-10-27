@@ -6,6 +6,9 @@
         xmlns:local="clr-namespace:sikusiSubtitles.OCR"
         mc:Ignorable="d"
         Title="OcrWindow" Height="450" Width="900" Loaded="Window_Loaded" Closed="Window_Closed" ResizeMode="CanResizeWithGrip">
+    <Window.DataContext>
+        <local:OcrWindowViewModel></local:OcrWindowViewModel>
+    </Window.DataContext>
     <Window.Resources>
         <Style TargetType="{x:Type Button}">
             <Setter Property="Padding" Value="5"></Setter>
@@ -68,6 +71,7 @@
             <Setter Property="FontSize" Value="16"></Setter>
             <Setter Property="Padding" Value="0"></Setter>
             <Setter Property="VerticalAlignment" Value="Top"></Setter>
+            <Setter Property="Height" Value="40"></Setter>
         </Style>
         <Style TargetType="{x:Type Control}" x:Key="PopupRow">
             <Setter Property="MinWidth" Value="250"></Setter>
@@ -99,7 +103,7 @@
                     <ColumnDefinition Width="120"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Label>キャプチャー対象</Label>
-                <TextBox x:Name="windowTitleTextBox" IsReadOnly="True" Grid.Column="1" VerticalContentAlignment="Center" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"></TextBox>
+                <TextBox x:Name="windowTitleTextBox" IsReadOnly="True" Grid.Column="1" VerticalContentAlignment="Center" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" Text="{Binding WindowTitle.Value}"></TextBox>
                 <Button x:Name="captureAreaButton" Grid.Column="2" Click="captureAreaButton_Click">読み取り先を設定</Button>
             </Grid>
             <Grid Grid.Row="1" Style="{StaticResource Row}">
@@ -116,7 +120,7 @@
                         <ColumnDefinition Width="auto"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Label>テキスト</Label>
-                    <CheckBox x:Name="speechCheckBox" Grid.Column="2" Checked="speechCheckBox_Checked" Unchecked="speechCheckBox_Unchecked" VerticalAlignment="Center">文章の読み取り時に読み上げる</CheckBox>
+                    <CheckBox x:Name="speechCheckBox" Grid.Column="2" Checked="speechCheckBox_Checked" Unchecked="speechCheckBox_Unchecked" VerticalAlignment="Center" IsChecked="{Binding SpeechWhenOcrRun.Value}">文章の読み取り時に読み上げる</CheckBox>
                     <Button x:Name="speechButton" Grid.Column="3" Click="speechButton_Click" IsEnabled="False" Width="80">読み上げる</Button>
                     <Button x:Name="speechCancelButton" Grid.Column="3" Click="speechCancelButton_Click" IsEnabled="False"  Width="80" Visibility="Collapsed" Margin="10,0,0,0">キャンセル</Button>
                     <Button x:Name="ocrButton" Grid.Column="4" IsEnabled="False" Click="ocrButton_Click" Width="80">文字認識</Button>
@@ -192,6 +196,9 @@
                     <Label Style="{StaticResource MenuArrow}">▴</Label>
                 </StackPanel>
             </Button>
+            <Button x:Name="duplicateStatusButton" Click="duplicateStatusButton_Click" ToolTip="ウィンドウを複製">
+                <Image Source="/Resources/duplicate.png"></Image>
+            </Button>
             <Popup x:Name="ocrStatusPopup" StaysOpen="False" PlacementTarget="{Binding ElementName=ocrStatusButton}" Placement="Top">
                 <Border Style="{StaticResource FrameBorder}">
                     <Grid>
@@ -200,7 +207,7 @@
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
                         </Grid.RowDefinitions>
@@ -220,7 +227,7 @@
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
                         </Grid.RowDefinitions>
@@ -234,19 +241,25 @@
             </Popup>
             <Popup x:Name="obsStatusPopup" StaysOpen="False" PlacementTarget="{Binding ElementName=obsStatusButton}" Placement="Top">
                 <Border Style="{StaticResource FrameBorder}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="80"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="40"></RowDefinition>
-                            <RowDefinition Height="40"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Style="{StaticResource PopupHeader}" Grid.ColumnSpan="2">OBS設定</Label>
-                        <Label Grid.Row="1">字幕表示先</Label>
-                        <ComboBox x:Name="obsTextSourceComboBox" Grid.Row="1" Grid.Column="1" Style="{StaticResource PopupRow}" SelectionChanged="obsTextSourceComboBox_SelectionChanged"></ComboBox>
-                    </Grid>
+                    <StackPanel>
+                        <Label Style="{StaticResource PopupHeader}">OBS設定</Label>
+                        <Grid x:Name="connectObs">
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Label>OBSに接続していません。</Label>
+                            <Button x:Name="connectObsButton" Grid.Row="1" Margin="5" Style="{StaticResource PopupRow}" Click="connectObsButton_Click">OBSに接続する</Button>
+                        </Grid>
+                        <Grid x:Name="obsSettings" Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Row="1">字幕表示先</Label>
+                            <ComboBox x:Name="obsTextSourceComboBox" Grid.Row="1" Grid.Column="1" Style="{StaticResource PopupRow}" SelectionChanged="obsTextSourceComboBox_SelectionChanged"></ComboBox>
+                        </Grid>
+                    </StackPanel>
                 </Border>
             </Popup>
             <Popup x:Name="speechStatusPopup" StaysOpen="False" PlacementTarget="{Binding ElementName=speechStatusButton}" Placement="Top">
@@ -257,7 +270,7 @@
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
                         </Grid.RowDefinitions>
@@ -278,7 +291,7 @@
                             <ColumnDefinition Width="auto"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
                         </Grid.RowDefinitions>

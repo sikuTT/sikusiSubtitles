@@ -4,11 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:sikusiSubtitles.Subtitles" xmlns:Controls="clr-namespace:sikusiSubtitles.Controls" x:Class="sikusiSubtitles.Subtitles.SubtitlesWindow"
-        d:DataContext="{d:DesignInstance Type={x:Type local:WindowViewModel}}"
+        d:DataContext="{d:DesignInstance Type={x:Type local:SubtitlesWindowViewModel}}"
         mc:Ignorable="d"
-        Title="SubtitlesWindow" Height="450" Width="800">
+        Title="SubtitlesWindow" Height="450" Width="800" Closed="Window_Closed">
     <Grid>
-        <Rectangle x:Name="background"/>
-        <Controls:OutlineTextControl x:Name="textLabel" Text="{Binding Text, Mode=TwoWay}"/>
+        <Rectangle Fill="{Binding BackgroundBrush.Value}"/>
+        <Controls:OutlineTextControl Text="{Binding VoiceText.Value, Mode=TwoWay}"/>
     </Grid>
 </Window>

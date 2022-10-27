@@ -49,7 +49,7 @@ namespace sikusiSubtitles.Subtitles {
         }
 
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e) {
-            subtitlesWindow = new SubtitlesWindow(this);
+            subtitlesWindow = new SubtitlesWindow(ServiceManager, this);
             subtitlesWindow.Show();
         }
     }

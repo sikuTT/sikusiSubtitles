@@ -15,7 +15,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.DataContext>
-        <local:PageViewModel/>
+        <local:WindowPageViewModel/>
     </UserControl.DataContext>
     <Grid>
         <Grid.RowDefinitions>
@@ -35,9 +35,9 @@
                     <ColumnDefinition Width="350"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <CheckBox Grid.ColumnSpan="3" Content="キャプションバーを表示する" Style="{StaticResource RowItem}"/>
+                <CheckBox Grid.ColumnSpan="3" Content="キャプションバーを表示する" Style="{StaticResource RowItem}" IsChecked="{Binding CaptionBarVisibled.Value}"/>
                 <Label Grid.Row="1" Content="背景色"/>
-                <Controls:ColorPickerButton x:Name="backgroundColor" Grid.Row="1" Grid.Column="1" Color="{Binding BackgroundColor, Mode=TwoWay}" Style="{StaticResource RowItem}" VerticalContentAlignment="Stretch"/>
+                <Controls:ColorPickerButton x:Name="backgroundColor" Grid.Row="1" Grid.Column="1" Color="{Binding BackgroundColor.Value, Mode=TwoWay}" Style="{StaticResource RowItem}" VerticalContentAlignment="Stretch"/>
             </Grid>
         </GroupBox>
         <GroupBox Grid.Row="2" Header="文字設定">
@@ -56,19 +56,19 @@
                 </Grid.ColumnDefinitions>
                 <Label Content="フォント"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <ComboBox x:Name="fontComboBox" MinWidth="200" Style="{StaticResource RowItem}"/>
-                    <sikusiSubtitles:NumericEditBox Width="40" Value="12" Style="{StaticResource RowItem}" Margin="10,5,0,5"/>
+                    <ComboBox x:Name="fontComboBox" MinWidth="200" Style="{StaticResource RowItem}" FontFamily="{Binding FontFamily.Value}" FontSize="{Binding FontSize.Value}" FontWeight="{Binding Bold.Value}" FontStyle="{Binding Italic.Value}"/>
+                    <Controls:NumericEditBox Width="40" Value="12" Style="{StaticResource RowItem}" Margin="10,5,0,5" MinValue="1" MaxValue="100"/>
                     <Label Content="pt"/>
                     <ToggleButton Width="25" Content="B" Style="{StaticResource RowItem}" Margin="10,5,0,5"/>
                     <ToggleButton Width="25" Content="I" Style="{StaticResource RowItem}" Margin="5,5,0,5"/>
                 </StackPanel>
                 <Label Grid.Row="1" Content="文字の色"/>
-                <Controls:ColorPickerButton x:Name="fontColor" Grid.Row="1" Grid.Column="1" Color="{Binding FontColor, Mode=TwoWay}" Style="{StaticResource RowItem}" VerticalContentAlignment="Stretch"/>
-                <CheckBox Grid.Row="2" Grid.ColumnSpan="2" Content="輪郭線を表示する" FontStyle="Normal" Style="{StaticResource RowItem}"/>
+                <Controls:ColorPickerButton x:Name="fontColor" Grid.Row="1" Grid.Column="1" Color="{Binding FontColor.Value, Mode=TwoWay}" Style="{StaticResource RowItem}" VerticalContentAlignment="Stretch"/>
+                <CheckBox Grid.Row="2" Grid.ColumnSpan="2" Content="輪郭線を表示する" FontStyle="Normal" Style="{StaticResource RowItem}" IsChecked="{Binding Stroke.Value}"/>
                 <Label Grid.Row="3" Content="輪郭線の太さ"/>
-                <sikusiSubtitles:NumericEditBox Grid.Row="3" Grid.Column="1" Width="40" Style="{StaticResource RowItem}" HorizontalAlignment="Left"/>
+                <Controls:NumericEditBox Grid.Row="3" Grid.Column="1" Width="40" Style="{StaticResource RowItem}" HorizontalAlignment="Left" Value="{Binding StrokeWidth.Value}" MinValue="1" MaxValue="100"/>
                 <Label Grid.Row="4" Content="輪郭線の色"/>
-                <Controls:ColorPickerButton x:Name="strokeColor" Grid.Row="4" Grid.Column="1" Color="{Binding StrokeColor, Mode=TwoWay}" Style="{StaticResource RowItem}" VerticalContentAlignment="Stretch"/>
+                <Controls:ColorPickerButton x:Name="strokeColor" Grid.Row="4" Grid.Column="1" Color="{Binding StrokeColor.Value}" Style="{StaticResource RowItem}" VerticalContentAlignment="Stretch"/>
             </Grid>
         </GroupBox>
     </Grid>

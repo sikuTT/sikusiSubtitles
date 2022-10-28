@@ -9,6 +9,6 @@
         Title="SubtitlesWindow" Height="450" Width="800" Closed="Window_Closed">
     <Grid>
         <Rectangle Fill="{Binding BackgroundBrush.Value}"/>
-        <Controls:OutlineTextControl Text="{Binding VoiceText.Value, Mode=TwoWay}"/>
+        <Controls:OutlineTextControl Text="{Binding Text.Value, Mode=TwoWay}" Fill="{Binding TextBrush.Value}" Stroke="{Binding StrokeBrush.Value}" FontSize="{Binding FontSize.Value}" StrokeThickness="{Binding StrokeWidth.Value}" Font="{Binding FontFamily.Value}" Bold="{Binding Bold.Value}" Italic="{Binding Italic.Value}"/>
     </Grid>
 </Window>

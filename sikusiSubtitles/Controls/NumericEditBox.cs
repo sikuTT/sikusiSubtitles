@@ -73,7 +73,7 @@ namespace sikusiSubtitles.Controls {
             "Value",
             typeof(int),
             typeof(NumericEditBox),
-            new PropertyMetadata(0, ValuePropertyChanged)
+            new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, ValuePropertyChanged)
         );
 
         static void ValuePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
@@ -101,7 +101,7 @@ namespace sikusiSubtitles.Controls {
             "MinValue",
             typeof(int),
             typeof(NumericEditBox),
-            new PropertyMetadata(int.MinValue, MinValuePropertyChanged)
+            new FrameworkPropertyMetadata(int.MinValue, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, MinValuePropertyChanged)
         );
 
         static void MinValuePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
@@ -123,7 +123,7 @@ namespace sikusiSubtitles.Controls {
             "MaxValue",
             typeof(int),
             typeof(NumericEditBox),
-            new PropertyMetadata(int.MaxValue, MaxValuePropertyChanged)
+            new FrameworkPropertyMetadata(int.MaxValue, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, MaxValuePropertyChanged)
         );
 
         static void MaxValuePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {

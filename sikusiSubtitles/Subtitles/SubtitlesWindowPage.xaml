@@ -56,11 +56,11 @@
                 </Grid.ColumnDefinitions>
                 <Label Content="フォント"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <ComboBox x:Name="fontComboBox" MinWidth="200" Style="{StaticResource RowItem}" FontFamily="{Binding FontFamily.Value}" FontSize="{Binding FontSize.Value}" FontWeight="{Binding Bold.Value}" FontStyle="{Binding Italic.Value}"/>
-                    <Controls:NumericEditBox Width="40" Value="12" Style="{StaticResource RowItem}" Margin="10,5,0,5" MinValue="1" MaxValue="100"/>
+                    <ComboBox x:Name="fontComboBox" MinWidth="200" Style="{StaticResource RowItem}" SelectedValuePath="FontFamily.Source" DisplayMemberPath="Name" SelectedValue="{Binding FontFamily.Value}"/>
+                    <Controls:NumericEditBox Width="40" Value="{Binding FontSize.Value}" Style="{StaticResource RowItem}" Margin="10,5,0,5" MinValue="1" MaxValue="100"/>
                     <Label Content="pt"/>
-                    <ToggleButton Width="25" Content="B" Style="{StaticResource RowItem}" Margin="10,5,0,5"/>
-                    <ToggleButton Width="25" Content="I" Style="{StaticResource RowItem}" Margin="5,5,0,5"/>
+                    <ToggleButton Width="25" Content="B" Style="{StaticResource RowItem}" Margin="10,5,0,5" IsChecked="{Binding Bold.Value}"/>
+                    <ToggleButton Width="25" Content="I" Style="{StaticResource RowItem}" Margin="5,5,0,5" IsChecked="{Binding Italic.Value}"/>
                 </StackPanel>
                 <Label Grid.Row="1" Content="文字の色"/>
                 <Controls:ColorPickerButton x:Name="fontColor" Grid.Row="1" Grid.Column="1" Color="{Binding FontColor.Value, Mode=TwoWay}" Style="{StaticResource RowItem}" VerticalContentAlignment="Stretch"/>

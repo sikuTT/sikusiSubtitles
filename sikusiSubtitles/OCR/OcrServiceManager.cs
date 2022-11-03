@@ -3,12 +3,21 @@ using sikusiSubtitles.Shortcut;
 using sikusiSubtitles.Translation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace sikusiSubtitles.OCR {
+    public enum OcrArchives {
+        [Description("使用しない")]
+        None,
+
+        [Description("Notion")]
+        Notion,
+    }
+
     public class OcrServiceManager : Service {
         public static new string ServiceName = "OCR";
 
@@ -21,6 +30,8 @@ namespace sikusiSubtitles.OCR {
         public bool SpeechWhenOcrRun { get; set; } = false;
         public Shortcut.Shortcut OcrShortcut { get { return ocrShortcut; } }
         public Shortcut.Shortcut ClearObsTextShortcut { get { return clearObsTextShortcut; } }
+        public OcrArchives Archive { get; set; } = OcrArchives.None;
+        public string NotionToken { get; set; } = "";
 
         private Shortcut.Shortcut ocrShortcut = new Shortcut.Shortcut("execute-ocr", "OCR", "画面から文字を取得し翻訳する", "");
         private Shortcut.Shortcut clearObsTextShortcut = new Shortcut.Shortcut("clear-obs-text", "OCR", "OCRの翻訳結果をクリアする", "");
@@ -48,6 +59,17 @@ namespace sikusiSubtitles.OCR {
             SpeechWhenOcrRun = token.Value<bool>("SpeechWhenOcrRun");
             ocrShortcut.ShortcutKey = token.Value<string>("OcrShortcutKey") ?? "";
             clearObsTextShortcut.ShortcutKey = token.Value<string>("ClearObsTextShortcutKey") ?? "";
+            var archive = token.Value<string?>("Archive");
+            if (archive == null) {
+                Archive = OcrArchives.None;
+            } else {
+                OcrArchives a;
+                if (Enum.TryParse(archive , out a) == true) {
+                    Archive = a;
+                }
+            }
+
+            NotionToken= Decrypt(token.Value<string>("NotionToken") ?? "");
         }
 
         public override JObject Save() {
@@ -60,7 +82,9 @@ namespace sikusiSubtitles.OCR {
                 new JProperty("OcrSpeechVoice", OcrSpeechVoice),
                 new JProperty("SpeechWhenOcrRun", SpeechWhenOcrRun),
                 new JProperty("OcrShortcutKey", ocrShortcut.ShortcutKey),
-                new JProperty("ClearObsTextShortcutKey", clearObsTextShortcut.ShortcutKey)
+                new JProperty("ClearObsTextShortcutKey", clearObsTextShortcut.ShortcutKey),
+                new JProperty("Archive", Archive.ToString()),
+                new JProperty("NotionToken", Encrypt(NotionToken)),
             };
         }
 

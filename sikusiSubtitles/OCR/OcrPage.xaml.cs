@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Reactive.Bindings;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -17,6 +18,10 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace sikusiSubtitles.OCR {
+    public class OcrPageViewModel {
+        public List<OcrProcessModel> processList { get; set; } = new();
+    }
+
     public class OcrProcessModel {
         public string ProcessName { get; set; } = "";
         public string WindowTitle { get; set; } = "";
@@ -27,18 +32,27 @@ namespace sikusiSubtitles.OCR {
     /// OcrPage.xaml の相互作用ロジック
     /// </summary>
     public partial class OcrPage : UserControl {
+        OcrPageViewModel viewModel = new();
         ServiceManager serviceManager;
         OcrServiceManager ocrManager;
 
-        List<OcrProcessModel> processList = new List<OcrProcessModel>();
-
         DispatcherTimer? refreshTimer;
 
+        List<OcrArchives> archiveList = new() {
+            new(){ },
+        };
+
         public OcrPage(ServiceManager serviceManager, OcrServiceManager ocrManager) {
+            InitializeComponent();
+
+            this.DataContext = viewModel;
             this.serviceManager = serviceManager;
             this.ocrManager = ocrManager;
+        }
 
-            InitializeComponent();
+        private void StackPanel_Loaded(object sender , RoutedEventArgs e) {
+            this.ArchiveComboBox.SelectedIndex = (int)ocrManager.Archive;
+            this.notionToken.Password = ocrManager.NotionToken;
         }
 
         /**
@@ -62,7 +76,7 @@ namespace sikusiSubtitles.OCR {
         /** OCRウィンドウを表示するボタンが押された */
         private void ocrWindowButton_Click(object sender, RoutedEventArgs e) {
             if (processListView.SelectedIndex != -1) {
-                var process = processList[processListView.SelectedIndex];
+                var process = viewModel.processList[processListView.SelectedIndex];
                 var win = new OcrWindow(serviceManager, ocrManager, process.ProcessId);
                 win.Show();
             }
@@ -100,13 +114,13 @@ namespace sikusiSubtitles.OCR {
 
                 // 追加されたプロセス、更新されたプロセスがあるかを検索
                 foreach (var process in newProcessList) {
-                    var foundProcess = this.processList.Find(p => p.ProcessId == process.Id);
+                    var foundProcess = viewModel.processList.Find(p => p.ProcessId == process.Id);
                     modelUpdated = foundProcess == null || (foundProcess.ProcessId == process.Id && foundProcess.WindowTitle != process.MainWindowTitle);
                     if (modelUpdated) break;
                 }
 
                 // 削除されたプロセスがあるかを検索
-                foreach (var process in this.processList) {
+                foreach (var process in viewModel.processList) {
                     var foundProcess = newProcessList.Find(p => p.Id == process.ProcessId);
                     if (foundProcess == null) {
                         modelUpdated = true;
@@ -116,7 +130,7 @@ namespace sikusiSubtitles.OCR {
 
                 /** プロセス一覧が更新された場合、モデルを作り直す */
                 if (modelUpdated == true) {
-                    this.processList = newProcessList.Select(p => new OcrProcessModel {
+                    viewModel.processList = newProcessList.Select(p => new OcrProcessModel {
                         ProcessId = p.Id,
                         ProcessName = p.ProcessName,
                         WindowTitle = p.MainWindowTitle,
@@ -128,11 +142,11 @@ namespace sikusiSubtitles.OCR {
                 var selectedItem = processListView.SelectedItem as OcrProcessModel;
 
                 this.processListView.DataContext = null;
-                this.processListView.DataContext = this.processList;
+                this.processListView.DataContext = viewModel.processList;
 
                 // リスト更新前に選択されていたプロセスを再選択する
                 if (selectedItem != null) {
-                    var item = this.processList.Where(process => process.ProcessId == selectedItem.ProcessId).FirstOrDefault();
+                    var item = viewModel.processList.Where(process => process.ProcessId == selectedItem.ProcessId).FirstOrDefault();
                     if (item != null) processListView.SelectedItem = item;
                 }
             }
@@ -141,6 +155,18 @@ namespace sikusiSubtitles.OCR {
         /** プロセス一覧の更新タイマー */
         private async void RefreshTimerTick(object? sender, EventArgs args) {
             await RefreshProcessList();
+        }
+
+        private void ArchiveComboBox_SelectionChanged(object sender , SelectionChangedEventArgs e) {
+            if (ArchiveComboBox.SelectedIndex <= 0) {
+                ocrManager.Archive = OcrArchives.None;
+            } else {
+                ocrManager.Archive = (OcrArchives)ArchiveComboBox.SelectedIndex;
+            }
+        }
+
+        private void notionToken_PasswordChanged(object sender , RoutedEventArgs e) {
+            ocrManager.NotionToken = notionToken.Password;
         }
     }
 }

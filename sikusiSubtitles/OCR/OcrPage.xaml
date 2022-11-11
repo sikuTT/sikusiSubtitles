@@ -22,7 +22,7 @@
     </UserControl.Resources>
     <StackPanel>
         <TextBlock Text="OCR" Style="{StaticResource Header}"></TextBlock>
-        <ListView x:Name="processListView" Grid.Row="1" Margin="0,10,0,0" DataContext="{Binding processList}" ItemsSource="{Binding Mode=OneWay}" SelectionChanged="processListView_SelectionChanged">
+        <ListView x:Name="processListView" Grid.Row="1" Margin="0,10,0,0" DataContext="{Binding ProcessList}" ItemsSource="{Binding Mode=OneWay}" SelectionChanged="processListView_SelectionChanged">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="タイトル" Width="250" DisplayMemberBinding="{Binding WindowTitle}"></GridViewColumn>

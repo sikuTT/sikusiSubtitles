@@ -71,6 +71,7 @@ namespace sikusiSubtitles.OCR {
             }
 
             NotionToken= Decrypt(token.Value<string>("NotionToken") ?? "");
+            NotionDatabaseId = token.Value<string>("NotionDatabaseId") ?? "";
         }
 
         public override JObject Save() {
@@ -86,6 +87,7 @@ namespace sikusiSubtitles.OCR {
                 new JProperty("ClearObsTextShortcutKey", clearObsTextShortcut.ShortcutKey),
                 new JProperty("Archive", Archive.ToString()),
                 new JProperty("NotionToken", Encrypt(NotionToken)),
+                new JProperty("NotionDatabaseId", NotionDatabaseId),
             };
         }
 

@@ -56,34 +56,42 @@ namespace sikusiSubtitles.Notion {
                     new JProperty("type", "database_id"),
                     new JProperty("database_id", databaseId),
                 }),
-                new JProperty("properties", new JObject{
+                new JProperty("properties", new JObject {
                     new JProperty("ゲーム", new JObject {
-                        new JProperty("title", new JObject {
-                            new JProperty("text", new JObject {
-                                new JProperty("content", game),
-                            }),
-                        }),
+                        new JProperty("title", new JArray(new []{
+                            new JObject {
+                                new JProperty("text", new JObject {
+                                    new JProperty("content", game),
+                                }),
+                            },
+                        }))
                     }),
                     new JProperty("テキスト", new JObject {
-                        new JProperty("rich_text", new JObject {
-                            new JProperty("text", new JObject {
-                                new JProperty("content", ocrText),
-                            }),
-                        }),
+                        new JProperty("rich_text", new JArray(new []{
+                            new JObject {
+                                new JProperty("text", new JObject {
+                                    new JProperty("content", ocrText),
+                                }),
+                            },
+                        })),
                     }),
                     new JProperty("翻訳結果", new JObject {
-                        new JProperty("rich_text", new JObject {
-                            new JProperty("text", new JObject {
-                                new JProperty("content", translatedText),
-                            }),
-                        }),
+                        new JProperty("rich_text", new JArray(new []{
+                            new JObject {
+                                new JProperty("text", new JObject {
+                                    new JProperty("content", translatedText),
+                                }),
+                            },
+                        })),
                     }),
                     new JProperty("翻訳エンジン", new JObject {
-                        new JProperty("rich_text", new JObject {
-                            new JProperty("text", new JObject {
-                                new JProperty("content", translationEngine),
-                            }),
-                        }),
+                        new JProperty("rich_text", new JArray(new []{
+                            new JObject {
+                                new JProperty("text", new JObject {
+                                    new JProperty("content", translationEngine),
+                                }),
+                            },
+                        })),
                     }),
                 }),
             }.ToString();
@@ -93,6 +101,7 @@ namespace sikusiSubtitles.Notion {
 
             // Send the request and get response.
             HttpResponseMessage response = await this.HttpClient.SendAsync(request);
+            var str = await response.Content.ReadAsStringAsync();
             if (response.StatusCode == HttpStatusCode.OK) {
             } else {
             }

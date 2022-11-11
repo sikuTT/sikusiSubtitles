@@ -195,7 +195,11 @@ namespace sikusiSubtitles.OCR {
                         if (titles != null && titles.Count > 0) {
                             var titleText = titles[0].Value<string>("plain_text");
                             if (id != null && titleText != null) {
-                                viewModel.NotionDatabaseList.Add(new NotionDatabase { Id = id, Title = titleText });
+                                var item = new NotionDatabase { Id = id, Title = titleText };
+                                viewModel.NotionDatabaseList.Add(item);
+                                if (id == ocrManager.NotionDatabaseId) {
+                                    NotionDatabase.SelectedItem = item;
+                                }
                             }
                         }
                     }

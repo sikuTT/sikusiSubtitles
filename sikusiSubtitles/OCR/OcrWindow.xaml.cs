@@ -22,9 +22,7 @@ using Windows.UI.Core;
 using static sikusiSubtitles.OCR.ScreenCapture;
 
 namespace sikusiSubtitles.OCR {
-    class OcrWindowViewModel : INotifyPropertyChanged {
-        public event PropertyChangedEventHandler? PropertyChanged;
-
+    class OcrWindowViewModel {
         // キャプチャ対象の情報
         public ReactivePropertySlim<string> WindowTitle { get; } = new();
 
@@ -424,6 +422,11 @@ namespace sikusiSubtitles.OCR {
                         var subtitlesService = this.serviceManager.GetService<ObsSubtitlesService>();
                         if (obsService != null && obsService.IsConnected && subtitlesService != null && obsTextSource != "") {
                             await subtitlesService.SetTextAsync(obsTextSource , result.Translations[0].Text ?? "");
+                        }
+
+                        if (ocrManager.Archive == OcrArchives.Notion) {
+                            var notion = new Notion.Notion(ocrManager.NotionToken);
+                            notion.AddOcrResult("" , viewModel.WindowTitle.Value , ocrTextBox.Text , result.Translations[0].Text , translationService.DisplayName);
                         }
                     } else {
                         // 翻訳に失敗

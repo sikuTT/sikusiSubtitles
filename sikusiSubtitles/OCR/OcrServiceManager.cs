@@ -32,6 +32,7 @@ namespace sikusiSubtitles.OCR {
         public Shortcut.Shortcut ClearObsTextShortcut { get { return clearObsTextShortcut; } }
         public OcrArchives Archive { get; set; } = OcrArchives.None;
         public string NotionToken { get; set; } = "";
+        public string NotionDatabaseId { get; set; } = "";
 
         private Shortcut.Shortcut ocrShortcut = new Shortcut.Shortcut("execute-ocr", "OCR", "画面から文字を取得し翻訳する", "");
         private Shortcut.Shortcut clearObsTextShortcut = new Shortcut.Shortcut("clear-obs-text", "OCR", "OCRの翻訳結果をクリアする", "");

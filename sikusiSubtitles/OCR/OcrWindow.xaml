@@ -289,22 +289,29 @@
                             <ColumnDefinition Width="60"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                             <ColumnDefinition Width="auto"></ColumnDefinition>
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
                             <RowDefinition Height="40"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Style="{StaticResource PopupHeader}" Grid.ColumnSpan="2">ショートカット設定</Label>
+                        <Label Grid.Row="0" Style="{StaticResource PopupHeader}" Grid.ColumnSpan="4">ショートカット設定</Label>
                         <Label Grid.Row="1">OCR実行</Label>
                         <TextBox x:Name="ocrShortcutKeyTextBox" Grid.Row="1" Grid.Column="1" IsReadOnly="True" Style="{StaticResource PopupRow}"></TextBox>
-                        <Button x:Name="resetOcrShortcutKeyButton" Grid.Row="1" Grid.Column="2" Width="25" Height="25" Click="resetOcrShortcutKeyButton_Click">
-                            <Image Source="/Resources/times.png" ToolTip="デフォルトに戻す"></Image>
+                        <Button x:Name="removeOcrShortcutKeyButton" Grid.Row="1" Grid.Column="2" Width="25" Height="25" Click="removeOcrShortcutKeyButton_Click">
+                            <Image Source="/Resources/times.png" ToolTip="ショートカットを削除する"></Image>
+                        </Button>
+                        <Button x:Name="resetOcrShortcutKeyButton" Grid.Row="1" Grid.Column="3" Width="25" Height="25" Click="resetOcrShortcutKeyButton_Click">
+                            <Image Source="/Resources/undo-24.png" ToolTip="デフォルトに戻す"></Image>
                         </Button>
                         <Label Grid.Row="2">字幕クリア</Label>
                         <TextBox x:Name="clearTranslatedShortcutKeyTextBox" Grid.Row="2" Grid.Column="1" IsReadOnly="True" Style="{StaticResource PopupRow}"></TextBox>
-                        <Button x:Name="resetClearTranslatedTextShortcutKey" Grid.Row="2" Grid.Column="2" Width="25" Height="25" Click="resetClearTranslatedTextShortcutKey_Click">
-                            <Image Source="/Resources/times.png" ToolTip="デフォルトに戻す"></Image>
+                        <Button x:Name="removeClearTranslatedTextShortcutKey" Grid.Row="2" Grid.Column="2" Width="25" Height="25" Click="removeClearTranslatedTextShortcutKey_Click">
+                            <Image Source="/Resources/times.png" ToolTip="ショートカットを削除する"></Image>
+                        </Button>
+                        <Button x:Name="resetClearTranslatedTextShortcutKey" Grid.Row="2" Grid.Column="3" Width="25" Height="25" Click="resetClearTranslatedTextShortcutKey_Click">
+                            <Image Source="/Resources/undo-24.png" ToolTip="デフォルトに戻す"></Image>
                         </Button>
                     </Grid>
                 </Border>

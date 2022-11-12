@@ -601,9 +601,21 @@ namespace sikusiSubtitles.OCR {
             }
         }
 
+        /** OCR実行のショートカットを削除する */
+        private void removeOcrShortcutKeyButton_Click(object sender, RoutedEventArgs e) {
+            ocrShortcutKeyTextBox.Text = "";
+            SetShortcutKeyStatusText();
+        }
+
         /** OCR実行のショートカットをデフォルト設定に戻す */
         private void resetOcrShortcutKeyButton_Click(object sender, RoutedEventArgs e) {
             ocrShortcutKeyTextBox.Text = ocrManager.OcrShortcut.ShortcutKey;
+            SetShortcutKeyStatusText();
+        }
+
+        /** OCR結果の字幕をクリアするショートカットを削除する */
+        private void removeClearTranslatedTextShortcutKey_Click(object sender, RoutedEventArgs e) {
+            clearTranslatedShortcutKeyTextBox.Text = "";
         }
 
         /** OCR結果の字幕をクリアするショートカットをデフォルト設定に戻す */

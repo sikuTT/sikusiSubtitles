@@ -33,6 +33,11 @@ namespace sikusiSubtitles.OCR {
         public OcrArchives Archive { get; set; } = OcrArchives.None;
         public string NotionToken { get; set; } = "";
         public string NotionDatabaseId { get; set; } = "";
+        public string NotionTitleSaveTarget { get; set; } = "";
+        public string NotionTextSaveTarget { get; set; } = "";
+        public string NotionTranslatedTextSaveTarget { get; set; } = "";
+        public string NotionTranslationEngineSaveTarget { get; set; } = "";
+
 
         private Shortcut.Shortcut ocrShortcut = new Shortcut.Shortcut("execute-ocr", "OCR", "画面から文字を取得し翻訳する", "");
         private Shortcut.Shortcut clearObsTextShortcut = new Shortcut.Shortcut("clear-obs-text", "OCR", "OCRの翻訳結果をクリアする", "");
@@ -70,8 +75,18 @@ namespace sikusiSubtitles.OCR {
                 }
             }
 
-            NotionToken= Decrypt(token.Value<string>("NotionToken") ?? "");
-            NotionDatabaseId = token.Value<string>("NotionDatabaseId") ?? "";
+            var notion = token.Value<JObject>("Notion");
+            if (notion != null) {
+                NotionToken = Decrypt(notion.Value<string>("Token") ?? "");
+                NotionDatabaseId = notion.Value<string>("DatabaseId") ?? "";
+                var save = notion.Value<JObject>("Save");
+                if (save != null) {
+                    NotionTitleSaveTarget = save.Value<string>("Title") ?? "";
+                    NotionTextSaveTarget = save.Value<string>("Text") ?? "";
+                    NotionTranslatedTextSaveTarget = save.Value<string>("TranslatedText") ?? "";
+                    NotionTranslationEngineSaveTarget = save.Value<string>("TranslationEngine") ?? "";
+                }
+            }
         }
 
         public override JObject Save() {
@@ -86,8 +101,16 @@ namespace sikusiSubtitles.OCR {
                 new JProperty("OcrShortcutKey", ocrShortcut.ShortcutKey),
                 new JProperty("ClearObsTextShortcutKey", clearObsTextShortcut.ShortcutKey),
                 new JProperty("Archive", Archive.ToString()),
-                new JProperty("NotionToken", Encrypt(NotionToken)),
-                new JProperty("NotionDatabaseId", NotionDatabaseId),
+                new JProperty("Notion", new JObject{
+                    new JProperty("Token", Encrypt(NotionToken)),
+                    new JProperty("DatabaseId", NotionDatabaseId),
+                    new JProperty("Save", new JObject{
+                        new JProperty("Title", NotionTitleSaveTarget),
+                        new JProperty("Text", NotionTextSaveTarget),
+                        new JProperty("TranslatedText", NotionTranslatedTextSaveTarget),
+                        new JProperty("TranslationEngine", NotionTranslationEngineSaveTarget),
+                    }),
+                }),
             };
         }
 

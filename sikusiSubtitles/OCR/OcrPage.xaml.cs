@@ -22,6 +22,14 @@ namespace sikusiSubtitles.OCR {
     public class OcrPageViewModel {
         public List<OcrProcessModel> ProcessList { get; set; } = new();
         public ObservableCollection<NotionDatabase> NotionDatabaseList { get; set; } = new();
+        public ObservableCollection <NotionTarget> NotionTarget { get; set; } = new() {
+            new() { Name="ウィンドウタイトル" },
+            new() { Name="OCRで取得した文字列" },
+            new() { Name="翻訳結果" },
+            new() { Name="翻訳エンジン" },
+        };
+
+        public ObservableCollection<string> NotionPageList { get; set; } = new();
     }
 
     public class OcrProcessModel {
@@ -35,6 +43,11 @@ namespace sikusiSubtitles.OCR {
         public string Id { get; set; } = "";
     }
 
+    public class NotionTarget {
+        public string Name { get; set; } = "";
+        public ReactivePropertySlim<string> Page { get; set; } = new("");
+    }
+
     /// <summary>
     /// OcrPage.xaml の相互作用ロジック
     /// </summary>
@@ -45,9 +58,7 @@ namespace sikusiSubtitles.OCR {
 
         DispatcherTimer? refreshTimer;
 
-        List<OcrArchives> archiveList = new() {
-            new(){ },
-        };
+        Dictionary<string, List<string>> notionPageList = new();
 
         public OcrPage(ServiceManager serviceManager, OcrServiceManager ocrManager) {
             InitializeComponent();
@@ -184,22 +195,49 @@ namespace sikusiSubtitles.OCR {
 
         private async Task RefreshNotionDatabaseList() {
             viewModel.NotionDatabaseList.Clear();
+            viewModel.NotionPageList.Clear();
+            notionPageList.Clear();
+
+            // NotionのDB一覧を取得
             var notion = new Notion.Notion(ocrManager.NotionToken);
             var obj = await notion.Search();
             if (obj != null) {
                 var results = obj.Value<JArray>("results");
                 if (results != null) {
                     foreach (var result in results) {
-                        var id = result.Value<string>("id");
-                        var titles = result.Value<JArray>("title");
-                        if (titles != null && titles.Count > 0) {
-                            var titleText = titles[0].Value<string>("plain_text");
-                            if (id != null && titleText != null) {
-                                var item = new NotionDatabase { Id = id, Title = titleText };
-                                viewModel.NotionDatabaseList.Add(item);
-                                if (id == ocrManager.NotionDatabaseId) {
-                                    NotionDatabase.SelectedItem = item;
+                        // DBの情報を取得
+                        var id = result.Value<string>("id");  // DBのID
+                        if (id != null) {
+                            var titles = result.Value<JArray>("title");  // DBのタイトル
+                            if (titles != null && titles.Count > 0) {
+                                var titleText = titles[0].Value<string>("plain_text");
+                                if (titleText != null) {
+                                    // IDとタイトルが取得できた場合、リストに追加する
+                                    notionPageList.Add(id, new());
+                                    var item = new NotionDatabase { Id = id, Title = titleText };
+                                    viewModel.NotionDatabaseList.Add(item);
+                                    if (id == ocrManager.NotionDatabaseId) {
+                                        NotionDatabase.SelectedItem = item;
+                                    }
                                 }
+                            }
+
+                            // DBの項目一覧を取得
+                            var properties = result.Value<JObject>("properties");
+                            if (properties != null) {
+                                foreach (var prop in properties) {
+                                    string name = prop.Key;
+                                    var obj2 = prop.Value;
+                                    if (obj2 != null) {
+                                        var type = obj2.Value<string>("type");
+                                        if (type == "title" || type == "rich_text") {
+                                            notionPageList[id].Add(name);
+                                        }
+                                    }
+                                }
+                            }
+                            if (id == ocrManager.NotionDatabaseId) {
+                                SetNotionPageList(id);
                             }
                         }
                     }
@@ -213,10 +251,31 @@ namespace sikusiSubtitles.OCR {
         }
 
         private void NotionDatabase_SelectionChanged(object sender , SelectionChangedEventArgs e) {
+            viewModel.NotionPageList.Clear();
+
             var db = NotionDatabase.SelectedItem as NotionDatabase;
             if (db != null) {
                 ocrManager.NotionDatabaseId = db.Id;
+
+                // 項目一覧
+                SetNotionPageList(db.Id);
             }
+        }
+
+        private void SetNotionPageList(string id) {
+            notionPageList[id].ForEach(page => viewModel.NotionPageList.Add(page));
+
+            viewModel.NotionTarget[0].Page.Value = ocrManager.NotionTitleSaveTarget;
+            viewModel.NotionTarget[1].Page.Value = ocrManager.NotionTextSaveTarget;
+            viewModel.NotionTarget[2].Page.Value = ocrManager.NotionTranslatedTextSaveTarget;
+            viewModel.NotionTarget[3].Page.Value = ocrManager.NotionTranslationEngineSaveTarget;
+        }
+
+        private void page_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            ocrManager.NotionTitleSaveTarget = viewModel.NotionTarget[0].Page.Value;
+            ocrManager.NotionTextSaveTarget = viewModel.NotionTarget[1].Page.Value;
+            ocrManager.NotionTranslatedTextSaveTarget = viewModel.NotionTarget[2].Page.Value;
+            ocrManager.NotionTranslationEngineSaveTarget = viewModel.NotionTarget[3].Page.Value;
         }
     }
 }

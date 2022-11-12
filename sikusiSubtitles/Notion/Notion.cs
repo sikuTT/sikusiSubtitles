@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using sikusiSubtitles.OCR;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -46,54 +47,67 @@ namespace sikusiSubtitles.Notion {
             return null;
         }
 
-        public async void AddOcrResult(string databaseId, string game, string ocrText, string translatedText, string translationEngine) {
+        public async void AddOcrResult(OcrServiceManager manager, string game, string ocrText, string translatedText, string translationEngine) {
             using var request = new HttpRequestMessage();
             request.Method = HttpMethod.Post;
             request.RequestUri = new Uri($"{Url}/pages");
 
+            var properties = new JObject();
+
+            if (manager.NotionTitleSaveTarget != null) {
+                properties.Add(new JProperty(manager.NotionTitleSaveTarget, new JObject {
+                    new JProperty("title", new JArray(new []{
+                        new JObject {
+                            new JProperty("text", new JObject {
+                                new JProperty("content", game),
+                            }),
+                        },
+                    }))
+                }));
+            }
+
+            if (manager.NotionTextSaveTarget != null) {
+                properties.Add(new JProperty(manager.NotionTextSaveTarget, new JObject {
+                    new JProperty("rich_text", new JArray(new []{
+                        new JObject {
+                            new JProperty("text", new JObject {
+                                new JProperty("content", ocrText),
+                            }),
+                        },
+                    })),
+                }));
+            }
+
+            if (manager.NotionTranslatedTextSaveTarget != null) {
+                properties.Add(new JProperty(manager.NotionTranslatedTextSaveTarget, new JObject {
+                    new JProperty("rich_text", new JArray(new []{
+                        new JObject {
+                            new JProperty("text", new JObject {
+                                new JProperty("content", translatedText),
+                            }),
+                        },
+                    })),
+                }));
+            }
+
+            if (manager.NotionTranslationEngineSaveTarget != null) {
+                properties.Add(new JProperty(manager.NotionTranslationEngineSaveTarget, new JObject {
+                    new JProperty("rich_text", new JArray(new []{
+                        new JObject {
+                            new JProperty("text", new JObject {
+                                new JProperty("content", translationEngine),
+                            }),
+                        },
+                    })),
+                }));
+            }
+
             var body = new JObject{
                 new JProperty("parent", new JObject{
                     new JProperty("type", "database_id"),
-                    new JProperty("database_id", databaseId),
+                    new JProperty("database_id", manager.NotionDatabaseId),
                 }),
-                new JProperty("properties", new JObject {
-                    new JProperty("ゲーム", new JObject {
-                        new JProperty("title", new JArray(new []{
-                            new JObject {
-                                new JProperty("text", new JObject {
-                                    new JProperty("content", game),
-                                }),
-                            },
-                        }))
-                    }),
-                    new JProperty("テキスト", new JObject {
-                        new JProperty("rich_text", new JArray(new []{
-                            new JObject {
-                                new JProperty("text", new JObject {
-                                    new JProperty("content", ocrText),
-                                }),
-                            },
-                        })),
-                    }),
-                    new JProperty("翻訳結果", new JObject {
-                        new JProperty("rich_text", new JArray(new []{
-                            new JObject {
-                                new JProperty("text", new JObject {
-                                    new JProperty("content", translatedText),
-                                }),
-                            },
-                        })),
-                    }),
-                    new JProperty("翻訳エンジン", new JObject {
-                        new JProperty("rich_text", new JArray(new []{
-                            new JObject {
-                                new JProperty("text", new JObject {
-                                    new JProperty("content", translationEngine),
-                                }),
-                            },
-                        })),
-                    }),
-                }),
+                new JProperty("properties", properties),
             }.ToString();
             request.Content = new StringContent(body , Encoding.UTF8 , "application/json");
             request.Headers.Add("Authorization" , $"Bearer {Key}");
@@ -101,10 +115,12 @@ namespace sikusiSubtitles.Notion {
 
             // Send the request and get response.
             HttpResponseMessage response = await this.HttpClient.SendAsync(request);
+/*
             var str = await response.Content.ReadAsStringAsync();
             if (response.StatusCode == HttpStatusCode.OK) {
             } else {
             }
+*/
         }
     }
 }

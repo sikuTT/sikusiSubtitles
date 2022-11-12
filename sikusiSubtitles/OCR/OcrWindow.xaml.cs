@@ -426,7 +426,7 @@ namespace sikusiSubtitles.OCR {
 
                         if (ocrManager.Archive == OcrArchives.Notion) {
                             var notion = new Notion.Notion(ocrManager.NotionToken);
-                            notion.AddOcrResult(ocrManager.NotionDatabaseId , viewModel.WindowTitle.Value , ocrTextBox.Text , result.Translations[0].Text , translationService.DisplayName);
+                            notion.AddOcrResult(ocrManager, viewModel.WindowTitle.Value , ocrTextBox.Text , result.Translations[0].Text , translationService.DisplayName);
                         }
                     } else {
                         // 翻訳に失敗

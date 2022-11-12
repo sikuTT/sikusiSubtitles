@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:sikusiSubtitles.OCR"
              mc:Ignorable="d" 
+             x:Name="userControl"
              d:DesignHeight="450" d:DesignWidth="800" IsVisibleChanged="UserControl_IsVisibleChanged" Loaded="UserControl_Loaded">
     <UserControl.DataContext>
         <local:OcrPageViewModel/>
@@ -48,6 +49,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
                     <Label Style="{StaticResource RowItem}">トークン</Label>
                     <PasswordBox x:Name="notionToken" Grid.Column="1" Style="{StaticResource RowItem}" PasswordChanged="notionToken_PasswordChanged" Grid.ColumnSpan="2" Margin="0,5,0,5"></PasswordBox>
@@ -60,6 +62,25 @@
                         <ComboBox x:Name="NotionDatabase" Style="{StaticResource RowItem}" ItemsSource="{Binding NotionDatabaseList}" DisplayMemberPath="Title" SelectionChanged="NotionDatabase_SelectionChanged"></ComboBox>
                         <Button x:Name="NotionRefresh" Style="{StaticResource RowItem}" Grid.Column="1" Padding="10,0,10,0" Margin="10,0,0,0" Click="NotionRefresh_Click">更新</Button>
                     </Grid>
+                    <ListView Grid.Row="2" Grid.Column="1" ItemsSource="{Binding NotionTarget}">
+                        <ListView.Resources>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.Resources>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Width="200" Header="項目" DisplayMemberBinding="{Binding Name}"></GridViewColumn>
+                                <GridViewColumn Width="200" Header="保存先">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox x:Name="page" ItemsSource="{Binding ElementName=userControl, Path=DataContext.NotionPageList, Mode=TwoWay}" SelectedItem="{Binding Page.Value, Mode=TwoWay}" SelectionChanged="page_SelectionChanged" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
                 </Grid>
             </StackPanel>
         </GroupBox>

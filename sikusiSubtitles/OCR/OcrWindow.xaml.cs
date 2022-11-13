@@ -391,7 +391,7 @@ namespace sikusiSubtitles.OCR {
                         MessageBox.Show("画面をキャプチャー出来ませんでした。", null, MessageBoxButton.OK, MessageBoxImage.Error);
                     } else {
                         notionSaveId = null;
-                        System.Windows.Forms.Clipboard.SetImage(bitmap);
+                        // System.Windows.Forms.Clipboard.SetImage(bitmap);
                         OcrResult result = await this.ocrService.ExecuteAsync(bitmap, ocrLanguageCode);
                         if (result.Text != null) {
                             this.ocrTextBox.Select(0, 0);

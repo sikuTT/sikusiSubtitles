@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Polly;
 using sikusiSubtitles.OCR;
 using System;
 using System.Collections.Generic;
@@ -47,11 +48,55 @@ namespace sikusiSubtitles.Notion {
             return null;
         }
 
-        public async void AddOcrResult(OcrServiceManager manager, string game, string ocrText, string translatedText, string translationEngine) {
+        public async Task<string?> AddOcrResult(OcrServiceManager manager, string game, string ocrText, string translatedText, string translationEngine) {
             using var request = new HttpRequestMessage();
             request.Method = HttpMethod.Post;
             request.RequestUri = new Uri($"{Url}/pages");
 
+            var body = new JObject{
+                new JProperty("parent", new JObject{
+                    new JProperty("type", "database_id"),
+                    new JProperty("database_id", manager.NotionDatabaseId),
+                }),
+                new JProperty("properties", CreateOcrProperty(manager, game, ocrText, translatedText, translationEngine)),
+            }.ToString();
+            request.Content = new StringContent(body , Encoding.UTF8 , "application/json");
+            request.Headers.Add("Authorization" , $"Bearer {Key}");
+            request.Headers.Add("Notion-Version" , NotionVersion);
+
+            // Send the request and get response.
+            HttpResponseMessage response = await this.HttpClient.SendAsync(request);
+            var str = await response.Content.ReadAsStringAsync();
+            if (response.StatusCode == HttpStatusCode.OK) {
+                var res = JsonConvert.DeserializeObject<JObject>(str);
+                if (res != null) {
+                    var id = res.Value<string>("id");
+                    return id;
+                }
+            }
+            return null;
+        }
+
+        public async Task UpdateOcrResult(OcrServiceManager manager, string pageId, string game, string ocrText, string translatedText, string translationEngine) {
+            using var request = new HttpRequestMessage();
+            request.Method = HttpMethod.Patch;
+            request.RequestUri = new Uri($"{Url}/pages/{pageId}");
+
+            var body = new JObject{
+                new JProperty("properties", CreateOcrProperty(manager, game, ocrText, translatedText, translationEngine)),
+            }.ToString();
+            request.Content = new StringContent(body, Encoding.UTF8, "application/json");
+            request.Headers.Add("Authorization", $"Bearer {Key}");
+            request.Headers.Add("Notion-Version", NotionVersion);
+
+            // Send the request and get response.
+            HttpResponseMessage response = await this.HttpClient.SendAsync(request);
+            var str = await response.Content.ReadAsStringAsync();
+            if (response.StatusCode == HttpStatusCode.OK) {
+            }
+        }
+
+        private JObject CreateOcrProperty(OcrServiceManager manager, string game, string ocrText, string translatedText, string translationEngine) {
             var properties = new JObject();
 
             if (manager.NotionTitleSaveTarget != null) {
@@ -102,25 +147,7 @@ namespace sikusiSubtitles.Notion {
                 }));
             }
 
-            var body = new JObject{
-                new JProperty("parent", new JObject{
-                    new JProperty("type", "database_id"),
-                    new JProperty("database_id", manager.NotionDatabaseId),
-                }),
-                new JProperty("properties", properties),
-            }.ToString();
-            request.Content = new StringContent(body , Encoding.UTF8 , "application/json");
-            request.Headers.Add("Authorization" , $"Bearer {Key}");
-            request.Headers.Add("Notion-Version" , NotionVersion);
-
-            // Send the request and get response.
-            HttpResponseMessage response = await this.HttpClient.SendAsync(request);
-/*
-            var str = await response.Content.ReadAsStringAsync();
-            if (response.StatusCode == HttpStatusCode.OK) {
-            } else {
-            }
-*/
+            return properties;
         }
     }
 }

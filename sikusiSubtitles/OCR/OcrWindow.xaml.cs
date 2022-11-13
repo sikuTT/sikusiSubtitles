@@ -69,6 +69,9 @@ namespace sikusiSubtitles.OCR {
         System.Drawing.Rectangle captureArea;
         int captureScale = 1;
 
+        // Notion
+        string? notionSaveId;
+
         public OcrWindow(ServiceManager serviceManager, OcrServiceManager ocrManager, int processId) {
             InitializeComponent();
             DataContext = viewModel;
@@ -385,6 +388,7 @@ namespace sikusiSubtitles.OCR {
                     if (bitmap == null) {
                         MessageBox.Show("画面をキャプチャー出来ませんでした。", null, MessageBoxButton.OK, MessageBoxImage.Error);
                     } else {
+                        notionSaveId = null;
                         System.Windows.Forms.Clipboard.SetImage(bitmap);
                         OcrResult result = await this.ocrService.ExecuteAsync(bitmap, ocrLanguageCode);
                         if (result.Text != null) {
@@ -426,7 +430,11 @@ namespace sikusiSubtitles.OCR {
 
                         if (ocrManager.Archive == OcrArchives.Notion) {
                             var notion = new Notion.Notion(ocrManager.NotionToken);
-                            notion.AddOcrResult(ocrManager, viewModel.WindowTitle.Value , ocrTextBox.Text , result.Translations[0].Text , translationService.DisplayName);
+                            if (notionSaveId == null) {
+                                notionSaveId = await notion.AddOcrResult(ocrManager, viewModel.WindowTitle.Value, ocrTextBox.Text, result.Translations[0].Text, translationService.DisplayName);
+                            } else {
+                                await notion.UpdateOcrResult(ocrManager, notionSaveId, viewModel.WindowTitle.Value, ocrTextBox.Text, result.Translations[0].Text, translationService.DisplayName);
+                            }
                         }
                     } else {
                         // 翻訳に失敗

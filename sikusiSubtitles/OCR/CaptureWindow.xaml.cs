@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +16,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using static sikusiSubtitles.OCR.ScreenCapture;
 
 namespace sikusiSubtitles.OCR {
@@ -28,7 +31,7 @@ namespace sikusiSubtitles.OCR {
         public static extern void CopyMemory(IntPtr dest, IntPtr source, int Length);
 
         // ターゲットのウィンドウ
-        IntPtr targetProcess;
+        int targetProcessId;
         IntPtr targetWindowHandle;
         double scale;
 
@@ -46,21 +49,21 @@ namespace sikusiSubtitles.OCR {
 
         public event EventHandler<System.Drawing.Rectangle>? AreaSelected;
 
-        public CaptureWindow(IntPtr targetProcess, IntPtr targetWindowHandle, System.Drawing.Rectangle captureArea) {
+        public CaptureWindow(Process process, System.Drawing.Rectangle captureArea) {
             InitializeComponent();
 
-            this.targetProcess = targetProcess;
-            this.targetWindowHandle = targetWindowHandle;
+            this.targetProcessId = process.Id;
+            this.targetWindowHandle = process.MainWindowHandle;
             this.captureArea = captureArea;
 
             // キャプチャー用のウィンドウをキャプチャー対象のウィンドウの上に移動する
             // ロード時にモニターのDPIを取得したいので、Loadedイベント前に移動する
-            var interop = new WindowInteropHelper(this);
-            interop.EnsureHandle();
-            interop.Owner = targetWindowHandle;
+            // var interop = new WindowInteropHelper(this);
+            // interop.EnsureHandle();
+            // interop.Owner = targetWindowHandle;
 
             RECT rect;
-            if (GetWindowRect(targetWindowHandle, out rect)) {
+            if (GetRect(targetProcessId, targetWindowHandle, out rect)) {
                 Left = rect.left;
                 Top = rect.top;
             }
@@ -118,9 +121,14 @@ namespace sikusiSubtitles.OCR {
             scale = dpi / 96.0;
 
             RECT rect;
-            if (GetWindowRect(targetWindowHandle, out rect)) {
+            if (GetRect(targetProcessId, targetWindowHandle, out rect)) {
                 var width = rect.right - rect.left;
                 var height = rect.bottom - rect.top;
+                if (width <= 0 || height <= 0) {
+                    MessageBox.Show("キャプチャー対象のウィンドウサイズを取得できませんでした。", null, MessageBoxButton.OK, MessageBoxImage.Error);
+                    Close();
+                    return;
+                }
 
                 // 調整前（オリジナル）の状態のビットマップを作成
                 originalBitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);

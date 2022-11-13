@@ -212,14 +212,16 @@ namespace sikusiSubtitles.OCR {
                 Microsoft.VisualBasic.Interaction.AppActivate(processId);
 
                 // キャプチャー対象のウィンドウの上にキャプチャー処理をするウィンドウを作成する
-                captureWindow = new CaptureWindow(process.Handle, process.MainWindowHandle, captureArea);
-                captureWindow.Show();
-                captureWindow.Activate();
+                captureWindow = new CaptureWindow(process, captureArea);
                 captureWindow.AreaSelected += CaptureAreaSelected;
                 captureWindow.Closed += (object? sender, EventArgs e) => {
                     captureWindow.AreaSelected -= CaptureAreaSelected;
                     captureWindow = null;
                 };
+                captureWindow.Show();
+                if (captureWindow != null) {
+                    captureWindow.Activate();
+                }
             } catch (Exception) {
                 MessageBox.Show("キャプチャー対象のプロセスが取得できませんでした。", null, MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -541,7 +543,7 @@ namespace sikusiSubtitles.OCR {
 
                     // 画面をキャプチャーする
                     RECT rect;
-                    if (GetWindowRect(process.MainWindowHandle, out rect)) {
+                    if (GetRect(process.Id, process.MainWindowHandle, out rect)) {
                         var left = rect.left + captureArea.Left;
                         var top = rect.top + captureArea.Top;
                         var width = captureArea.Width;

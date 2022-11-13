@@ -388,6 +388,7 @@ namespace sikusiSubtitles.OCR {
                         System.Windows.Forms.Clipboard.SetImage(bitmap);
                         OcrResult result = await this.ocrService.ExecuteAsync(bitmap, ocrLanguageCode);
                         if (result.Text != null) {
+                            this.ocrTextBox.Select(0, 0);
                             this.ocrTextBox.Text = result.Text;
                             this.translatedTextBox.Text = "";
 
@@ -597,7 +598,9 @@ namespace sikusiSubtitles.OCR {
                 clearTranslatedShortcutKeyTextBox.Text = shortcut.ShortcutKey;
             } else {
                 if (ocrButton.IsEnabled == true && shortcut.ShortcutKey == ocrShortcutKeyTextBox.Text) {
-                    await Ocr();
+                    if (this.IsActive == false || ocrTextBox.IsFocused == false) {
+                        await Ocr();
+                    }
                 } else if (shortcut.ShortcutKey == clearTranslatedShortcutKeyTextBox.Text) {
                     ClearObsTranslatedText();
                 }

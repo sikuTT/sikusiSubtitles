@@ -150,7 +150,6 @@ namespace ObsWebSocket5 {
             request.d.requestType = requestData.GetRequestType();
             request.d.requestId = requestId;
             request.d.requestData = requestData;
-
             await SendAsync(request);
 
             // レスポンスを取得できるまで待つ

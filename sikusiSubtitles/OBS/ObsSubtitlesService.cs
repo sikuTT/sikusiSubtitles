@@ -15,6 +15,7 @@ namespace sikusiSubtitles.OBS {
     public class ObsSubtitlesService : sikusiSubtitles.Service {
         public string VoiceTarget { get; set; } = "";
         public List<string> TranslateTargetList { get; set; } = new List<string>();
+        public bool DisplayRecognizingText { get; set; } = true;
 
         public ObsSubtitlesService(ServiceManager serviceManager) : base(serviceManager, SubtitlesServiceManager.ServiceName, "ObsSubtitles", "OBS", 200) {
             settingsPage = new ObsSubtitlesPage(ServiceManager, this);
@@ -60,8 +61,11 @@ namespace sikusiSubtitles.OBS {
                 var voiceSettings = await obsService.ObsSocket.GetInputSettingsAsync(sourceName);
                 var voiceTextSource = voiceSettings?.inputSettings as TextGdiplusV2;
                 if (voiceTextSource != null) {
-                    voiceTextSource.text = text;
-                    await obsService.ObsSocket.SetInputSettingsAsync(sourceName, voiceTextSource);
+                    // なぜかフォント情報がクリアされたことがあって、その場合OBSがクラッシュしてしまったのでチェックしておく
+                    if (voiceTextSource.font?.face != null && voiceTextSource.font?.size != null) {
+                        voiceTextSource.text = text;
+                        await obsService.ObsSocket.SetInputSettingsAsync(sourceName, voiceTextSource);
+                    }
                 }
             }
         }
@@ -71,24 +75,31 @@ namespace sikusiSubtitles.OBS {
 
         private async void SubtitlesChanged(Object? sender, List<SubtitlesText> subtitlesTexts) {
             if (subtitlesService != null && obsService != null && obsService?.IsConnected == true) {
+                // 言語ごとの字幕の作成先
                 Dictionary<string, StringBuilder> texts = new Dictionary<string, StringBuilder>();
+                // 音声用字幕
                 texts.Add("", new StringBuilder());
+                // 翻訳字幕
                 foreach (var to in subtitlesService.TranslationLanguageToList) {
                     if (to != "") {
                         texts.Add(to, new StringBuilder());
                     }
                 }
 
-                foreach (SubtitlesText subtitleText in subtitlesTexts) {
+                // 字幕作成
+                foreach (var subtitlesText in subtitlesTexts) {
                     var voiceText = texts[""];
+                    // 音声字幕
                     if (voiceText.Length > 0) voiceText.Append(' ');
-                    if (subtitleText.Recognized) {
-                        voiceText.Append(subtitleText.VoiceText);
-                    } else {
-                        voiceText.Append($"（{subtitleText.VoiceText}）");
+                    if (subtitlesText.Recognized) {
+                        voiceText.Append(subtitlesText.VoiceText);
+                    } else if (this.DisplayRecognizingText) {
+                        // 音声が確定していない場合、音声をカッコで囲う
+                        voiceText.Append($"（{subtitlesText.VoiceText}）");
                     }
 
-                    foreach (var translationText in subtitleText.TranslationTexts) {
+                    // 翻訳字幕
+                    foreach (var translationText in subtitlesText.TranslationTexts) {
                         if (translationText.Language != "") {
                             var text = texts.GetValueOrDefault(translationText.Language);
                             if (text == null) {
@@ -100,6 +111,7 @@ namespace sikusiSubtitles.OBS {
                     }
                 }
 
+                // 字幕表示
                 foreach (var text in texts) {
                     try {
                         string? sourceName = null;

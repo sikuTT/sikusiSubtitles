@@ -27,7 +27,10 @@ namespace sikusiSubtitles.OCR {
         public ReactivePropertySlim<string> WindowTitle { get; } = new();
 
         // 読み上げ
-        public ReactivePropertySlim<bool> SpeechWhenOcrRun { get; } = new();
+        public ReactivePropertySlim<bool> SpeechOcrText { get; } = new();
+
+        // ログ保存
+        public ReactivePropertySlim<bool> SaveLog { get; } = new();
     }
 
     /// <summary>
@@ -80,6 +83,9 @@ namespace sikusiSubtitles.OCR {
             this.ocrManager = ocrManager;
             this.processId = processId;
 
+            // View変更時に、設定情報を更新する
+            this.SubscribeViewModel();
+
             // OCR
             this.ocrServiceName = ocrManager.OcrEngine;
             this.ocrLanguageCode = ocrManager.OcrLanguage;
@@ -91,7 +97,7 @@ namespace sikusiSubtitles.OCR {
             // 読み上げ
             this.speechServiceName = ocrManager.OcrSpeechEngine;
             this.speechVoiceId = ocrManager.OcrSpeechVoice;
-            viewModel.SpeechWhenOcrRun.Value = ocrManager.SpeechWhenOcrRun;
+            viewModel.SpeechOcrText.Value = ocrManager.SpeechOcrText;
 
             // ショートカットの設定
             ocrShortcutKeyTextBox.Text = ocrManager.OcrShortcut.ShortcutKey;
@@ -105,6 +111,9 @@ namespace sikusiSubtitles.OCR {
             this.serviceManager = ocrWindow.serviceManager;
             this.ocrManager = ocrWindow.ocrManager;
             this.processId = ocrWindow.processId;
+
+            // View変更時に、設定情報を更新する
+            this.SubscribeViewModel();
 
             // OCR
             this.ocrServiceName = ocrWindow.ocrServiceName;
@@ -120,7 +129,10 @@ namespace sikusiSubtitles.OCR {
             // 読み上げ
             this.speechServiceName = ocrWindow.speechServiceName;
             this.speechVoiceId = ocrWindow.speechVoiceId;
-            viewModel.SpeechWhenOcrRun.Value = ocrWindow.viewModel.SpeechWhenOcrRun.Value;
+            viewModel.SpeechOcrText.Value = ocrWindow.viewModel.SpeechOcrText.Value;
+
+            // ログ保存
+            viewModel.SaveLog.Value = ocrWindow.viewModel.SaveLog.Value;
 
             // 画面のキャプチャーエリア指定
             this.captureArea = ocrWindow.captureArea;
@@ -352,16 +364,6 @@ namespace sikusiSubtitles.OCR {
             }
         }
 
-        /** OCR時に読み上げるがチェックされた */
-        private void speechCheckBox_Checked(object sender, RoutedEventArgs e) {
-            ocrManager.SpeechWhenOcrRun = true;
-        }
-
-        /** OCR時に読み上げるのチェックが外された */
-        private void speechCheckBox_Unchecked(object sender, RoutedEventArgs e) {
-            ocrManager.SpeechWhenOcrRun = false;
-        }
-
         /** OCRテキストが変更された */
         private void ocrTextBox_TextChanged(object sender, TextChangedEventArgs e) {
             SetSpeechButtonEnabled();
@@ -400,7 +402,7 @@ namespace sikusiSubtitles.OCR {
 
                             // 文字が取得できた場合、読み上げと翻訳をする
                             if (result.Text.Length > 0) {
-                                if (viewModel.SpeechWhenOcrRun.Value) {
+                                if (viewModel.SpeechOcrText.Value) {
                                     Task task = SpeechOcrTextAsync();
                                 }
                                 await TranslateAsync();
@@ -431,12 +433,14 @@ namespace sikusiSubtitles.OCR {
                             await subtitlesService.SetTextAsync(obsTextSource , result.Translations[0].Text ?? "");
                         }
 
-                        if (ocrManager.Archive == OcrArchives.Notion) {
-                            var notion = new Notion.Notion(ocrManager.NotionToken);
-                            if (notionSaveId == null) {
-                                notionSaveId = await notion.AddOcrResult(ocrManager, viewModel.WindowTitle.Value, ocrTextBox.Text, result.Translations[0].Text, translationService.DisplayName);
-                            } else {
-                                await notion.UpdateOcrResult(ocrManager, notionSaveId, viewModel.WindowTitle.Value, ocrTextBox.Text, result.Translations[0].Text, translationService.DisplayName);
+                        if (ocrManager.SaveLog) {
+                            if (ocrManager.Archive == OcrArchives.Notion) {
+                                var notion = new Notion.Notion(ocrManager.NotionToken);
+                                if (notionSaveId == null) {
+                                    notionSaveId = await notion.AddOcrResult(ocrManager, viewModel.WindowTitle.Value, ocrTextBox.Text, result.Translations[0].Text, translationService.DisplayName);
+                                } else {
+                                    await notion.UpdateOcrResult(ocrManager, notionSaveId, viewModel.WindowTitle.Value, ocrTextBox.Text, result.Translations[0].Text, translationService.DisplayName);
+                                }
                             }
                         }
                     } else {
@@ -672,12 +676,6 @@ namespace sikusiSubtitles.OCR {
             System.Diagnostics.Process.Start(pi);
         }
 
-        /** OCRウィンドウを複製する */
-        private void duplicateStatusButton_Click(object sender, RoutedEventArgs e) {
-            var ocrWindow = new OcrWindow(this);
-            ocrWindow.Show();
-        }
-
         /**
          */
         private async void speechMenuItem_Click(object sender, RoutedEventArgs e) {
@@ -769,9 +767,27 @@ namespace sikusiSubtitles.OCR {
             shortcutKeyStatusPopup.IsOpen = true;
         }
 
+        /** OCRウィンドウを複製する */
+        private void duplicateStatusButton_Click(object sender, RoutedEventArgs e) {
+            var ocrWindow = new OcrWindow(this);
+            ocrWindow.Show();
+        }
+
+        /** メニューを表示 */
+        private void menuButton_Click(object sender, RoutedEventArgs e) {
+            menuStatusPopup.IsOpen = true;
+        }
+
         /** メインウィンドウがクローズされた場合、このウィンドウも終了する */
         private void MainWindowClosed(object? sender, EventArgs e) {
             this.Close();
         }
+
+        /** ViewModelの更新時にデータを更新する */
+        private void SubscribeViewModel() {
+            viewModel.SpeechOcrText.Subscribe(value => ocrManager.SpeechOcrText = value);
+            viewModel.SaveLog.Subscribe(value => ocrManager.SaveLog = value);
+        }
+
     }
 }

@@ -27,7 +27,8 @@ namespace sikusiSubtitles.OCR {
         public string TranslationLanguage { get; set; } = "";
         public string OcrSpeechEngine { get; set; } = "";
         public string OcrSpeechVoice { get; set; } = "";
-        public bool SpeechWhenOcrRun { get; set; } = false;
+        public bool SpeechOcrText { get; set; } = false;
+        public bool SaveLog { get; set; } = false;
         public Shortcut.Shortcut OcrShortcut { get { return ocrShortcut; } }
         public Shortcut.Shortcut ClearObsTextShortcut { get { return clearObsTextShortcut; } }
         public OcrArchives Archive { get; set; } = OcrArchives.None;
@@ -37,6 +38,7 @@ namespace sikusiSubtitles.OCR {
         public string NotionTextSaveTarget { get; set; } = "";
         public string NotionTranslatedTextSaveTarget { get; set; } = "";
         public string NotionTranslationEngineSaveTarget { get; set; } = "";
+        public string NotionLastModifiedDateTarget { get; set; } = "";
 
 
         private Shortcut.Shortcut ocrShortcut = new Shortcut.Shortcut("execute-ocr", "OCR", "画面から文字を取得し翻訳する", "");
@@ -62,7 +64,8 @@ namespace sikusiSubtitles.OCR {
             TranslationLanguage = token.Value<string>("TranslationLanguage") ?? "";
             OcrSpeechEngine = token.Value<string>("OcrSpeechEngine") ?? "";
             OcrSpeechVoice = token.Value<string>("OcrSpeechVoice") ?? "";
-            SpeechWhenOcrRun = token.Value<bool>("SpeechWhenOcrRun");
+            SpeechOcrText = token.Value<bool>("SpeechOcrText");
+            SaveLog = token.Value<bool>("SaveLog");
             ocrShortcut.ShortcutKey = token.Value<string>("OcrShortcutKey") ?? "";
             clearObsTextShortcut.ShortcutKey = token.Value<string>("ClearObsTextShortcutKey") ?? "";
             var archive = token.Value<string?>("Archive");
@@ -85,6 +88,7 @@ namespace sikusiSubtitles.OCR {
                     NotionTextSaveTarget = save.Value<string>("Text") ?? "";
                     NotionTranslatedTextSaveTarget = save.Value<string>("TranslatedText") ?? "";
                     NotionTranslationEngineSaveTarget = save.Value<string>("TranslationEngine") ?? "";
+                    NotionLastModifiedDateTarget = save.Value<string>("lastModifiedDate") ?? "";
                 }
             }
         }
@@ -97,7 +101,8 @@ namespace sikusiSubtitles.OCR {
                 new JProperty("TranslationLanguage", TranslationLanguage),
                 new JProperty("OcrSpeechEngine", OcrSpeechEngine),
                 new JProperty("OcrSpeechVoice", OcrSpeechVoice),
-                new JProperty("SpeechWhenOcrRun", SpeechWhenOcrRun),
+                new JProperty("SpeechOcrText", SpeechOcrText),
+                new JProperty("SaveLog", SaveLog),
                 new JProperty("OcrShortcutKey", ocrShortcut.ShortcutKey),
                 new JProperty("ClearObsTextShortcutKey", clearObsTextShortcut.ShortcutKey),
                 new JProperty("Archive", Archive.ToString()),
@@ -109,6 +114,7 @@ namespace sikusiSubtitles.OCR {
                         new JProperty("Text", NotionTextSaveTarget),
                         new JProperty("TranslatedText", NotionTranslatedTextSaveTarget),
                         new JProperty("TranslationEngine", NotionTranslationEngineSaveTarget),
+                        new JProperty("lastModifiedDate", NotionLastModifiedDateTarget),
                     }),
                 }),
             };

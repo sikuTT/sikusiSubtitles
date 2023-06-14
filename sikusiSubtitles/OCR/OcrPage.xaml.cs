@@ -27,6 +27,7 @@ namespace sikusiSubtitles.OCR {
             new() { Name="OCRで取得した文字列" },
             new() { Name="翻訳結果" },
             new() { Name="翻訳エンジン" },
+            new() { Name="更新日時" },
         };
 
         public ObservableCollection<string> NotionPageList { get; set; } = new();
@@ -230,7 +231,7 @@ namespace sikusiSubtitles.OCR {
                                     var obj2 = prop.Value;
                                     if (obj2 != null) {
                                         var type = obj2.Value<string>("type");
-                                        if (type == "title" || type == "rich_text") {
+                                        if (type == "title" || type == "rich_text" || type == "date") {
                                             notionPageList[id].Add(name);
                                         }
                                     }
@@ -269,6 +270,7 @@ namespace sikusiSubtitles.OCR {
             viewModel.NotionTarget[1].Page.Value = ocrManager.NotionTextSaveTarget;
             viewModel.NotionTarget[2].Page.Value = ocrManager.NotionTranslatedTextSaveTarget;
             viewModel.NotionTarget[3].Page.Value = ocrManager.NotionTranslationEngineSaveTarget;
+            viewModel.NotionTarget[4].Page.Value = ocrManager.NotionLastModifiedDateTarget;
         }
 
         private void page_SelectionChanged(object sender, SelectionChangedEventArgs e) {
@@ -276,6 +278,7 @@ namespace sikusiSubtitles.OCR {
             ocrManager.NotionTextSaveTarget = viewModel.NotionTarget[1].Page.Value;
             ocrManager.NotionTranslatedTextSaveTarget = viewModel.NotionTarget[2].Page.Value;
             ocrManager.NotionTranslationEngineSaveTarget = viewModel.NotionTarget[3].Page.Value;
+            ocrManager.NotionLastModifiedDateTarget = viewModel.NotionTarget[4].Page.Value;
         }
     }
 }

@@ -117,13 +117,11 @@
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition Width="auto"></ColumnDefinition>
                         <ColumnDefinition Width="auto"></ColumnDefinition>
-                        <ColumnDefinition Width="auto"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Label>テキスト</Label>
-                    <CheckBox x:Name="speechCheckBox" Grid.Column="2" Checked="speechCheckBox_Checked" Unchecked="speechCheckBox_Unchecked" VerticalAlignment="Center" IsChecked="{Binding SpeechWhenOcrRun.Value}">文章の読み取り時に読み上げる</CheckBox>
-                    <Button x:Name="speechButton" Grid.Column="3" Click="speechButton_Click" IsEnabled="False" Width="80">読み上げる</Button>
-                    <Button x:Name="speechCancelButton" Grid.Column="3" Click="speechCancelButton_Click" IsEnabled="False"  Width="80" Visibility="Collapsed" Margin="10,0,0,0">キャンセル</Button>
-                    <Button x:Name="ocrButton" Grid.Column="4" IsEnabled="False" Click="ocrButton_Click" Width="80">文字認識</Button>
+                    <Button x:Name="speechButton" Grid.Column="2" Click="speechButton_Click" IsEnabled="False" Width="80">読み上げる</Button>
+                    <Button x:Name="speechCancelButton" Grid.Column="2" Click="speechCancelButton_Click" IsEnabled="False"  Width="80" Visibility="Collapsed" Margin="10,0,0,0">キャンセル</Button>
+                    <Button x:Name="ocrButton" Grid.Column="3" IsEnabled="False" Click="ocrButton_Click" Width="80">文字認識</Button>
                 </Grid>
                 <TextBox x:Name="ocrTextBox" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top" LostFocus="ocrTextBox_LostFocus" VerticalScrollBarVisibility="Auto" TextChanged="ocrTextBox_TextChanged">
                     <TextBox.ContextMenu>
@@ -196,125 +194,142 @@
                     <Label Style="{StaticResource MenuArrow}">▴</Label>
                 </StackPanel>
             </Button>
-            <Button x:Name="duplicateStatusButton" Click="duplicateStatusButton_Click" ToolTip="ウィンドウを複製">
-                <Image Source="/Resources/duplicate.png"></Image>
-            </Button>
             <Popup x:Name="ocrStatusPopup" StaysOpen="False" PlacementTarget="{Binding ElementName=ocrStatusButton}" Placement="Top">
                 <Border Style="{StaticResource FrameBorder}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="80"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"></RowDefinition>
-                            <RowDefinition Height="40"></RowDefinition>
-                            <RowDefinition Height="40"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Style="{StaticResource PopupHeader}" Grid.ColumnSpan="2">OCR設定</Label>
-                        <Label Grid.Row="1">エンジン</Label>
-                        <ComboBox x:Name="ocrServiceComboBox" Grid.Column="1" Grid.Row="1" Style="{StaticResource PopupRow}" DisplayMemberPath="DisplayName" SelectionChanged="ocrServiceComboBox_SelectionChanged"></ComboBox>
-                        <Label Grid.Row="2">読み取り言語</Label>
-                        <ComboBox x:Name="ocrLanguageComboBox" Grid.Column="1" Grid.Row="2" Style="{StaticResource PopupRow}" DisplayMemberPath="Name" SelectionChanged="ocrLanguageComboBox_SelectionChanged"></ComboBox>
-                    </Grid>
+                    <StackPanel>
+                        <Label Style="{StaticResource PopupHeader}">OCR設定</Label>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40"></RowDefinition>
+                                <RowDefinition Height="40"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0">エンジン</Label>
+                            <ComboBox x:Name="ocrServiceComboBox" Grid.Row="0"  Grid.Column="1" Style="{StaticResource PopupRow}" DisplayMemberPath="DisplayName" SelectionChanged="ocrServiceComboBox_SelectionChanged"></ComboBox>
+                            <Label Grid.Row="1">読み取り言語</Label>
+                            <ComboBox x:Name="ocrLanguageComboBox" Grid.Row="1" Grid.Column="1" Style="{StaticResource PopupRow}" DisplayMemberPath="Name" SelectionChanged="ocrLanguageComboBox_SelectionChanged"></ComboBox>
+                        </Grid>
+                    </StackPanel>
                 </Border>
             </Popup>
             <Popup x:Name="translationStatusPopup" StaysOpen="False" PlacementTarget="{Binding ElementName=translationStatusButton}" Placement="Top">
                 <Border Style="{StaticResource FrameBorder}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="80"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"></RowDefinition>
-                            <RowDefinition Height="40"></RowDefinition>
-                            <RowDefinition Height="40"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Style="{StaticResource PopupHeader}" Grid.ColumnSpan="2">翻訳設定</Label>
-                        <Label Grid.Row="1">エンジン</Label>
-                        <ComboBox x:Name="translationServiceComboBox" Grid.Row="1" Grid.Column="1" Style="{StaticResource PopupRow}" DisplayMemberPath="DisplayName" SelectionChanged="translationServiceComboBox_SelectionChanged"></ComboBox>
-                        <Label Grid.Row="2">翻訳先言語</Label>
-                        <ComboBox x:Name="translationLanguageComboBox"  Grid.Column="2"  Grid.Row="2" Style="{StaticResource PopupRow}" DisplayMemberPath="Name" SelectionChanged="translationLanguageComboBox_SelectionChanged"></ComboBox>
-                    </Grid>
+                    <StackPanel>
+                        <Label Style="{StaticResource PopupHeader}">翻訳設定</Label>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40"></RowDefinition>
+                                <RowDefinition Height="40"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0">エンジン</Label>
+                            <ComboBox x:Name="translationServiceComboBox" Grid.Row="0" Grid.Column="1" Style="{StaticResource PopupRow}" DisplayMemberPath="DisplayName" SelectionChanged="translationServiceComboBox_SelectionChanged"></ComboBox>
+                            <Label Grid.Row="1">翻訳先言語</Label>
+                            <ComboBox x:Name="translationLanguageComboBox" Grid.Row="1" Grid.Column="1" Style="{StaticResource PopupRow}" DisplayMemberPath="Name" SelectionChanged="translationLanguageComboBox_SelectionChanged"></ComboBox>
+                        </Grid>
+                    </StackPanel>
                 </Border>
             </Popup>
             <Popup x:Name="obsStatusPopup" StaysOpen="False" PlacementTarget="{Binding ElementName=obsStatusButton}" Placement="Top">
                 <Border Style="{StaticResource FrameBorder}">
                     <StackPanel>
                         <Label Style="{StaticResource PopupHeader}">OBS設定</Label>
-                        <Grid x:Name="connectObs">
-                            <Grid.RowDefinitions>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                            </Grid.RowDefinitions>
+                        <StackPanel x:Name="connectObs">
                             <Label>OBSに接続していません。</Label>
-                            <Button x:Name="connectObsButton" Grid.Row="1" Margin="5" Style="{StaticResource PopupRow}" Click="connectObsButton_Click">OBSに接続する</Button>
-                        </Grid>
+                            <Button x:Name="connectObsButton" Margin="5" Style="{StaticResource PopupRow}" Click="connectObsButton_Click">OBSに接続する</Button>
+                        </StackPanel>
                         <Grid x:Name="obsSettings" Visibility="Collapsed">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="80"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <Label Grid.Row="1">字幕表示先</Label>
-                            <ComboBox x:Name="obsTextSourceComboBox" Grid.Row="1" Grid.Column="1" Style="{StaticResource PopupRow}" SelectionChanged="obsTextSourceComboBox_SelectionChanged"></ComboBox>
+                            <Label>字幕表示先</Label>
+                            <ComboBox x:Name="obsTextSourceComboBox" Grid.Column="1" Style="{StaticResource PopupRow}" SelectionChanged="obsTextSourceComboBox_SelectionChanged"></ComboBox>
                         </Grid>
                     </StackPanel>
                 </Border>
             </Popup>
             <Popup x:Name="speechStatusPopup" StaysOpen="False" PlacementTarget="{Binding ElementName=speechStatusButton}" Placement="Top">
                 <Border Style="{StaticResource FrameBorder}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="60"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"></RowDefinition>
-                            <RowDefinition Height="40"></RowDefinition>
-                            <RowDefinition Height="40"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Style="{StaticResource PopupHeader}" Grid.ColumnSpan="2">読み上げ設定</Label>
-                        <Label Grid.Row="1">エンジン</Label>
-                        <Label Grid.Row="2">音声</Label>
-                        <ComboBox x:Name="speechServiceComboBox" Grid.Row="1" Grid.Column="1" Style="{StaticResource PopupRow}" DisplayMemberPath="DisplayName" SelectionChanged="speechServiceComboBox_SelectionChanged"></ComboBox>
-                        <ComboBox x:Name="speechVoiceComboBox" Grid.Row="2" Grid.Column="1" Style="{StaticResource PopupRow}" DisplayMemberPath="DisplayName" SelectionChanged="speechVoiceComboBox_SelectionChanged"></ComboBox>
-                    </Grid>
+                    <StackPanel>
+                        <Label Style="{StaticResource PopupHeader}">読み上げ設定</Label>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40"></RowDefinition>
+                                <RowDefinition Height="40"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0">エンジン</Label>
+                            <Label Grid.Row="1">音声</Label>
+                            <ComboBox x:Name="speechServiceComboBox" Grid.Row="0" Grid.Column="1" Style="{StaticResource PopupRow}" DisplayMemberPath="DisplayName" SelectionChanged="speechServiceComboBox_SelectionChanged"></ComboBox>
+                            <ComboBox x:Name="speechVoiceComboBox" Grid.Row="1" Grid.Column="1" Style="{StaticResource PopupRow}" DisplayMemberPath="DisplayName" SelectionChanged="speechVoiceComboBox_SelectionChanged"></ComboBox>
+                        </Grid>
+                    </StackPanel>
                 </Border>
             </Popup>
             <Popup x:Name="shortcutKeyStatusPopup" StaysOpen="False" PlacementTarget="{Binding ElementName=shortcutKeyStatusButton}" Placement="Top">
                 <Border Style="{StaticResource FrameBorder}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="60"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="auto"></ColumnDefinition>
-                            <ColumnDefinition Width="auto"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"></RowDefinition>
-                            <RowDefinition Height="40"></RowDefinition>
-                            <RowDefinition Height="40"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Style="{StaticResource PopupHeader}" Grid.ColumnSpan="4">ショートカット設定</Label>
-                        <Label Grid.Row="1">OCR実行</Label>
-                        <TextBox x:Name="ocrShortcutKeyTextBox" Grid.Row="1" Grid.Column="1" IsReadOnly="True" Style="{StaticResource PopupRow}"></TextBox>
-                        <Button x:Name="removeOcrShortcutKeyButton" Grid.Row="1" Grid.Column="2" Width="25" Height="25" Click="removeOcrShortcutKeyButton_Click">
-                            <Image Source="/Resources/times.png" ToolTip="ショートカットを削除する"></Image>
-                        </Button>
-                        <Button x:Name="resetOcrShortcutKeyButton" Grid.Row="1" Grid.Column="3" Width="25" Height="25" Click="resetOcrShortcutKeyButton_Click">
-                            <Image Source="/Resources/undo-24.png" ToolTip="デフォルトに戻す"></Image>
-                        </Button>
-                        <Label Grid.Row="2">字幕クリア</Label>
-                        <TextBox x:Name="clearTranslatedShortcutKeyTextBox" Grid.Row="2" Grid.Column="1" IsReadOnly="True" Style="{StaticResource PopupRow}"></TextBox>
-                        <Button x:Name="removeClearTranslatedTextShortcutKey" Grid.Row="2" Grid.Column="2" Width="25" Height="25" Click="removeClearTranslatedTextShortcutKey_Click">
-                            <Image Source="/Resources/times.png" ToolTip="ショートカットを削除する"></Image>
-                        </Button>
-                        <Button x:Name="resetClearTranslatedTextShortcutKey" Grid.Row="2" Grid.Column="3" Width="25" Height="25" Click="resetClearTranslatedTextShortcutKey_Click">
-                            <Image Source="/Resources/undo-24.png" ToolTip="デフォルトに戻す"></Image>
-                        </Button>
-                    </Grid>
+                    <StackPanel>
+                        <Label Style="{StaticResource PopupHeader}">ショートカット設定</Label>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40"></RowDefinition>
+                                <RowDefinition Height="40"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0">OCR実行</Label>
+                            <TextBox x:Name="ocrShortcutKeyTextBox" Grid.Row="0" Grid.Column="1" IsReadOnly="True" Style="{StaticResource PopupRow}"></TextBox>
+                            <Button x:Name="removeOcrShortcutKeyButton" Grid.Row="0" Grid.Column="2" Width="25" Height="25" Click="removeOcrShortcutKeyButton_Click">
+                                <Image Source="/Resources/times.png" ToolTip="ショートカットを削除する"></Image>
+                            </Button>
+                            <Button x:Name="resetOcrShortcutKeyButton" Grid.Row="0" Grid.Column="3" Width="25" Height="25" Click="resetOcrShortcutKeyButton_Click">
+                                <Image Source="/Resources/undo-24.png" ToolTip="デフォルトに戻す"></Image>
+                            </Button>
+                            <Label Grid.Row="1">字幕クリア</Label>
+                            <TextBox x:Name="clearTranslatedShortcutKeyTextBox" Grid.Row="1" Grid.Column="1" IsReadOnly="True" Style="{StaticResource PopupRow}"></TextBox>
+                            <Button x:Name="removeClearTranslatedTextShortcutKey" Grid.Row="1" Grid.Column="2" Width="25" Height="25" Click="removeClearTranslatedTextShortcutKey_Click">
+                                <Image Source="/Resources/times.png" ToolTip="ショートカットを削除する"></Image>
+                            </Button>
+                            <Button x:Name="resetClearTranslatedTextShortcutKey" Grid.Row="1" Grid.Column="3" Width="25" Height="25" Click="resetClearTranslatedTextShortcutKey_Click">
+                                <Image Source="/Resources/undo-24.png" ToolTip="デフォルトに戻す"></Image>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
                 </Border>
             </Popup>
-        </StatusBar>    </Grid>
+            <StatusBarItem HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="duplicateStatusButton" Click="duplicateStatusButton_Click" ToolTip="ウィンドウを複製" HorizontalAlignment="Right">
+                        <Image Source="/Resources/duplicate.png"></Image>
+                    </Button>
+                    <Button x:Name="menuStatusButton" Click="menuButton_Click" ToolTip="その他" HorizontalAlignment="Right">
+                        <Image Source="/Resources/menu-78.png"></Image>
+                    </Button>
+                    <Popup x:Name="menuStatusPopup" StaysOpen="False" PlacementTarget="{Binding ElementName=menuStatusButton}" Placement="Top">
+                        <Border Style="{StaticResource FrameBorder}">
+                            <StackPanel>
+                                <Label Style="{StaticResource PopupHeader}">設定</Label>
+                                <CheckBox x:Name="speechCheckBox" VerticalAlignment="Center" IsChecked="{Binding SpeechOcrText.Value}">文章の読み取り時に読み上げる</CheckBox>
+                                <CheckBox x:Name="logSaveCheckBox" VerticalAlignment="Center" IsChecked="{Binding SaveLog.Value}">ログを保存する</CheckBox>
+                            </StackPanel>
+                        </Border>
+                    </Popup>
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
 </Window>

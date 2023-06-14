@@ -147,6 +147,20 @@ namespace sikusiSubtitles.Notion {
                 }));
             }
 
+            if (manager.NotionLastModifiedDateTarget != null) {
+                var timeZone = TimeZoneInfo.Local;
+                var offset = timeZone.BaseUtcOffset;
+                var dateTime = DateTime.Now;
+                var str = dateTime.ToString("yyyy-MM-dd'T'HH:mm:ss'+'") + offset.ToString("hh':'mm");
+                properties.Add(new JProperty(manager.NotionLastModifiedDateTarget, new JObject {
+                    new JProperty("date", new JObject {
+                        new JProperty("start", str),
+                        // new JProperty("end", ""),
+                        // new JProperty("time_zone", ""),
+                    }),
+                }));
+            }
+
             return properties;
         }
     }

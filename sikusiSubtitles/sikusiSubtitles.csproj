@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <None Remove="Resources\duplicate.png" />
+    <None Remove="Resources\menu-78.png" />
     <None Remove="Resources\mic.png" />
     <None Remove="Resources\obs.png" />
     <None Remove="Resources\ocr.png" />
@@ -61,6 +62,7 @@
 
   <ItemGroup>
     <Resource Include="Resources\duplicate.png" />
+    <Resource Include="Resources\menu-78.png" />
     <Resource Include="Resources\mic.png" />
     <Resource Include="Resources\obs.png" />
     <Resource Include="Resources\ocr.png" />

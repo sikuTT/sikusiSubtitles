@@ -17,6 +17,8 @@ namespace ObsWebSocket5 {
         SemaphoreSlim recvSemaphore = new SemaphoreSlim(1, 1);
         Dictionary<string, JObject> receiveDataList = new Dictionary<string, JObject>();
 
+        SemaphoreSlim sendSemaphore = new SemaphoreSlim(1, 1);
+
         ClientWebSocket? webSocket;
         string? password;
         EventSubscription eventSubscriptions = EventSubscription.None;
@@ -25,6 +27,8 @@ namespace ObsWebSocket5 {
         public event EventHandler<WebSocketCloseCode?>? Closed;
 
         public bool IsConnected { get { return webSocket != null && webSocket.State ==WebSocketState.Open; } }
+
+        private DateTime? lastSendTime;
 
         async public Task ConnectAsync(string uri, EventSubscription eventSubscriptions = EventSubscription.None) {
             try {
@@ -175,10 +179,24 @@ namespace ObsWebSocket5 {
         /** OBSにメッセージを送信する */
         async ValueTask SendAsync<T>(T message) {
             if (webSocket != null) {
+                sendSemaphore.Wait();
+
+                var currentTime = DateTime.Now;
+                if (lastSendTime != null) {
+                    var waitTo = ((DateTime)lastSendTime).AddMilliseconds(200);
+                    var distance = waitTo - currentTime;
+                    if (distance.Milliseconds > 0) {
+                        await Task.Delay(distance);
+                    }
+                }
+
                 var jsonString = JsonConvert.SerializeObject(message, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore });
                 byte[] buffer = Encoding.UTF8.GetBytes(jsonString);
                 var memory = new Memory<byte>(buffer);
                 await webSocket.SendAsync(memory, WebSocketMessageType.Text, true, CancellationToken.None);
+                lastSendTime = DateTime.Now;
+
+                sendSemaphore.Release();
             }
         }
 

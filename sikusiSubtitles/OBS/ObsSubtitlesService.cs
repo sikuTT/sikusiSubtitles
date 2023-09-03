@@ -25,6 +25,7 @@ namespace sikusiSubtitles.OBS {
         private ObsService? obsService;
         private SubtitlesService? subtitlesService;
 
+        private Dictionary<string, TextGdiplusV2> textSettings = new Dictionary<string, TextGdiplusV2>();
         private Dictionary<string, string> previousTexts = new Dictionary<string, string>();
 
         public override void Init() {
@@ -56,21 +57,31 @@ namespace sikusiSubtitles.OBS {
             };
         }
 
-        async public Task SetTextAsync(string sourceName, string text) {
+        public async Task SetTextAsync(string sourceName, string text) {
             if (obsService != null && sourceName != "") {
-                var voiceSettings = await obsService.ObsSocket.GetInputSettingsAsync(sourceName);
-                var voiceTextSource = voiceSettings?.inputSettings as TextGdiplusV2;
-                if (voiceTextSource != null) {
-                    // なぜかフォント情報がクリアされたことがあって、その場合OBSがクラッシュしてしまったのでチェックしておく
-                    if (voiceTextSource.font?.face != null && voiceTextSource.font?.size != null) {
-                        voiceTextSource.text = text;
-                        await obsService.ObsSocket.SetInputSettingsAsync(sourceName, voiceTextSource);
-                    }
+                TextGdiplusV2? textSettings;
+                if (this.textSettings.TryGetValue(sourceName, out textSettings) == true) {
+                    textSettings.text = text;
+                    await obsService.ObsSocket.SetInputSettingsAsync(sourceName, textSettings);
                 }
             }
         }
 
-        private void ObsConnectionChanged(Object? sender, bool connected) {
+        private async void ObsConnectionChanged(Object? sender, bool connected) {
+            textSettings.Clear();
+            if (connected) {
+                if (obsService?.ObsSocket != null) {
+                    // 音声字幕のGDIテキスト設定を取得
+                    var voiceSubtitlesSettings = await obsService.ObsSocket.GetInputSettingsAsync(VoiceTarget);
+                    textSettings.Add(VoiceTarget, (TextGdiplusV2)voiceSubtitlesSettings.inputSettings);
+
+                    // 翻訳字幕のGDIテキスト設定を取得
+                    foreach (var target in TranslateTargetList) {
+                        var translatedSubtitlesSettings = await obsService.ObsSocket.GetInputSettingsAsync(target);
+                        textSettings.Add(target, (TextGdiplusV2)translatedSubtitlesSettings.inputSettings);
+                    }
+                }
+            }
         }
 
         private async void SubtitlesChanged(Object? sender, List<SubtitlesText> subtitlesTexts) {

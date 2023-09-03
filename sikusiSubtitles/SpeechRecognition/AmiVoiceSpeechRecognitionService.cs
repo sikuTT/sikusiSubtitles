@@ -72,6 +72,7 @@ namespace sikusiSubtitles.SpeechRecognition {
 
         private void RecognizingHandler(object? sender, WrpListener.RecognitionResult args) {
             if (args.text != null) {
+                args.text = args.text.TrimEnd('.');
                 this.InvokeRecognizing(args.text);
             }
         }

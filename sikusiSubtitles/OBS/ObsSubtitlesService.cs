@@ -61,8 +61,10 @@ namespace sikusiSubtitles.OBS {
             if (obsService != null && sourceName != "") {
                 TextGdiplusV2? textSettings;
                 if (this.textSettings.TryGetValue(sourceName, out textSettings) == true) {
-                    textSettings.text = text;
-                    await obsService.ObsSocket.SetInputSettingsAsync(sourceName, textSettings);
+                    if (textSettings.text != text) {
+                        textSettings.text = text;
+                        await obsService.ObsSocket.SetInputSettingsAsync(sourceName, textSettings);
+                    }
                 }
             }
         }
